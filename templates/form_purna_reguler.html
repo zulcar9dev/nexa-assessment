@@ -458,7 +458,27 @@
                         <h4 class="mb-3">Blokir Angsuran</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="blokir_angsuran_lunas" class="form-label">Jumlah Blokir Angsuran (kali)</label>
+                                <label for="blokir_angsuran_total" class="form-label">Total (kali)</label>
+                                <input type="number" class="form-control" id="blokir_angsuran_total" name="blokir_angsuran_total" value="{{ data.get('blokir_angsuran_total', '') }}" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="blokir_angsuran_total_terbilang" class="form-label">Terbilang</label>
+                                <input type="text" class="form-control" id="blokir_angsuran_total_terbilang" name="blokir_angsuran_total_terbilang" value="{{ data.get('blokir_angsuran_total_terbilang', '') }}" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="blokir_angsuran_pindah_gaji" class="form-label">Pindah Gaji (kali)</label>
+                                <input type="number" class="form-control" id="blokir_angsuran_pindah_gaji" name="blokir_angsuran_pindah_gaji" value="{{ data.get('blokir_angsuran_pindah_gaji', '') }}" min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="blokir_angsuran_pindah_gaji_terbilang" class="form-label">Terbilang</label>
+                                <input type="text" class="form-control" id="blokir_angsuran_pindah_gaji_terbilang" name="blokir_angsuran_pindah_gaji_terbilang" value="{{ data.get('blokir_angsuran_pindah_gaji_terbilang', '') }}" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="blokir_angsuran_lunas" class="form-label">Wajib (Pokok + Bunga) (kali)</label>
                                 <input type="number" class="form-control" id="blokir_angsuran_lunas" name="blokir_angsuran_lunas" value="{{ data.get('blokir_angsuran_lunas', '') }}" min="0">
                             </div>
                             <div class="col-md-6 mb-3">
@@ -645,7 +665,9 @@
                 <div class="row"><div class="col-md-4">Biaya PSJT (%):</div><div class="col-md-8"><span id="preview_biaya_psjt_persen"></span></div></div>
                 
                 <h5 class="mb-3 mt-4">Blokir Angsuran</h5>
-                <div class="row"><div class="col-md-4">Jumlah Blokir Angsuran (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_lunas"></span> (<span id="preview_blokir_angsuran_lunas_terbilang"></span>)</div></div>
+                <div class="row"><div class="col-md-4">Total (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_total"></span> (<span id="preview_blokir_angsuran_total_terbilang"></span>)</div></div>
+                <div class="row"><div class="col-md-4">Pindah Gaji (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_pindah_gaji"></span> (<span id="preview_blokir_angsuran_pindah_gaji_terbilang"></span>)</div></div>
+                <div class="row"><div class="col-md-4">Wajib (Pokok + Bunga) (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_lunas"></span> (<span id="preview_blokir_angsuran_lunas_terbilang"></span>)</div></div>
 
                 <h5 class="mb-3 mt-4">Syarat Tambahan Kustom</h5>
                 <div id="preview-syarat-kustom-penandatanganan" class="slik-facility-hidden">
@@ -744,6 +766,8 @@
         const domisiliInputs = domisiliFields.querySelectorAll('textarea');
 
         const pairsTerbilang = [
+            { input: document.getElementById('blokir_angsuran_total'), output: document.getElementById('blokir_angsuran_total_terbilang') },
+            { input: document.getElementById('blokir_angsuran_pindah_gaji'), output: document.getElementById('blokir_angsuran_pindah_gaji_terbilang') },
             { input: document.getElementById('blokir_angsuran_lunas'), output: document.getElementById('blokir_angsuran_lunas_terbilang') }
         ];
 
