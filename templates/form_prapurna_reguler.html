@@ -1472,6 +1472,7 @@
                 applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
             });
         })();
+        
         // --- LOGIKA SEGMENTASI (TASPEN/ASABRI) ---
         const segRadios = document.querySelectorAll('input[name="segmentasi"]');
         
@@ -1487,6 +1488,9 @@
             const lblSkGol = document.querySelector('label[for="no_sk_golongan"]');
             const lblTglSkGol = document.querySelector('label[for="tgl_sk_golongan"]');
             const lblJenisPekerjaan = document.querySelector('label[for="jenis_pekerjaan_pemohon"]');
+            
+            // [BARU] Label Golongan
+            const lblGolongan = document.querySelector('label[for="golongan_saat_ini"]');
 
             if (segmentasi === 'asabri') {
                 // Ubah Label ke Istilah ASABRI
@@ -1495,7 +1499,8 @@
                 if(lblTglSkCpns) lblTglSkCpns.textContent = 'Tgl SKEP Pengangkatan Pertama';
                 if(lblSkGol) lblSkGol.textContent = 'No. SKEP Pangkat Terakhir';
                 if(lblTglSkGol) lblTglSkGol.textContent = 'Tgl SKEP Pangkat Terakhir';
-                if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Pangkat/Golongan';
+                if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Kesatuan/Instansi';
+                if(lblGolongan) lblGolongan.textContent = 'Pangkat Saat Ini'; // Perubahan Baru
             } else {
                 // Kembalikan ke Istilah TASPEN
                 if(lblNip) lblNip.textContent = 'NIP Pemohon';
@@ -1504,6 +1509,7 @@
                 if(lblSkGol) lblSkGol.textContent = 'No. SK Golongan';
                 if(lblTglSkGol) lblTglSkGol.textContent = 'Tgl SK Golongan';
                 if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Jenis Pekerjaan';
+                if(lblGolongan) lblGolongan.textContent = 'Golongan Saat Ini'; // Perubahan Baru
             }
         }
 
@@ -1514,6 +1520,7 @@
 
         // Jalankan saat halaman dimuat
         updateLabelsBySegment();
+
     });
 </script>
 
