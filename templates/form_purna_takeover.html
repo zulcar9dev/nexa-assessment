@@ -71,6 +71,25 @@
                 <div class="tab-content" id="formTabsContent">
                     
                     <div class="tab-pane fade show active" id="pengajuan-slik" role="tabpanel" aria-labelledby="pengajuan-slik-tab">
+                        <div class="card mb-4 border-primary-subtle bg-primary-subtle">
+                            <div class="card-body py-2">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <span class="fw-bold text-primary-emphasis">Pilih Segmentasi:</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="segmentasi" id="seg_taspen" value="taspen" {% if data.get('segmentasi', 'taspen') == 'taspen' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="seg_taspen">TASPEN (PNS)</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="segmentasi" id="seg_asabri" value="asabri" {% if data.get('segmentasi') == 'asabri' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="seg_asabri">ASABRI (TNI/POLRI)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <h4 class="mb-3">A.1. Pengajuan Kredit</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -1362,6 +1381,39 @@
                 applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
             });
         })();
+
+        // --- LOGIKA SEGMENTASI (TASPEN/ASABRI) - PURNA ---
+        const segRadios = document.querySelectorAll('input[name="segmentasi"]');
+        
+        function updateLabelsBySegment() {
+            let segmentasi = 'taspen';
+            segRadios.forEach(r => { if(r.checked) segmentasi = r.value; });
+
+            // Referensi Label Purna
+            const lblNoSkPensiun = document.querySelector('label[for="no_sk_pensiun"]');
+            const lblTglSkPensiun = document.querySelector('label[for="tgl_sk_pensiun"]');
+            const lblJenisPekerjaan = document.querySelector('label[for="jenis_pekerjaan_pemohon"]');
+
+            if (segmentasi === 'asabri') {
+                // Istilah ASABRI
+                if(lblNoSkPensiun) lblNoSkPensiun.textContent = 'No. SKEP Pensiun';
+                if(lblTglSkPensiun) lblTglSkPensiun.textContent = 'Tgl SKEP Pensiun';
+                if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Pangkat/Golongan Terakhir';
+            } else {
+                // Istilah TASPEN
+                if(lblNoSkPensiun) lblNoSkPensiun.textContent = 'No. SK Pensiun';
+                if(lblTglSkPensiun) lblTglSkPensiun.textContent = 'Tgl. SK Pensiun';
+                if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Jenis Pekerjaan (Pensiunan)';
+            }
+        }
+
+        // Pasang Event Listener
+        segRadios.forEach(radio => {
+            radio.addEventListener('change', updateLabelsBySegment);
+        });
+
+        // Jalankan saat halaman dimuat
+        updateLabelsBySegment();
 
     });
 </script>

@@ -72,6 +72,25 @@
                 <div class="tab-content" id="formTabsContent">
                     
                     <div class="tab-pane fade show active" id="pengajuan-slik" role="tabpanel" aria-labelledby="pengajuan-slik-tab">
+                        <div class="card mb-4 border-primary-subtle bg-primary-subtle">
+                            <div class="card-body py-2">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <span class="fw-bold text-primary-emphasis">Pilih Segmentasi:</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="segmentasi" id="seg_taspen" value="taspen" {% if data.get('segmentasi', 'taspen') == 'taspen' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="seg_taspen">TASPEN (PNS)</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="segmentasi" id="seg_asabri" value="asabri" {% if data.get('segmentasi') == 'asabri' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="seg_asabri">ASABRI (TNI/POLRI)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <h4 class="mb-3">A.1. Pengajuan Kredit</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -1472,6 +1491,49 @@
                 applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
             });
         })();
+
+        // --- LOGIKA SEGMENTASI (TASPEN/ASABRI) ---
+        const segRadios = document.querySelectorAll('input[name="segmentasi"]');
+        
+        function updateLabelsBySegment() {
+            // Ambil nilai radio yang terpilih
+            let segmentasi = 'taspen';
+            segRadios.forEach(r => { if(r.checked) segmentasi = r.value; });
+
+            // Referensi Label yang akan diubah
+            const lblNip = document.querySelector('label[for="nip_pemohon"]');
+            const lblSkCpns = document.querySelector('label[for="no_sk_cpns"]');
+            const lblTglSkCpns = document.querySelector('label[for="tgl_sk_cpns"]');
+            const lblSkGol = document.querySelector('label[for="no_sk_golongan"]');
+            const lblTglSkGol = document.querySelector('label[for="tgl_sk_golongan"]');
+            const lblJenisPekerjaan = document.querySelector('label[for="jenis_pekerjaan_pemohon"]');
+
+            if (segmentasi === 'asabri') {
+                // Ubah Label ke Istilah ASABRI
+                if(lblNip) lblNip.textContent = 'NRP Pemohon';
+                if(lblSkCpns) lblSkCpns.textContent = 'No. SKEP Pengangkatan Pertama';
+                if(lblTglSkCpns) lblTglSkCpns.textContent = 'Tgl SKEP Pengangkatan Pertama';
+                if(lblSkGol) lblSkGol.textContent = 'No. SKEP Pangkat Terakhir';
+                if(lblTglSkGol) lblTglSkGol.textContent = 'Tgl SKEP Pangkat Terakhir';
+                if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Pangkat/Golongan';
+            } else {
+                // Kembalikan ke Istilah TASPEN
+                if(lblNip) lblNip.textContent = 'NIP Pemohon';
+                if(lblSkCpns) lblSkCpns.textContent = 'No. SK CPNS';
+                if(lblTglSkCpns) lblTglSkCpns.textContent = 'Tgl SK CPNS';
+                if(lblSkGol) lblSkGol.textContent = 'No. SK Golongan';
+                if(lblTglSkGol) lblTglSkGol.textContent = 'Tgl SK Golongan';
+                if(lblJenisPekerjaan) lblJenisPekerjaan.textContent = 'Jenis Pekerjaan';
+            }
+        }
+
+        // Pasang Event Listener
+        segRadios.forEach(radio => {
+            radio.addEventListener('change', updateLabelsBySegment);
+        });
+
+        // Jalankan saat halaman dimuat
+        updateLabelsBySegment();
 
     });
 </script>
