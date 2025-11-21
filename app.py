@@ -137,6 +137,13 @@ class Debitur(db.Model):
     data_lengkap = db.Column(db.Text, nullable=False)
     kategori = db.Column(db.String(50), nullable=False, default='prapurna_reguler')
 
+    # [BARU] Tambahkan properti ini agar HTML bisa membaca JSON dengan mudah
+    @property
+    def data(self):
+        try:
+            return json.loads(self.data_lengkap)
+        except:
+            return {}
 # --- ROUTES ---
 
 @app.route('/')

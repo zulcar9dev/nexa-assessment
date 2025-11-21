@@ -61,6 +61,7 @@
                         <tr>
                             <th>Tanggal Input</th>
                             <th>Nama Pemohon</th>
+                            <th>Segmentasi</th>
                             <th>NIK / KTP</th>
                             <th>Kategori Produk</th>
                             <th class="text-end">Aksi</th>
@@ -71,6 +72,16 @@
                         <tr>
                             <td>{{ debitur.tanggal_input.strftime('%d-%m-%Y %H:%M') }}</td>
                             <td class="fw-bold">{{ debitur.nama_pemohon }}</td>
+
+                            <td>
+            {% set seg = debitur.data.get('segmentasi', 'taspen') %}
+            {% if seg == 'asabri' %}
+                <span class="badge bg-success">ASABRI</span>
+            {% else %}
+                <span class="badge bg-primary">TASPEN</span>
+            {% endif %}
+        </td>
+
                             <td>{{ debitur.no_ktp }}</td>
                             <td>
                                 {{ categories[debitur.kategori].nama | default(debitur.kategori, true) }}
