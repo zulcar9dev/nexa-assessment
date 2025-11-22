@@ -13,10 +13,37 @@
     
     <div class="card-body">
         <form method="GET" action="{{ url_for('riwayat') }}">
-            <div class="input-group input-group-merge">
-                <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
-                <input type="text" class="form-control" placeholder="Cari nama atau NIK..." name="q" value="{{ search_query }}">
-                <button class="btn btn-outline-primary" type="submit">Cari</button>
+            <div class="row g-3"> <div class="col-md-4">
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text"><i class="bx bx-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Cari Nama / NIK..." name="q" value="{{ search_query }}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <select class="form-select" name="jenis">
+                        <option value="">-- Semua Jenis --</option>
+                        <option value="baru" {% if jenis_filter == 'baru' %}selected{% endif %}>Baru</option>
+                        <option value="top_up" {% if jenis_filter == 'top_up' %}selected{% endif %}>Top Up</option>
+                        <option value="top_up_sisa_gaji" {% if jenis_filter == 'top_up_sisa_gaji' %}selected{% endif %}>Top Up Sisa Gaji</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <select class="form-select" name="seg">
+                        <option value="">-- Semua Segmen --</option>
+                        <option value="taspen" {% if seg_filter == 'taspen' %}selected{% endif %}>TASPEN (PNS)</option>
+                        <option value="asabri" {% if seg_filter == 'asabri' %}selected{% endif %}>ASABRI (TNI/POLRI)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex gap-2">
+                    <button class="btn btn-primary w-100" type="submit">Filter</button>
+                    {% if search_query or jenis_filter or seg_filter %}
+                        <a href="{{ url_for('riwayat') }}" class="btn btn-outline-secondary" title="Reset"><i class="bx bx-refresh"></i></a>
+                    {% endif %}
+                </div>
+
             </div>
         </form>
     </div>

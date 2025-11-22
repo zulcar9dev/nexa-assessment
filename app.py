@@ -169,6 +169,53 @@ def new_form(kategori):
 
 @app.route('/riwayat')
 def riwayat():
+    # 1. Ambil Parameter dari URL
+    search_query = request.args.get('q', '')
+    jenis_filter = request.args.get('jenis', '')
+    seg_filter = request.args.get('seg', '')
+
+    # 2. Query Dasar (Filter Nama/NIK via SQL)
+    query = Debitur.query
+    if search_query:
+        search_term = f"%{search_query}%"
+        query = query.filter(
+            or_(
+                Debitur.nama_pemohon.ilike(search_term),
+                Debitur.no_ktp.ilike(search_term)
+            )
+        )
+    
+    # Ambil semua hasil dari DB dulu
+    all_results = query.order_by(Debitur.tanggal_input.desc()).all()
+    
+    # 3. Filter Lanjutan (Filter JSON via Python)
+    filtered_results = []
+    
+    for debitur in all_results:
+        data_json = debitur.data # Menggunakan properti .data yang sudah kita buat
+        
+        # Cek Filter Jenis Pengajuan
+        # Default jenis pengajuan adalah 'baru' jika tidak ada di data
+        jenis_db = data_json.get('jenis_pengajuan', 'baru')
+        if jenis_filter and jenis_db != jenis_filter:
+            continue # Lewati jika tidak cocok
+            
+        # Cek Filter Segmentasi
+        # Default segmentasi adalah 'taspen' jika tidak ada di data
+        seg_db = data_json.get('segmentasi', 'taspen')
+        if seg_filter and seg_db != seg_filter:
+            continue # Lewati jika tidak cocok
+            
+        # Jika lolos semua filter, masukkan ke list
+        filtered_results.append(debitur)
+
+    return render_template('riwayat.html', 
+                           debitur_list=filtered_results, 
+                           search_query=search_query,
+                           jenis_filter=jenis_filter, # Kirim balik status filter ke HTML
+                           seg_filter=seg_filter,     # Kirim balik status filter ke HTML
+                           categories=PRODUCT_CATEGORIES)
+    
     search_query = request.args.get('q', '')
     query = Debitur.query
     if search_query:
