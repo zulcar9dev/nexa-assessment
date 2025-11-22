@@ -28,7 +28,7 @@
                     <th>Tanggal</th>
                     <th>Nama Pemohon</th>
                     <th>Segmentasi</th>
-                    <th>NIK</th>
+                    <th>Jenis Pengajuan</th> <th>NIK</th>
                     <th>Produk</th>
                     <th class="text-end">Aksi</th>
                 </tr>
@@ -46,8 +46,21 @@
                             <span class="badge bg-label-info me-1">TASPEN</span>
                         {% endif %}
                     </td>
+                    
+                    <td>
+                        {% set jenis = debitur.data.get('jenis_pengajuan', 'baru') %}
+                        
+                        {% if jenis == 'top_up' %}
+                            <span class="badge bg-label-warning">Top Up</span>
+                        {% elif jenis == 'top_up_sisa_gaji' %}
+                            <span class="badge bg-label-dark">Top Up Sisa Gaji</span>
+                        {% else %}
+                            <span class="badge bg-label-primary">Baru</span>
+                        {% endif %}
+                    </td>
                     <td>{{ debitur.no_ktp }}</td>
-                    <td>{{ categories[debitur.kategori].nama }}</td>
+                    <td><small>{{ categories[debitur.kategori].nama }}</small></td>
+                    
                     <td class="text-end">
                         <a href="{{ url_for('generate_docx', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-success" title="Download Docx">
                             <span class="tf-icons bx bx-download"></span>
@@ -62,7 +75,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" class="text-center py-4">Belum ada data ditemukan.</td>
+                    <td colspan="7" class="text-center py-4">Belum ada data ditemukan.</td>
                 </tr>
                 {% endfor %}
             </tbody>
