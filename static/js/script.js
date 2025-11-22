@@ -595,6 +595,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     previewJenis.textContent = "-";
                 }
             }
+
+            
+
             // 4. Visibility Sections (SLIK List, Syarat List)
             // ... (Logika visibility sama seperti sebelumnya, tapi sudah diringkas) ...
             // Note: Untuk ringkasnya, bagian ini bisa diandalkan pada helper display logic HTML 
