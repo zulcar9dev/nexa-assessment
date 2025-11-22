@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html
+  lang="id"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{{ url_for('static', filename='assets/') }}"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>{% block title %}Aplikasi Kredit Konsumer BNI{% endblock %}</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon/favicon.ico') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+    
+    <style>
+        /* --- STYLE STANDARD --- */
+        .app-brand-text { color: #00665e; }
+        .bg-menu-theme .menu-inner > .menu-item.active > .menu-link {
+            background-color: rgba(0, 102, 94, 0.15) !important;
+            color: #00665e !important;
+        }
+        .bg-menu-theme .menu-inner > .menu-item.active:before {
+            background-color: #00665e !important;
+        }
+        .btn-primary { background-color: #00665e; border-color: #00665e; }
+        .btn-primary:hover { background-color: #00524b; border-color: #00524b; }
+
+        /* Utility Classes untuk Form */
+        .slik-facility-hidden, .mitigasi-hidden, .alasan-wrapper, .syarat-kustom-hidden, .domisili-hidden {
+            display: none;
+        }
+
+        /* --- DARK MODE PROFESIONAL --- */
+        body.dark-mode {
+            background-color: #232333 !important;
+            color: #a3a4cc !important;
+        }
+        body.dark-mode .layout-content-navbar .layout-container {
+            background-color: #232333;
+        }
+        
+        /* Navbar & Sidebar Dark */
+        body.dark-mode .bg-menu-theme {
+            background-color: #2b2c40 !important;
+            color: #a3a4cc !important;
+        }
+        body.dark-mode .bg-navbar-theme {
+            background-color: #2b2c40 !important;
+            color: #a3a4cc !important;
+        }
+        body.dark-mode .layout-navbar .navbar-nav-right .nav-item .nav-link {
+            color: #a3a4cc !important;
+        }
+
+        /* Card Dark */
+        body.dark-mode .card {
+            background-color: #2b2c40 !important;
+            color: #a3a4cc !important;
+            box-shadow: 0 0.25rem 1.125rem rgba(0, 0, 0, 0.15);
+        }
+        body.dark-mode .card-header, body.dark-mode .card-title {
+            color: #dbdbeb !important;
+        }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+        body.dark-mode .h1, body.dark-mode .h2, body.dark-mode .h3, body.dark-mode .h4, body.dark-mode .h5, body.dark-mode .h6 {
+            color: #dbdbeb !important;
+        }
+        
+        /* Form Inputs Dark */
+        body.dark-mode .form-control, body.dark-mode .form-select {
+            background-color: #323249 !important;
+            border-color: #444564 !important;
+            color: #dbdbeb !important;
+        }
+        body.dark-mode .form-control:focus, body.dark-mode .form-select:focus {
+            border-color: #696cff !important;
+            background-color: #323249 !important;
+        }
+        body.dark-mode .input-group-text {
+            background-color: #323249 !important;
+            border-color: #444564 !important;
+            color: #a3a4cc !important;
+        }
+        body.dark-mode label {
+            color: #a3a4cc !important;
+        }
+        
+        /* Table Dark */
+        body.dark-mode .table {
+            color: #a3a4cc !important;
+        }
+        body.dark-mode .table th {
+            color: #dbdbeb !important;
+            background-color: #323249 !important;
+        }
+        body.dark-mode .table td {
+            border-bottom-color: #444564 !important;
+        }
+        body.dark-mode .table-hover tbody tr:hover {
+            background-color: #323249 !important;
+        }
+
+        /* Text Utilities Dark */
+        body.dark-mode .text-muted {
+            color: #7b7c9e !important;
+        }
+        body.dark-mode .text-body {
+            color: #a3a4cc !important;
+        }
+        
+        /* Sidebar Link Dark */
+        body.dark-mode .menu-link {
+            color: #a3a4cc !important;
+        }
+        body.dark-mode .menu-item.active .menu-link {
+            color: #ffffff !important;
+            background-color: #696cff !important; 
+        }
+
+        /* --- PERBAIKAN: NAV TABS DARK MODE --- */
+        body.dark-mode .nav-tabs {
+            border-bottom: 1px solid #444564; /* Garis bawah tab */
+        }
+        
+        /* Tab yang TIDAK aktif */
+        body.dark-mode .nav-tabs .nav-link {
+            color: #a3a4cc;
+            background-color: rgba(255, 255, 255, 0.05); /* Sedikit lebih terang dari background */
+            border: 1px solid #444564;
+            margin-right: 2px;
+            border-radius: 0.25rem 0.25rem 0 0;
+        }
+        
+        /* Tab saat di-hover (disorot mouse) */
+        body.dark-mode .nav-tabs .nav-link:hover {
+            border-color: #696cff;
+            color: #ffffff;
+        }
+        
+        /* Tab yang SEDANG AKTIF (Dipilih) */
+        body.dark-mode .nav-tabs .nav-link.active {
+            background-color: #696cff !important; /* Warna Ungu/Biru SNEAT */
+            color: #ffffff !important;
+            border-color: #696cff !important;
+        }
+    </style>
+    {% block css %}{% endblock %}
+  </head>
+
+  <body>
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            // Jika tema gelap, langsung tambahkan class sebelum konten dimuat
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
+    </script>
+
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="{{ url_for('index') }}" class="app-brand-link">
+              <span class="app-brand-logo demo">
+                <svg width="25" viewBox="0 0 25 42" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z" fill="#00665e"></path>
+                </svg>
+              </span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">KREDIT BNI</span>
+            </a>
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">
+              <a href="{{ url_for('index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard Input</div>
+              </a>
+            </li>
+
+            <li class="menu-item {% if request.endpoint == 'riwayat' %}active{% endif %}">
+              <a href="{{ url_for('riwayat') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">Riwayat Debitur</div>
+              </a>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Pengaturan</span>
+            </li>
+            
+            <li class="menu-item {% if request.endpoint == 'admin' %}active{% endif %}">
+              <a href="{{ url_for('admin') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-cog"></i>
+                <div data-i18n="Support">Kelola Template</div>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link" id="theme-toggler">
+                <i class="menu-icon tf-icons bx bx-moon"></i>
+                <div data-i18n="Dark Mode">Ganti Tampilan</div>
+              </a>
+            </li>
+
+          </ul>
+        </aside>
+        <div class="layout-page">
+          
+          <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input type="text" class="form-control border-0 shadow-none" placeholder="Cari Fitur..." aria-label="Search..." />
+                </div>
+              </div>
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <img src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <img src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block">Petugas Bank</span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li><a class="dropdown-item" href="#"><i class="bx bx-power-off me-2"></i> <span class="align-middle">Log Out</span></a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'primary' if category == 'message' else category }} alert-dismissible" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+                
+            </div>
+            
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  © <script>document.write(new Date().getFullYear());</script>, BNI Kredit Konsumer
+                </div>
+              </div>
+            </footer>
+
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggler = document.getElementById('theme-toggler');
+            const body = document.body;
+            const icon = themeToggler ? themeToggler.querySelector('i') : null;
+            const text = themeToggler ? themeToggler.querySelector('div') : null;
+
+            // 1. Sinkronisasi Icon & Teks saat halaman selesai dimuat
+            // (Class dark-mode sudah ditambahkan oleh script di atas, kita tinggal atur kosmetiknya)
+            if (body.classList.contains('dark-mode')) {
+                if(icon) icon.classList.replace('bx-moon', 'bx-sun');
+                if(text) text.textContent = "Mode Terang";
+                
+                // Tambahan: Fix warna Card saat reload
+                const cards = document.querySelectorAll('.card');
+                // Tidak perlu logic berat di sini jika CSS sudah menangani
+            }
+
+            // 2. Fungsi Enable/Disable (Untuk tombol klik)
+            function enableDarkMode() {
+                body.classList.add('dark-mode');
+                if(icon) icon.classList.replace('bx-moon', 'bx-sun');
+                if(text) text.textContent = "Mode Terang";
+                localStorage.setItem('theme', 'dark');
+            }
+
+            function disableDarkMode() {
+                body.classList.remove('dark-mode');
+                if(icon) icon.classList.replace('bx-sun', 'bx-moon');
+                if(text) text.textContent = "Mode Gelap";
+                localStorage.setItem('theme', 'light');
+            }
+
+            // 3. Event Listener Tombol
+            if (themeToggler) {
+                themeToggler.addEventListener('click', (e) => {
+                    e.preventDefault(); // Mencegah link melompat
+                    const isDark = body.classList.contains('dark-mode');
+                    if (!isDark) {
+                        enableDarkMode();
+                    } else {
+                        disableDarkMode();
+                    }
+                });
+            }
+        });
+    </script>
+    
+    {% block js %}{% endblock %}
+  </body>
+</html>
