@@ -529,7 +529,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 prevSeg.textContent = seg.value === 'asabri' ? 'ASABRI (TNI/POLRI)' : 'TASPEN (PNS)';
                 prevSeg.className = seg.value === 'asabri' ? 'badge bg-success' : 'badge bg-primary';
             }
-<<<<<<< HEAD
             // [BARU] Preview Jenis Pengajuan
             const jenisPengajuan = document.querySelector('input[name="jenis_pengajuan"]:checked');
             const previewJenis = document.getElementById('preview_jenis_pengajuan');
@@ -547,9 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     previewJenis.textContent = "-";
                 }
             }
-=======
-
->>>>>>> c3215428eaf13c0b42792e61dc4acb5b246690c1
             // 4. Visibility Sections (SLIK List, Syarat List)
             // ... (Logika visibility sama seperti sebelumnya, tapi sudah diringkas) ...
             // Note: Untuk ringkasnya, bagian ini bisa diandalkan pada helper display logic HTML 
