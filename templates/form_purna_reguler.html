@@ -83,6 +83,20 @@
                                 </div>
                             </div>
 
+                            <div id="field-topup-container" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="no_rekening_pinjaman" class="form-label">Nomor Rekening Pinjaman (Eksisting)</label>
+                                        <input type="text" class="form-control" id="no_rekening_pinjaman" name="no_rekening_pinjaman" value="{{ data.get('no_rekening_pinjaman', '') }}" placeholder="Masukkan No. Rekening">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3" id="field-no-pk-container" style="display: none;">
+                                        <label for="no_pk_eksisting" class="form-label">Nomor Perjanjian Kredit (PK)</label>
+                                        <input type="text" class="form-control" id="no_pk_eksisting" name="no_pk_eksisting" value="{{ data.get('no_pk_eksisting', '') }}" placeholder="Masukkan No. PK">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="plafon_kredit_dimohon" class="form-label">Plafon Dimohon (Rp)</label>
                                 <input type="text" class="form-control" id="plafon_kredit_dimohon" name="plafon_kredit_dimohon" value="{{ data.get('plafon_kredit_dimohon', '') }}" required data-type="rupiah">
@@ -567,7 +581,17 @@
                 <div class="row">
                     <div class="col-md-4">Jenis Pengajuan:</div>
                     <div class="col-md-8"><span id="preview_jenis_pengajuan" class="fw-bold text-primary"></span></div>
-                </div>                               
+                </div> 
+                
+                <div class="row" id="preview-row-rekening" style="display:none;">
+                    <div class="col-md-4">No. Rekening Pinjaman:</div>
+                    <div class="col-md-8"><span id="preview_no_rekening_pinjaman"></span></div>
+                </div>
+                <div class="row" id="preview-row-pk" style="display:none;">
+                    <div class="col-md-4">No. Perjanjian Kredit (PK):</div>
+                    <div class="col-md-8"><span id="preview_no_pk_eksisting"></span></div>
+                </div>
+
                 <div class="row"><div class="col-md-4">Plafon Dimohon (Rp):</div><div class="col-md-8"><span id="preview_plafon_kredit_dimohon"></span></div></div>
                 <div class="row"><div class="col-md-4">Jangka Waktu (Bulan):</div><div class="col-md-8"><span id="preview_jangka_waktu_dimohon_bulan"></span></div></div>
                 <div class="row"><div class="col-md-4">Tujuan Kredit:</div><div class="col-md-8"><span id="preview_tujuan_kredit"></span></div></div>

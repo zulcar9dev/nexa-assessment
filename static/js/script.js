@@ -306,6 +306,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // --- LOGIKA JENIS PENGAJUAN (TOP UP) ---
+    const radioJenisPengajuan = document.querySelectorAll('input[name="jenis_pengajuan"]');
+    const containerTopUp = document.getElementById('field-topup-container');
+    const containerPK = document.getElementById('field-no-pk-container');
+    const inputRekening = document.getElementById('no_rekening_pinjaman');
+    const inputPK = document.getElementById('no_pk_eksisting');
+
+    function handleJenisPengajuanChange() {
+        if (!containerTopUp) return;
+
+        // Cari radio yang dipilih
+        let selectedValue = 'baru';
+        radioJenisPengajuan.forEach(radio => {
+            if (radio.checked) selectedValue = radio.value;
+        });
+
+        if (selectedValue === 'baru') {
+            // Sembunyikan Semua
+            containerTopUp.style.display = 'none';
+            if(inputRekening) inputRekening.disabled = true;
+            if(inputPK) inputPK.disabled = true;
+        
+        } else if (selectedValue === 'top_up') {
+            // Tampilkan Rekening SAJA
+            containerTopUp.style.display = 'block';
+            if(inputRekening) inputRekening.disabled = false;
+            
+            // Sembunyikan PK
+            if(containerPK) containerPK.style.display = 'none';
+            if(inputPK) inputPK.disabled = true;
+
+        } else if (selectedValue === 'top_up_sisa_gaji') {
+            // Tampilkan KEDUANYA
+            containerTopUp.style.display = 'block';
+            if(containerPK) containerPK.style.display = 'block';
+            
+            if(inputRekening) inputRekening.disabled = false;
+            if(inputPK) inputPK.disabled = false;
+        }
+    }
+
+    // Pasang Event Listener
+    radioJenisPengajuan.forEach(radio => {
+        radio.addEventListener('change', handleJenisPengajuanChange);
+    });
+
+    // Jalankan saat halaman dimuat (agar status tersimpan tetap terjaga)
+    handleJenisPengajuanChange();
+
     // ==========================================
     // 5. SEGMENTASI (TASPEN/ASABRI)
     // ==========================================
