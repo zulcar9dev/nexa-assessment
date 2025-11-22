@@ -40,6 +40,25 @@
                 <div class="tab-content" id="formTabsContent">
                     
                     <div class="tab-pane fade show active" id="pengajuan-slik" role="tabpanel" aria-labelledby="pengajuan-slik-tab">
+                        <div class="card mb-4 border-primary-subtle bg-primary-subtle">
+                            <div class="card-body py-2">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <span class="fw-bold text-primary-emphasis">Pilih Segmentasi:</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="segmentasi" id="seg_taspen" value="taspen" {% if data.get('segmentasi', 'taspen') == 'taspen' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="seg_taspen">TASPEN (PNS)</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="segmentasi" id="seg_asabri" value="asabri" {% if data.get('segmentasi') == 'asabri' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="seg_asabri">ASABRI (TNI/POLRI)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <h4 class="mb-3">A.1. Pengajuan Kredit</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -293,7 +312,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="jenis_pekerjaan_pemohon" class="form-label">Jenis Pekerjaan (Pensiunan)</label>
-                                <input type="text" class="form-control" id="jenis_pekerjaan_pemohon" name="jenis_pekerjaan_pemohon" value="{{ data.get('jenis_pekerjaan_pemohon', 'PNS') }}">
+                                <input type="text" class="form-control" id="jenis_pekerjaan_pemohon" name="jenis_pekerjaan_pemohon" value="{{ data.get('jenis_pekerjaan_pemohon', '') }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="nama_instansi_pemohon" class="form-label">Instansi Terakhir</label>
@@ -536,11 +555,7 @@
                         </button>
                         <a href="/" class="btn btn-secondary btn-lg">Kembali ke Menu</a>
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-outline-secondary btn-lg" id="theme-toggler">
-                            🌗 Ganti Tema
-                        </button>
-                    </div>
+                    
                 </div>
 
             </form>
@@ -621,6 +636,10 @@
                 </div>
                 
                 <h4 class="mb-3 mt-4">B. Data Pemohon</h4>
+                <div class="row mb-2">
+                    <div class="col-md-4 fw-bold">Segmentasi:</div>
+                    <div class="col-md-8"><span id="preview_segmentasi" class="badge bg-info text-dark"></span></div>
+                </div>
                 <div class="row"><div class="col-md-4">Nama Pemohon:</div><div class="col-md-8"><span id="preview_nama_pemohon"></span></div></div>
                 <div class="row"><div class="col-md-4">No. Telepon/HP:</div><div class="col-md-8"><span id="preview_no_telp_pemohon"></span></div></div>
                 <div class="row"><div class="col-md-4">Alamat Sesuai KTP:</div><div class="col-md-8"><span id="preview_alamat_ktp_pemohon" style="white-space: pre-wrap;"></span></div></div>
@@ -706,5 +725,6 @@
 
 {% endblock %}
 
+{% endblock %}
 </body>
 </html>

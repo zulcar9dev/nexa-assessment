@@ -75,6 +75,7 @@ DATE_KEYS = [
 ]
 
 # (PERUBAHAN) Ini adalah DAFTAR MASTER dari SEMUA field nominal
+# (PERUBAHAN) Ini adalah DAFTAR MASTER dari SEMUA field nominal
 NOMINAL_KEYS = [
     'plafon_kredit_dimohon', 'usulan_plafon_kredit', 'usulan_angsuran', 
     'biaya_provisi_nominal', 'biaya_tata_laksana_nominal', 'biaya_administrasi',
@@ -84,12 +85,16 @@ NOMINAL_KEYS = [
     'estimasi_hak_pensiun', 'taspen_tht', 'taspen_hak_pensiun',
     'info_gaji_bendahara',
     
-    # Field Purna (BARU)
+    # Field Purna
     'pensiun_bulan_1_jumlah', 
     'pensiun_bulan_2_jumlah',
     'pensiun_bulan_3_jumlah',
     'pensiun_bulan_jumlah', # <-- Untuk Purna Reguler
     
+    # Field Blokir Angsuran (Baru ditambahkan)
+    'blokir_angsuran_total',
+    'blokir_angsuran_pindah_gaji',
+
     # Field SLIK (Umum)
     'slik_bank_1_maks', 'slik_bank_1_outs', 'slik_bank_1_angsuran', 
     'slik_bank_2_maks', 'slik_bank_2_outs', 'slik_bank_2_angsuran', 
@@ -132,6 +137,13 @@ class Debitur(db.Model):
     data_lengkap = db.Column(db.Text, nullable=False)
     kategori = db.Column(db.String(50), nullable=False, default='prapurna_reguler')
 
+    # [BARU] Tambahkan properti ini agar HTML bisa membaca JSON dengan mudah
+    @property
+    def data(self):
+        try:
+            return json.loads(self.data_lengkap)
+        except:
+            return {}
 # --- ROUTES ---
 
 @app.route('/')
