@@ -4,10 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. HELPER FUNCTIONS (FORMATTING)
     // ==========================================
     function unformatRupiah(value) {
+        if (!value) return '';
         return value.replace(/[^0-9]/g, '');
     }
 
     function formatRupiah(value) {
+        if (!value) return '';
         let number_string = value.replace(/[^0-9]/g, '');
         number_string = number_string.replace(/^0+/, '');
         if (number_string === "") return "";
@@ -17,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupRupiahInput(inputId) {
         const input = document.getElementById(inputId);
         if (input) {
-            // Format awal saat load (jika ada nilai dari server)
+            // Format awal saat load
             if (input.value) input.value = formatRupiah(input.value);
             
             input.addEventListener('input', function(e) {
@@ -151,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (jangkaWaktuDimohonInput && jangkaWaktuUsulanInput) {
             jangkaWaktuUsulanInput.value = jangkaWaktuDimohonInput.value;
         }
-        hitungBiaya(); // Hitung biaya ulang saat plafon berubah
+        hitungBiaya(); 
         calculateNewPMT();
     }
 
@@ -183,10 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateDSR() {
         if (!angsuranUsulanInput || !dsrPemohonInput) return;
 
-        // --- DETEKSI SUMBER PENGHASILAN (Flexible untuk semua form) ---
-        // 1. Coba ambil Prapurna (Estimasi Hak Pensiun)
-        // 2. Coba ambil Purna Takeover (Gaji Bulan 3)
-        // 3. Coba ambil Purna Reguler (Gaji Pensiun tunggal)
+        // Deteksi sumber penghasilan
         let incomeElement = document.getElementById('estimasi_hak_pensiun') || 
                             document.getElementById('pensiun_bulan_3_jumlah') || 
                             document.getElementById('pensiun_bulan_jumlah');
@@ -234,13 +233,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (addSlikButton) addSlikButton.disabled = true;
         } else {
             allFacilitiesWrapper.style.display = 'block';
-            // Aktifkan kembali input, KECUALI textarea alasan yang harusnya disabled default
             inputs.forEach(input => {
                 if (!input.classList.contains('disabled-default')) {
                     input.disabled = false;
                 }
             });
-            // Re-apply logic untuk alasan checkboxes
+            // Re-apply logic checkboxes
             document.querySelectorAll('.toggle-alasan').forEach(handleAlasanToggle);
             if (addSlikButton) addSlikButton.disabled = false;
         }
@@ -285,7 +283,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleAlasanToggle(checkboxOrEvent) {
-        // Bisa menerima event atau elemen checkbox langsung
         const checkbox = (checkboxOrEvent.target) ? checkboxOrEvent.target : checkboxOrEvent;
         const targetSelector = checkbox.dataset.targetAlasan;
         if (!targetSelector) return;
@@ -316,29 +313,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleJenisPengajuanChange() {
         if (!containerTopUp) return;
 
-        // Cari radio yang dipilih
         let selectedValue = 'baru';
         radioJenisPengajuan.forEach(radio => {
             if (radio.checked) selectedValue = radio.value;
         });
 
         if (selectedValue === 'baru') {
-            // Sembunyikan Semua
             containerTopUp.style.display = 'none';
             if(inputRekening) inputRekening.disabled = true;
             if(inputPK) inputPK.disabled = true;
         
         } else if (selectedValue === 'top_up') {
-            // Tampilkan Rekening SAJA
             containerTopUp.style.display = 'block';
             if(inputRekening) inputRekening.disabled = false;
             
-            // Sembunyikan PK
             if(containerPK) containerPK.style.display = 'none';
             if(inputPK) inputPK.disabled = true;
 
         } else if (selectedValue === 'top_up_sisa_gaji') {
-            // Tampilkan KEDUANYA
             containerTopUp.style.display = 'block';
             if(containerPK) containerPK.style.display = 'block';
             
@@ -347,13 +339,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Pasang Event Listener
+    // Event Listener Radio Button Top Up
     radioJenisPengajuan.forEach(radio => {
         radio.addEventListener('change', handleJenisPengajuanChange);
     });
-
-    // Jalankan saat halaman dimuat (agar status tersimpan tetap terjaga)
-    handleJenisPengajuanChange();
 
     // ==========================================
     // 5. SEGMENTASI (TASPEN/ASABRI)
@@ -366,22 +355,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const isAsabri = (segmentasi === 'asabri');
 
-        // Helper untuk ubah textContent label
         const setLabel = (id, textAsabri, textTaspen) => {
             const label = document.querySelector(`label[for="${id}"]`);
             if (label) label.textContent = isAsabri ? textAsabri : textTaspen;
         };
 
-        // Mapping Label (Gabungan Purna & Prapurna)
         setLabel('nip_pemohon', 'NRP Pemohon', 'NIP Pemohon');
         setLabel('no_sk_cpns', 'No. SKEP Pengangkatan Pertama', 'No. SK CPNS');
         setLabel('tgl_sk_cpns', 'Tgl SKEP Pengangkatan Pertama', 'Tgl SK CPNS');
         setLabel('no_sk_golongan', 'No. SKEP Pangkat Terakhir', 'No. SK Golongan');
         setLabel('tgl_sk_golongan', 'Tgl SKEP Pangkat Terakhir', 'Tgl SK Golongan');
-        setLabel('jenis_pekerjaan_pemohon', 'Kesatuan/Instansi', 'Jenis Pekerjaan'); // Untuk Prapurna
+        setLabel('jenis_pekerjaan_pemohon', 'Kesatuan/Instansi', 'Jenis Pekerjaan'); 
         
-        // Khusus Purna (Istilah agak beda)
-        // Cek apakah kita di form Purna (ada element no_sk_pensiun)
+        // Khusus Purna
         if (document.getElementById('no_sk_pensiun')) {
              setLabel('jenis_pekerjaan_pemohon', 'Pensiunan Anggota (TNI/POLRI)', 'Jenis Pekerjaan (Pensiunan)');
              setLabel('no_sk_pensiun', 'No. SKEP Pensiun', 'No. SK Pensiun');
@@ -392,10 +378,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 6. INITIALIZATION & EVENTS
+    // 6. INITIALIZATION & EVENTS (ON LOAD)
     // ==========================================
     
-    // Setup Rupiah Input Otomatis untuk semua ID yang mungkin ada
+    // Setup Rupiah
     const nominalIDs = [
         'plafon_kredit_dimohon', 'usulan_plafon_kredit', 'usulan_angsuran',
         'gaji_bulan_1_jumlah', 'gaji_bulan_2_jumlah', 'gaji_bulan_3_jumlah',
@@ -403,7 +389,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'estimasi_hak_pensiun', 'taspen_tht', 'taspen_hak_pensiun',
         'biaya_provisi_nominal', 'biaya_tata_laksana_nominal', 'biaya_administrasi', 'info_gaji_bendahara'
     ];
-    // Tambahkan SLIK 1-15
     for(let i=1; i<=15; i++) {
         nominalIDs.push(`slik_bank_${i}_maks`, `slik_bank_${i}_outs`, `slik_bank_${i}_angsuran`);
     }
@@ -420,12 +405,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const elIn = document.getElementById(p.in);
         const elOut = document.getElementById(p.out);
         if(elIn && elOut) {
-            updateTerbilang(elIn, elOut); // Init load
+            updateTerbilang(elIn, elOut); 
             elIn.addEventListener('input', () => updateTerbilang(elIn, elOut));
         }
     });
 
-    // Event Listeners Kalkulasi
+    // Event Listeners
     if (tglLahirInput) tglLahirInput.addEventListener('change', hitungUsia);
     if (tglMulaiKerjaInput) tglMulaiKerjaInput.addEventListener('change', hitungLamaKerja);
     if (provisiPersenInput) provisiPersenInput.addEventListener('input', hitungBiaya);
@@ -434,18 +419,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (jangkaWaktuDimohonInput) jangkaWaktuDimohonInput.addEventListener('input', syncPengajuanKeUsulan);
     if (bungaUsulanInput) bungaUsulanInput.addEventListener('input', calculateNewPMT);
     
-    // Listeners untuk DSR (Semua kemungkinan input gaji)
     ['estimasi_hak_pensiun', 'pensiun_bulan_3_jumlah', 'pensiun_bulan_jumlah'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener('input', calculateDSR);
     });
-    // Listener DSR untuk SLIK
     for(let i=1; i<=15; i++){
         const el = document.getElementById(`slik_bank_${i}_angsuran`);
         if(el) el.addEventListener('input', calculateDSR);
     }
 
-    // Listeners UI Toggles
     if (toggleNihil) toggleNihil.addEventListener('change', handleNihilToggle);
     if (toggleMitigasi) toggleMitigasi.addEventListener('change', handleMitigasiToggle);
     if (toggleDomisili) toggleDomisili.addEventListener('change', handleDomisiliToggle);
@@ -457,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     segRadios.forEach(radio => radio.addEventListener('change', updateLabelsBySegment));
 
-    // Dynamic SLIK Buttons
+    // Dynamic Buttons
     if (addSlikButton) {
         addSlikButton.addEventListener('click', function() {
             let found = false;
@@ -469,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 }
             }
-            // Cek apakah masih ada yang hidden
             let anyHidden = false;
             for (let i = 2; i <= 15; i++) {
                 const row = document.getElementById('slik-facility-' + i);
@@ -479,7 +460,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Dynamic Syarat Buttons
     const addSyaratButton = document.getElementById('add-syarat-kustom');
     if (addSyaratButton) {
         addSyaratButton.addEventListener('click', function() {
@@ -500,9 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Generic Delete Buttons (SLIK & Syarat)
     document.addEventListener('click', function(e) {
-        // Hapus SLIK
         if (e.target.classList.contains('slik-delete-btn')) {
             const id = e.target.dataset.facilityId;
             const row = document.getElementById('slik-facility-' + id);
@@ -516,7 +494,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 calculateDSR();
             }
         }
-        // Hapus Syarat
         if (e.target.classList.contains('syarat-delete-btn')) {
             const id = e.target.dataset.syaratId;
             const row = document.getElementById('syarat-kustom-' + id);
@@ -531,17 +508,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // PREVIEW MODAL LOGIC (Simplified populate)
+    // PREVIEW MODAL LOGIC
     const mainForm = document.getElementById('mainForm');
     const previewModal = document.getElementById('previewModal');
     
-    // Bootstrap 5 Modal Instance
     let bsModal = null;
-    if(previewModal) {
-        // Check if Bootstrap is loaded
-        if (typeof bootstrap !== 'undefined') {
-            bsModal = new bootstrap.Modal(previewModal);
-        }
+    if(previewModal && typeof bootstrap !== 'undefined') {
+        bsModal = new bootstrap.Modal(previewModal);
     }
 
     if (mainForm && bsModal) {
@@ -552,43 +525,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Populate Preview
-            // 1. Text & Textarea
+            // 1. Populate Text & Textarea
             mainForm.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="tel"], textarea, select').forEach(input => {
                const previewId = 'preview_' + input.id;
                const previewEl = document.getElementById(previewId);
                if(previewEl) previewEl.textContent = input.value;
             });
 
-            // 2. Checkboxes (Takeover, etc)
+            // 2. Checkboxes (Takeover)
             mainForm.querySelectorAll('input[type="checkbox"]').forEach(chk => {
                 const previewId = 'preview_' + chk.id;
                 const previewEl = document.getElementById(previewId);
-                if(previewEl) {
-                    if (chk.id.includes('_takeover')) {
-                        previewEl.textContent = chk.checked ? ' (Take Over)' : '';
-                    }
+                if(previewEl && chk.id.includes('_takeover')) {
+                    previewEl.textContent = chk.checked ? ' (Take Over)' : '';
                 }
             });
 
-            // 3. Segmentasi Badge
+            // 3. Segmentasi
             const seg = document.querySelector('input[name="segmentasi"]:checked');
             const prevSeg = document.getElementById('preview_segmentasi');
             if(seg && prevSeg) {
                 prevSeg.textContent = seg.value === 'asabri' ? 'ASABRI (TNI/POLRI)' : 'TASPEN (PNS)';
                 prevSeg.className = seg.value === 'asabri' ? 'badge bg-success' : 'badge bg-primary';
             }
-            // [BARU] Preview Jenis Pengajuan
+
+            // 4. Jenis Pengajuan (Top Up)
             const jenisPengajuan = document.querySelector('input[name="jenis_pengajuan"]:checked');
             const previewJenis = document.getElementById('preview_jenis_pengajuan');
             
+            const rowRekening = document.getElementById('preview-row-rekening');
+            const rowPK = document.getElementById('preview-row-pk');
+            const valRekening = document.getElementById('no_rekening_pinjaman');
+            const valPK = document.getElementById('no_pk_eksisting');
+            const prevRekening = document.getElementById('preview_no_rekening_pinjaman');
+            const prevPK = document.getElementById('preview_no_pk_eksisting');
+
+            if(rowRekening) rowRekening.style.display = 'none';
+            if(rowPK) rowPK.style.display = 'none';
+
             if (previewJenis) {
                 if (jenisPengajuan) {
-                    let label = "Baru"; // Default text
+                    let label = "Baru";
                     if (jenisPengajuan.value === 'top_up') {
                         label = "Suplesi / Top Up";
+                        if(rowRekening) rowRekening.style.display = 'flex';
+                        if(prevRekening && valRekening) prevRekening.textContent = valRekening.value;
                     } else if (jenisPengajuan.value === 'top_up_sisa_gaji') {
                         label = "Top Up Sisa Gaji";
+                        if(rowRekening) rowRekening.style.display = 'flex';
+                        if(prevRekening && valRekening) prevRekening.textContent = valRekening.value;
+                        if(rowPK) rowPK.style.display = 'flex';
+                        if(prevPK && valPK) prevPK.textContent = valPK.value;
                     }
                     previewJenis.textContent = label;
                 } else {
@@ -596,14 +583,96 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            // 5. SLIK Fasilitas (New Logic)
+            const slikContainer = document.getElementById('preview-slik-container');
+            const nihilPreview = document.getElementById('preview-fasilitas-nihil');
             
+            if (slikContainer) {
+                slikContainer.innerHTML = '';
+                
+                if (toggleNihil && toggleNihil.checked) {
+                    if(nihilPreview) nihilPreview.style.display = 'block';
+                    slikContainer.style.display = 'none';
+                } else {
+                    if(nihilPreview) nihilPreview.style.display = 'none';
+                    slikContainer.style.display = 'block';
 
-            // 4. Visibility Sections (SLIK List, Syarat List)
-            // ... (Logika visibility sama seperti sebelumnya, tapi sudah diringkas) ...
-            // Note: Untuk ringkasnya, bagian ini bisa diandalkan pada helper display logic HTML 
-            // atau tambahkan class .d-none di preview modal secara dinamis jika perlu.
+                    let hasData = false;
+                    for (let i = 1; i <= 15; i++) {
+                        const facilityRow = document.getElementById('slik-facility-' + i);
+                        const namaBank = document.getElementById('slik_bank_' + i + '_nama');
+                        
+                        if (facilityRow && (getComputedStyle(facilityRow).display !== 'none' || (namaBank && namaBank.value))) {
+                            const jenis = document.getElementById('slik_bank_' + i + '_jenis').value || '-';
+                            const bank = document.getElementById('slik_bank_' + i + '_nama').value || '-';
+                            const plafon = document.getElementById('slik_bank_' + i + '_maks').value || '0';
+                            const outs = document.getElementById('slik_bank_' + i + '_outs').value || '0';
+                            const kol = document.getElementById('slik_bank_' + i + '_coll').value || '-';
+                            const angsuran = document.getElementById('slik_bank_' + i + '_angsuran').value || '0';
+                            
+                            const toCheck = document.getElementById('slik_bank_' + i + '_takeover');
+                            const isTakeover = toCheck && toCheck.checked ? '<span class="badge bg-label-danger ms-2">Take Over</span>' : '';
+
+                            const html = `
+                                <div class="mb-3 pb-3 border-bottom">
+                                    <div class="row mb-1">
+                                        <div class="col-md-12 fw-bold text-primary d-flex align-items-center">
+                                            Fasilitas Aktif ${i} ${isTakeover}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 fw-semibold">Bank / Jenis:</div>
+                                        <div class="col-md-8">${bank} / ${jenis}</div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 fw-semibold">Plafon / O.S:</div>
+                                        <div class="col-md-8">Rp ${plafon} / Rp ${outs}</div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 fw-semibold">Kolektibilitas:</div>
+                                        <div class="col-md-8">${kol}</div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 fw-bold text-dark">Angsuran:</div>
+                                        <div class="col-md-8 fw-bold text-dark">Rp ${angsuran}</div>
+                                    </div>
+                                </div>
+                            `;
+                            slikContainer.insertAdjacentHTML('beforeend', html);
+                            hasData = true;
+                        }
+                    }
+                    
+                    if (!hasData) {
+                        slikContainer.innerHTML = '<div class="text-muted fst-italic">Belum ada data fasilitas yang diinput.</div>';
+                    }
+                }
+            }
+
+            // 6. Syarat Kustom Preview
+            const listPenandatanganan = document.getElementById('preview-list-penandatanganan');
+            const listPencairan = document.getElementById('preview-list-pencairan');
             
-            // Tampilkan Modal
+            if(listPenandatanganan) listPenandatanganan.innerHTML = '';
+            if(listPencairan) listPencairan.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const teksEl = document.getElementById(`syarat_kustom_${i}_teks`);
+                if (teksEl && teksEl.value) { 
+                    const teks = teksEl.value;
+                    const lokasi = document.querySelector(`input[name="syarat_kustom_${i}_lokasi"]:checked`);
+                    if (lokasi && lokasi.value === 'penandatanganan' && listPenandatanganan) {
+                        const li = document.createElement('li');
+                        li.textContent = teks;
+                        listPenandatanganan.appendChild(li);
+                    } else if (lokasi && lokasi.value === 'pencairan' && listPencairan) {
+                        const li = document.createElement('li');
+                        li.textContent = teks;
+                        listPencairan.appendChild(li);
+                    }
+                }
+            }
+
             bsModal.show();
         });
 
@@ -616,10 +685,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ==========================================
-    // RUN ON LOAD
-    // ==========================================
-    // Jalankan fungsi-fungsi inisialisasi agar status UI sesuai data yang ada
+    // Run initial logic
     hitungUsia();
     hitungLamaKerja();
     syncPengajuanKeUsulan(); 
@@ -628,6 +694,7 @@ document.addEventListener('DOMContentLoaded', function() {
     handleMitigasiToggle();
     handleDomisiliToggle();
     handleBebasAdminToggle();
+    handleJenisPengajuanChange();
     document.querySelectorAll('.toggle-alasan').forEach(handleAlasanToggle);
     calculateDSR();
 
