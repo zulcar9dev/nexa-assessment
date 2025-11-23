@@ -28,16 +28,16 @@ ALLOWED_EXTENSIONS = {'docx'}
 PRODUCT_CATEGORIES = {
     # 1. PRAPURNA (Tampilkan Hanya Reguler)
     'prapurna_reguler': {
-        'nama': 'BNI Fleksi Pensiun Prapurna', 
-        'template_form': 'form_prapurna_reguler.html',
+        'nama': 'BNI Fleksi Pensiun Prapurna',
+        'template_form': 'form_prapurna.html', # <--- Update ke form baru
         'template_docx': 'template_prapurna_reguler.docx',
-        'show_on_dashboard': True  # <--- TAMPIL (TRUE)
+        'show_on_dashboard': True
     },
     'prapurna_takeover': {
         'nama': 'BNI Fleksi Pensiun Prapurna Take Over',
-        'template_form': 'form_prapurna_takeover.html', 
+        'template_form': 'form_prapurna.html', # <--- Update ke form baru
         'template_docx': 'template_prapurna_takeover.docx',
-        'show_on_dashboard': False # <--- SEMBUNYIKAN (FALSE)
+        'show_on_dashboard': False
     },
 
     # 2. PURNA (Tampilkan Hanya Reguler/Utama)
