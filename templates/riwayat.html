@@ -13,7 +13,8 @@
     
     <div class="card-body">
         <form method="GET" action="{{ url_for('riwayat') }}">
-            <div class="row g-3"> <div class="col-md-4">
+            <div class="row g-3"> 
+                <div class="col-md-4">
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="bx bx-search"></i></span>
                         <input type="text" class="form-control" placeholder="Cari Nama / NIK..." name="q" value="{{ search_query }}">
@@ -26,6 +27,7 @@
                         <option value="baru" {% if jenis_filter == 'baru' %}selected{% endif %}>Baru</option>
                         <option value="top_up" {% if jenis_filter == 'top_up' %}selected{% endif %}>Top Up</option>
                         <option value="top_up_sisa_gaji" {% if jenis_filter == 'top_up_sisa_gaji' %}selected{% endif %}>Top Up Sisa Gaji</option>
+                        <option value="takeover" {% if jenis_filter == 'takeover' %}selected{% endif %}>Take Over</option>
                     </select>
                 </div>
 
@@ -55,7 +57,8 @@
                     <th>Tanggal</th>
                     <th>Nama Pemohon</th>
                     <th>Segmentasi</th>
-                    <th>Jenis Pengajuan</th> <th>NIK</th>
+                    <th>Jenis Pengajuan</th> 
+                    <th>NIK</th>
                     <th>Produk</th>
                     <th class="text-end">Aksi</th>
                 </tr>
@@ -81,6 +84,8 @@
                             <span class="badge bg-label-warning">Top Up</span>
                         {% elif jenis == 'top_up_sisa_gaji' %}
                             <span class="badge bg-label-dark">Top Up Sisa Gaji</span>
+                        {% elif jenis == 'takeover' %}
+                            <span class="badge bg-label-danger">Take Over</span>
                         {% else %}
                             <span class="badge bg-label-primary">Baru</span>
                         {% endif %}

@@ -2,7 +2,8 @@
 
 {% block content %}
 <style>
-    .takeover-hidden, .topup-lunas-hidden { display: none; }
+    /* PERBAIKAN 1: Menghapus !important agar JavaScript bisa menampilkan elemen ini */
+    .takeover-hidden, .topup-lunas-hidden, .blokir-hidden { display: none; }
 </style>
 
 <div class="row">
@@ -137,68 +138,8 @@
                                         </div>
                                         
                                         <div id="all-facilities-wrapper">
-                                            <div id="slik-facility-1">
-                                                <p class="fw-bold">Data Fasilitas Aktif 1</p>
-                                                <div class="row">
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="slik_bank_1_jenis" class="form-label">Jenis</label>
-                                                        <input type="text" class="form-control" id="slik_bank_1_jenis" name="slik_bank_1_jenis" value="{{ data.get('slik_bank_1_jenis', '') }}">
-                                                    </div>
-                                                    <div class="col-md-8 mb-3">
-                                                        <label for="slik_bank_1_nama" class="form-label">Nama Bank</label>
-                                                        <input type="text" class="form-control" id="slik_bank_1_nama" name="slik_bank_1_nama" value="{{ data.get('slik_bank_1_nama', '') }}">
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="slik_bank_1_maks" class="form-label">Plafon (Rp)</label>
-                                                        <input type="text" class="form-control" id="slik_bank_1_maks" name="slik_bank_1_maks" value="{{ data.get('slik_bank_1_maks', '') }}" data-type="rupiah">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="slik_bank_1_outs" class="form-label">Outstanding (Rp)</label>
-                                                        <input type="text" class="form-control" id="slik_bank_1_outs" name="slik_bank_1_outs" value="{{ data.get('slik_bank_1_outs', '') }}" data-type="rupiah">
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="slik_bank_1_coll" class="form-label">Kolektibilitas</label>
-                                                        <input type="text" class="form-control" id="slik_bank_1_coll" name="slik_bank_1_coll" value="{{ data.get('slik_bank_1_coll', '') }}">
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-8 mb-3">
-                                                        <label for="slik_bank_1_angsuran" class="form-label">Angsuran Eksisting (Rp)</label>
-                                                        <input type="text" class="form-control" id="slik_bank_1_angsuran" name="slik_bank_1_angsuran" value="{{ data.get('slik_bank_1_angsuran', '') }}" data-type="rupiah">
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex flex-wrap">
-                                                    <div class="form-check mt-1 me-4 takeover-hidden takeover-toggle-wrapper">
-                                                        <input class="form-check-input" type="checkbox" id="slik_bank_1_takeover" name="slik_bank_1_takeover" value="ya" {% if data.get('slik_bank_1_takeover') == 'ya' %}checked{% endif %}>
-                                                        <label class="form-check-label fw-bold text-danger" for="slik_bank_1_takeover">
-                                                            Pelunasan/Take Over?
-                                                        </label>
-                                                    </div>
-
-                                                    <div class="form-check mt-1 me-4 topup-lunas-hidden topup-lunas-toggle-wrapper">
-                                                        <input class="form-check-input" type="checkbox" id="slik_bank_1_topup_lunas" name="slik_bank_1_topup_lunas" value="ya" {% if data.get('slik_bank_1_topup_lunas') == 'ya' %}checked{% endif %}>
-                                                        <label class="form-check-label fw-bold text-warning" for="slik_bank_1_topup_lunas">
-                                                            Pelunasan Top Up?
-                                                        </label>
-                                                    </div>
-
-                                                    <div class="form-check mt-1">
-                                                        <input class="form-check-input toggle-alasan" type="checkbox" id="slik_bank_1_alasan_aktif" name="slik_bank_1_alasan_aktif" value="ya" data-target-alasan="#slik_bank_1_alasan" {% if data.get('slik_bank_1_alasan_aktif') == 'ya' %}checked{% endif %}>
-                                                        <label class="form-check-label" for="slik_bank_1_alasan_aktif">
-                                                            Tambahkan Alasan/Keterangan
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 alasan-wrapper">
-                                                    <label for="slik_bank_1_alasan" class="form-label">Alasan/Keterangan Fasilitas 1</label>
-                                                    <textarea class="form-control" id="slik_bank_1_alasan" name="slik_bank_1_alasan" rows="2" disabled>{{ data.get('slik_bank_1_alasan', '') }}</textarea>
-                                                </div>
-                                            </div>
-                                            
                                             <div id="slik-facilities-container">
-                                                {% for i in range(2, 16) %}
+                                                {% for i in range(1, 16) %}
                                                     {% set nama_key = 'slik_bank_' ~ i ~ '_nama' %}
                                                     {% set jenis_key = 'slik_bank_' ~ i ~ '_jenis' %}
                                                     {% set maks_key = 'slik_bank_' ~ i ~ '_maks' %}
@@ -211,12 +152,17 @@
                                                     {% set topup_lunas_key = 'slik_bank_' ~ i ~ '_topup_lunas' %}
                                                     
                                                     <div id="slik-facility-{{ i }}" class="slik-facility-hidden" 
-                                                            {% if data.get(nama_key) %}style="display: block;"{% endif %}>
-                                                        <hr>
+                                                            {% if i == 1 or data.get(nama_key) %}style="display: block;"{% endif %}>
+                                                        
+                                                        {% if i > 1 %}<hr>{% endif %}
+                                                        
                                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                                             <p class="fw-bold mb-0">Data Fasilitas Aktif {{ i }}</p>
+                                                            {% if i > 1 %}
                                                             <button type="button" class="btn btn-danger btn-sm slik-delete-btn" data-facility-id="{{ i }}">Hapus</button>
+                                                            {% endif %}
                                                         </div>
+
                                                         <div class="row">
                                                             <div class="col-md-4 mb-3">
                                                                 <label for="{{ jenis_key }}" class="form-label">Jenis</label>
@@ -247,8 +193,9 @@
                                                                 <input type="text" class="form-control" id="{{ angsuran_key }}" name="{{ angsuran_key }}" value="{{ data.get(angsuran_key, '') }}" data-type="rupiah">
                                                             </div>
                                                         </div>
-                                                        <div class="d-flex flex-wrap">
-                                                             <div class="form-check mt-1 me-4 takeover-hidden takeover-toggle-wrapper">
+                                                        
+                                                        <div class="d-flex flex-wrap align-items-center">
+                                                            <div class="form-check mt-1 me-4 takeover-hidden takeover-toggle-wrapper">
                                                                 <input class="form-check-input" type="checkbox" id="{{ takeover_key }}" name="{{ takeover_key }}" value="ya" {% if data.get(takeover_key) == 'ya' %}checked{% endif %}>
                                                                 <label class="form-check-label fw-bold text-danger" for="{{ takeover_key }}">
                                                                     Pelunasan/Take Over?
@@ -543,7 +490,8 @@
                                         
                                         <hr class="my-4">
                                         <h4 class="mb-3">Blokir Angsuran</h4>
-                                        <div class="row">
+                                        
+                                        <div id="row-blokir-total" class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="blokir_angsuran_total" class="form-label">Total (kali)</label>
                                                 <input type="number" class="form-control" id="blokir_angsuran_total" name="blokir_angsuran_total" value="{{ data.get('blokir_angsuran_total', '') }}" min="0">
@@ -553,7 +501,8 @@
                                                 <input type="text" class="form-control" id="blokir_angsuran_total_terbilang" name="blokir_angsuran_total_terbilang" value="{{ data.get('blokir_angsuran_total_terbilang', '') }}" readonly>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        
+                                        <div id="row-blokir-pindah" class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="blokir_angsuran_pindah_gaji" class="form-label">Pindah Gaji (kali)</label>
                                                 <input type="number" class="form-control" id="blokir_angsuran_pindah_gaji" name="blokir_angsuran_pindah_gaji" value="{{ data.get('blokir_angsuran_pindah_gaji', '') }}" min="0">
@@ -563,6 +512,7 @@
                                                 <input type="text" class="form-control" id="blokir_angsuran_pindah_gaji_terbilang" name="blokir_angsuran_pindah_gaji_terbilang" value="{{ data.get('blokir_angsuran_pindah_gaji_terbilang', '') }}" readonly>
                                             </div>
                                         </div>
+                                        
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="blokir_angsuran_lunas" class="form-label">Wajib (Pokok + Bunga) (kali)</label>
@@ -739,9 +689,12 @@
                 <div class="row"><div class="col-md-4">Biaya PSJT (%):</div><div class="col-md-8"><span id="preview_biaya_psjt_persen"></span></div></div>
                 
                 <h5 class="mb-3 mt-4">Blokir Angsuran</h5>
-                <div class="row"><div class="col-md-4">Total (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_total"></span> (<span id="preview_blokir_angsuran_total_terbilang"></span>)</div></div>
-                <div class="row"><div class="col-md-4">Pindah Gaji (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_pindah_gaji"></span> (<span id="preview_blokir_angsuran_pindah_gaji_terbilang"></span>)</div></div>
-                <div class="row"><div class="col-md-4">Wajib (Pokok + Bunga) (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_lunas"></span> (<span id="preview_blokir_angsuran_lunas_terbilang"></span>)</div></div>
+                
+                <div id="preview-row-blokir-total" class="row"><div class="col-md-4">Total (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_total"></span> (<span id="preview_blokir_angsuran_total_terbilang"></span>)</div></div>
+                
+                <div id="preview-row-blokir-pindah" class="row"><div class="col-md-4">Pindah Gaji (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_pindah_gaji"></span> (<span id="preview_blokir_angsuran_pindah_gaji_terbilang"></span>)</div></div>
+                
+                <div class="row"><div class="col-md-4">Wajib (kali):</div><div class="col-md-8"><span id="preview_blokir_angsuran_lunas"></span> (<span id="preview_blokir_angsuran_lunas_terbilang"></span>)</div></div>
 
                 <h5 class="mb-3 mt-4">Syarat Tambahan Kustom</h5>
                 <div id="preview-syarat-kustom-penandatanganan" class="slik-facility-hidden">
@@ -773,12 +726,20 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
-        // --- LOGIKA UNTUK MENANGANI FITUR TAKE OVER & TOP UP LUNAS ---
         const radiosJenis = document.querySelectorAll('.jenis-pengajuan-radio');
         const formTitle = document.getElementById('form-title');
         const kategoriInput = document.querySelector('input[name="kategori"]');
         const gajiTakeoverFields = document.getElementById('gaji-takeover-fields');
         const previewGajiTakeover = document.getElementById('preview-gaji-takeover');
+        
+        // Input Payroll & Blokir Rows
+        const inputPayroll = document.getElementById('payroll_bank');
+        const rowBlokirTotal = document.getElementById('row-blokir-total');
+        const rowBlokirPindah = document.getElementById('row-blokir-pindah');
+        
+        // Preview Blokir Rows
+        const previewRowBlokirTotal = document.getElementById('preview-row-blokir-total');
+        const previewRowBlokirPindah = document.getElementById('preview-row-blokir-pindah');
 
         function updateFormUI() {
             let selected = 'baru';
@@ -794,7 +755,7 @@
                 }
             });
 
-            // 2. Logic Checkbox Pelunasan Top Up (Hanya muncul jika jenis = 'top_up')
+            // 2. Logic Checkbox Pelunasan Top Up (Hanya jika jenis = top_up)
             const isTopUp = (selected === 'top_up'); 
             document.querySelectorAll('.topup-lunas-toggle-wrapper').forEach(el => {
                 el.style.display = isTopUp ? 'block' : 'none';
@@ -825,45 +786,38 @@
                 }
             }
             
-            // Panggil update blokir setiap kali jenis berubah
             updateBlokirUI();
         }
-
-        // --- LOGIKA BLOKIR ANGSURAN (NEW) ---
+        
         function updateBlokirUI() {
-            const payrollInput = document.getElementById('payroll_bank');
-            const rowTotal = document.getElementById('blokir_angsuran_total')?.closest('.row');
-            const rowPindah = document.getElementById('blokir_angsuran_pindah_gaji')?.closest('.row');
-            
-            // Cek Jenis Pengajuan
             let selectedJenis = 'baru';
             radiosJenis.forEach(r => { if(r.checked) selectedJenis = r.value; });
-
-            // Cek Payroll BNI
-            const isBNI = payrollInput && payrollInput.value.toUpperCase().includes('BNI');
-            const isTopUpGroup = (selectedJenis === 'top_up' || selectedJenis === 'top_up_sisa_gaji');
-
-            // Logika: Jika (TopUp/SisaGaji) DAN (Payroll BNI) -> Sembunyikan Total & Pindah Gaji
-            if (isTopUpGroup && isBNI) {
-                if(rowTotal) rowTotal.style.display = 'none';
-                if(rowPindah) rowPindah.style.display = 'none';
+            
+            const payrollValue = inputPayroll ? inputPayroll.value.toUpperCase() : '';
+            const isPayrollBNI = payrollValue.includes('BNI');
+            const isTakeover = (selectedJenis === 'takeover');
+            
+            // Logic Blokir: Jika (Payroll BNI) DAN (Bukan Takeover) -> Sembunyikan Total & Pindah
+            if (isPayrollBNI && !isTakeover) {
+                if(rowBlokirTotal) rowBlokirTotal.classList.add('blokir-hidden');
+                if(rowBlokirPindah) rowBlokirPindah.classList.add('blokir-hidden');
             } else {
-                if(rowTotal) rowTotal.style.display = 'flex'; 
-                if(rowPindah) rowPindah.style.display = 'flex';
+                if(rowBlokirTotal) rowBlokirTotal.classList.remove('blokir-hidden');
+                if(rowBlokirPindah) rowBlokirPindah.classList.remove('blokir-hidden');
             }
         }
 
         // Listeners
-        const payrollInput = document.getElementById('payroll_bank');
-        if(payrollInput) {
-            payrollInput.addEventListener('input', updateBlokirUI); 
+        if(inputPayroll) {
+            inputPayroll.addEventListener('input', updateBlokirUI); 
         }
         radiosJenis.forEach(r => r.addEventListener('change', updateFormUI));
         
-        // Jalankan saat load awal
         updateFormUI();
 
-        // --- PATCH UNTUK PREVIEW ---
+        // =======================================================
+        // PREVIEW MODAL PATCH
+        // =======================================================
         const previewModal = document.getElementById('previewModal');
         if (previewModal) {
             previewModal.addEventListener('show.bs.modal', function () {
@@ -876,30 +830,65 @@
                     if(isChecked) prevSec.classList.remove('mitigasi-hidden');
                 }
 
-                // 2. Badge Pelunasan Top Up di SLIK
-                for (let i = 1; i <= 15; i++) {
-                    const chkLunas = document.getElementById('slik_bank_' + i + '_topup_lunas');
+                // 2. Patch Judul Jenis Pengajuan
+                const jenisSelected = document.querySelector('input[name="jenis_pengajuan"]:checked');
+                const previewJenis = document.getElementById('preview_jenis_pengajuan');
+                if (previewJenis && jenisSelected) {
+                    if (jenisSelected.value === 'takeover') {
+                        previewJenis.textContent = 'Take Over (Pindah Bank)';
+                    } else if (jenisSelected.value === 'top_up') {
+                        previewJenis.textContent = 'Suplesi / Top Up';
+                    } else if (jenisSelected.value === 'top_up_sisa_gaji') {
+                        previewJenis.textContent = 'Top Up Sisa Gaji';
+                    } else {
+                        previewJenis.textContent = 'Baru';
+                    }
+                }
+
+                // 3. Logic Hide/Show Blokir di Preview
+                let selectedJenis = 'baru';
+                radiosJenis.forEach(r => { if(r.checked) selectedJenis = r.value; });
+                const payrollValue = inputPayroll ? inputPayroll.value.toUpperCase() : '';
+                const isPayrollBNI = payrollValue.includes('BNI');
+                const isTakeover = (selectedJenis === 'takeover');
+                
+                if (isPayrollBNI && !isTakeover) {
+                    if(previewRowBlokirTotal) previewRowBlokirTotal.style.display = 'none';
+                    if(previewRowBlokirPindah) previewRowBlokirPindah.style.display = 'none';
+                } else {
+                    if(previewRowBlokirTotal) previewRowBlokirTotal.style.display = 'flex'; 
+                    if(previewRowBlokirPindah) previewRowBlokirPindah.style.display = 'flex';
+                }
+
+                // 4. Badge Pelunasan Top Up & Take Over di SLIK
+                setTimeout(() => {
                     const slikContainer = document.getElementById('preview-slik-container');
-                    
-                    if(slikContainer && chkLunas && chkLunas.checked) {
-                        // Cari div yang memuat teks "Fasilitas Aktif {i}"
-                        // Kita cari berdasarkan text content karena struktur dinamis dari script.js
+                    if(slikContainer) {
                         const rows = slikContainer.querySelectorAll('.border-bottom');
-                        // Loop manual untuk mencari row yang benar (indeks array vs fasilitas id)
-                        // Karena script.js me-render berurutan, row index i-1 harusnya sesuai fasilitas i
-                        // TAPI jika ada fasilitas nihil atau hidden, urutan bisa geser.
-                        // Lebih aman cari text content.
                         
-                        rows.forEach(row => {
+                        for (let i = 1; i <= 15; i++) {
+                            const row = rows[i-1];
+                            if(!row) continue;
+
                             const titleDiv = row.querySelector('.text-primary');
-                            if(titleDiv && titleDiv.textContent.includes(`Fasilitas Aktif ${i}`)) {
+                            if(!titleDiv) continue;
+
+                            const chkTopUp = document.getElementById('slik_bank_' + i + '_topup_lunas');
+                            if(chkTopUp && chkTopUp.checked) {
                                 if(!titleDiv.innerHTML.includes('Pelunasan Top Up')) {
                                     titleDiv.insertAdjacentHTML('beforeend', '<span class="badge bg-label-warning ms-2">Pelunasan Top Up</span>');
                                 }
                             }
-                        });
+                            
+                            const chkTakeover = document.getElementById('slik_bank_' + i + '_takeover');
+                            if(chkTakeover && chkTakeover.checked) {
+                                if(!titleDiv.innerHTML.includes('Take Over')) {
+                                    titleDiv.insertAdjacentHTML('beforeend', '<span class="badge bg-label-danger ms-2">Take Over</span>');
+                                }
+                            }
+                        }
                     }
-                }
+                }, 100);
             });
         }
     });
