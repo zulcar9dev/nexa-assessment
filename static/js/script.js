@@ -318,7 +318,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (radio.checked) selectedValue = radio.value;
         });
 
-        if (selectedValue === 'baru') {
+        // PERUBAHAN DI SINI: Tambahkan kondisi || selectedValue === 'takeover'
+        // Agar saat Take Over dipilih, field No Rekening & PK disembunyikan (sama seperti Baru)
+        if (selectedValue === 'baru' || selectedValue === 'takeover') {
             containerTopUp.style.display = 'none';
             if(inputRekening) inputRekening.disabled = true;
             if(inputPK) inputPK.disabled = true;

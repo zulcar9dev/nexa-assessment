@@ -23,26 +23,35 @@ TEMPLATE_FILENAME_DEFAULT = "template_kredit.docx"
 ALLOWED_EXTENSIONS = {'docx'}
 
 # Daftar kategori produk
+# Daftar kategori produk
+# Daftar kategori produk
 PRODUCT_CATEGORIES = {
+    # 1. PRAPURNA (Tampilkan Hanya Reguler)
     'prapurna_reguler': {
-        'nama': 'BNI Fleksi Pensiun Prapurna Reguler',
+        'nama': 'BNI Fleksi Pensiun Prapurna', 
         'template_form': 'form_prapurna_reguler.html',
-        'template_docx': 'template_prapurna_reguler.docx'
+        'template_docx': 'template_prapurna_reguler.docx',
+        'show_on_dashboard': True  # <--- TAMPIL (TRUE)
     },
     'prapurna_takeover': {
         'nama': 'BNI Fleksi Pensiun Prapurna Take Over',
         'template_form': 'form_prapurna_takeover.html', 
-        'template_docx': 'template_prapurna_takeover.docx'
+        'template_docx': 'template_prapurna_takeover.docx',
+        'show_on_dashboard': False # <--- SEMBUNYIKAN (FALSE)
     },
+
+    # 2. PURNA (Tampilkan Hanya Reguler/Utama)
     'purna_reguler': {
-        'nama': 'BNI Fleksi Pensiun Purna Reguler',
-        'template_form': 'form_purna_reguler.html', 
-        'template_docx': 'template_purna_reguler.docx'
+        'nama': 'BNI Fleksi Pensiun Purna', 
+        'template_form': 'form_purna.html',
+        'template_docx': 'template_purna_reguler.docx',
+        'show_on_dashboard': True  # <--- TAMPIL (TRUE)
     },
     'purna_takeover': {
         'nama': 'BNI Fleksi Pensiun Purna Take Over',
-        'template_form': 'form_purna_takeover.html', 
-        'template_docx': 'template_purna_takeover.docx'
+        'template_form': 'form_purna.html',
+        'template_docx': 'template_purna_takeover.docx',
+        'show_on_dashboard': False # <--- SEMBUNYIKAN (FALSE)
     }
 }
 
