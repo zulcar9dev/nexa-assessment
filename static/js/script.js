@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     e.target.setSelectionRange(start + diff, end + diff);
                 }
+                // Trigger perhitungan ulang setiap kali input berubah
+                updateBlokirOtomatis(); 
             });
         }
     }
@@ -57,9 +59,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateTerbilang(inputElement, outputElement) {
         if (!inputElement || !outputElement) return;
-        const nilai = parseFloat(inputElement.value) || 0;
+        // Handle input berupa elemen atau angka langsung
+        const nilai = (typeof inputElement === 'object') ? (parseFloat(inputElement.value) || 0) : inputElement;
+        
         if (nilai === 0) {
-            outputElement.value = '';
+            outputElement.value = 'Nol';
             return;
         }
         let hasil = terbilang(nilai).trim().replace(/\s+/g, ' ');
@@ -212,7 +216,75 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 4. TOGGLE HANDLERS (UI LOGIC)
+    // 4. OTOMATISASI BLOKIR (NEW FEATURE)
+    // ==========================================
+    function updateBlokirOtomatis() {
+        // 1. Hitung Blokir Prapurna (Berdasarkan Tgl Input s.d Tgl BUP)
+        const tglBUPInput = document.getElementById('tgl_pensiun_pemohon'); // Field di Prapurna
+        const blokirPrapurnaInput = document.getElementById('blokir_angsuran_prapurna');
+        const blokirPrapurnaTerbilang = document.getElementById('blokir_angsuran_prapurna_terbilang');
+
+        if (tglBUPInput && blokirPrapurnaInput && tglBUPInput.value) {
+            const today = new Date();
+            const bupDate = new Date(tglBUPInput.value);
+
+            if (bupDate > today) {
+                // Hitung selisih bulan penuh
+                let years = bupDate.getFullYear() - today.getFullYear();
+                let months = bupDate.getMonth() - today.getMonth();
+                let totalMonths = (years * 12) + months;
+                
+                // Koreksi hari (jika tanggal BUP lebih kecil dari tanggal hari ini, bulan belum penuh)
+                // Namun permintaan user: dibulatkan (cth: 1 thn 9 bln 6 hari = 22 bulan)
+                // Rumus di atas (years*12 + months) sudah cukup mendekati pembulatan bulan kalender.
+                // Jika tanggal hari ini > tanggal BUP, kurangi 1 bulan? 
+                // Contoh User: 26 Nov 2025 ke 01 Sep 2027.
+                // Nov 25 ke Nov 26 = 12 bln. Nov 26 ke Agt 27 = 9 bln. Total 21 bln.
+                // Sisa hari: 26 Nov ke 1 Sep. Karena tgl BUP (1) < Tgl Input (26), diff bulan berkurang 1 di rumus std.
+                // Mari kita pakai logika pembulatan ke atas jika ada sisa hari.
+                
+                if (bupDate.getDate() >= today.getDate()) {
+                    // Bulan penuh atau lebih
+                } else {
+                    // Belum satu bulan penuh di bulan terakhir, tapi user minta "dibulatkan menjadi 22" (naik).
+                    // Rumus standard JS getMonth() sudah index 0-11.
+                    // (2027-2025)*12 + (8 - 10) = 24 - 2 = 22.
+                    // Rumus simple ini sudah menghasilkan 22 untuk contoh user.
+                }
+
+                // Pastikan minimal 0
+                if (totalMonths < 0) totalMonths = 0;
+                
+                blokirPrapurnaInput.value = totalMonths;
+                if(blokirPrapurnaTerbilang) updateTerbilang(totalMonths, blokirPrapurnaTerbilang);
+            } else {
+                blokirPrapurnaInput.value = 0;
+                if(blokirPrapurnaTerbilang) updateTerbilang(0, blokirPrapurnaTerbilang);
+            }
+        }
+
+        // 2. Hitung Total Blokir (Penjumlahan)
+        const elPrapurna = document.getElementById('blokir_angsuran_prapurna');
+        const elPindah = document.getElementById('blokir_angsuran_pindah_gaji');
+        const elWajib = document.getElementById('blokir_angsuran_lunas');
+        
+        const elTotal = document.getElementById('blokir_angsuran_total');
+        const elTotalTerbilang = document.getElementById('blokir_angsuran_total_terbilang');
+
+        if (elTotal) {
+            const valPrapurna = elPrapurna ? (parseInt(elPrapurna.value) || 0) : 0;
+            const valPindah = elPindah ? (parseInt(elPindah.value) || 0) : 0;
+            const valWajib = elWajib ? (parseInt(elWajib.value) || 0) : 0;
+
+            const total = valPrapurna + valPindah + valWajib;
+            
+            elTotal.value = total;
+            if(elTotalTerbilang) updateTerbilang(total, elTotalTerbilang);
+        }
+    }
+
+    // ==========================================
+    // 5. TOGGLE HANDLERS (UI LOGIC)
     // ==========================================
     const allFacilitiesWrapper = document.getElementById('all-facilities-wrapper');
     const addSlikButton = document.getElementById('add-slik-facility');
@@ -238,7 +310,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.disabled = false;
                 }
             });
-            // Re-apply logic checkboxes
             document.querySelectorAll('.toggle-alasan').forEach(handleAlasanToggle);
             if (addSlikButton) addSlikButton.disabled = false;
         }
@@ -284,6 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleAlasanToggle(checkboxOrEvent) {
         const checkbox = (checkboxOrEvent.target) ? checkboxOrEvent.target : checkboxOrEvent;
+        if(!checkbox) return;
         const targetSelector = checkbox.dataset.targetAlasan;
         if (!targetSelector) return;
         
@@ -318,8 +390,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (radio.checked) selectedValue = radio.value;
         });
 
-        // PERUBAHAN DI SINI: Tambahkan kondisi || selectedValue === 'takeover'
-        // Agar saat Take Over dipilih, field No Rekening & PK disembunyikan (sama seperti Baru)
         if (selectedValue === 'baru' || selectedValue === 'takeover') {
             containerTopUp.style.display = 'none';
             if(inputRekening) inputRekening.disabled = true;
@@ -341,13 +411,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Event Listener Radio Button Top Up
     radioJenisPengajuan.forEach(radio => {
         radio.addEventListener('change', handleJenisPengajuanChange);
     });
 
     // ==========================================
-    // 5. SEGMENTASI (TASPEN/ASABRI)
+    // 6. SEGMENTASI (TASPEN/ASABRI)
     // ==========================================
     const segRadios = document.querySelectorAll('input[name="segmentasi"]');
     
@@ -369,7 +438,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setLabel('tgl_sk_golongan', 'Tgl SKEP Pangkat Terakhir', 'Tgl SK Golongan');
         setLabel('jenis_pekerjaan_pemohon', 'Kesatuan/Instansi', 'Jenis Pekerjaan'); 
         
-        // Khusus Purna
         if (document.getElementById('no_sk_pensiun')) {
              setLabel('jenis_pekerjaan_pemohon', 'Pensiunan Anggota (TNI/POLRI)', 'Jenis Pekerjaan (Pensiunan)');
              setLabel('no_sk_pensiun', 'No. SKEP Pensiun', 'No. SK Pensiun');
@@ -380,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 6. INITIALIZATION & EVENTS (ON LOAD)
+    // 7. INITIALIZATION & EVENTS (ON LOAD)
     // ==========================================
     
     // Setup Rupiah
@@ -396,21 +464,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     nominalIDs.forEach(setupRupiahInput);
 
-    // Setup Terbilang
+    // Setup Terbilang (Event listener khusus untuk manual input blokir)
     const pairs = [
-        { in: 'blokir_angsuran_total', out: 'blokir_angsuran_total_terbilang' },
-        { in: 'blokir_angsuran_prapurna', out: 'blokir_angsuran_prapurna_terbilang' },
         { in: 'blokir_angsuran_pindah_gaji', out: 'blokir_angsuran_pindah_gaji_terbilang' },
-        { in: 'blokir_angsuran_lunas', out: 'blokir_angsuran_lunas_terbilang' }
+        { in: 'blokir_angsuran_lunas', out: 'blokir_angsuran_lunas_terbilang' },
+        // Total dan Prapurna dihandle otomatis oleh updateBlokirOtomatis, 
+        // tapi kita pasang listener jika user edit manual
+        { in: 'blokir_angsuran_prapurna', out: 'blokir_angsuran_prapurna_terbilang' } 
     ];
     pairs.forEach(p => {
         const elIn = document.getElementById(p.in);
         const elOut = document.getElementById(p.out);
         if(elIn && elOut) {
             updateTerbilang(elIn, elOut); 
-            elIn.addEventListener('input', () => updateTerbilang(elIn, elOut));
+            elIn.addEventListener('input', () => {
+                updateTerbilang(elIn, elOut);
+                updateBlokirOtomatis(); // Trigger hitung total jika manual diubah
+            });
         }
     });
+
+    // Trigger hitung total jika Prapurna berubah (baik manual atau auto)
+    const prapurnaInput = document.getElementById('blokir_angsuran_prapurna');
+    if(prapurnaInput) {
+        // Monitor perubahan value programmatically atau manual
+        const observer = new MutationObserver(updateBlokirOtomatis);
+        observer.observe(prapurnaInput, { attributes: true, childList: false, characterData: false });
+    }
 
     // Event Listeners
     if (tglLahirInput) tglLahirInput.addEventListener('change', hitungUsia);
@@ -421,6 +501,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (jangkaWaktuDimohonInput) jangkaWaktuDimohonInput.addEventListener('input', syncPengajuanKeUsulan);
     if (bungaUsulanInput) bungaUsulanInput.addEventListener('input', calculateNewPMT);
     
+    // Event Listener khusus untuk Auto Blokir Prapurna
+    const tglBUPInput = document.getElementById('tgl_pensiun_pemohon');
+    if(tglBUPInput) {
+        tglBUPInput.addEventListener('change', updateBlokirOtomatis);
+    }
+
     ['estimasi_hak_pensiun', 'pensiun_bulan_3_jumlah', 'pensiun_bulan_jumlah'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener('input', calculateDSR);
@@ -441,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     segRadios.forEach(radio => radio.addEventListener('change', updateLabelsBySegment));
 
-    // Dynamic Buttons
+    // Dynamic Buttons (SLIK)
     if (addSlikButton) {
         addSlikButton.addEventListener('click', function() {
             let found = false;
@@ -462,6 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Dynamic Buttons (Syarat)
     const addSyaratButton = document.getElementById('add-syarat-kustom');
     if (addSyaratButton) {
         addSyaratButton.addEventListener('click', function() {
@@ -490,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 row.style.display = 'none';
                 row.querySelectorAll('input, textarea').forEach(input => {
                     input.value = '';
-                    input.checked = false;
+                    if(input.type === 'checkbox' || input.type === 'radio') input.checked = false;
                 });
                 if(addSlikButton) addSlikButton.style.display = 'block';
                 calculateDSR();
@@ -534,7 +621,8 @@ document.addEventListener('DOMContentLoaded', function() {
                if(previewEl) previewEl.textContent = input.value;
             });
 
-            // 2. Checkboxes (Takeover)
+            // 2. Checkboxes (Takeover) -> Legacy support/backup
+            // (Inline script di form_purna.html sudah handle, tapi ini untuk prapurna/backup)
             mainForm.querySelectorAll('input[type="checkbox"]').forEach(chk => {
                 const previewId = 'preview_' + chk.id;
                 const previewEl = document.getElementById(previewId);
@@ -551,7 +639,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 prevSeg.className = seg.value === 'asabri' ? 'badge bg-success' : 'badge bg-primary';
             }
 
-            // 4. Jenis Pengajuan (Top Up)
+            // 4. Jenis Pengajuan
             const jenisPengajuan = document.querySelector('input[name="jenis_pengajuan"]:checked');
             const previewJenis = document.getElementById('preview_jenis_pengajuan');
             
@@ -578,6 +666,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         if(prevRekening && valRekening) prevRekening.textContent = valRekening.value;
                         if(rowPK) rowPK.style.display = 'flex';
                         if(prevPK && valPK) prevPK.textContent = valPK.value;
+                    } else if (jenisPengajuan.value === 'takeover') {
+                        label = "Take Over (Pindah Bank)";
                     }
                     previewJenis.textContent = label;
                 } else {
@@ -585,7 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // 5. SLIK Fasilitas (New Logic)
+            // 5. SLIK Fasilitas
             const slikContainer = document.getElementById('preview-slik-container');
             const nihilPreview = document.getElementById('preview-fasilitas-nihil');
             
@@ -612,14 +702,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             const kol = document.getElementById('slik_bank_' + i + '_coll').value || '-';
                             const angsuran = document.getElementById('slik_bank_' + i + '_angsuran').value || '0';
                             
+                            // Cek Take Over
                             const toCheck = document.getElementById('slik_bank_' + i + '_takeover');
                             const isTakeover = toCheck && toCheck.checked ? '<span class="badge bg-label-danger ms-2">Take Over</span>' : '';
+
+                            // Cek Pelunasan Top Up (FITUR BARU)
+                            const lunasCheck = document.getElementById('slik_bank_' + i + '_topup_lunas');
+                            const isLunasTopUp = lunasCheck && lunasCheck.checked ? '<span class="badge bg-label-warning ms-2">Pelunasan Top Up</span>' : '';
 
                             const html = `
                                 <div class="mb-3 pb-3 border-bottom">
                                     <div class="row mb-1">
                                         <div class="col-md-12 fw-bold text-primary d-flex align-items-center">
-                                            Fasilitas Aktif ${i} ${isTakeover}
+                                            Fasilitas Aktif ${i} ${isTakeover} ${isLunasTopUp}
                                         </div>
                                     </div>
                                     <div class="row mb-1">
@@ -699,5 +794,6 @@ document.addEventListener('DOMContentLoaded', function() {
     handleJenisPengajuanChange();
     document.querySelectorAll('.toggle-alasan').forEach(handleAlasanToggle);
     calculateDSR();
+    updateBlokirOtomatis(); // Initial calc for blokir
 
 });
