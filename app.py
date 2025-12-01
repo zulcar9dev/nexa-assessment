@@ -23,21 +23,19 @@ TEMPLATE_FILENAME_DEFAULT = "template_kredit.docx"
 ALLOWED_EXTENSIONS = {'docx'}
 
 # Daftar kategori produk
-# Daftar kategori produk
-# Daftar kategori produk
 PRODUCT_CATEGORIES = {
     # 1. PRAPURNA (Tampilkan Hanya Reguler)
     'prapurna_reguler': {
-        'nama': 'BNI Fleksi Pensiun Prapurna',
-        'template_form': 'form_prapurna.html', # <--- Update ke form baru
+        'nama': 'BNI Fleksi Pensiun Prapurna', 
+        'template_form': 'form_prapurna.html',
         'template_docx': 'template_prapurna_reguler.docx',
-        'show_on_dashboard': True
+        'show_on_dashboard': True 
     },
     'prapurna_takeover': {
         'nama': 'BNI Fleksi Pensiun Prapurna Take Over',
-        'template_form': 'form_prapurna.html', # <--- Update ke form baru
+        'template_form': 'form_prapurna.html', 
         'template_docx': 'template_prapurna_takeover.docx',
-        'show_on_dashboard': False
+        'show_on_dashboard': False 
     },
 
     # 2. PURNA (Tampilkan Hanya Reguler/Utama)
@@ -45,13 +43,13 @@ PRODUCT_CATEGORIES = {
         'nama': 'BNI Fleksi Pensiun Purna', 
         'template_form': 'form_purna.html',
         'template_docx': 'template_purna_reguler.docx',
-        'show_on_dashboard': True  # <--- TAMPIL (TRUE)
+        'show_on_dashboard': True 
     },
     'purna_takeover': {
         'nama': 'BNI Fleksi Pensiun Purna Take Over',
         'template_form': 'form_purna.html',
-        'template_docx': 'template_purna_takeover.docx',
-        'show_on_dashboard': False # <--- SEMBUNYIKAN (FALSE)
+        'template_docx': 'template_purna_reguler.docx', # Menggunakan template reguler karena form sudah menyatu
+        'show_on_dashboard': False 
     }
 }
 
@@ -75,7 +73,6 @@ def format_date_indonesian(date_str):
     except (ValueError, TypeError):
         return date_str 
 
-# (PERUBAHAN) Menambahkan key tanggal baru untuk Purna
 DATE_KEYS = [
     'tgl_lahir_pemohon', 'tgl_terbit_ktp', 'tgl_mulai_kerja',
     'tgl_sk_cpns', 'tgl_sk_golongan', 'tgl_pensiun_pemohon',
@@ -83,8 +80,6 @@ DATE_KEYS = [
     'tgl_pensiun_tmt', 'tgl_sk_pensiun' 
 ]
 
-# (PERUBAHAN) Ini adalah DAFTAR MASTER dari SEMUA field nominal
-# (PERUBAHAN) Ini adalah DAFTAR MASTER dari SEMUA field nominal
 NOMINAL_KEYS = [
     'plafon_kredit_dimohon', 'usulan_plafon_kredit', 'usulan_angsuran', 
     'biaya_provisi_nominal', 'biaya_tata_laksana_nominal', 'biaya_administrasi',
@@ -98,11 +93,13 @@ NOMINAL_KEYS = [
     'pensiun_bulan_1_jumlah', 
     'pensiun_bulan_2_jumlah',
     'pensiun_bulan_3_jumlah',
-    'pensiun_bulan_jumlah', # <-- Untuk Purna Reguler
+    'pensiun_bulan_jumlah', 
     
-    # Field Blokir Angsuran (Baru ditambahkan)
+    # Field Blokir Angsuran
     'blokir_angsuran_total',
     'blokir_angsuran_pindah_gaji',
+    'blokir_angsuran_prapurna',
+    'blokir_angsuran_lunas',
 
     # Field SLIK (Umum)
     'slik_bank_1_maks', 'slik_bank_1_outs', 'slik_bank_1_angsuran', 
@@ -224,23 +221,6 @@ def riwayat():
                            jenis_filter=jenis_filter, # Kirim balik status filter ke HTML
                            seg_filter=seg_filter,     # Kirim balik status filter ke HTML
                            categories=PRODUCT_CATEGORIES)
-    
-    search_query = request.args.get('q', '')
-    query = Debitur.query
-    if search_query:
-        search_term = f"%{search_query}%"
-        query = query.filter(
-            or_(
-                Debitur.nama_pemohon.ilike(search_term),
-                Debitur.no_ktp.ilike(search_term)
-            )
-        )
-    all_debitur = query.order_by(Debitur.tanggal_input.desc()).all()
-    
-    return render_template('riwayat.html', 
-                           debitur_list=all_debitur, 
-                           search_query=search_query,
-                           categories=PRODUCT_CATEGORIES) 
 
 @app.route('/edit/<int:id>')
 def edit(id):
@@ -331,13 +311,9 @@ def generate_docx(id):
             # Kategori Prapurna menggunakan 'estimasi_hak_pensiun'
             penghasilan_str = context.get('estimasi_hak_pensiun', '0').replace('.', '')
         else: 
-            # Kategori Purna
-            if kategori == 'purna_takeover':
-                # Purna Take Over menggunakan gaji bulan ke-3
-                penghasilan_str = context.get('pensiun_bulan_3_jumlah', '0').replace('.', '')
-            else:
-                # Purna Reguler menggunakan satu-satunya input gaji
-                penghasilan_str = context.get('pensiun_bulan_jumlah', '0').replace('.', '')
+            # Kategori Purna (Reguler maupun Take Over)
+            # Selalu gunakan 'pensiun_bulan_jumlah' (Gaji Bulan Terakhir/Utama)
+            penghasilan_str = context.get('pensiun_bulan_jumlah', '0').replace('.', '')
 
             # Fallback untuk Purna (jika gaji 0, gunakan 'taspen_hak_pensiun' jika ada)
             if not penghasilan_str or float(penghasilan_str) == 0:
@@ -346,7 +322,11 @@ def generate_docx(id):
         penghasilan = int(penghasilan_str) if penghasilan_str.isdigit() else 0
         
         dsc_90_nominal = penghasilan * 0.9
+        
+        # PERBAIKAN: Gunakan rumus Net Capacity agar tidak membingungkan
+        # Maksimal Angsuran = DSC 90% - Total Hutang Existing
         maksimal_angsuran = dsc_90_nominal - total_angsuran_eksisting
+        
         total_angsuran_baru = total_angsuran_eksisting + usulan_angsuran
         
         dsr = 0
@@ -369,16 +349,23 @@ def generate_docx(id):
     try:
         # 1. Daftar Bank Take Over
         takeover_banks = []
-        if context.get('fasilitas_nihil') != 'ya' and kategori.endswith('takeover'):
+        if context.get('fasilitas_nihil') != 'ya':
             for i in range(1, 16):
+                # Deteksi Bank yang di-Takeover (Via checkbox TakeOver atau Pelunasan TopUp)
                 takeover_key = f'slik_bank_{i}_takeover'
+                topup_lunas_key = f'slik_bank_{i}_topup_lunas'
                 bank_name_key = f'slik_bank_{i}_nama'
-                if context.get(takeover_key) == 'ya' and context.get(bank_name_key):
+                
+                is_takeover = context.get(takeover_key) == 'ya'
+                is_topup_lunas = context.get(topup_lunas_key) == 'ya'
+                
+                if (is_takeover or is_topup_lunas) and context.get(bank_name_key):
                     takeover_banks.append(context.get(bank_name_key))
+                    
         context['takeover_bank_list'] = ", ".join(takeover_banks)
         
         # 2. Daftar Syarat Kustom
-        syarat_penandatanganan_list = []
+        syarat_penandatangan_list = []
         syarat_pencairan_list = []
         for i in range(1, 11): # Sesuai 10 field di HTML
             teks_key = f'syarat_kustom_{i}_teks'
@@ -389,16 +376,16 @@ def generate_docx(id):
             
             if teks: # Hanya jika ada teks syarat
                 if lokasi == 'penandatanganan':
-                    syarat_penandatanganan_list.append(teks)
+                    syarat_penandatangan_list.append(teks)
                 elif lokasi == 'pencairan':
                     syarat_pencairan_list.append(teks)
         
-        context['syarat_penandatanganan_list'] = syarat_penandatanganan_list
+        context['syarat_penandatangan_list'] = syarat_penandatangan_list
         context['syarat_pencairan_list'] = syarat_pencairan_list
         
     except Exception as e:
         context['takeover_bank_list'] = "[Error Daftar Bank]"
-        context['syarat_penandatanganan_list'] = []
+        context['syarat_penandatangan_list'] = []
         context['syarat_pencairan_list'] = []
         print(f"Error saat memproses daftar kustom: {e}")
     # --- AKHIR BLOK ---
@@ -420,10 +407,11 @@ def generate_docx(id):
                 if key == 'rpc_dsr':
                     continue 
                     
-                if isinstance(context[key], str) and '.' in context[key]:
-                    nilai_angka = int(float(context[key])) 
+                val_str = str(context[key])
+                if '.' in val_str:
+                    nilai_angka = int(float(val_str)) 
                 else:
-                    nilai_angka = int(context[key])
+                    nilai_angka = int(val_str)
                 
                 context[key] = f"{nilai_angka:,}".replace(',', '.')
             except (ValueError, TypeError):

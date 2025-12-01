@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return number_string.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     }
 
+    // Fungsi Helper untuk trigger event secara manual jika dibutuhkan
+    function triggerEvent(el, type) {
+        if ('createEvent' in document) {
+            var e = document.createEvent('HTMLEvents');
+            e.initEvent(type, false, true);
+            el.dispatchEvent(e);
+        } else {
+            var e = document.createEventObject();
+            el.fireEvent('on' + type, e);
+        }
+    }
+
     function setupRupiahInput(inputId) {
         const input = document.getElementById(inputId);
         if (input) {
@@ -37,7 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     e.target.setSelectionRange(start + diff, end + diff);
                 }
-                // Trigger perhitungan ulang setiap kali input berubah
+                
+                // Trigger perhitungan lain yang bergantung pada input ini
+                calculateDSR(); 
                 updateBlokirOtomatis(); 
             });
         }
@@ -213,14 +227,45 @@ document.addEventListener('DOMContentLoaded', function() {
             dsr = (totalAngsuranBaru / penghasilan) * 100;
         }
         dsrPemohonInput.value = dsr.toFixed(2);
+
+        // --- [NEW] VISUAL WARNING JIKA DSR > 90% ---
+        const alertId = 'dsr-warning-alert';
+        let alertEl = document.getElementById(alertId);
+
+        if (dsr > 90) {
+            // Ubah warna input jadi merah
+            dsrPemohonInput.style.color = 'red';
+            dsrPemohonInput.style.fontWeight = 'bold';
+            dsrPemohonInput.classList.add('is-invalid'); // Class error Bootstrap
+
+            // Tampilkan Alert di bawah input
+            if (!alertEl) {
+                alertEl = document.createElement('div');
+                alertEl.id = alertId;
+                alertEl.className = 'alert alert-danger mt-2 py-1 px-2 small shadow-sm';
+                alertEl.innerHTML = '<i class="bx bx-error me-1"></i><strong>PERINGATAN:</strong> DSR Melebihi 90%!';
+                if (dsrPemohonInput.parentNode) {
+                    dsrPemohonInput.parentNode.appendChild(alertEl);
+                }
+            } else {
+                alertEl.style.display = 'block';
+            }
+        } else {
+            // Kembalikan ke normal
+            dsrPemohonInput.style.color = '';
+            dsrPemohonInput.style.fontWeight = '';
+            dsrPemohonInput.classList.remove('is-invalid');
+            if (alertEl) alertEl.style.display = 'none';
+        }
     }
 
     // ==========================================
     // 4. OTOMATISASI BLOKIR (NEW FEATURE)
     // ==========================================
     function updateBlokirOtomatis() {
-        // 1. Hitung Blokir Prapurna (Berdasarkan Tgl Input s.d Tgl BUP)
-        const tglBUPInput = document.getElementById('tgl_pensiun_pemohon'); // Field di Prapurna
+        // A. Hitung Blokir Prapurna (Berdasarkan Tgl Input s.d Tgl BUP)
+        // Hanya jalan jika field Tgl Pensiun (BUP) ada (biasanya di Form Prapurna)
+        const tglBUPInput = document.getElementById('tgl_pensiun_pemohon'); 
         const blokirPrapurnaInput = document.getElementById('blokir_angsuran_prapurna');
         const blokirPrapurnaTerbilang = document.getElementById('blokir_angsuran_prapurna_terbilang');
 
@@ -234,25 +279,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 let months = bupDate.getMonth() - today.getMonth();
                 let totalMonths = (years * 12) + months;
                 
-                // Koreksi hari (jika tanggal BUP lebih kecil dari tanggal hari ini, bulan belum penuh)
-                // Namun permintaan user: dibulatkan (cth: 1 thn 9 bln 6 hari = 22 bulan)
-                // Rumus di atas (years*12 + months) sudah cukup mendekati pembulatan bulan kalender.
-                // Jika tanggal hari ini > tanggal BUP, kurangi 1 bulan? 
-                // Contoh User: 26 Nov 2025 ke 01 Sep 2027.
-                // Nov 25 ke Nov 26 = 12 bln. Nov 26 ke Agt 27 = 9 bln. Total 21 bln.
-                // Sisa hari: 26 Nov ke 1 Sep. Karena tgl BUP (1) < Tgl Input (26), diff bulan berkurang 1 di rumus std.
-                // Mari kita pakai logika pembulatan ke atas jika ada sisa hari.
-                
-                if (bupDate.getDate() >= today.getDate()) {
-                    // Bulan penuh atau lebih
-                } else {
-                    // Belum satu bulan penuh di bulan terakhir, tapi user minta "dibulatkan menjadi 22" (naik).
-                    // Rumus standard JS getMonth() sudah index 0-11.
-                    // (2027-2025)*12 + (8 - 10) = 24 - 2 = 22.
-                    // Rumus simple ini sudah menghasilkan 22 untuk contoh user.
-                }
-
-                // Pastikan minimal 0
+                // Koreksi/Pembulatan (Contoh: 1 thn 9 bln 6 hari = 22 bln)
+                // Rumus years*12 + months sudah mengembalikan bulan penuh.
+                // Jika tanggal hari ini > tanggal BUP (misal tgl 26 vs tgl 1), bulan terakhir belum penuh.
+                // Namun biasanya user ingin hitungan "masuk bulan ke-X", jadi kita tidak kurangi.
+                // Jika negatif, set 0.
                 if (totalMonths < 0) totalMonths = 0;
                 
                 blokirPrapurnaInput.value = totalMonths;
@@ -263,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // 2. Hitung Total Blokir (Penjumlahan)
+        // B. Hitung Total Blokir (Penjumlahan Prapurna + Pindah Gaji + Wajib)
         const elPrapurna = document.getElementById('blokir_angsuran_prapurna');
         const elPindah = document.getElementById('blokir_angsuran_pindah_gaji');
         const elWajib = document.getElementById('blokir_angsuran_lunas');
@@ -464,12 +495,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     nominalIDs.forEach(setupRupiahInput);
 
-    // Setup Terbilang (Event listener khusus untuk manual input blokir)
+    // Setup Terbilang Manual & Trigger Update Blokir Total
+    // (Pasang listener pada input blokir manual untuk mengupdate total otomatis)
     const pairs = [
         { in: 'blokir_angsuran_pindah_gaji', out: 'blokir_angsuran_pindah_gaji_terbilang' },
         { in: 'blokir_angsuran_lunas', out: 'blokir_angsuran_lunas_terbilang' },
-        // Total dan Prapurna dihandle otomatis oleh updateBlokirOtomatis, 
-        // tapi kita pasang listener jika user edit manual
+        // Prapurna: pasang listener juga jika user edit manual
         { in: 'blokir_angsuran_prapurna', out: 'blokir_angsuran_prapurna_terbilang' } 
     ];
     pairs.forEach(p => {
@@ -479,15 +510,14 @@ document.addEventListener('DOMContentLoaded', function() {
             updateTerbilang(elIn, elOut); 
             elIn.addEventListener('input', () => {
                 updateTerbilang(elIn, elOut);
-                updateBlokirOtomatis(); // Trigger hitung total jika manual diubah
+                updateBlokirOtomatis(); // Trigger total calc
             });
         }
     });
 
-    // Trigger hitung total jika Prapurna berubah (baik manual atau auto)
+    // Observer untuk Prapurna (karena bisa berubah otomatis oleh date change)
     const prapurnaInput = document.getElementById('blokir_angsuran_prapurna');
     if(prapurnaInput) {
-        // Monitor perubahan value programmatically atau manual
         const observer = new MutationObserver(updateBlokirOtomatis);
         observer.observe(prapurnaInput, { attributes: true, childList: false, characterData: false });
     }
@@ -501,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (jangkaWaktuDimohonInput) jangkaWaktuDimohonInput.addEventListener('input', syncPengajuanKeUsulan);
     if (bungaUsulanInput) bungaUsulanInput.addEventListener('input', calculateNewPMT);
     
-    // Event Listener khusus untuk Auto Blokir Prapurna
+    // Event khusus Tgl Pensiun untuk Auto Blokir
     const tglBUPInput = document.getElementById('tgl_pensiun_pemohon');
     if(tglBUPInput) {
         tglBUPInput.addEventListener('change', updateBlokirOtomatis);
@@ -569,6 +599,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Delete Buttons
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('slik-delete-btn')) {
             const id = e.target.dataset.facilityId;
@@ -597,10 +628,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // PREVIEW MODAL LOGIC
+    // =======================================================================
+    // PREVIEW MODAL & SUBMIT HANDLER (WITH DSR HARD BLOCK CHECK)
+    // =======================================================================
     const mainForm = document.getElementById('mainForm');
     const previewModal = document.getElementById('previewModal');
-    
     let bsModal = null;
     if(previewModal && typeof bootstrap !== 'undefined') {
         bsModal = new bootstrap.Modal(previewModal);
@@ -609,20 +641,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mainForm && bsModal) {
         mainForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // 1. CEK VALIDITAS HTML
             if (!mainForm.checkValidity()) {
                 mainForm.reportValidity();
                 return;
             }
-            
-            // 1. Populate Text & Textarea
+
+            // 2. [NEW] CEK VALIDITAS DSR (HARD BLOCK)
+            // Jika DSR > 90%, Stop! Tampilkan Alert dan Jangan Buka Modal
+            const dsrVal = parseFloat(document.getElementById('dsr_pemohon').value) || 0;
+            if (dsrVal > 90) {
+                alert("GAGAL MENYIMPAN:\n\nDSR (Debt Service Ratio) saat ini " + dsrVal.toFixed(2) + "%.\nBatas maksimal adalah 90%.\n\nMohon kurangi plafon kredit, perpanjang jangka waktu, atau lakukan pelunasan angsuran eksisting.");
+                
+                // Scroll user ke field DSR agar mereka sadar
+                const dsrInput = document.getElementById('dsr_pemohon');
+                if(dsrInput) {
+                    dsrInput.scrollIntoView({behavior: "smooth", block: "center"});
+                    dsrInput.focus();
+                }
+                return; // STOP DI SINI
+            }
+
+            // 3. JIKA AMAN, POPULATE PREVIEW
             mainForm.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="tel"], textarea, select').forEach(input => {
                const previewId = 'preview_' + input.id;
                const previewEl = document.getElementById(previewId);
                if(previewEl) previewEl.textContent = input.value;
             });
 
-            // 2. Checkboxes (Takeover) -> Legacy support/backup
-            // (Inline script di form_purna.html sudah handle, tapi ini untuk prapurna/backup)
             mainForm.querySelectorAll('input[type="checkbox"]').forEach(chk => {
                 const previewId = 'preview_' + chk.id;
                 const previewEl = document.getElementById(previewId);
@@ -631,7 +678,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 3. Segmentasi
             const seg = document.querySelector('input[name="segmentasi"]:checked');
             const prevSeg = document.getElementById('preview_segmentasi');
             if(seg && prevSeg) {
@@ -639,10 +685,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 prevSeg.className = seg.value === 'asabri' ? 'badge bg-success' : 'badge bg-primary';
             }
 
-            // 4. Jenis Pengajuan
             const jenisPengajuan = document.querySelector('input[name="jenis_pengajuan"]:checked');
             const previewJenis = document.getElementById('preview_jenis_pengajuan');
-            
             const rowRekening = document.getElementById('preview-row-rekening');
             const rowPK = document.getElementById('preview-row-pk');
             const valRekening = document.getElementById('no_rekening_pinjaman');
@@ -675,8 +719,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // 5. SLIK Fasilitas
+            // Generate SLIK Preview (Termasuk Badge Baru)
             const slikContainer = document.getElementById('preview-slik-container');
+            const toggleNihil = document.getElementById('toggle-fasilitas-nihil');
             const nihilPreview = document.getElementById('preview-fasilitas-nihil');
             
             if (slikContainer) {
@@ -702,19 +747,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             const kol = document.getElementById('slik_bank_' + i + '_coll').value || '-';
                             const angsuran = document.getElementById('slik_bank_' + i + '_angsuran').value || '0';
                             
-                            // Cek Take Over
+                            // Logic Badge TakeOver
                             const toCheck = document.getElementById('slik_bank_' + i + '_takeover');
                             const isTakeover = toCheck && toCheck.checked ? '<span class="badge bg-label-danger ms-2">Take Over</span>' : '';
 
-                            // Cek Pelunasan Top Up (FITUR BARU)
-                            const lunasCheck = document.getElementById('slik_bank_' + i + '_topup_lunas');
-                            const isLunasTopUp = lunasCheck && lunasCheck.checked ? '<span class="badge bg-label-warning ms-2">Pelunasan Top Up</span>' : '';
+                            // Logic Badge Pelunasan Top Up (NEW)
+                            const topUpCheck = document.getElementById('slik_bank_' + i + '_topup_lunas');
+                            const isTopUpLunas = topUpCheck && topUpCheck.checked ? '<span class="badge bg-label-warning ms-2">Pelunasan Top Up</span>' : '';
 
                             const html = `
                                 <div class="mb-3 pb-3 border-bottom">
                                     <div class="row mb-1">
                                         <div class="col-md-12 fw-bold text-primary d-flex align-items-center">
-                                            Fasilitas Aktif ${i} ${isTakeover} ${isLunasTopUp}
+                                            Fasilitas Aktif ${i} ${isTakeover} ${isTopUpLunas}
                                         </div>
                                     </div>
                                     <div class="row mb-1">
@@ -746,7 +791,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // 6. Syarat Kustom Preview
+            // Syarat Kustom Preview
             const listPenandatanganan = document.getElementById('preview-list-penandatanganan');
             const listPencairan = document.getElementById('preview-list-pencairan');
             
@@ -794,6 +839,6 @@ document.addEventListener('DOMContentLoaded', function() {
     handleJenisPengajuanChange();
     document.querySelectorAll('.toggle-alasan').forEach(handleAlasanToggle);
     calculateDSR();
-    updateBlokirOtomatis(); // Initial calc for blokir
+    updateBlokirOtomatis(); 
 
 });
