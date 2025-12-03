@@ -203,12 +203,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateDSR() {
         if (!angsuranUsulanInput || !dsrPemohonInput) return;
 
-        // Deteksi sumber penghasilan
-        let incomeElement = document.getElementById('estimasi_hak_pensiun') || 
-                            document.getElementById('pensiun_bulan_3_jumlah') || 
-                            document.getElementById('pensiun_bulan_jumlah');
-                            
-        const penghasilan = incomeElement ? parseFloat(unformatRupiah(incomeElement.value)) || 0 : 0;
+        // --- LOGIKA BARU: AMBIL NILAI TERKECIL DARI 3 BULAN (CONSERVATIVE) ---
+        let penghasilan = 0;
+        
+        // Cek apakah ini form Prapurna (pakai estimasi) atau Purna (pakai 3 bulan)
+        const estimasiInput = document.getElementById('estimasi_hak_pensiun');
+        
+        if (estimasiInput) {
+            // Logic Prapurna (Estimasi)
+            penghasilan = parseFloat(unformatRupiah(estimasiInput.value)) || 0;
+        } else {
+            // Logic Purna (Ambil 3 Bulan)
+            const gaji1 = parseFloat(unformatRupiah(document.getElementById('pensiun_bulan_1_jumlah')?.value)) || 0;
+            const gaji2 = parseFloat(unformatRupiah(document.getElementById('pensiun_bulan_2_jumlah')?.value)) || 0;
+            const gaji3 = parseFloat(unformatRupiah(document.getElementById('pensiun_bulan_jumlah')?.value)) || 0; // Bulan Terakhir
+            
+            // Filter yang nilainya > 0
+            const listGaji = [gaji1, gaji2, gaji3].filter(val => val > 0);
+            
+            if (listGaji.length > 0) {
+                // Ambil Nilai Minimum (Terkecil) dari 3 bulan
+                penghasilan = Math.min(...listGaji);
+            } else {
+                penghasilan = 0;
+            }
+        }
         const angsuranUsulan = parseFloat(unformatRupiah(angsuranUsulanInput.value)) || 0;
 
         let totalAngsuranEksisting = 0;
@@ -486,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nominalIDs = [
         'plafon_kredit_dimohon', 'usulan_plafon_kredit', 'usulan_angsuran',
         'gaji_bulan_1_jumlah', 'gaji_bulan_2_jumlah', 'gaji_bulan_3_jumlah',
-        'pensiun_bulan_1_jumlah', 'pensiun_bulan_2_jumlah', 'pensiun_bulan_3_jumlah', 'pensiun_bulan_jumlah',
+        'pensiun_bulan_1_jumlah', 'pensiun_bulan_2_jumlah', 'pensiun_bulan_jumlah', // Pastikan 3 ini ada
         'estimasi_hak_pensiun', 'taspen_tht', 'taspen_hak_pensiun',
         'biaya_provisi_nominal', 'biaya_tata_laksana_nominal', 'biaya_administrasi', 'info_gaji_bendahara'
     ];
@@ -537,7 +556,8 @@ document.addEventListener('DOMContentLoaded', function() {
         tglBUPInput.addEventListener('change', updateBlokirOtomatis);
     }
 
-    ['estimasi_hak_pensiun', 'pensiun_bulan_3_jumlah', 'pensiun_bulan_jumlah'].forEach(id => {
+    // Masukkan semua ID input gaji (bulan 1, 2, dan terakhir/3)
+    ['estimasi_hak_pensiun', 'pensiun_bulan_1_jumlah', 'pensiun_bulan_2_jumlah', 'pensiun_bulan_jumlah'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener('input', calculateDSR);
     });

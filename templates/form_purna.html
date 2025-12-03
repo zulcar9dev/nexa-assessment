@@ -362,36 +362,36 @@
                                         </div>
                                         <p class="fw-bold mt-3">Verifikasi Gaji Pensiun Diterima</p>
                                         
-                                        <div id="gaji-takeover-fields" class="takeover-hidden">
+                                        <div id="gaji-pensiun-wrapper">
                                             <div class="row">
                                                 <div class="col-md-6 mb-2">
-                                                    <label class="form-label">Bulan 1</label>
+                                                    <label class="form-label">Bulan 1 (Dua bulan lalu)</label>
                                                     <input type="text" class="form-control mb-1" id="pensiun_bulan_1_nama" name="pensiun_bulan_1_nama" placeholder="Nama Bulan (cth: Agu 2025)" value="{{ data.get('pensiun_bulan_1_nama', '') }}">
                                                 </div>
                                                 <div class="col-md-6 mb-2">
                                                     <label class="form-label">Jumlah (Rp)</label>
-                                                    <input type="text" class="form-control mb-1" id="pensiun_bulan_1_jumlah" name="pensiun_bulan_1_jumlah" placeholder="Jumlah Pensiun" value="{{ data.get('pensiun_bulan_1_jumlah', '') }}" data-type="rupiah">
+                                                    <input type="text" class="form-control mb-1" id="pensiun_bulan_1_jumlah" name="pensiun_bulan_1_jumlah" placeholder="Jumlah Pensiun" value="{{ data.get('pensiun_bulan_1_jumlah', '') }}" required data-type="rupiah">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6 mb-2">
-                                                    <label class="form-label">Bulan 2</label>
+                                                    <label class="form-label">Bulan 2 (Satu bulan lalu)</label>
                                                     <input type="text" class="form-control mb-1" id="pensiun_bulan_2_nama" name="pensiun_bulan_2_nama" placeholder="Nama Bulan (cth: Sep 2025)" value="{{ data.get('pensiun_bulan_2_nama', '') }}">
                                                 </div>
                                                 <div class="col-md-6 mb-2">
                                                     <label class="form-label">Jumlah (Rp)</label>
-                                                    <input type="text" class="form-control mb-1" id="pensiun_bulan_2_jumlah" name="pensiun_bulan_2_jumlah" placeholder="Jumlah Pensiun" value="{{ data.get('pensiun_bulan_2_jumlah', '') }}" data-type="rupiah">
+                                                    <input type="text" class="form-control mb-1" id="pensiun_bulan_2_jumlah" name="pensiun_bulan_2_jumlah" placeholder="Jumlah Pensiun" value="{{ data.get('pensiun_bulan_2_jumlah', '') }}" required data-type="rupiah">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <div class="col-md-6 mb-2">
-                                                <label class="form-label">Bulan <span class="takeover-hidden">(Terakhir)</span></label>
+                                                <label class="form-label">Bulan 3 (Terakhir/Saat ini)</label>
                                                 <input type="text" class="form-control mb-1" id="pensiun_bulan_nama" name="pensiun_bulan_nama" placeholder="Nama Bulan (cth: Sep 2025)" value="{{ data.get('pensiun_bulan_nama', '') }}">
                                             </div>
                                             <div class="col-md-6 mb-2">
-                                                <label class="form-label">Jumlah Pensiun Diterima (Rp)</label>
+                                                <label class="form-label">Jumlah (Rp)</label>
                                                 <input type="text" class="form-control mb-1" id="pensiun_bulan_jumlah" name="pensiun_bulan_jumlah" placeholder="Jumlah Pensiun" value="{{ data.get('pensiun_bulan_jumlah', '') }}" required data-type="rupiah">
                                             </div>
                                         </div>
@@ -661,8 +661,8 @@
                 <div class="row"><div class="col-md-4">Payroll di Bank:</div><div class="col-md-8"><span id="preview_payroll_bank"></span></div></div>
                 <div class="row"><div class="col-md-4">No. Rekening Payroll:</div><div class="col-md-8"><span id="preview_payroll_no_rek"></span></div></div>
                 
-                <p class="fw-bold mb-1 mt-3">Gaji Pensiun Diterima:</p>
-                <div id="preview-gaji-takeover" class="takeover-hidden">
+                <p class="fw-bold mb-1 mt-3">Gaji Pensiun Diterima (3 Bulan):</p>
+                <div id="preview-gaji-pensiun-list">
                     <div class="row"><div class="col-md-4"><span id="preview_pensiun_bulan_1_nama"></span>:</div><div class="col-md-8"><span id="preview_pensiun_bulan_1_jumlah"></span></div></div>
                     <div class="row"><div class="col-md-4"><span id="preview_pensiun_bulan_2_nama"></span>:</div><div class="col-md-8"><span id="preview_pensiun_bulan_2_jumlah"></span></div></div>
                 </div>

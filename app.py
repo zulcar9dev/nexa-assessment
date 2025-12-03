@@ -306,20 +306,30 @@ def generate_docx(id):
                 angsuran_str = context.get(key, '0').replace('.', '')
                 total_angsuran_eksisting += int(angsuran_str) if angsuran_str.isdigit() else 0
         
-        # (PERBAIKAN LOGIKA)
+        # LOGIKA PENGHASILAN (UPDATE: Konservatif 3 Bulan)
         if kategori.startswith('prapurna'):
-            # Kategori Prapurna menggunakan 'estimasi_hak_pensiun'
+            # Prapurna menggunakan 'estimasi_hak_pensiun'
             penghasilan_str = context.get('estimasi_hak_pensiun', '0').replace('.', '')
+            penghasilan = int(penghasilan_str) if penghasilan_str.isdigit() else 0
         else: 
-            # Kategori Purna (Reguler maupun Take Over)
-            # Selalu gunakan 'pensiun_bulan_jumlah' (Gaji Bulan Terakhir/Utama)
-            penghasilan_str = context.get('pensiun_bulan_jumlah', '0').replace('.', '')
-
-            # Fallback untuk Purna (jika gaji 0, gunakan 'taspen_hak_pensiun' jika ada)
-            if not penghasilan_str or float(penghasilan_str) == 0:
-                penghasilan_str = context.get('taspen_hak_pensiun', '0').replace('.', '')
+            # Purna (Reguler & Take Over) -> Cari Minimum dari 3 Bulan
+            gaji_1_str = context.get('pensiun_bulan_1_jumlah', '0').replace('.', '')
+            gaji_2_str = context.get('pensiun_bulan_2_jumlah', '0').replace('.', '')
+            gaji_3_str = context.get('pensiun_bulan_jumlah', '0').replace('.', '') # Bulan Terakhir/Utama
             
-        penghasilan = int(penghasilan_str) if penghasilan_str.isdigit() else 0
+            gaji_1 = int(gaji_1_str) if gaji_1_str.isdigit() else 0
+            gaji_2 = int(gaji_2_str) if gaji_2_str.isdigit() else 0
+            gaji_3 = int(gaji_3_str) if gaji_3_str.isdigit() else 0
+            
+            # Kumpulkan gaji yang nilainya > 0
+            list_gaji = [g for g in [gaji_1, gaji_2, gaji_3] if g > 0]
+            
+            if list_gaji:
+                penghasilan = min(list_gaji) # AMBIL NILAI TERKECIL
+            else:
+                # Fallback jika semua kosong, pakai Taspen
+                taspen_str = context.get('taspen_hak_pensiun', '0').replace('.', '')
+                penghasilan = int(taspen_str) if taspen_str.isdigit() else 0
         
         dsc_90_nominal = penghasilan * 0.9
         
