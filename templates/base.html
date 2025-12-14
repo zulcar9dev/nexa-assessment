@@ -184,7 +184,7 @@
         
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="{{ url_for('index') }}" class="app-brand-link">
+            <a href="{{ url_for('main.index') }}" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <img src="{{ url_for('static', filename='assets/img/logo-bni.png') }}" alt="Logo BNI" style="width: 40px; height: auto;">
               </span>
@@ -199,14 +199,14 @@
 
           <ul class="menu-inner py-1">
             <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">
-              <a href="{{ url_for('index') }}" class="menu-link">
+              <a href="{{ url_for('main.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard Input</div>
               </a>
             </li>
 
             <li class="menu-item {% if request.endpoint == 'riwayat' %}active{% endif %}">
-              <a href="{{ url_for('riwayat') }}" class="menu-link">
+              <a href="{{ url_for('main.riwayat') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Tables">Riwayat Debitur</div>
               </a>
@@ -217,7 +217,7 @@
             </li>
             
             <li class="menu-item {% if request.endpoint == 'admin' %}active{% endif %}">
-              <a href="{{ url_for('admin') }}" class="menu-link">
+              <a href="{{ url_for('main.admin') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-cog"></i>
                 <div data-i18n="Support">Kelola Template</div>
               </a>

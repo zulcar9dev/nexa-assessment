@@ -6,13 +6,13 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Riwayat Input Debitur</h5>
-        <a href="{{ url_for('index') }}" class="btn btn-primary">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
             <span class="tf-icons bx bx-plus"></span> Input Baru
         </a>
     </div>
     
     <div class="card-body">
-        <form method="GET" action="{{ url_for('riwayat') }}">
+        <form method="GET" action="{{ url_for('main.riwayat') }}">
             <div class="row g-3"> 
                 <div class="col-md-4">
                     <div class="input-group input-group-merge">
@@ -42,7 +42,7 @@
                 <div class="col-md-2 d-flex gap-2">
                     <button class="btn btn-primary w-100" type="submit">Filter</button>
                     {% if search_query or jenis_filter or seg_filter %}
-                        <a href="{{ url_for('riwayat') }}" class="btn btn-outline-secondary" title="Reset"><i class="bx bx-refresh"></i></a>
+                        <a href="{{ url_for('main.riwayat') }}" class="btn btn-outline-secondary" title="Reset"><i class="bx bx-refresh"></i></a>
                     {% endif %}
                 </div>
 
@@ -94,13 +94,13 @@
                     <td><small>{{ categories[debitur.kategori].nama }}</small></td>
                     
                     <td class="text-end">
-                        <a href="{{ url_for('generate_docx', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-success" title="Download Docx">
+                        <a href="{{ url_for('main.generate_docx', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-success" title="Download Docx">
                             <span class="tf-icons bx bx-download"></span>
                         </a>
-                        <a href="{{ url_for('edit', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-warning" title="Edit">
+                        <a href="{{ url_for('main.edit', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-warning" title="Edit">
                             <span class="tf-icons bx bx-edit-alt"></span>
                         </a>
-                        <a href="{{ url_for('hapus', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-danger" onclick="return confirm('Hapus data ini?')" title="Hapus">
+                        <a href="{{ url_for('main.hapus', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-danger" onclick="return confirm('Hapus data ini?')" title="Hapus">
                             <span class="tf-icons bx bx-trash"></span>
                         </a>
                     </td>
