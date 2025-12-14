@@ -11,13 +11,15 @@ PRODUCT_CATEGORIES = {
         'nama': 'BNI Fleksi Pensiun Prapurna', 
         'template_form': 'form_prapurna.html',
         'template_docx': 'template_prapurna_reguler.docx',
-        'show_on_dashboard': True 
+        'show_on_dashboard': True,
+        'icon': 'bx-briefcase' 
     },
     'prapurna_takeover': {
         'nama': 'BNI Fleksi Pensiun Prapurna Take Over',
         'template_form': 'form_prapurna.html', 
         'template_docx': 'template_prapurna_takeover.docx',
-        'show_on_dashboard': False 
+        'show_on_dashboard': False,
+        'icon': 'bx-briefcase'
     },
 
     # 2. PURNA (Tampilkan Hanya Reguler/Utama)
@@ -25,13 +27,15 @@ PRODUCT_CATEGORIES = {
         'nama': 'BNI Fleksi Pensiun Purna', 
         'template_form': 'form_purna.html',
         'template_docx': 'template_purna_reguler.docx',
-        'show_on_dashboard': True 
+        'show_on_dashboard': True,
+        'icon': 'bx-user-check'
     },
     'purna_takeover': {
         'nama': 'BNI Fleksi Pensiun Purna Take Over',
         'template_form': 'form_purna.html',
         'template_docx': 'template_purna_reguler.docx', # Menggunakan template reguler karena form sudah menyatu
-        'show_on_dashboard': False 
+        'show_on_dashboard': False,
+        'icon': 'bx-user-check'
     }
 }
 
