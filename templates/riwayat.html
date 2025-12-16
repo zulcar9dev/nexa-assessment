@@ -3,46 +3,50 @@
 {% block title %}Riwayat Debitur{% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card border-0 shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Riwayat Input Debitur</h5>
-        <a href="{{ url_for('index') }}" class="btn btn-primary">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
             <span class="tf-icons bx bx-plus"></span> Input Baru
         </a>
     </div>
-    
+
     <div class="card-body">
-        <form method="GET" action="{{ url_for('riwayat') }}">
-            <div class="row g-3"> 
+        <form method="GET" action="{{ url_for('main.riwayat') }}">
+            <div class="row g-3">
                 <div class="col-md-4">
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="bx bx-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Cari Nama / NIK..." name="q" value="{{ search_query }}">
+                        <input type="text" class="form-control" placeholder="Cari Nama / NIK..." name="q"
+                            value="{{ search_query }}">
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <select class="form-select" name="jenis">
                         <option value="">-- Semua Jenis --</option>
-                        <option value="baru" {% if jenis_filter == 'baru' %}selected{% endif %}>Baru</option>
-                        <option value="top_up" {% if jenis_filter == 'top_up' %}selected{% endif %}>Top Up</option>
-                        <option value="top_up_sisa_gaji" {% if jenis_filter == 'top_up_sisa_gaji' %}selected{% endif %}>Top Up Sisa Gaji</option>
-                        <option value="takeover" {% if jenis_filter == 'takeover' %}selected{% endif %}>Take Over</option>
+                        <option value="baru" {% if jenis_filter=='baru' %}selected{% endif %}>Baru</option>
+                        <option value="top_up" {% if jenis_filter=='top_up' %}selected{% endif %}>Top Up</option>
+                        <option value="top_up_sisa_gaji" {% if jenis_filter=='top_up_sisa_gaji' %}selected{% endif %}>
+                            Top Up Sisa Gaji</option>
+                        <option value="takeover" {% if jenis_filter=='takeover' %}selected{% endif %}>Take Over</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select class="form-select" name="seg">
                         <option value="">-- Semua Segmen --</option>
-                        <option value="taspen" {% if seg_filter == 'taspen' %}selected{% endif %}>TASPEN (PNS)</option>
-                        <option value="asabri" {% if seg_filter == 'asabri' %}selected{% endif %}>ASABRI (TNI/POLRI)</option>
+                        <option value="taspen" {% if seg_filter=='taspen' %}selected{% endif %}>TASPEN (PNS)</option>
+                        <option value="asabri" {% if seg_filter=='asabri' %}selected{% endif %}>ASABRI (TNI/POLRI)
+                        </option>
                     </select>
                 </div>
 
                 <div class="col-md-2 d-flex gap-2">
                     <button class="btn btn-primary w-100" type="submit">Filter</button>
                     {% if search_query or jenis_filter or seg_filter %}
-                        <a href="{{ url_for('riwayat') }}" class="btn btn-outline-secondary" title="Reset"><i class="bx bx-refresh"></i></a>
+                    <a href="{{ url_for('main.riwayat') }}" class="btn btn-outline-secondary" title="Reset"><i
+                            class="bx bx-refresh"></i></a>
                     {% endif %}
                 </div>
 
@@ -57,7 +61,7 @@
                     <th>Tanggal</th>
                     <th>Nama Pemohon</th>
                     <th>Segmentasi</th>
-                    <th>Jenis Pengajuan</th> 
+                    <th>Jenis Pengajuan</th>
                     <th>NIK</th>
                     <th>Produk</th>
                     <th class="text-end">Aksi</th>
@@ -71,36 +75,40 @@
                     <td>
                         {% set seg = debitur.data.get('segmentasi', 'taspen') %}
                         {% if seg == 'asabri' %}
-                            <span class="badge bg-label-success me-1">ASABRI</span>
+                        <span class="badge bg-label-success me-1">ASABRI</span>
                         {% else %}
-                            <span class="badge bg-label-info me-1">TASPEN</span>
+                        <span class="badge bg-label-info me-1">TASPEN</span>
                         {% endif %}
                     </td>
-                    
+
                     <td>
                         {% set jenis = debitur.data.get('jenis_pengajuan', 'baru') %}
-                        
+
                         {% if jenis == 'top_up' %}
-                            <span class="badge bg-label-warning">Top Up</span>
+                        <span class="badge bg-label-warning">Top Up</span>
                         {% elif jenis == 'top_up_sisa_gaji' %}
-                            <span class="badge bg-label-dark">Top Up Sisa Gaji</span>
+                        <span class="badge bg-label-dark">Top Up Sisa Gaji</span>
                         {% elif jenis == 'takeover' %}
-                            <span class="badge bg-label-danger">Take Over</span>
+                        <span class="badge bg-label-danger">Take Over</span>
                         {% else %}
-                            <span class="badge bg-label-primary">Baru</span>
+                        <span class="badge bg-label-primary">Baru</span>
                         {% endif %}
                     </td>
                     <td>{{ debitur.no_ktp }}</td>
                     <td><small>{{ categories[debitur.kategori].nama }}</small></td>
-                    
+
                     <td class="text-end">
-                        <a href="{{ url_for('generate_docx', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-success" title="Download Docx">
+                        <a href="{{ url_for('main.generate_docx', id=debitur.id) }}"
+                            class="btn btn-sm btn-icon btn-outline-success" title="Download Docx">
                             <span class="tf-icons bx bx-download"></span>
                         </a>
-                        <a href="{{ url_for('edit', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-warning" title="Edit">
+                        <a href="{{ url_for('main.edit', id=debitur.id) }}"
+                            class="btn btn-sm btn-icon btn-outline-warning" title="Edit">
                             <span class="tf-icons bx bx-edit-alt"></span>
                         </a>
-                        <a href="{{ url_for('hapus', id=debitur.id) }}" class="btn btn-sm btn-icon btn-outline-danger" onclick="return confirm('Hapus data ini?')" title="Hapus">
+                        <a href="{{ url_for('main.hapus', id=debitur.id) }}"
+                            class="btn btn-sm btn-icon btn-outline-danger" onclick="return confirm('Hapus data ini?')"
+                            title="Hapus">
                             <span class="tf-icons bx bx-trash"></span>
                         </a>
                     </td>

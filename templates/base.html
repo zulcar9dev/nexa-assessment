@@ -1,373 +1,492 @@
 <!DOCTYPE html>
-<html
-  lang="id"
-  class="light-style layout-menu-fixed"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="{{ url_for('static', filename='assets/') }}"
-  data-template="vertical-menu-template-free"
->
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<html lang="id" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default"
+  data-assets-path="{{ url_for('static', filename='assets/') }}" data-template="vertical-menu-template-free">
 
-    <title>{% block title %}Aplikasi Kredit Konsumer BNI{% endblock %}</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon/favicon.ico') }}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+  <title>{% block title %}Aplikasi Kredit Konsumer BNI{% endblock %}</title>
 
-    <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
-    
-    <style>
-        /* =========================================
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon/favicon.ico') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/core.css') }}"
+    class="template-customizer-core-css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}"
+    class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+  <link rel="stylesheet"
+    href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+  <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+
+  <style>
+    /* =========================================
            1. DEFINISI WARNA (Hijau Tosca & Orange)
            ========================================= */
-        :root {
-            --warna-tosca: #00665e;       /* Hijau Tosca Gelap BNI */
-            --warna-tosca-light: #e0f2f1; /* Tosca Pudar (untuk background menu) */
-            --warna-orange: #f15a23;      /* Orange Cerah */
-            --warna-orange-hover: #d1400b;/* Orange Gelap (saat di-klik) */
-        }
+    :root {
+      --warna-tosca: #00665e;
+      /* Hijau Tosca Gelap BNI */
+      --warna-tosca-light: #e0f2f1;
+      /* Tosca Pudar (untuk background menu) */
+      --warna-orange: #f15a23;
+      /* Orange Cerah */
+      --warna-orange-hover: #d1400b;
+      /* Orange Gelap (saat di-klik) */
+    }
 
-        /* =========================================
+    /* =========================================
            2. STYLE UMUM & TEXT
            ========================================= */
-        
-        /* Mengubah Warna Judul (H1-H6) menjadi Orange */
-        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-            color: var(--warna-tosca) !important;
-            font-weight: 700 !important;
-        }
 
-        /* Mengubah Warna Sub-Judul / Card Title menjadi Orange */
-        .card-title {
-            color: var(--warna-orange) !important;
-        }
-        
-        /* Warna Link (Tautan) */
-        a {
-            color: var(--warna-tosca);
-            text-decoration: none;
-        }
-        a:hover {
-            color: var(--warna-orange); /* Saat mouse di atas link, jadi Orange */
-        }
+    /* Mengubah Warna Judul (H1-H6) menjadi Orange */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6 {
+      color: var(--warna-tosca) !important;
+      font-weight: 700 !important;
+    }
 
-        /* Logo Brand Text */
-        .app-brand-text { 
-            color: var(--warna-tosca) !important; 
-        }
+    /* Mengubah Warna Sub-Judul / Card Title menjadi Orange */
+    .card-title {
+      color: var(--warna-orange) !important;
+    }
 
-        /* =========================================
+    /* Warna Link (Tautan) */
+    a {
+      color: var(--warna-tosca);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--warna-orange);
+      /* Saat mouse di atas link, jadi Orange */
+    }
+
+    /* Logo Brand Text */
+    .app-brand-text {
+      color: var(--warna-tosca) !important;
+    }
+
+    /* =========================================
            3. SIDEBAR MENU (Kombinasi Tosca & Orange)
            ========================================= */
-        
-        /* Menu Aktif: Background Tosca Pudar, Teks Orange */
-        .bg-menu-theme .menu-inner > .menu-item.active > .menu-link {
-            background-color: rgba(241, 90, 35, 0.15) !important; /* Background Orange Transparan */
-            color: var(--warna-orange) !important;
-            font-weight: bold;
-        }
-        
-        /* Garis Pinggir Menu Aktif */
-        .bg-menu-theme .menu-inner > .menu-item.active:before {
-            background-color: var(--warna-orange) !important;
-        }
 
-        /* Icon Menu Aktif */
-        .bg-menu-theme .menu-inner > .menu-item.active > .menu-link i {
-            color: var(--warna-orange) !important;
-        }
+    /* Menu Aktif: Background Tosca Pudar, Teks Orange */
+    .bg-menu-theme .menu-inner>.menu-item.active>.menu-link {
+      background-color: rgba(241, 90, 35, 0.15) !important;
+      /* Background Orange Transparan */
+      color: var(--warna-orange) !important;
+      font-weight: bold;
+    }
 
-        /* Menu saat di-Hover */
-        .bg-menu-theme .menu-inner > .menu-item > .menu-link:hover {
-            color: var(--warna-orange) !important;
-        }
+    /* Garis Pinggir Menu Aktif */
+    .bg-menu-theme .menu-inner>.menu-item.active:before {
+      background-color: var(--warna-orange) !important;
+    }
 
-        /* =========================================
+    /* Icon Menu Aktif */
+    .bg-menu-theme .menu-inner>.menu-item.active>.menu-link i {
+      color: var(--warna-orange) !important;
+    }
+
+    /* Menu saat di-Hover */
+    .bg-menu-theme .menu-inner>.menu-item>.menu-link:hover {
+      color: var(--warna-orange) !important;
+    }
+
+    /* =========================================
            4. TOMBOL (BUTTONS)
            ========================================= */
-        
-        /* Tombol Primary (Simpan/Input) -> Tetap Tosca agar elegan */
-        .btn-primary { 
-            background-color: var(--warna-tosca); 
-            border-color: var(--warna-tosca); 
-        }
-        .btn-primary:hover { 
-            background-color: #004d47; 
-            border-color: #004d47; 
-        }
 
-        /* Tombol Outline (Batal/Kembali) -> Border Orange */
-        .btn-outline-primary {
-            color: var(--warna-orange);
-            border-color: var(--warna-orange);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--warna-orange);
-            border-color: var(--warna-orange);
-            color: white;
-        }
+    /* Tombol Primary (Simpan/Input) -> Tetap Tosca agar elegan */
+    .btn-primary {
+      background-color: var(--warna-tosca);
+      border-color: var(--warna-tosca);
+    }
 
-        /* =========================================
+    .btn-primary:hover {
+      background-color: #004d47;
+      border-color: #004d47;
+    }
+
+    /* Tombol Outline (Batal/Kembali) -> Border Orange */
+    .btn-outline-primary {
+      color: var(--warna-orange);
+      border-color: var(--warna-orange);
+    }
+
+    .btn-outline-primary:hover {
+      background-color: var(--warna-orange);
+      border-color: var(--warna-orange);
+      color: white;
+    }
+
+    /* =========================================
            5. UTILITY CLASSES (Wajib Ada)
            ========================================= */
-        .slik-facility-hidden, .mitigasi-hidden, .alasan-wrapper, .syarat-kustom-hidden, .domisili-hidden {
-            display: none;
-        }
+    .slik-facility-hidden,
+    .mitigasi-hidden,
+    .alasan-wrapper,
+    .syarat-kustom-hidden,
+    .domisili-hidden {
+      display: none;
+    }
 
-        /* =========================================
+    /* =========================================
            6. DARK MODE (Penyesuaian Warna Gelap)
            ========================================= */
-        body.dark-mode {
-            background-color: #232333 !important;
-            color: #a3a4cc !important;
-        }
-        
-        /* Di Mode Gelap, Judul jadi Orange Terang agar terbaca */
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
-        body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
-        body.dark-mode .card-title {
-            color: #ffab91 !important; /* Orange Pastel Muda */
-        }
+    body.dark-mode {
+      background-color: #232333 !important;
+      color: #a3a4cc !important;
+    }
 
-        /* Di Mode Gelap, Link jadi Tosca Terang */
-        body.dark-mode a {
-            color: #80cbc4; /* Tosca Pastel Muda */
-        }
+    /* Di Mode Gelap, Judul jadi Orange Terang agar terbaca */
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3,
+    body.dark-mode h4,
+    body.dark-mode h5,
+    body.dark-mode h6,
+    body.dark-mode .card-title {
+      color: #ffab91 !important;
+      /* Orange Pastel Muda */
+    }
 
-        /* Perbaikan Komponen Lain di Dark Mode */
-        body.dark-mode .layout-content-navbar .layout-container { background-color: #232333; }
-        body.dark-mode .bg-menu-theme, body.dark-mode .bg-navbar-theme, body.dark-mode .card {
-            background-color: #2b2c40 !important;
-            color: #a3a4cc !important;
-        }
-        body.dark-mode .form-control, body.dark-mode .form-select {
-            background-color: #323249 !important;
-            border-color: #444564 !important;
-            color: #dbdbeb !important;
-        }
-        
-        /* Tab di Dark Mode */
-        body.dark-mode .nav-tabs .nav-link.active {
-            background-color: var(--warna-orange) !important; /* Tab Aktif jadi Orange */
-            color: #fff !important;
-            border-color: var(--warna-orange) !important;
-        }
-    </style>
-    {% block css %}{% endblock %}
-  </head>
+    /* Di Mode Gelap, Link jadi Tosca Terang */
+    body.dark-mode a {
+      color: #80cbc4;
+      /* Tosca Pastel Muda */
+    }
 
-  <body>
+    /* Perbaikan Komponen Lain di Dark Mode */
+    body.dark-mode .layout-content-navbar .layout-container {
+      background-color: #232333;
+    }
 
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            // Jika tema gelap, langsung tambahkan class sebelum konten dimuat
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-        })();
-    </script>
+    body.dark-mode .bg-menu-theme,
+    body.dark-mode .bg-navbar-theme,
+    body.dark-mode .card {
+      background-color: #2b2c40 !important;
+      color: #a3a4cc !important;
+    }
 
-    <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
-        
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-          <div class="app-brand demo">
-            <a href="{{ url_for('index') }}" class="app-brand-link">
-              <span class="app-brand-logo demo">
-                <img src="{{ url_for('static', filename='assets/img/logo-bni.png') }}" alt="Logo BNI" style="width: 40px; height: auto;">
-              </span>
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">team rbk</span>
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+      background-color: #323249 !important;
+      border-color: #444564 !important;
+      color: #dbdbeb !important;
+    }
+
+    /* Tab di Dark Mode */
+    body.dark-mode .nav-tabs .nav-link.active {
+      background-color: var(--warna-orange) !important;
+      /* Tab Aktif jadi Orange */
+      color: #fff !important;
+      border-color: var(--warna-orange) !important;
+    }
+
+    /* =========================================
+           7. MODERN & MINIMALIST ENHANCEMENTS
+           ========================================= */
+
+    /* Smooth Transitions */
+    .card,
+    .btn,
+    .form-control,
+    .nav-link {
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Card Hover Effect - Lift & Shadow */
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Input Fields - Clean & Spacious */
+    .form-control,
+    .form-select {
+      padding: 0.6rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #d9dee3;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      box-shadow: 0 0 0 0.25rem rgba(0, 102, 94, 0.15);
+      /* Tosca Glow */
+      border-color: var(--warna-tosca);
+    }
+
+    /* Table - Clean Header */
+    .table thead th {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      background-color: transparent !important;
+      border-bottom: 2px solid #ebe9f1;
+    }
+
+    /* Modern Badges (Soft background) */
+    .badge.bg-label-primary {
+      background-color: #e0f2f1 !important;
+      color: var(--warna-tosca) !important;
+    }
+
+    .badge.bg-label-warning {
+      background-color: #fff3e0 !important;
+      color: #ff9800 !important;
+    }
+
+    .badge.bg-label-danger {
+      background-color: #ffebee !important;
+      color: #ff3e1d !important;
+    }
+
+    .badge.bg-label-success {
+      background-color: #e8f5e9 !important;
+      color: #71dd37 !important;
+    }
+
+    /* Dark Mode Adjustments for New Styles */
+    body.dark-mode .card-hover:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    body.dark-mode .table thead th {
+      border-bottom: 2px solid #444564;
+    }
+  </style>
+  {% block css %}{% endblock %}
+</head>
+
+<body>
+
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      // Jika tema gelap, langsung tambahkan class sebelum konten dimuat
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+    })();
+  </script>
+
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+
+      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <div class="app-brand demo">
+          <a href="{{ url_for('main.index') }}" class="app-brand-link">
+            <span class="app-brand-logo demo">
+              <img src="{{ url_for('static', filename='assets/img/logo-bni.png') }}" alt="Logo BNI"
+                style="width: 40px; height: auto;">
+            </span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2">team rbk</span>
+          </a>
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <i class="bx bx-chevron-left bx-sm align-middle"></i>
+          </a>
+        </div>
+
+        <div class="menu-inner-shadow"></div>
+
+        <ul class="menu-inner py-1">
+          <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">
+            <a href="{{ url_for('main.index') }}" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-home-circle"></i>
+              <div data-i18n="Analytics">Dashboard Input</div>
             </a>
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+          </li>
+
+          <li class="menu-item {% if request.endpoint == 'riwayat' %}active{% endif %}">
+            <a href="{{ url_for('main.riwayat') }}" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-table"></i>
+              <div data-i18n="Tables">Riwayat Debitur</div>
+            </a>
+          </li>
+
+          <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Pengaturan</span>
+          </li>
+
+          <li class="menu-item {% if request.endpoint == 'admin' %}active{% endif %}">
+            <a href="{{ url_for('main.admin') }}" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-cog"></i>
+              <div data-i18n="Support">Kelola Template</div>
+            </a>
+          </li>
+
+          <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link" id="theme-toggler">
+              <i class="menu-icon tf-icons bx bx-moon"></i>
+              <div data-i18n="Dark Mode">Ganti Tampilan</div>
+            </a>
+          </li>
+
+        </ul>
+      </aside>
+      <div class="layout-page">
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+            <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+              <i class="bx bx-menu bx-sm"></i>
             </a>
           </div>
 
-          <div class="menu-inner-shadow"></div>
-
-          <ul class="menu-inner py-1">
-            <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">
-              <a href="{{ url_for('index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard Input</div>
-              </a>
-            </li>
-
-            <li class="menu-item {% if request.endpoint == 'riwayat' %}active{% endif %}">
-              <a href="{{ url_for('riwayat') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Tables">Riwayat Debitur</div>
-              </a>
-            </li>
-
-            <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Pengaturan</span>
-            </li>
-            
-            <li class="menu-item {% if request.endpoint == 'admin' %}active{% endif %}">
-              <a href="{{ url_for('admin') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-cog"></i>
-                <div data-i18n="Support">Kelola Template</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link" id="theme-toggler">
-                <i class="menu-icon tf-icons bx bx-moon"></i>
-                <div data-i18n="Dark Mode">Ganti Tampilan</div>
-              </a>
-            </li>
-
-          </ul>
-        </aside>
-        <div class="layout-page">
-          
-          <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
-            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                <i class="bx bx-menu bx-sm"></i>
-              </a>
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+            <div class="navbar-nav align-items-center">
+              <!-- Search bar removed -->
             </div>
 
-            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <div class="navbar-nav align-items-center">
-                <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
-                  <input type="text" class="form-control border-0 shadow-none" placeholder="Cari Fitur..." aria-label="Search..." />
-                </div>
-              </div>
-
-              <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                      <img src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
-                    </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <div class="avatar avatar-online">
-                              <img src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
-                            </div>
-                          </div>
-                          <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">Petugas Bank</span>
-                            <small class="text-muted">Admin</small>
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" alt
+                      class="w-px-40 h-auto rounded-circle" />
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <img src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" alt
+                              class="w-px-40 h-auto rounded-circle" />
                           </div>
                         </div>
-                      </a>
-                    </li>
-                    <li><div class="dropdown-divider"></div></li>
-                    <li><a class="dropdown-item" href="#"><i class="bx bx-power-off me-2"></i> <span class="align-middle">Log Out</span></a></li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          <div class="content-wrapper">
-            <div class="container-xxl flex-grow-1 container-p-y">
-                
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ 'primary' if category == 'message' else category }} alert-dismissible" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                {% block content %}{% endblock %}
-                
-            </div>
-            
-            <footer class="content-footer footer bg-footer-theme">
-              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                <div class="mb-2 mb-md-0">
-                  © <script>document.write(new Date().getFullYear());</script>, BNI Gorontalo
-                </div>
-              </div>
-            </footer>
-
-            <div class="content-backdrop fade"></div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">Petugas Bank</span>
+                          <small class="text-muted">Admin</small>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li><a class="dropdown-item" href="#"><i class="bx bx-power-off me-2"></i> <span
+                        class="align-middle">Log Out</span></a></li>
+                </ul>
+              </li>
+            </ul>
           </div>
+        </nav>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'primary' if category == 'message' else category }} alert-dismissible"
+              role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+
+          </div>
+
+          <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+              <div class="mb-2 mb-md-0">
+                ©
+                <script>document.write(new Date().getFullYear());</script>, BNI Gorontalo
+              </div>
+            </div>
+          </footer>
+
+          <div class="content-backdrop fade"></div>
         </div>
       </div>
-      <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+    <div class="layout-overlay layout-menu-toggle"></div>
+  </div>
 
-    <script src="{{ url_for('static', filename='assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/jquery/jquery.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const themeToggler = document.getElementById('theme-toggler');
-            const body = document.body;
-            const icon = themeToggler ? themeToggler.querySelector('i') : null;
-            const text = themeToggler ? themeToggler.querySelector('div') : null;
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const themeToggler = document.getElementById('theme-toggler');
+      const body = document.body;
+      const icon = themeToggler ? themeToggler.querySelector('i') : null;
+      const text = themeToggler ? themeToggler.querySelector('div') : null;
 
-            // 1. Sinkronisasi Icon & Teks saat halaman selesai dimuat
-            // (Class dark-mode sudah ditambahkan oleh script di atas, kita tinggal atur kosmetiknya)
-            if (body.classList.contains('dark-mode')) {
-                if(icon) icon.classList.replace('bx-moon', 'bx-sun');
-                if(text) text.textContent = "Mode Terang";
-                
-                // Tambahan: Fix warna Card saat reload
-                const cards = document.querySelectorAll('.card');
-                // Tidak perlu logic berat di sini jika CSS sudah menangani
-            }
+      // 1. Sinkronisasi Icon & Teks saat halaman selesai dimuat
+      // (Class dark-mode sudah ditambahkan oleh script di atas, kita tinggal atur kosmetiknya)
+      if (body.classList.contains('dark-mode')) {
+        if (icon) icon.classList.replace('bx-moon', 'bx-sun');
+        if (text) text.textContent = "Mode Terang";
 
-            // 2. Fungsi Enable/Disable (Untuk tombol klik)
-            function enableDarkMode() {
-                body.classList.add('dark-mode');
-                if(icon) icon.classList.replace('bx-moon', 'bx-sun');
-                if(text) text.textContent = "Mode Terang";
-                localStorage.setItem('theme', 'dark');
-            }
+        // Tambahan: Fix warna Card saat reload
+        const cards = document.querySelectorAll('.card');
+        // Tidak perlu logic berat di sini jika CSS sudah menangani
+      }
 
-            function disableDarkMode() {
-                body.classList.remove('dark-mode');
-                if(icon) icon.classList.replace('bx-sun', 'bx-moon');
-                if(text) text.textContent = "Mode Gelap";
-                localStorage.setItem('theme', 'light');
-            }
+      // 2. Fungsi Enable/Disable (Untuk tombol klik)
+      function enableDarkMode() {
+        body.classList.add('dark-mode');
+        if (icon) icon.classList.replace('bx-moon', 'bx-sun');
+        if (text) text.textContent = "Mode Terang";
+        localStorage.setItem('theme', 'dark');
+      }
 
-            // 3. Event Listener Tombol
-            if (themeToggler) {
-                themeToggler.addEventListener('click', (e) => {
-                    e.preventDefault(); // Mencegah link melompat
-                    const isDark = body.classList.contains('dark-mode');
-                    if (!isDark) {
-                        enableDarkMode();
-                    } else {
-                        disableDarkMode();
-                    }
-                });
-            }
+      function disableDarkMode() {
+        body.classList.remove('dark-mode');
+        if (icon) icon.classList.replace('bx-sun', 'bx-moon');
+        if (text) text.textContent = "Mode Gelap";
+        localStorage.setItem('theme', 'light');
+      }
+
+      // 3. Event Listener Tombol
+      if (themeToggler) {
+        themeToggler.addEventListener('click', (e) => {
+          e.preventDefault(); // Mencegah link melompat
+          const isDark = body.classList.contains('dark-mode');
+          if (!isDark) {
+            enableDarkMode();
+          } else {
+            disableDarkMode();
+          }
         });
-    </script>
-    
-    {% block js %}{% endblock %}
-  </body>
+      }
+    });
+  </script>
+
+  {% block js %}{% endblock %}
+</body>
+
 </html>
