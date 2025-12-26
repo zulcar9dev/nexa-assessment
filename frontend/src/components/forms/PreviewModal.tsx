@@ -1,0 +1,160 @@
+"use client";
+
+import { useUIStore } from "@/stores/ui-store";
+import { useFormStore } from "@/stores/form-store";
+import { X } from "lucide-react";
+
+export default function PreviewModal() {
+    const { isPreviewModalOpen, closePreviewModal } = useUIStore();
+    const { formData, dsrResult } = useFormStore();
+
+    if (!isPreviewModalOpen) return null;
+
+    const formatCurrency = (value: string | number | undefined) => {
+        if (!value) return "Rp 0";
+        if (value === "0" || value === 0) return "Rp 0";
+        const num = typeof value === "string" ? parseFloat(value.replace(/[^0-9]/g, "")) : value;
+        return `Rp ${num.toLocaleString("id-ID")}`;
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 font-sans">
+            <div
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                onClick={closePreviewModal}
+            />
+            <div className="relative bg-white dark:bg-[#1a2c2a] rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a]">
+                    <h2 className="text-xl font-bold text-[#00665e] dark:text-[#80cbc4]">Preview Data Pengajuan</h2>
+                    <div className="flex items-center gap-2">
+
+                        <button
+                            onClick={closePreviewModal}
+                            className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                            title="Close"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-gray-50 dark:bg-[#152322]">
+                    {/* Identitas */}
+                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                            Data Identitas
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                            <PreviewItem label="Nama Pemohon" value={formData.nama_pemohon} />
+                            <PreviewItem label="No. KTP" value={formData.no_ktp_pemohon} />
+                            <PreviewItem label="Tgl Lahir" value={formData.tgl_lahir_pemohon} />
+                            <PreviewItem label="No. Telepon" value={formData.no_telepon} />
+                            <PreviewItem label="Status Perkawinan" value={formData.status_perkawinan} />
+                            <PreviewItem label="Alamat KTP" value={formData.alamat_ktp} />
+                            <PreviewItem label="Alamat Domisili" value={formData.alamat_domisili} fullWidth />
+                        </div>
+                    </section>
+
+                    {/* Pekerjaan */}
+                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                            Data Pekerjaan / Pensiun
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                            <PreviewItem label="Instansi" value={formData.instansi} />
+                            <PreviewItem label="Golongan" value={formData.golongan} />
+                            <PreviewItem label="NIP" value={formData.nip} />
+                            <PreviewItem label="No. SK Pensiun" value={formData.no_sk_pensiun} />
+                        </div>
+                    </section>
+
+                    {/* Penghasilan */}
+                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                            Data Penghasilan
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                            <PreviewItem label="Nama Bank Pembayaran" value={formData.nama_bank_pembayaran} />
+                            <PreviewItem label="Rata-rata Penghasilan" value={formatCurrency(formData.pensiun_bulan_jumlah)} />
+                        </div>
+                    </section>
+
+                    {/* Data SLIK */}
+                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                            Data SLIK
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                            <PreviewItem label="Fasilitas Nihil" value={formData.fasilitas_nihil === "ya" ? "Ya (Tidak ada pinjaman)" : "(Tidak ada pinjaman lain)"} />
+                            <PreviewItem label="Total Angsuran Eksisting" value={formatCurrency(dsrResult?.totalAngsuranEksisting || 0)} />
+                        </div>
+                    </section>
+
+                    {/* Usulan */}
+                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                            Usulan Kredit
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                            <PreviewItem label="Segmentasi" value={formData.segmentasi} />
+                            <PreviewItem label="Jenis Pengajuan" value={formData.jenis_pengajuan} />
+                            <PreviewItem label="Plafon Kredit" value={formatCurrency(formData.usulan_plafon_kredit)} />
+                            <PreviewItem label="Jangka Waktu" value={`${formData.usulan_jangka_waktu_bulan || 0} Bulan`} />
+                            <PreviewItem label="Suku Bunga" value={`${formData.usulan_bunga_persen || 0}%`} />
+                        </div>
+                    </section>
+
+                    {/* DSR Result */}
+                    {dsrResult && (
+                        <section className="bg-[#f0f9f8] dark:bg-[#0f2322] p-4 rounded-lg shadow-sm border border-[#cdeae7] dark:border-[#1a2c2a]">
+                            <h3 className="text-lg font-bold text-[#00665e] dark:text-[#80cbc4] mb-4 pb-2 border-b border-[#cdeae7] dark:border-[#2d4a48] flex items-center gap-2">
+                                <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                                Hasil Analisa DSR
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                                <PreviewItem label="Total Penghasilan (Net)" value={formatCurrency(dsrResult.penghasilan)} />
+                                <PreviewItem label="Maksimal Angsuran (90%)" value={formatCurrency(dsrResult.maksimalAngsuran)} />
+                                <PreviewItem label="Total Angsuran Bar" value={formatCurrency(dsrResult.totalAngsuranBaru)} />
+                                <PreviewItem
+                                    label="Ratio DSR"
+                                    value={`${dsrResult.dsr.toFixed(2)}%`}
+                                    className={dsrResult.isValid ? "text-green-600 dark:text-green-400 font-bold text-lg" : "text-red-500 dark:text-red-400 font-bold text-lg"}
+                                />
+                            </div>
+                            <div className={`mt-4 p-3 rounded-lg text-center font-bold text-sm ${dsrResult.isValid ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+                                {dsrResult.isValid ? "DSR MASUK / LAYAK" : "DSR TIDAK MASUK / TIDAK LAYAK"}
+                            </div>
+                        </section>
+                    )}
+
+                </div>
+
+                {/* Footer */}
+                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex justify-end">
+                    <button
+                        onClick={closePreviewModal}
+                        className="px-6 py-2.5 bg-[#00665e] text-white rounded-lg hover:bg-[#00554e] transition-colors font-bold shadow-lg shadow-[#00665e]/20"
+                    >
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function PreviewItem({ label, value, fullWidth = false, className = "" }: { label: string, value: string | undefined | number, fullWidth?: boolean, className?: string }) {
+    return (
+        <div className={`${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">{label}</p>
+            <p className={`font-semibold text-[#0c1d1b] dark:text-gray-200 ${className}`}>{value || "-"}</p>
+        </div>
+    );
+}

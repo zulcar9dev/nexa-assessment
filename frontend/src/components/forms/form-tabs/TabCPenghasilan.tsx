@@ -30,76 +30,122 @@ export default function TabCPenghasilan() {
                         <Banknote className="w-6 h-6 text-[#00665e]" />
                         Data Gaji/Penghasilan (3 Bulan Terakhir)
                     </h3>
+
+                    <div className="mb-6">
+                        <label
+                            htmlFor="nama_bank_pembayaran"
+                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                        >
+                            Nama Bank Pembayaran Gaji/Penghasilan
+                        </label>
+                        <input
+                            id="nama_bank_pembayaran"
+                            name="nama_bank_pembayaran"
+                            type="text"
+                            value={formData.nama_bank_pembayaran || ""}
+                            onChange={(e) => updateField("nama_bank_pembayaran", e.target.value)}
+                            placeholder="e.g. Bank Sulutgo, Bank Mandiri Taspen, Bank BSI"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                        />
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Gaji Bulan 1 */}
                         <div>
-                            <label
-                                htmlFor="gaji_bulan_1_jumlah"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                Gaji Bulan 1
-                            </label>
-                            <div className="relative">
-                                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
-                                    Rp
-                                </span>
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="gaji_bulan_1_jumlah"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                                >
+                                    Gaji Bulan 1
+                                </label>
                                 <input
-                                    id="gaji_bulan_1_jumlah"
-                                    name="gaji_bulan_1_jumlah"
                                     type="text"
-                                    value={formatCurrencyDisplay(formData.gaji_bulan_1_jumlah)}
-                                    onChange={(e) => handleCurrencyChange("gaji_bulan_1_jumlah", e.target.value)}
-                                    placeholder="0"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                    value={formData.gaji_bulan_1_nama || ""}
+                                    onChange={(e) => updateField("gaji_bulan_1_nama", e.target.value)}
+                                    placeholder="Nama Bulan"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
                                 />
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
+                                        Rp
+                                    </span>
+                                    <input
+                                        id="gaji_bulan_1_jumlah"
+                                        name="gaji_bulan_1_jumlah"
+                                        type="text"
+                                        value={formatCurrencyDisplay(formData.gaji_bulan_1_jumlah)}
+                                        onChange={(e) => handleCurrencyChange("gaji_bulan_1_jumlah", e.target.value)}
+                                        placeholder="0"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         {/* Gaji Bulan 2 */}
                         <div>
-                            <label
-                                htmlFor="gaji_bulan_2_jumlah"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                Gaji Bulan 2
-                            </label>
-                            <div className="relative">
-                                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
-                                    Rp
-                                </span>
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="gaji_bulan_2_jumlah"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                                >
+                                    Gaji Bulan 2
+                                </label>
                                 <input
-                                    id="gaji_bulan_2_jumlah"
-                                    name="gaji_bulan_2_jumlah"
                                     type="text"
-                                    value={formatCurrencyDisplay(formData.gaji_bulan_2_jumlah)}
-                                    onChange={(e) => handleCurrencyChange("gaji_bulan_2_jumlah", e.target.value)}
-                                    placeholder="0"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                    value={formData.gaji_bulan_2_nama || ""}
+                                    onChange={(e) => updateField("gaji_bulan_2_nama", e.target.value)}
+                                    placeholder="Nama Bulan"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
                                 />
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
+                                        Rp
+                                    </span>
+                                    <input
+                                        id="gaji_bulan_2_jumlah"
+                                        name="gaji_bulan_2_jumlah"
+                                        type="text"
+                                        value={formatCurrencyDisplay(formData.gaji_bulan_2_jumlah)}
+                                        onChange={(e) => handleCurrencyChange("gaji_bulan_2_jumlah", e.target.value)}
+                                        placeholder="0"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         {/* Gaji Bulan 3 */}
                         <div>
-                            <label
-                                htmlFor="gaji_bulan_3_jumlah"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                Gaji Bulan 3
-                            </label>
-                            <div className="relative">
-                                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
-                                    Rp
-                                </span>
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="gaji_bulan_3_jumlah"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                                >
+                                    Gaji Bulan 3
+                                </label>
                                 <input
-                                    id="gaji_bulan_3_jumlah"
-                                    name="gaji_bulan_3_jumlah"
                                     type="text"
-                                    value={formatCurrencyDisplay(formData.gaji_bulan_3_jumlah)}
-                                    onChange={(e) => handleCurrencyChange("gaji_bulan_3_jumlah", e.target.value)}
-                                    placeholder="0"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                    value={formData.gaji_bulan_3_nama || ""}
+                                    onChange={(e) => updateField("gaji_bulan_3_nama", e.target.value)}
+                                    placeholder="Nama Bulan"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
                                 />
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
+                                        Rp
+                                    </span>
+                                    <input
+                                        id="gaji_bulan_3_jumlah"
+                                        name="gaji_bulan_3_jumlah"
+                                        type="text"
+                                        value={formatCurrencyDisplay(formData.gaji_bulan_3_jumlah)}
+                                        onChange={(e) => handleCurrencyChange("gaji_bulan_3_jumlah", e.target.value)}
+                                        placeholder="0"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -32,7 +32,7 @@ export default function TabEUsulan() {
                             value={formatCurrencyDisplay(formData.usulan_plafon_kredit)}
                             onChange={(e) => updateField("usulan_plafon_kredit", e.target.value.replace(/[^0-9]/g, ""))}
                             placeholder="0"
-                            className="block w-full rounded-lg border-[#cdeae7] py-2.5 pl-10 pr-3 bg-[#f5f8f8] text-right font-bold"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right font-bold"
                         />
                     </div>
                 </div>
@@ -49,7 +49,7 @@ export default function TabEUsulan() {
                         placeholder="120"
                         min="12"
                         max="180"
-                        className="block w-full rounded-lg border-[#cdeae7] py-2.5 px-3 bg-[#f5f8f8] text-right"
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                 </div>
 
@@ -62,8 +62,8 @@ export default function TabEUsulan() {
                         type="text"
                         value={formData.usulan_bunga_persen || ""}
                         onChange={(e) => updateField("usulan_bunga_persen", e.target.value)}
-                        placeholder="6.5"
-                        className="block w-full rounded-lg border-[#cdeae7] py-2.5 px-3 bg-[#f5f8f8] text-right"
+                        placeholder="11"
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
                     />
                 </div>
             </div>

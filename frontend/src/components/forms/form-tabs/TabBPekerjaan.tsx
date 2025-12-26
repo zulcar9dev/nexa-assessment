@@ -56,7 +56,7 @@ export default function TabBPekerjaan() {
                                 <option value="">Pilih Jenis</option>
                                 <option value="baru">Baru</option>
                                 <option value="top_up">Top Up</option>
-                                <option value="top_up_sisa_gaji">Top Up Sisa Gaji</option>
+                                <option value="top_up_sisa_gaji">Tunjangan Hari Tua (THT)</option>
                                 <option value="takeover">Take Over</option>
                             </select>
                         </div>
@@ -76,6 +76,25 @@ export default function TabBPekerjaan() {
                                 value={formData.instansi || ""}
                                 onChange={(e) => updateField("instansi", e.target.value)}
                                 placeholder="e.g. Pemerintah Kota Gorontalo"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            />
+                        </div>
+
+                        {/* Jabatan */}
+                        <div>
+                            <label
+                                htmlFor="jabatan"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Jabatan
+                            </label>
+                            <input
+                                id="jabatan"
+                                name="jabatan"
+                                type="text"
+                                value={formData.jabatan || ""}
+                                onChange={(e) => updateField("jabatan", e.target.value)}
+                                placeholder="e.g. Kepala Bagian"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
                         </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import PreviewModal from "../forms/PreviewModal";
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -37,6 +38,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
                     © {new Date().getFullYear()} BNI Gorontalo - Kredit Konsumer
                 </footer>
             </div>
+
+            {/* Modals */}
+            <PreviewModal />
         </div>
     );
 }

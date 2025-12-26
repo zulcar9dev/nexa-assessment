@@ -41,20 +41,30 @@ export interface DebiturFormData {
     segmentasi: Segmentasi;
     jenis_pengajuan: JenisPengajuan;
     instansi: string;
+    jabatan?: string;
     golongan: string;
+    nip?: string;
     tgl_mulai_kerja?: string;
+    alamat_kantor?: string;
     tgl_pensiun_pemohon?: string;
     no_sk_pensiun?: string;
     tgl_sk_pensiun?: string;
     tgl_pensiun_tmt?: string;
 
     // Tab C - Penghasilan
+    nama_bank_pembayaran?: string;
+    gaji_bulan_1_nama?: string;
     gaji_bulan_1_jumlah?: string;
+    gaji_bulan_2_nama?: string;
     gaji_bulan_2_jumlah?: string;
+    gaji_bulan_3_nama?: string;
     gaji_bulan_3_jumlah?: string;
     estimasi_hak_pensiun?: string;
+    pensiun_bulan_1_nama?: string;
     pensiun_bulan_1_jumlah?: string;
+    pensiun_bulan_2_nama?: string;
     pensiun_bulan_2_jumlah?: string;
+    pensiun_bulan_3_nama?: string;
     pensiun_bulan_3_jumlah?: string;
     pensiun_bulan_jumlah?: string;
 
@@ -77,6 +87,7 @@ export interface SlikFacility {
     plafon_maks: string;
     outstanding: string;
     angsuran: string;
+    kolektibilitas: string;
     is_takeover?: boolean;
     is_topup_lunas?: boolean;
 }

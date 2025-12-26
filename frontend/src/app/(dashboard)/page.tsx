@@ -98,50 +98,7 @@ export default function DashboardPage() {
                 ))}
             </div>
 
-            {/* Quick Stats (Optional - for future enhancement) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="card p-4">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#e0f2f1] dark:bg-[#00665e]/20 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6 text-[#00665e] dark:text-[#80cbc4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Total Debitur</p>
-                            <p className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">-</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="card p-4">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#fff3e0] dark:bg-[#f15a23]/20 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Pending</p>
-                            <p className="text-2xl font-bold text-[#f59e0b]">-</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="card p-4">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#e8f5e9] dark:bg-[#22c55e]/20 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Approved</p>
-                            <p className="text-2xl font-bold text-[#22c55e]">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }

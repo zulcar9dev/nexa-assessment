@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     Home,
     FileText,
@@ -42,6 +42,36 @@ const settingsItems = [
 export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     const pathname = usePathname();
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const startTimer = () => {
+        // Prevent multiple timers
+        if (timerRef.current) clearTimeout(timerRef.current);
+
+        // Only auto-hide if currently open
+        if (!isCollapsed && onToggle) {
+            timerRef.current = setTimeout(() => {
+                onToggle();
+            }, 5000);
+        }
+    };
+
+    const stopTimer = () => {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+    };
+
+    // Auto-hide logic: start timer when opened, stop when closed
+    useEffect(() => {
+        if (!isCollapsed) {
+            startTimer();
+        } else {
+            stopTimer();
+        }
+        return () => stopTimer();
+    }, [isCollapsed]);
 
     const toggleDarkMode = () => {
         const newMode = !isDarkMode;
@@ -83,13 +113,15 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
 
             {/* Sidebar */}
             <aside
+                onMouseEnter={stopTimer}
+                onMouseLeave={startTimer}
                 className={`
-          fixed top-0 left-0 z-50 h-full
+          fixed top-0 left-0 z-50 h-full lg:h-screen
           bg-[var(--sidebar-bg)] 
           border-r border-[var(--sidebar-border)]
           transition-all duration-300 ease-in-out
           ${isCollapsed ? "-translate-x-full lg:translate-x-0 lg:w-0" : "translate-x-0 w-64"}
-          lg:relative lg:translate-x-0 overflow-hidden
+          lg:sticky lg:top-0 overflow-hidden
         `}
             >
                 <div className="flex flex-col h-full w-64">
