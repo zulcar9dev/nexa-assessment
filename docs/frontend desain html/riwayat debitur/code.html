@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Riwayat Input Debitur - BNI Consumer Credit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00665e",
+                        "primary-hover": "#00524b",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f2322",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for table if needed */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-[#1C1C1C] dark:text-white overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar -->
+<aside class="hidden lg:flex flex-col w-72 h-full bg-white dark:bg-[#152e2c] border-r border-[#e6f4f3] dark:border-[#1f4542]">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="BNI Logo abstract symbol" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA0_ak1ws9YJSneK5-CT53L_zGTmPhM8tfhl5tmHT0LsqxiSRKmXISQdFIcrzkh0bEG-wuWj35Rslyui4jTGRu_AzX6GpDBned3XZ_ifURKvHVy9i8MvkSkw4htfZuzKjwcLzeNWAvfWHZkyeCMpGmuJI5fNi9RtHUZyf4ZvuuJIzjh6sRDi48reeR5rOA5D_FuTOZRoKJFeM2jj_iCZMnKrNR_T3O2xZ-aFu6qDQLEU4RnhP-2jRYcDyXFKDRLVYUUSLsMshA_l8Q");'></div>
+<div>
+<h1 class="text-primary dark:text-[#45a199] text-base font-bold leading-tight">BNI Consumer</h1>
+<span class="text-xs text-slate-500 dark:text-slate-400">Credit System</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2 px-4 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-[#e6f4f3] dark:hover:bg-[#1f4542] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary dark:text-slate-400 dark:group-hover:text-[#45a199]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-[#e6f4f3] dark:bg-[#1f4542] text-primary dark:text-[#45a199]" href="#">
+<span class="material-symbols-outlined fill-1">description</span>
+<span class="text-sm font-bold">Riwayat Input Debitur</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-[#e6f4f3] dark:hover:bg-[#1f4542] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary dark:text-slate-400 dark:group-hover:text-[#45a199]">check_circle</span>
+<span class="text-sm font-medium">Approval</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-[#e6f4f3] dark:hover:bg-[#1f4542] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary dark:text-slate-400 dark:group-hover:text-[#45a199]">pie_chart</span>
+<span class="text-sm font-medium">Laporan</span>
+</a>
+</div>
+<div class="p-4 border-t border-[#e6f4f3] dark:border-[#1f4542]">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-[#e6f4f3] dark:hover:bg-[#1f4542] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary dark:text-slate-400 dark:group-hover:text-[#45a199]">settings</span>
+<span class="text-sm font-medium">Pengaturan</span>
+</a>
+<div class="flex items-center gap-3 px-3 py-3 mt-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBBIqEyDFJE9b_YNdROAU7hYuSLn1UsLxgYi6u29WcLJmNSEn2C5YJSDJ5PmWZs-kFkmoXNAEwlcTzyQsjnHB8mC-z3813TtyuIROl8CMOsr0qQONt6d-cS4yor9u9Hltuor15XPgLVffkN9yF7qG40jgUk-SMoMPsCtGDJzIIm2M5sbsrTespDGNdkF0qXpFCImWj3f-kxfVrTCsmAm5QsUIO5P9nNalvMTwpKjyGUer47gflmgEkr1GWByO4Q-gPwP_zND4JjLq0");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-[#0c1d1b] dark:text-white">Admin Cabang</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">KC Jakarta Pusat</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full relative overflow-hidden">
+<!-- Top Header -->
+<header class="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#152e2c] border-b border-[#e6f4f3] dark:border-[#1f4542] shrink-0">
+<button class="lg:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#1f4542]">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">menu</span>
+</button>
+<div class="hidden lg:flex items-center text-slate-500 dark:text-slate-400 text-sm">
+<span>Beranda</span>
+<span class="material-symbols-outlined text-base mx-2">chevron_right</span>
+<span class="text-primary dark:text-[#45a199] font-medium">Riwayat Input Debitur</span>
+</div>
+<div class="flex items-center gap-3 ml-auto">
+<button class="flex items-center justify-center rounded-full size-9 hover:bg-[#e6f4f3] dark:hover:bg-[#1f4542] text-slate-600 dark:text-slate-300 transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-[#152e2c]"></span>
+</button>
+<button class="flex items-center justify-center rounded-full size-9 hover:bg-[#e6f4f3] dark:hover:bg-[#1f4542] text-slate-600 dark:text-slate-300 transition-colors">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Page Heading -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h2 class="text-2xl font-bold text-[#0c1d1b] dark:text-white tracking-tight">Riwayat Input Debitur</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Kelola dan pantau seluruh data pengajuan kredit debitur.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg shadow-sm transition-all font-medium text-sm">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Input Baru</span>
+</button>
+</div>
+<!-- Filter Section -->
+<div class="bg-white dark:bg-[#152e2c] p-5 rounded-xl border border-[#e6f4f3] dark:border-[#1f4542] shadow-sm">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+<!-- Search -->
+<div class="md:col-span-4 lg:col-span-5">
+<label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Pencarian</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500">search</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-2.5 border border-slate-200 dark:border-[#1f4542] rounded-lg bg-slate-50 dark:bg-[#0f2322] text-sm text-[#0c1d1b] dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Cari Nama Debitur / NIK" type="text"/>
+</div>
+</div>
+<!-- Dropdown 1: Segmentasi -->
+<div class="md:col-span-3 lg:col-span-2">
+<label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Segmentasi</label>
+<div class="relative">
+<select class="block w-full pl-3 pr-10 py-2.5 border border-slate-200 dark:border-[#1f4542] rounded-lg bg-white dark:bg-[#0f2322] text-sm text-[#0c1d1b] dark:text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none cursor-pointer">
+<option>Semua</option>
+<option>BNI Griya</option>
+<option>BNI Fleksi</option>
+<option>BNI Multiguna</option>
+</select>
+<span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
+<span class="material-symbols-outlined text-lg">expand_more</span>
+</span>
+</div>
+</div>
+<!-- Dropdown 2: Jenis -->
+<div class="md:col-span-3 lg:col-span-2">
+<label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Jenis Pengajuan</label>
+<div class="relative">
+<select class="block w-full pl-3 pr-10 py-2.5 border border-slate-200 dark:border-[#1f4542] rounded-lg bg-white dark:bg-[#0f2322] text-sm text-[#0c1d1b] dark:text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none cursor-pointer">
+<option>Semua</option>
+<option>Aplikasi Baru</option>
+<option>Top Up</option>
+<option>Take Over</option>
+</select>
+<span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
+<span class="material-symbols-outlined text-lg">expand_more</span>
+</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="md:col-span-2 lg:col-span-3 flex gap-2">
+<button class="flex-1 bg-primary/10 hover:bg-primary/20 text-primary dark:text-[#45a199] dark:hover:bg-primary/20 font-medium py-2.5 rounded-lg text-sm transition-colors border border-transparent">
+                                    Terapkan
+                                </button>
+<button class="p-2.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1f4542] transition-colors border border-transparent" title="Reset Filters">
+<span class="material-symbols-outlined">restart_alt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-white dark:bg-[#152e2c] rounded-xl border border-[#e6f4f3] dark:border-[#1f4542] shadow-sm flex flex-col overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#f8fcfc] dark:bg-[#0f2322] border-b border-[#e6f4f3] dark:border-[#1f4542]">
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tanggal</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nama Debitur</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Segmentasi</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Jenis</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">NIK</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e6f4f3] dark:divide-[#1f4542]">
+<!-- Row 1 -->
+<tr class="group hover:bg-[#f0f9f8] dark:hover:bg-[#1a3835] transition-colors">
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">12 Okt 2023</td>
+<td class="py-4 px-6 text-sm font-medium text-[#0c1d1b] dark:text-white whitespace-nowrap">Budi Santoso</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                                                BNI Griya
+                                            </span>
+</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Aplikasi Baru</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono">3201234567890001</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Griya Murni</td>
+<td class="py-4 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-[#45a199] rounded hover:bg-primary/5 transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-[#f0f9f8] dark:hover:bg-[#1a3835] transition-colors">
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">11 Okt 2023</td>
+<td class="py-4 px-6 text-sm font-medium text-[#0c1d1b] dark:text-white whitespace-nowrap">Siti Aminah</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                                                BNI Fleksi
+                                            </span>
+</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Top Up</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono">3174567890123456</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Fleksi Pensiun</td>
+<td class="py-4 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-[#45a199] rounded hover:bg-primary/5 transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-[#f0f9f8] dark:hover:bg-[#1a3835] transition-colors">
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">10 Okt 2023</td>
+<td class="py-4 px-6 text-sm font-medium text-[#0c1d1b] dark:text-white whitespace-nowrap">Eko Prasetyo</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
+                                                BNI Multiguna
+                                            </span>
+</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Take Over</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono">3321239876543210</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Griya Multiguna</td>
+<td class="py-4 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-[#45a199] rounded hover:bg-primary/5 transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-[#f0f9f8] dark:hover:bg-[#1a3835] transition-colors">
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">09 Okt 2023</td>
+<td class="py-4 px-6 text-sm font-medium text-[#0c1d1b] dark:text-white whitespace-nowrap">Dewi Lestari</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                                                BNI Griya
+                                            </span>
+</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Aplikasi Baru</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono">3578901234567890</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Griya Muda</td>
+<td class="py-4 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-[#45a199] rounded hover:bg-primary/5 transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="group hover:bg-[#f0f9f8] dark:hover:bg-[#1a3835] transition-colors">
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">08 Okt 2023</td>
+<td class="py-4 px-6 text-sm font-medium text-[#0c1d1b] dark:text-white whitespace-nowrap">Rudi Hermawan</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                                                BNI Fleksi
+                                            </span>
+</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Top Up</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono">3612345678901234</td>
+<td class="py-4 px-6 text-sm text-[#0c1d1b] dark:text-slate-200 whitespace-nowrap">Fleksi Aktif</td>
+<td class="py-4 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-slate-400 hover:text-primary dark:text-slate-500 dark:hover:text-[#45a199] rounded hover:bg-primary/5 transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 border-t border-[#e6f4f3] dark:border-[#1f4542] flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-sm text-slate-500 dark:text-slate-400">
+                                Menampilkan <span class="font-semibold text-slate-900 dark:text-white">1</span> sampai <span class="font-semibold text-slate-900 dark:text-white">5</span> dari <span class="font-semibold text-slate-900 dark:text-white">48</span> data
+                            </div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 rounded border border-slate-200 dark:border-[#1f4542] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1f4542] disabled:opacity-50 text-sm">Prev</button>
+<button class="px-3 py-1 rounded bg-primary text-white text-sm font-medium">1</button>
+<button class="px-3 py-1 rounded border border-transparent hover:bg-slate-100 dark:hover:bg-[#1f4542] text-slate-600 dark:text-slate-300 text-sm font-medium">2</button>
+<button class="px-3 py-1 rounded border border-transparent hover:bg-slate-100 dark:hover:bg-[#1f4542] text-slate-600 dark:text-slate-300 text-sm font-medium">3</button>
+<span class="text-slate-400 px-1">...</span>
+<button class="px-3 py-1 rounded border border-transparent hover:bg-slate-100 dark:hover:bg-[#1f4542] text-slate-600 dark:text-slate-300 text-sm font-medium">10</button>
+<button class="px-3 py-1 rounded border border-slate-200 dark:border-[#1f4542] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1f4542] text-sm">Next</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
