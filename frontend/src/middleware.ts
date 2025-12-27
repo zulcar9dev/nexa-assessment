@@ -1,18 +1,33 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 // Routes that don't require authentication
 const publicRoutes = ["/login"];
 
-export function middleware(request: NextRequest) {
+// API routes that don't require authentication
+const publicApiRoutes = ["/api/auth"];
+
+export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
+
+    // Skip middleware for public API routes
+    if (publicApiRoutes.some((route) => pathname.startsWith(route))) {
+        return NextResponse.next();
+    }
 
     // Check if the route is public
     const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
 
-    // For now, we'll use a simple cookie check
-    // In production, this should verify a proper auth token
-    const isAuthenticated = request.cookies.get("auth-session");
+    // Check for NextAuth.js token
+    const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET
+    });
+
+    // Also check the legacy cookie for backward compatibility
+    const legacyCookie = request.cookies.get("auth-session");
+    const isAuthenticated = !!token || !!legacyCookie;
 
     // If not authenticated and trying to access protected route, redirect to login
     if (!isAuthenticated && !isPublicRoute) {
@@ -38,7 +53,8 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          * - public folder
+         * - api/auth (NextAuth routes)
          */
-        "/((?!_next/static|_next/image|favicon.ico|.*\\..*|api).*)",
+        "/((?!_next/static|_next/image|favicon.ico|.*\\..*|api/auth).*)",
     ],
 };

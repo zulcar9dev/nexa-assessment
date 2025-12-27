@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 import {
     Home,
     FileText,
@@ -10,7 +11,6 @@ import {
     Moon,
     Sun,
     ChevronLeft,
-    Menu,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -31,11 +31,12 @@ const menuItems = [
     },
 ];
 
-const settingsItems = [
+const adminItems = [
     {
         title: "Kelola Template",
         href: "/admin/template",
         icon: Settings,
+        adminOnly: true,
     },
 ];
 
@@ -43,6 +44,10 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
     const pathname = usePathname();
     const [isDarkMode, setIsDarkMode] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const { data: session } = useSession();
+
+    // Check if user is admin
+    const isAdmin = (session?.user as { role?: string })?.role?.toLowerCase() === "admin";
 
     const startTimer = () => {
         // Prevent multiple timers
@@ -84,8 +89,6 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
             localStorage.setItem("theme", "light");
         }
     };
-
-
 
     // Initialize dark mode from localStorage
     useEffect(() => {
@@ -172,37 +175,47 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                             })}
                         </ul>
 
+                        {/* Admin Section - Only visible to Admin users */}
+                        {isAdmin && (
+                            <div className="mt-6">
+                                <p className="px-6 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                                    Admin
+                                </p>
+                                <ul className="space-y-1 px-3">
+                                    {adminItems.map((item) => {
+                                        const isActive = pathname === item.href;
+                                        return (
+                                            <li key={item.href}>
+                                                <Link
+                                                    href={item.href}
+                                                    className={`
+                              relative flex items-center gap-3 px-4 py-3 rounded-lg
+                              transition-all duration-200
+                              ${isActive
+                                                            ? "bg-[#f15a23]/15 text-[#f15a23] font-semibold"
+                                                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#323249] hover:text-[#f15a23]"
+                                                        }
+                            `}
+                                                >
+                                                    {isActive && (
+                                                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#f15a23] rounded-r-full" />
+                                                    )}
+                                                    <item.icon className="w-5 h-5" />
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        )}
+
                         {/* Settings Section */}
                         <div className="mt-6">
                             <p className="px-6 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                                 Pengaturan
                             </p>
                             <ul className="space-y-1 px-3">
-                                {settingsItems.map((item) => {
-                                    const isActive = pathname === item.href;
-                                    return (
-                                        <li key={item.href}>
-                                            <Link
-                                                href={item.href}
-                                                className={`
-                          relative flex items-center gap-3 px-4 py-3 rounded-lg
-                          transition-all duration-200
-                          ${isActive
-                                                        ? "bg-[#f15a23]/15 text-[#f15a23] font-semibold"
-                                                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#323249] hover:text-[#f15a23]"
-                                                    }
-                        `}
-                                            >
-                                                {isActive && (
-                                                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#f15a23] rounded-r-full" />
-                                                )}
-                                                <item.icon className="w-5 h-5" />
-                                                <span>{item.title}</span>
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
-
                                 {/* Dark Mode Toggle */}
                                 <li>
                                     <button

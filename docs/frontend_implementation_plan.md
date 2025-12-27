@@ -1,7 +1,7 @@
 # Frontend Implementation Plan
 ## Aplikasi Kredit Konsumer BNI
 
-**Last Updated:** 26 Desember 2024  
+**Last Updated:** 27 Desember 2024  
 **Status:** ✅ COMPLETED
 
 ---
@@ -13,7 +13,7 @@
 | App Pages | 12 | ✅ 100% |
 | Layout Components | 5 | ✅ 100% |
 | UI Components | 6 | ✅ 100% |
-| Form Components | 9 | ✅ 100% |
+| Form Components | 10 | ✅ 100% |
 | Hooks | 4 | ✅ 100% |
 | Stores | 3 | ✅ 100% |
 | Lib | 3 | ✅ 100% |
@@ -151,10 +151,13 @@ frontend/src/
 │       ├── FormTabs.tsx              ✅ Tab navigation
 │       ├── DSRCalculator.tsx         ✅ DSR calculator widget
 │       ├── FormActions.tsx           ✅ Form action buttons
+│       ├── PreviewModal.tsx          ✅ Preview modal dialog
 │       ├── form-tabs/
 │       │   ├── TabAIdentitas.tsx     ✅ Tab A - Identitas
-│       │   ├── TabBPekerjaan.tsx     ✅ Tab B - Pekerjaan
-│       │   ├── TabCPenghasilan.tsx   ✅ Tab C - Penghasilan
+│       │   ├── TabBPekerjaan.tsx     ✅ Tab B - Pekerjaan (Prapurna)
+│       │   ├── TabBDataPensiun.tsx   ✅ Tab B - Data Pensiun (Purna)
+│       │   ├── TabCPenghasilan.tsx   ✅ Tab C - Penghasilan (Prapurna)
+│       │   ├── TabCPenghasilanPurna.tsx ✅ Tab C - Penghasilan (Purna)
 │       │   ├── TabDSlik.tsx          ✅ Tab D - SLIK
 │       │   ├── TabEUsulan.tsx        ✅ Tab E - Usulan
 │       │   └── index.ts              ✅ Barrel export
@@ -416,9 +419,12 @@ const toggleDarkMode = () => {
 | FormTabs | `FormTabs.tsx` | Tab navigation |
 | DSRCalculator | `DSRCalculator.tsx` | Progress bar, status |
 | FormActions | `FormActions.tsx` | Batal, Preview, Simpan |
+| PreviewModal | `PreviewModal.tsx` | Data preview modal dialog |
 | TabAIdentitas | `TabAIdentitas.tsx` | Identity form fields |
-| TabBPekerjaan | `TabBPekerjaan.tsx` | Employment fields |
-| TabCPenghasilan | `TabCPenghasilan.tsx` | Income fields |
+| TabBPekerjaan | `TabBPekerjaan.tsx` | Employment fields (Prapurna) |
+| TabBDataPensiun | `TabBDataPensiun.tsx` | Pension data fields (Purna) |
+| TabCPenghasilan | `TabCPenghasilan.tsx` | Income fields (Prapurna) |
+| TabCPenghasilanPurna | `TabCPenghasilanPurna.tsx` | Income fields (Purna) |
 | TabDSlik | `TabDSlik.tsx` | SLIK facility list |
 | TabEUsulan | `TabEUsulan.tsx` | Credit proposal |
 
@@ -569,7 +575,15 @@ http://localhost:3000
 
 ---
 
-## 📋 Recent Changes (26 Desember 2024)
+## 📋 Recent Changes (27 Desember 2024)
+
+### Form Components Enhancement
+- ✅ Added `PreviewModal.tsx` for data preview before submission
+- ✅ Added `TabBDataPensiun.tsx` for Purna form pension data
+- ✅ Added `TabCPenghasilanPurna.tsx` for Purna form income data
+- ✅ Separated form tabs for Prapurna and Purna workflows
+
+### Previous Changes (26 Desember 2024)
 
 ### Authentication
 - ✅ Added `middleware.ts` for route protection

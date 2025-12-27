@@ -80,7 +80,36 @@ export default function PreviewModal() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                             <PreviewItem label="Nama Bank Pembayaran" value={formData.nama_bank_pembayaran} />
-                            <PreviewItem label="Rata-rata Penghasilan" value={formatCurrency(formData.pensiun_bulan_jumlah)} />
+                            <PreviewItem
+                                label="Rata-rata Penghasilan"
+                                value={formatCurrency(
+                                    formData.estimasi_hak_pensiun ||
+                                    formData.pensiun_bulan_jumlah ||
+                                    formData.gaji_bulan_1_jumlah ||
+                                    dsrResult?.penghasilan ||
+                                    0
+                                )}
+                            />
+                            {/* Show breakdown if available */}
+                            {(formData.gaji_bulan_1_jumlah || formData.pensiun_bulan_1_jumlah) && (
+                                <>
+                                    <PreviewItem
+                                        label={formData.gaji_bulan_1_jumlah ? "Gaji Bulan 1" : "Pensiun Bulan 1"}
+                                        value={formatCurrency(formData.gaji_bulan_1_jumlah || formData.pensiun_bulan_1_jumlah)}
+                                    />
+                                    <PreviewItem
+                                        label={formData.gaji_bulan_2_jumlah ? "Gaji Bulan 2" : "Pensiun Bulan 2"}
+                                        value={formatCurrency(formData.gaji_bulan_2_jumlah || formData.pensiun_bulan_2_jumlah)}
+                                    />
+                                    <PreviewItem
+                                        label={formData.gaji_bulan_3_jumlah ? "Gaji Bulan 3" : "Pensiun Bulan 3"}
+                                        value={formatCurrency(formData.gaji_bulan_3_jumlah || formData.pensiun_bulan_3_jumlah)}
+                                    />
+                                </>
+                            )}
+                            {formData.estimasi_hak_pensiun && (
+                                <PreviewItem label="Estimasi Hak Pensiun" value={formatCurrency(formData.estimasi_hak_pensiun)} className="font-bold text-[#00665e]" />
+                            )}
                         </div>
                     </section>
 
@@ -90,10 +119,67 @@ export default function PreviewModal() {
                             <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
                             Data SLIK
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                            <PreviewItem label="Fasilitas Nihil" value={formData.fasilitas_nihil === "ya" ? "Ya (Tidak ada pinjaman)" : "(Tidak ada pinjaman lain)"} />
-                            <PreviewItem label="Total Angsuran Eksisting" value={formatCurrency(dsrResult?.totalAngsuranEksisting || 0)} />
-                        </div>
+
+                        {formData.fasilitas_nihil === "ya" ? (
+                            <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+                                <p className="font-medium text-green-600 dark:text-green-400">✓ Fasilitas Nihil</p>
+                                <p className="text-sm mt-1">Tidak ada pinjaman eksisting</p>
+                            </div>
+                        ) : (
+                            <>
+                                {formData.slik_facilities && formData.slik_facilities.length > 0 ? (
+                                    <div className="space-y-3">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-sm">
+                                                <thead>
+                                                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                                                        <th className="text-left py-2 px-2 text-xs text-gray-500 uppercase">Bank</th>
+                                                        <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Plafon</th>
+                                                        <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Outstanding</th>
+                                                        <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Angsuran</th>
+                                                        <th className="text-center py-2 px-2 text-xs text-gray-500 uppercase">Kol</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {formData.slik_facilities.map((facility, idx) => (
+                                                        <tr key={idx} className="border-b border-gray-100 dark:border-gray-800">
+                                                            <td className="py-2 px-2 font-medium">{facility.nama_bank || "-"}</td>
+                                                            <td className="py-2 px-2 text-right">{formatCurrency(facility.plafon_maks)}</td>
+                                                            <td className="py-2 px-2 text-right">{formatCurrency(facility.outstanding)}</td>
+                                                            <td className="py-2 px-2 text-right font-semibold text-[#00665e] dark:text-[#80cbc4]">
+                                                                {formatCurrency(facility.angsuran)}
+                                                            </td>
+                                                            <td className="py-2 px-2 text-center">
+                                                                <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${facility.kolektibilitas === "1" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
+                                                                    facility.kolektibilitas === "2" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
+                                                                        "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                                                                    }`}>
+                                                                    {facility.kolektibilitas || "-"}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr className="bg-gray-50 dark:bg-[#0f2322] font-bold">
+                                                        <td colSpan={3} className="py-2 px-2 text-right">Total Angsuran Eksisting:</td>
+                                                        <td className="py-2 px-2 text-right text-[#00665e] dark:text-[#80cbc4]">
+                                                            {formatCurrency(dsrResult?.totalAngsuranEksisting || 0)}
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                                        <PreviewItem label="Status SLIK" value="Belum ada data fasilitas" />
+                                        <PreviewItem label="Total Angsuran Eksisting" value={formatCurrency(dsrResult?.totalAngsuranEksisting || 0)} />
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </section>
 
                     {/* Usulan */}

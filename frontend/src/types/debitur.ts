@@ -36,6 +36,8 @@ export interface DebiturFormData {
     alamat_domisili: string;
     no_telepon: string;
     status_perkawinan: string;
+    status_rumah?: string;
+    nama_lengkap?: string; // Legacy field used in edit page
 
     // Tab B - Pekerjaan / Pensiun
     segmentasi: Segmentasi;
@@ -50,6 +52,7 @@ export interface DebiturFormData {
     no_sk_pensiun?: string;
     tgl_sk_pensiun?: string;
     tgl_pensiun_tmt?: string;
+    nopen?: string; // Nomor Pensiun for Purna
 
     // Tab C - Penghasilan
     nama_bank_pembayaran?: string;
@@ -77,9 +80,6 @@ export interface DebiturFormData {
     usulan_jangka_waktu_bulan: string;
     usulan_bunga_persen: string;
     usulan_angsuran?: string;
-
-    // Additional fields
-    [key: string]: string | SlikFacility[] | undefined;
 }
 
 export interface SlikFacility {

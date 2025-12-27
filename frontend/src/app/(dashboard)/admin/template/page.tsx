@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Upload, FileText, Check, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Upload, FileText, Check, AlertCircle, Loader2, ShieldX } from "lucide-react";
 
 const templateCategories = [
     {
@@ -11,28 +13,63 @@ const templateCategories = [
         updatedAt: "2024-12-20",
     },
     {
-        key: "prapurna_takeover",
-        nama: "BNI Fleksi Pensiun Prapurna Take Over",
-        filename: "template_prapurna_takeover.docx",
-        updatedAt: "2024-12-18",
-    },
-    {
         key: "purna_reguler",
         nama: "BNI Fleksi Pensiun Purna",
-        filename: "template_purna_reguler.docx",
-        updatedAt: "2024-12-15",
-    },
-    {
-        key: "purna_takeover",
-        nama: "BNI Fleksi Pensiun Purna Take Over",
         filename: "template_purna_reguler.docx",
         updatedAt: "2024-12-15",
     },
 ];
 
 export default function AdminTemplatePage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
     const [selectedCategory, setSelectedCategory] = useState("");
     const [uploadStatus, setUploadStatus] = useState<"idle" | "success" | "error">("idle");
+
+    // Check if user is admin
+    const isAdmin = (session?.user as { role?: string })?.role?.toLowerCase() === "admin";
+
+    // Redirect non-admin users
+    useEffect(() => {
+        if (status === "authenticated" && !isAdmin) {
+            router.push("/");
+        }
+    }, [status, isAdmin, router]);
+
+    // Loading state
+    if (status === "loading") {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="flex items-center gap-3 text-gray-500">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <span>Memuat...</span>
+                </div>
+            </div>
+        );
+    }
+
+    // Access denied
+    if (status === "authenticated" && !isAdmin) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <ShieldX className="w-16 h-16 text-red-500 mx-auto mb-4" />
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                        Akses Ditolak
+                    </h2>
+                    <p className="text-gray-500 dark:text-gray-400 mb-4">
+                        Anda tidak memiliki izin untuk mengakses halaman ini
+                    </p>
+                    <button
+                        onClick={() => router.push("/")}
+                        className="px-4 py-2 bg-[#00665e] text-white rounded-lg hover:bg-[#004d47]"
+                    >
+                        Kembali ke Dashboard
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, kategori: string) => {
         const file = e.target.files?.[0];

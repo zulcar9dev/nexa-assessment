@@ -1,12 +1,15 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 // Stores & Hooks
 import { useFormStore } from "@/stores/form-store";
 import { useUIStore } from "@/stores/ui-store";
 import { useCalculation } from "@/hooks/use-calculation";
+import { useDebitur } from "@/hooks/use-debitur";
 
 // Components
 import FormTabs from "@/components/forms/FormTabs";
@@ -30,13 +33,18 @@ export default function EditDebiturPage({
     const { id } = use(params);
     const router = useRouter();
 
+    // Local state
+    const [isLoadingData, setIsLoadingData] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
+    const [isPurna, setIsPurna] = useState(false);
+    const [category, setCategory] = useState<"prapurna" | "purna">("prapurna");
+
     // Store
     const {
         currentTab,
         formData,
         dsrResult,
         isSubmitting,
-        setIsSubmitting,
         setFormData,
         resetForm,
         setCurrentTab
@@ -44,65 +52,83 @@ export default function EditDebiturPage({
 
     const { openPreviewModal } = useUIStore();
 
-    // Hook
+    // Hooks
     const { calculateAndUpdateDSR } = useCalculation();
+    const { getDebitur, updateDebitur, error: apiError } = useDebitur();
 
-    // Determine type based on ID (Mock Implementation)
-    // ID 2 is Purna, others (1, 3) are Prapurna
-    const isPurna = id === "2";
-    const category = isPurna ? "purna" : "prapurna";
-
-    // Initialize mock data when page loads
+    // Load data from API
     useEffect(() => {
-        // Reset tab to A
-        setCurrentTab("tab-a");
+        const fetchData = async () => {
+            setIsLoadingData(true);
+            setLoadError(null);
 
-        // Simulate fetching data
-        const mockData = {
-            // General
-            nama_lengkap: id === "1" ? "Ahmad Sudirman" : id === "2" ? "Budi Raharjo" : "Citra Dewi",
-            nik: id === "1" ? "7501234567890001" : id === "2" ? "7501234567890002" : "7501234567890003",
-            tempat_lahir: "Jakarta",
-            tanggal_lahir: "1980-01-01",
-            no_handphone: "081234567890",
+            const data = await getDebitur(id);
 
-            // Segmentasi
-            segmentasi: id === "2" ? "asabri" : "taspen",
-            jenis_pengajuan: id === "1" ? "baru" : id === "2" ? "top_up" : "takeover",
+            if (data) {
+                // Determine if this is Purna or Prapurna based on kategori
+                const kategori = String(data.kategori).toLowerCase();
+                const isPurnaType = kategori.includes("purna") && !kategori.includes("prapurna");
+                setIsPurna(isPurnaType);
+                setCategory(isPurnaType ? "purna" : "prapurna");
 
-            // Specifics
-            ...(isPurna ? {
-                nopen: "123456789",
-                pensiun_bulan_jumlah: "4500000"
-            } : {
-                instansi: "Kementerian Keuangan",
-                golongan: "III/a",
-                estimasi_hak_pensiun: "500000000"
-            })
+                // Load dataLengkap into form store
+                if (data.dataLengkap) {
+                    setFormData(data.dataLengkap);
+                } else {
+                    // Fallback to basic data
+                    setFormData({
+                        nama_pemohon: data.namaPemohon,
+                        no_ktp_pemohon: data.noKtp,
+                        segmentasi: String(data.segmentasi).toLowerCase() as "taspen" | "asabri",
+                        jenis_pengajuan: String(data.jenisPengajuan).toLowerCase() as "baru" | "top_up" | "top_up_sisa_gaji" | "takeover",
+                    });
+                }
+            } else {
+                setLoadError(apiError || "Data tidak ditemukan");
+            }
+
+            setIsLoadingData(false);
         };
 
-        setFormData(mockData as any);
-
-    }, [id, setCurrentTab, setFormData, isPurna]);
+        setCurrentTab("tab-a");
+        fetchData();
+    }, [id, getDebitur, setFormData, setCurrentTab, apiError]);
 
     // Effect: Calculate DSR automatically
     useEffect(() => {
-        calculateAndUpdateDSR(category);
+        if (!isLoadingData) {
+            calculateAndUpdateDSR(category);
+        }
     }, [
         formData,
         calculateAndUpdateDSR,
-        category
+        category,
+        isLoadingData
     ]);
 
     // Handle Save (Update)
-    const handleSave = async () => {
-        setIsSubmitting(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        alert("Perubahan berhasil disimpan!");
-        setIsSubmitting(false);
-        router.push("/debitur");
-    };
+    const handleSave = useCallback(async () => {
+        // Validate required fields
+        if (!formData.nama_pemohon || !formData.no_ktp_pemohon) {
+            alert("Nama Pemohon dan NIK harus diisi!");
+            setCurrentTab("tab-a");
+            return;
+        }
+
+        const result = await updateDebitur(id, {
+            namaPemohon: formData.nama_pemohon,
+            noKtp: formData.no_ktp_pemohon,
+            dataLengkap: formData as Record<string, unknown>,
+        });
+
+        if (result) {
+            alert("Perubahan berhasil disimpan!");
+            resetForm();
+            router.push("/debitur");
+        } else if (apiError) {
+            alert(apiError);
+        }
+    }, [id, formData, updateDebitur, resetForm, router, setCurrentTab, apiError]);
 
     // Handle Cancel
     const handleCancel = () => {
@@ -128,6 +154,43 @@ export default function EditDebiturPage({
         }
     };
 
+    // Loading state
+    if (isLoadingData) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="flex items-center gap-3 text-gray-500">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <span>Memuat data...</span>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (loadError) {
+        return (
+            <div className="space-y-6">
+                <h1 className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">
+                    Edit Data Debitur
+                </h1>
+                <div className="card p-8 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <AlertCircle className="w-12 h-12 text-red-500" />
+                        <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
+                            {loadError}
+                        </p>
+                        <Link
+                            href="/debitur"
+                            className="px-4 py-2 bg-[#00665e] text-white rounded-lg hover:bg-[#004d47]"
+                        >
+                            Kembali ke Riwayat
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6 pb-24">
             {/* Header */}
@@ -137,7 +200,7 @@ export default function EditDebiturPage({
                         Edit Data {isPurna ? "Purna" : "Prapurna"}
                     </h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {isPurna ? "BNI Fleksi Pensiun Purna" : "BNI Fleksi Pensiun Prapurna"} &bull; {formData.nama_lengkap || "Loading..."}
+                        {isPurna ? "BNI Fleksi Pensiun Purna" : "BNI Fleksi Pensiun Prapurna"} &bull; {String(formData.nama_pemohon || formData.nama_lengkap || "Loading...")}
                     </p>
                 </div>
             </div>

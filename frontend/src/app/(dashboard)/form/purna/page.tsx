@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-
 // Stores & Hooks
 import { useFormStore } from "@/stores/form-store";
 import { useUIStore } from "@/stores/ui-store";
@@ -24,7 +23,18 @@ import TabEUsulan from "@/components/forms/form-tabs/TabEUsulan";
 export default function FormPurnaPage() {
     // Store
     const router = useRouter();
-    const { currentTab, formData, dsrResult, isSubmitting, setIsSubmitting, resetForm, setCurrentTab } = useFormStore();
+    const {
+        currentTab,
+        formData,
+        dsrResult,
+        isSubmitting,
+        submitError,
+        validationErrors,
+        resetForm,
+        setCurrentTab,
+        submitForm,
+        clearErrors
+    } = useFormStore();
     const { openPreviewModal } = useUIStore();
 
     // Hook
@@ -33,7 +43,8 @@ export default function FormPurnaPage() {
     // Effect: Set initial tab on mount
     useEffect(() => {
         setCurrentTab("tab-a");
-    }, [setCurrentTab]);
+        clearErrors();
+    }, [setCurrentTab, clearErrors]);
 
     // Effect: Calculate DSR automatically when relevant data changes
     useEffect(() => {
@@ -51,13 +62,24 @@ export default function FormPurnaPage() {
         calculateAndUpdateDSR
     ]);
 
-    // Handle Save
+    // Handle Save - Uses real API
     const handleSave = async () => {
-        setIsSubmitting(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        alert("Data Purna berhasil disimpan (Draft)");
-        setIsSubmitting(false);
+        // Validate required fields
+        if (!formData.nama_pemohon || !formData.no_ktp_pemohon) {
+            alert("Nama Pemohon dan NIK harus diisi!");
+            setCurrentTab("tab-a");
+            return;
+        }
+
+        const result = await submitForm("purna", true);
+
+        if (result.success) {
+            alert("Data Purna berhasil disimpan!");
+            resetForm();
+            router.push("/debitur");
+        } else if (submitError) {
+            alert(submitError);
+        }
     };
 
     // Handle Cancel
@@ -89,7 +111,6 @@ export default function FormPurnaPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-
                     <div>
                         <h1 className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">
                             Input Data Purna
@@ -100,6 +121,22 @@ export default function FormPurnaPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Error Display */}
+            {(submitError || validationErrors.length > 0) && (
+                <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+                    {submitError && (
+                        <p className="text-sm text-red-800 dark:text-red-300 font-medium">{submitError}</p>
+                    )}
+                    {validationErrors.length > 0 && (
+                        <ul className="mt-2 list-disc list-inside text-sm text-red-700 dark:text-red-400">
+                            {validationErrors.map((err, idx) => (
+                                <li key={idx}>{err.field}: {err.message}</li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
 
             {/* Form Section */}
             <div className="relative">

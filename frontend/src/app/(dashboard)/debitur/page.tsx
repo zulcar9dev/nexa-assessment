@@ -1,41 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye } from "lucide-react";
-
-// Mock data for demonstration
-const mockDebiturData = [
-    {
-        id: "1",
-        tanggal: "2024-12-26",
-        namaPemohon: "Ahmad Sudirman",
-        segmentasi: "taspen",
-        jenisPengajuan: "baru",
-        noKtp: "7501234567890001",
-        kategori: "prapurna_reguler",
-    },
-    {
-        id: "2",
-        tanggal: "2024-12-25",
-        namaPemohon: "Budi Raharjo",
-        segmentasi: "asabri",
-        jenisPengajuan: "top_up",
-        noKtp: "7501234567890002",
-        kategori: "purna_reguler",
-    },
-    {
-        id: "3",
-        tanggal: "2024-12-24",
-        namaPemohon: "Citra Dewi",
-        segmentasi: "taspen",
-        jenisPengajuan: "takeover",
-        noKtp: "7501234567890003",
-        kategori: "prapurna_reguler",
-    },
-];
+import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye, Loader2, AlertCircle } from "lucide-react";
+import { useDebitur } from "@/hooks/use-debitur";
 
 const kategoriLabels: Record<string, string> = {
+    PRAPURNA_REGULER: "BNI Fleksi Pensiun Prapurna",
+    PRAPURNA_TAKEOVER: "BNI Fleksi Pensiun Prapurna Take Over",
+    PURNA_REGULER: "BNI Fleksi Pensiun Purna",
+    PURNA_TAKEOVER: "BNI Fleksi Pensiun Purna Take Over",
     prapurna_reguler: "BNI Fleksi Pensiun Prapurna",
     prapurna_takeover: "BNI Fleksi Pensiun Prapurna Take Over",
     purna_reguler: "BNI Fleksi Pensiun Purna",
@@ -43,6 +17,10 @@ const kategoriLabels: Record<string, string> = {
 };
 
 const jenisBadgeColors: Record<string, string> = {
+    BARU: "badge-primary",
+    TOP_UP: "badge-warning",
+    TOP_UP_SISA_GAJI: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300",
+    TAKEOVER: "badge-danger",
     baru: "badge-primary",
     top_up: "badge-warning",
     top_up_sisa_gaji: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300",
@@ -50,6 +28,10 @@ const jenisBadgeColors: Record<string, string> = {
 };
 
 const jenisLabels: Record<string, string> = {
+    BARU: "Baru",
+    TOP_UP: "Top Up",
+    TOP_UP_SISA_GAJI: "Top Up Sisa Gaji",
+    TAKEOVER: "Take Over",
     baru: "Baru",
     top_up: "Top Up",
     top_up_sisa_gaji: "Top Up Sisa Gaji",
@@ -60,22 +42,48 @@ export default function RiwayatDebiturPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [jenisFilter, setJenisFilter] = useState("");
     const [segmenFilter, setSegmenFilter] = useState("");
+    const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-    // Filter data
-    const filteredData = mockDebiturData.filter((item) => {
-        const matchSearch =
-            !searchQuery ||
-            item.namaPemohon.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.noKtp.includes(searchQuery);
-        const matchJenis = !jenisFilter || item.jenisPengajuan === jenisFilter;
-        const matchSegmen = !segmenFilter || item.segmentasi === segmenFilter;
-        return matchSearch && matchJenis && matchSegmen;
-    });
+    const {
+        debiturList,
+        pagination,
+        isLoading,
+        error,
+        fetchDebitur,
+        deleteDebitur,
+        downloadDocx,
+        clearErrors
+    } = useDebitur();
+
+    // Fetch data on mount and when filters change
+    const loadData = useCallback(() => {
+        fetchDebitur({
+            q: searchQuery || undefined,
+            jenis: jenisFilter || undefined,
+            segmentasi: segmenFilter || undefined,
+        });
+    }, [fetchDebitur, searchQuery, jenisFilter, segmenFilter]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     const resetFilters = () => {
         setSearchQuery("");
         setJenisFilter("");
         setSegmenFilter("");
+    };
+
+    const handleDelete = async (id: string) => {
+        const success = await deleteDebitur(id);
+        if (success) {
+            setDeleteConfirm(null);
+            loadData(); // Refresh list
+        }
+    };
+
+    const handleDownload = async (id: string, nama: string) => {
+        await downloadDocx(id, nama);
     };
 
     const formatDate = (dateStr: string) => {
@@ -96,8 +104,23 @@ export default function RiwayatDebiturPage() {
                     <h2 className="text-xl font-bold text-[#00665e] dark:text-[#80cbc4]">
                         Riwayat Input Debitur
                     </h2>
-
                 </div>
+
+                {/* Error Alert */}
+                {error && (
+                    <div className="mx-4 mt-4 flex items-start gap-3 rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+                        <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
+                        </div>
+                        <button
+                            onClick={clearErrors}
+                            className="text-red-600 hover:text-red-800 dark:text-red-400"
+                        >
+                            ×
+                        </button>
+                    </div>
+                )}
 
                 {/* Filter Section */}
                 <div className="p-4">
@@ -110,6 +133,7 @@ export default function RiwayatDebiturPage() {
                                 placeholder="Cari Nama / NIK..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && loadData()}
                                 className="w-full pl-10 pr-4 py-2.5 
                   bg-white dark:bg-[#323249] 
                   border border-gray-200 dark:border-[#444564]
@@ -131,10 +155,10 @@ export default function RiwayatDebiturPage() {
                 transition-all duration-200"
                         >
                             <option value="">-- Semua Jenis --</option>
-                            <option value="baru">Baru</option>
-                            <option value="top_up">Top Up</option>
-                            <option value="top_up_sisa_gaji">Top Up Sisa Gaji</option>
-                            <option value="takeover">Take Over</option>
+                            <option value="BARU">Baru</option>
+                            <option value="TOP_UP">Top Up</option>
+                            <option value="TOP_UP_SISA_GAJI">Top Up Sisa Gaji</option>
+                            <option value="TAKEOVER">Take Over</option>
                         </select>
 
                         {/* Segmen Filter */}
@@ -149,8 +173,8 @@ export default function RiwayatDebiturPage() {
                 transition-all duration-200"
                         >
                             <option value="">-- Semua Segmen --</option>
-                            <option value="taspen">TASPEN (PNS)</option>
-                            <option value="asabri">ASABRI (TNI/POLRI)</option>
+                            <option value="TASPEN">TASPEN (PNS)</option>
+                            <option value="ASABRI">ASABRI (TNI/POLRI)</option>
                         </select>
 
                         {/* Buttons */}
@@ -201,13 +225,22 @@ export default function RiwayatDebiturPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredData.length > 0 ? (
-                                filteredData.map((item) => (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={7} className="px-4 py-8 text-center">
+                                        <div className="flex items-center justify-center gap-2 text-gray-500">
+                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                            <span>Memuat data...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : debiturList.length > 0 ? (
+                                debiturList.map((item) => (
                                     <tr
                                         key={item.id}
                                         className="border-b border-gray-100 dark:border-[#444564] hover:bg-gray-50 dark:hover:bg-[#323249] transition-colors"
                                     >
-                                        <td className="px-4 py-3 text-sm">{formatDate(item.tanggal)}</td>
+                                        <td className="px-4 py-3 text-sm">{formatDate(item.createdAt)}</td>
                                         <td className="px-4 py-3">
                                             <span className="font-semibold text-gray-800 dark:text-gray-200">
                                                 {item.namaPemohon}
@@ -215,17 +248,17 @@ export default function RiwayatDebiturPage() {
                                         </td>
                                         <td className="px-4 py-3">
                                             <span
-                                                className={`badge ${item.segmentasi === "asabri"
+                                                className={`badge ${String(item.segmentasi).toUpperCase() === "ASABRI"
                                                     ? "badge-success"
                                                     : "badge-info"
                                                     }`}
                                             >
-                                                {item.segmentasi.toUpperCase()}
+                                                {String(item.segmentasi).toUpperCase()}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className={`badge ${jenisBadgeColors[item.jenisPengajuan]}`}>
-                                                {jenisLabels[item.jenisPengajuan]}
+                                            <span className={`badge ${jenisBadgeColors[item.jenisPengajuan] || "badge-primary"}`}>
+                                                {jenisLabels[item.jenisPengajuan] || item.jenisPengajuan}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-400">
@@ -233,13 +266,14 @@ export default function RiwayatDebiturPage() {
                                         </td>
                                         <td className="px-4 py-3">
                                             <span className="text-sm text-gray-600 dark:text-gray-400">
-                                                {kategoriLabels[item.kategori]}
+                                                {kategoriLabels[item.kategori] || item.kategori}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
                                             <div className="flex items-center justify-center gap-2">
                                                 {/* Download */}
                                                 <button
+                                                    onClick={() => handleDownload(item.id, item.namaPemohon)}
                                                     className="p-2 rounded-lg
                             border border-green-500 text-green-500
                             hover:bg-green-500 hover:text-white
@@ -271,20 +305,35 @@ export default function RiwayatDebiturPage() {
                                                     <Edit className="w-4 h-4" />
                                                 </Link>
                                                 {/* Delete */}
-                                                <button
-                                                    className="p-2 rounded-lg
-                            border border-red-500 text-red-500
-                            hover:bg-red-500 hover:text-white
-                            transition-all duration-200"
-                                                    title="Hapus"
-                                                    onClick={() => {
-                                                        if (confirm("Hapus data ini?")) {
-                                                            // Handle delete
-                                                        }
-                                                    }}
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
+                                                {deleteConfirm === item.id ? (
+                                                    <div className="flex items-center gap-1">
+                                                        <button
+                                                            onClick={() => handleDelete(item.id)}
+                                                            className="p-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-200"
+                                                            title="Konfirmasi Hapus"
+                                                        >
+                                                            ✓
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setDeleteConfirm(null)}
+                                                            className="p-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 transition-all duration-200"
+                                                            title="Batal"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => setDeleteConfirm(item.id)}
+                                                        className="p-2 rounded-lg
+                              border border-red-500 text-red-500
+                              hover:bg-red-500 hover:text-white
+                              transition-all duration-200"
+                                                        title="Hapus"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -304,26 +353,28 @@ export default function RiwayatDebiturPage() {
                 </div>
 
                 {/* Pagination */}
-                {filteredData.length > 0 && (
+                {debiturList.length > 0 && (
                     <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-[#444564]">
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Menampilkan {filteredData.length} data
+                            Menampilkan {debiturList.length} dari {pagination.total} data
                         </p>
                         <div className="flex items-center gap-2">
                             <button
-                                disabled
-                                className="px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
-                  text-sm text-gray-400 cursor-not-allowed"
+                                disabled={pagination.page <= 1}
+                                onClick={() => fetchDebitur({ page: pagination.page - 1 })}
+                                className={`px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
+                  text-sm ${pagination.page <= 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
                             >
                                 ← Prev
                             </button>
                             <span className="px-3 py-1 text-sm text-gray-600 dark:text-gray-400">
-                                Page 1 of 1
+                                Page {pagination.page} of {pagination.totalPages || 1}
                             </span>
                             <button
-                                disabled
-                                className="px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
-                  text-sm text-gray-400 cursor-not-allowed"
+                                disabled={pagination.page >= pagination.totalPages}
+                                onClick={() => fetchDebitur({ page: pagination.page + 1 })}
+                                className={`px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
+                  text-sm ${pagination.page >= pagination.totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
                             >
                                 Next →
                             </button>

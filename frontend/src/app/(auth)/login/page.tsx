@@ -1,23 +1,90 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/";
+    const authError = searchParams.get("error");
+
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(
+        authError === "CredentialsSignin" ? "Email/ID atau password salah" : null
+    );
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        rememberMe: false,
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(null);
 
-        // Simulate login - replace with actual auth logic
-        setTimeout(() => {
-            // Set auth cookie on successful login
-            document.cookie = "auth-session=authenticated; path=/; max-age=86400";
+        try {
+            const result = await signIn("credentials", {
+                email: formData.email,
+                password: formData.password,
+                redirect: false,
+                callbackUrl,
+            });
+
+            if (result?.error) {
+                setError(result.error === "CredentialsSignin"
+                    ? "Email/ID atau password salah"
+                    : result.error
+                );
+                setIsLoading(false);
+                return;
+            }
+
+            if (result?.ok) {
+                // Also set cookie for middleware compatibility
+                document.cookie = "auth-session=authenticated; path=/; max-age=86400";
+                window.location.href = callbackUrl;
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            setError("Terjadi kesalahan. Silakan coba lagi.");
             setIsLoading(false);
-            window.location.href = "/";
-        }, 1000);
+        }
+    };
+
+    const handleDemoLogin = async (type: "admin" | "user") => {
+        setIsLoading(true);
+        setError(null);
+
+        const credentials = type === "admin"
+            ? { email: "admin@bni.co.id", password: "admin123" }
+            : { email: "user@bni.co.id", password: "user123" };
+
+        try {
+            const result = await signIn("credentials", {
+                ...credentials,
+                redirect: false,
+                callbackUrl,
+            });
+
+            if (result?.error) {
+                setError("Demo login gagal. Pastikan database sudah di-seed.");
+                setIsLoading(false);
+                return;
+            }
+
+            if (result?.ok) {
+                document.cookie = "auth-session=authenticated; path=/; max-age=86400";
+                window.location.href = callbackUrl;
+            }
+        } catch (err) {
+            console.error("Demo login error:", err);
+            setError("Terjadi kesalahan. Silakan coba lagi.");
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -92,6 +159,16 @@ export default function LoginPage() {
                         </p>
                     </div>
 
+                    {/* Error Alert */}
+                    {error && (
+                        <div className="mb-6 flex items-start gap-3 rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+                            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                            <p className="text-sm text-red-800 dark:text-red-300 leading-relaxed">
+                                {error}
+                            </p>
+                        </div>
+                    )}
+
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Username */}
@@ -100,22 +177,24 @@ export default function LoginPage() {
                                 htmlFor="username"
                                 className="block text-sm font-semibold leading-6 text-gray-800 dark:text-gray-200 mb-2"
                             >
-                                Username atau ID Karyawan
+                                Email atau ID Karyawan
                             </label>
                             <div className="relative rounded-lg shadow-sm">
                                 <input
                                     id="username"
                                     name="username"
                                     type="text"
-                                    placeholder="Masukkan ID Anda"
+                                    placeholder="Masukkan email atau ID"
                                     required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className="block w-full rounded-lg border-0 py-3.5 pl-4 pr-10 
-                                        text-gray-900 dark:text-white
-                                        ring-1 ring-inset ring-gray-300 dark:ring-gray-600
-                                        placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                        focus:ring-2 focus:ring-inset focus:ring-[#00665e]
-                                        sm:text-sm sm:leading-6 
-                                        bg-white dark:bg-gray-800"
+                    text-gray-900 dark:text-white
+                    ring-1 ring-inset ring-gray-300 dark:ring-gray-600
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                    focus:ring-2 focus:ring-inset focus:ring-[#00665e]
+                    sm:text-sm sm:leading-6 
+                    bg-white dark:bg-gray-800"
                                 />
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                                     <User className="w-5 h-5 text-gray-400" />
@@ -138,13 +217,15 @@ export default function LoginPage() {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Masukkan kata sandi"
                                     required
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     className="block w-full rounded-lg border-0 py-3.5 pl-4 pr-10 
-                                        text-gray-900 dark:text-white
-                                        ring-1 ring-inset ring-gray-300 dark:ring-gray-600
-                                        placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                        focus:ring-2 focus:ring-inset focus:ring-[#00665e]
-                                        sm:text-sm sm:leading-6 
-                                        bg-white dark:bg-gray-800"
+                    text-gray-900 dark:text-white
+                    ring-1 ring-inset ring-gray-300 dark:ring-gray-600
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                    focus:ring-2 focus:ring-inset focus:ring-[#00665e]
+                    sm:text-sm sm:leading-6 
+                    bg-white dark:bg-gray-800"
                                 />
                                 <button
                                     type="button"
@@ -167,8 +248,10 @@ export default function LoginPage() {
                                     id="remember-me"
                                     name="remember-me"
                                     type="checkbox"
+                                    checked={formData.rememberMe}
+                                    onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
                                     className="h-4 w-4 rounded border-gray-300 text-[#00665e] focus:ring-[#00665e] 
-                                        bg-gray-100 dark:bg-gray-800 dark:border-gray-600"
+                    bg-gray-100 dark:bg-gray-800 dark:border-gray-600"
                                 />
                                 <label
                                     htmlFor="remember-me"
@@ -193,11 +276,11 @@ export default function LoginPage() {
                                 type="submit"
                                 disabled={isLoading}
                                 className="flex w-full justify-center rounded-lg bg-[#00665e] px-3 py-3.5 
-                                    text-sm font-semibold leading-6 text-white shadow-sm 
-                                    hover:bg-[#004d47] 
-                                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00665e] 
-                                    transition-all duration-200
-                                    disabled:opacity-50 disabled:cursor-not-allowed"
+                  text-sm font-semibold leading-6 text-white shadow-sm 
+                  hover:bg-[#004d47] 
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00665e] 
+                  transition-all duration-200
+                  disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? (
                                     <span className="flex items-center gap-2">
@@ -225,6 +308,49 @@ export default function LoginPage() {
                             </button>
                         </div>
                     </form>
+
+                    {/* Demo Login Buttons */}
+                    <div className="mt-6">
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+                            </div>
+                            <div className="relative flex justify-center text-sm">
+                                <span className="bg-white dark:bg-[#1e293b] px-2 text-gray-500 dark:text-gray-400">
+                                    Demo Login
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => handleDemoLogin("admin")}
+                                disabled={isLoading}
+                                className="flex justify-center items-center rounded-lg px-3 py-2.5 
+                  text-sm font-medium text-gray-700 dark:text-gray-300
+                  bg-gray-100 dark:bg-gray-800
+                  hover:bg-gray-200 dark:hover:bg-gray-700
+                  ring-1 ring-inset ring-gray-300 dark:ring-gray-600
+                  transition-colors disabled:opacity-50"
+                            >
+                                Admin Demo
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleDemoLogin("user")}
+                                disabled={isLoading}
+                                className="flex justify-center items-center rounded-lg px-3 py-2.5 
+                  text-sm font-medium text-gray-700 dark:text-gray-300
+                  bg-gray-100 dark:bg-gray-800
+                  hover:bg-gray-200 dark:hover:bg-gray-700
+                  ring-1 ring-inset ring-gray-300 dark:ring-gray-600
+                  transition-colors disabled:opacity-50"
+                            >
+                                User Demo
+                            </button>
+                        </div>
+                    </div>
 
                     {/* Security Notice */}
                     <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">

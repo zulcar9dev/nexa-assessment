@@ -3,8 +3,27 @@
 import { useState, useCallback } from "react";
 import type { Debitur } from "@/types/debitur";
 
-// Mock API base URL - replace with actual API when backend is ready
-const API_BASE = "/api";
+// API Response types
+interface ApiResponse<T = unknown> {
+    success: boolean;
+    data?: T;
+    message?: string;
+    error?: {
+        code: string;
+        message: string;
+        details?: Array<{ field: string; message: string }>;
+    };
+}
+
+interface PaginatedResponse<T> {
+    data: T[];
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
+}
 
 interface UseDebiturOptions {
     initialData?: Debitur[];
@@ -15,19 +34,45 @@ interface DebiturFilter {
     jenis?: string;
     segmentasi?: string;
     kategori?: string;
+    page?: number;
+    limit?: number;
+}
+
+interface CreateDebiturData {
+    namaPemohon: string;
+    noKtp: string;
+    kategori: string;
+    jenisPengajuan: string;
+    segmentasi: string;
+    dataLengkap: Record<string, unknown>;
 }
 
 export function useDebitur(options: UseDebiturOptions = {}) {
     const [debiturList, setDebiturList] = useState<Debitur[]>(options.initialData || []);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+    });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [validationErrors, setValidationErrors] = useState<Array<{ field: string; message: string }>>([]);
+
+    /**
+     * Clear errors
+     */
+    const clearErrors = useCallback(() => {
+        setError(null);
+        setValidationErrors([]);
+    }, []);
 
     /**
      * Fetch all debitur with optional filters
      */
     const fetchDebitur = useCallback(async (filters?: DebiturFilter) => {
         setIsLoading(true);
-        setError(null);
+        clearErrors();
 
         try {
             const params = new URLSearchParams();
@@ -35,59 +80,74 @@ export function useDebitur(options: UseDebiturOptions = {}) {
             if (filters?.jenis) params.set("jenis", filters.jenis);
             if (filters?.segmentasi) params.set("segmentasi", filters.segmentasi);
             if (filters?.kategori) params.set("kategori", filters.kategori);
+            if (filters?.page) params.set("page", filters.page.toString());
+            if (filters?.limit) params.set("limit", filters.limit.toString());
 
-            const response = await fetch(`${API_BASE}/debitur?${params.toString()}`);
+            const response = await fetch(`/api/debitur?${params.toString()}`);
+            const result: ApiResponse<PaginatedResponse<Debitur>> = await response.json();
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch debitur");
+            if (!result.success) {
+                throw new Error(result.error?.message || "Gagal mengambil data debitur");
             }
 
-            const data = await response.json();
-            setDebiturList(data.data || []);
-            return data;
+            if (result.data) {
+                setDebiturList(result.data.data || []);
+                setPagination(result.data.meta);
+            }
+
+            return result.data;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Unknown error";
+            const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return null;
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [clearErrors]);
 
     /**
      * Get single debitur by ID
      */
     const getDebitur = useCallback(async (id: string) => {
         setIsLoading(true);
-        setError(null);
+        clearErrors();
 
         try {
-            const response = await fetch(`${API_BASE}/debitur/${id}`);
+            const response = await fetch(`/api/debitur/${id}`);
+            const result: ApiResponse<Debitur> = await response.json();
 
             if (!response.ok) {
-                throw new Error("Failed to fetch debitur");
+                if (response.status === 401) {
+                    throw new Error("Sesi Anda telah berakhir. Silakan login kembali.");
+                }
+                if (response.status === 403) {
+                    throw new Error("Anda tidak memiliki akses ke data ini.");
+                }
+                if (response.status === 404) {
+                    throw new Error("Data debitur tidak ditemukan.");
+                }
+                throw new Error(result.error?.message || "Gagal mengambil data debitur");
             }
 
-            const data = await response.json();
-            return data.data;
+            return result.data;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Unknown error";
+            const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return null;
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [clearErrors]);
 
     /**
      * Create new debitur
      */
-    const createDebitur = useCallback(async (data: Partial<Debitur>) => {
+    const createDebitur = useCallback(async (data: CreateDebiturData) => {
         setIsLoading(true);
-        setError(null);
+        clearErrors();
 
         try {
-            const response = await fetch(`${API_BASE}/debitur`, {
+            const response = await fetch("/api/debitur", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,30 +155,37 @@ export function useDebitur(options: UseDebiturOptions = {}) {
                 body: JSON.stringify(data),
             });
 
+            const result: ApiResponse<Debitur> = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to create debitur");
+                if (response.status === 400 && result.error?.details) {
+                    setValidationErrors(result.error.details);
+                }
+                if (response.status === 401) {
+                    throw new Error("Sesi Anda telah berakhir. Silakan login kembali.");
+                }
+                throw new Error(result.error?.message || "Gagal menyimpan data debitur");
             }
 
-            const result = await response.json();
             return result.data;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Unknown error";
+            const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return null;
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [clearErrors]);
 
     /**
      * Update existing debitur
      */
-    const updateDebitur = useCallback(async (id: string, data: Partial<Debitur>) => {
+    const updateDebitur = useCallback(async (id: string, data: Partial<CreateDebiturData>) => {
         setIsLoading(true);
-        setError(null);
+        clearErrors();
 
         try {
-            const response = await fetch(`${API_BASE}/debitur/${id}`, {
+            const response = await fetch(`/api/debitur/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -126,65 +193,113 @@ export function useDebitur(options: UseDebiturOptions = {}) {
                 body: JSON.stringify(data),
             });
 
+            const result: ApiResponse<Debitur> = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to update debitur");
+                if (response.status === 400 && result.error?.details) {
+                    setValidationErrors(result.error.details);
+                }
+                if (response.status === 401) {
+                    throw new Error("Sesi Anda telah berakhir. Silakan login kembali.");
+                }
+                if (response.status === 403) {
+                    throw new Error("Anda tidak memiliki akses untuk mengubah data ini.");
+                }
+                if (response.status === 404) {
+                    throw new Error("Data debitur tidak ditemukan.");
+                }
+                throw new Error(result.error?.message || "Gagal memperbarui data debitur");
             }
 
-            const result = await response.json();
             return result.data;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Unknown error";
+            const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return null;
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [clearErrors]);
 
     /**
      * Delete debitur
      */
     const deleteDebitur = useCallback(async (id: string) => {
         setIsLoading(true);
-        setError(null);
+        clearErrors();
 
         try {
-            const response = await fetch(`${API_BASE}/debitur/${id}`, {
+            const response = await fetch(`/api/debitur/${id}`, {
                 method: "DELETE",
             });
 
+            const result: ApiResponse = await response.json();
+
             if (!response.ok) {
-                throw new Error("Failed to delete debitur");
+                if (response.status === 401) {
+                    throw new Error("Sesi Anda telah berakhir. Silakan login kembali.");
+                }
+                if (response.status === 403) {
+                    throw new Error("Anda tidak memiliki akses untuk menghapus data ini.");
+                }
+                if (response.status === 404) {
+                    throw new Error("Data debitur tidak ditemukan.");
+                }
+                throw new Error(result.error?.message || "Gagal menghapus data debitur");
             }
 
             // Remove from local list
             setDebiturList((prev) => prev.filter((d) => d.id !== id));
             return true;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Unknown error";
+            const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return false;
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [clearErrors]);
 
     /**
      * Download DOCX for debitur
      */
-    const downloadDocx = useCallback(async (id: string) => {
+    const downloadDocx = useCallback(async (id: string, namaDebitur?: string) => {
+        setIsLoading(true);
+        clearErrors();
+
         try {
-            const response = await fetch(`${API_BASE}/debitur/${id}/download`);
+            const response = await fetch(`/api/debitur/${id}/download`);
 
             if (!response.ok) {
-                throw new Error("Failed to download document");
+                if (response.status === 401) {
+                    throw new Error("Sesi Anda telah berakhir. Silakan login kembali.");
+                }
+                if (response.status === 403) {
+                    throw new Error("Anda tidak memiliki akses ke dokumen ini.");
+                }
+                if (response.status === 404) {
+                    throw new Error("Data debitur tidak ditemukan.");
+                }
+                throw new Error("Gagal mengunduh dokumen");
             }
 
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `kredit_${id}.docx`;
+
+            // Get filename from Content-Disposition header or generate one
+            const contentDisposition = response.headers.get("Content-Disposition");
+            let filename = `Kredit_${namaDebitur || id}.docx`;
+
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                if (filenameMatch) {
+                    filename = filenameMatch[1];
+                }
+            }
+
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
@@ -192,21 +307,31 @@ export function useDebitur(options: UseDebiturOptions = {}) {
 
             return true;
         } catch (err) {
-            const message = err instanceof Error ? err.message : "Unknown error";
+            const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return false;
+        } finally {
+            setIsLoading(false);
         }
-    }, []);
+    }, [clearErrors]);
 
     return {
+        // Data
         debiturList,
+        pagination,
+
+        // State
         isLoading,
         error,
+        validationErrors,
+
+        // Actions
         fetchDebitur,
         getDebitur,
         createDebitur,
         updateDebitur,
         deleteDebitur,
         downloadDocx,
+        clearErrors,
     };
 }
