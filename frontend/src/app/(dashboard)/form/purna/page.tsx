@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 // Stores & Hooks
 import { useFormStore } from "@/stores/form-store";
@@ -23,11 +23,17 @@ import TabEUsulan from "@/components/forms/form-tabs/TabEUsulan";
 
 export default function FormPurnaPage() {
     // Store
-    const { currentTab, formData, dsrResult, isSubmitting, setIsSubmitting } = useFormStore();
+    const router = useRouter();
+    const { currentTab, formData, dsrResult, isSubmitting, setIsSubmitting, resetForm, setCurrentTab } = useFormStore();
     const { openPreviewModal } = useUIStore();
 
     // Hook
     const { calculateAndUpdateDSR } = useCalculation();
+
+    // Effect: Set initial tab on mount
+    useEffect(() => {
+        setCurrentTab("tab-a");
+    }, [setCurrentTab]);
 
     // Effect: Calculate DSR automatically when relevant data changes
     useEffect(() => {
@@ -54,6 +60,12 @@ export default function FormPurnaPage() {
         setIsSubmitting(false);
     };
 
+    // Handle Cancel
+    const handleCancel = () => {
+        resetForm();
+        router.push("/");
+    };
+
     // Render active tab content
     const renderTabContent = () => {
         switch (currentTab) {
@@ -77,12 +89,7 @@ export default function FormPurnaPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Link
-                        href="/"
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#323249] transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                    </Link>
+
                     <div>
                         <h1 className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">
                             Input Data Purna
@@ -120,7 +127,8 @@ export default function FormPurnaPage() {
                 onSave={handleSave}
                 onPreview={openPreviewModal}
                 isSubmitting={isSubmitting}
-                cancelHref="/"
+                onCancel={handleCancel}
+                cancelHref=""
             />
         </div>
     );

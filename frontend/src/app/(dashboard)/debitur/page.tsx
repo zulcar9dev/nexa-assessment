@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Plus, Download, Edit, Trash2, RefreshCw } from "lucide-react";
+import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye } from "lucide-react";
 
 // Mock data for demonstration
 const mockDebiturData = [
@@ -96,16 +96,7 @@ export default function RiwayatDebiturPage() {
                     <h2 className="text-xl font-bold text-[#00665e] dark:text-[#80cbc4]">
                         Riwayat Input Debitur
                     </h2>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2
-              bg-[#00665e] hover:bg-[#004d47] text-white
-              rounded-lg font-medium text-sm
-              transition-all duration-200 shadow-sm hover:shadow-md"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Input Baru
-                    </Link>
+
                 </div>
 
                 {/* Filter Section */}
@@ -164,14 +155,17 @@ export default function RiwayatDebiturPage() {
 
                         {/* Buttons */}
                         <div className="flex gap-2">
-                            <button
-                                className="flex-1 px-4 py-2.5 
+                            <Link
+                                href="/"
+                                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5
                   bg-[#00665e] hover:bg-[#004d47] text-white
-                  rounded-lg text-sm font-medium
-                  transition-all duration-200"
+                  rounded-lg font-medium text-sm
+                  transition-all duration-200 shadow-sm hover:shadow-md"
                             >
-                                Filter
-                            </button>
+                                <Plus className="w-4 h-4" />
+                                Input Baru
+                            </Link>
+
                             {(searchQuery || jenisFilter || segmenFilter) && (
                                 <button
                                     onClick={resetFilters}
@@ -203,7 +197,7 @@ export default function RiwayatDebiturPage() {
                                 <th className="table-header px-4 py-3 text-left">Jenis Pengajuan</th>
                                 <th className="table-header px-4 py-3 text-left">NIK</th>
                                 <th className="table-header px-4 py-3 text-left">Produk</th>
-                                <th className="table-header px-4 py-3 text-right">Aksi</th>
+                                <th className="table-header px-4 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -222,8 +216,8 @@ export default function RiwayatDebiturPage() {
                                         <td className="px-4 py-3">
                                             <span
                                                 className={`badge ${item.segmentasi === "asabri"
-                                                        ? "badge-success"
-                                                        : "badge-info"
+                                                    ? "badge-success"
+                                                    : "badge-info"
                                                     }`}
                                             >
                                                 {item.segmentasi.toUpperCase()}
@@ -243,7 +237,7 @@ export default function RiwayatDebiturPage() {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center justify-center gap-2">
                                                 {/* Download */}
                                                 <button
                                                     className="p-2 rounded-lg
@@ -254,6 +248,17 @@ export default function RiwayatDebiturPage() {
                                                 >
                                                     <Download className="w-4 h-4" />
                                                 </button>
+                                                {/* Detail */}
+                                                <Link
+                                                    href={`/debitur/${item.id}`}
+                                                    className="p-2 rounded-lg
+                            border border-blue-500 text-blue-500
+                            hover:bg-blue-500 hover:text-white
+                            transition-all duration-200"
+                                                    title="Lihat Detail"
+                                                >
+                                                    <Eye className="w-4 h-4" />
+                                                </Link>
                                                 {/* Edit */}
                                                 <Link
                                                     href={`/debitur/${item.id}/edit`}

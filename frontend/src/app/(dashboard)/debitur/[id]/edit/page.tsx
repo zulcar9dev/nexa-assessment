@@ -1,11 +1,26 @@
 "use client";
 
-import { use } from "react";
-import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { use, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-// This page will reuse the form components from prapurna/purna
-// For now, showing a placeholder that will be replaced with actual form
+// Stores & Hooks
+import { useFormStore } from "@/stores/form-store";
+import { useUIStore } from "@/stores/ui-store";
+import { useCalculation } from "@/hooks/use-calculation";
+
+// Components
+import FormTabs from "@/components/forms/FormTabs";
+import FormActions from "@/components/forms/FormActions";
+import DSRCalculator from "@/components/forms/DSRCalculator";
+
+// Tab Components
+import TabAIdentitas from "@/components/forms/form-tabs/TabAIdentitas";
+import TabBPekerjaan from "@/components/forms/form-tabs/TabBPekerjaan";
+import TabBDataPensiun from "@/components/forms/form-tabs/TabBDataPensiun";
+import TabCPenghasilan from "@/components/forms/form-tabs/TabCPenghasilan";
+import TabCPenghasilanPurna from "@/components/forms/form-tabs/TabCPenghasilanPurna";
+import TabDSlik from "@/components/forms/form-tabs/TabDSlik";
+import TabEUsulan from "@/components/forms/form-tabs/TabEUsulan";
 
 export default function EditDebiturPage({
     params,
@@ -13,62 +28,149 @@ export default function EditDebiturPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = use(params);
+    const router = useRouter();
+
+    // Store
+    const {
+        currentTab,
+        formData,
+        dsrResult,
+        isSubmitting,
+        setIsSubmitting,
+        setFormData,
+        resetForm,
+        setCurrentTab
+    } = useFormStore();
+
+    const { openPreviewModal } = useUIStore();
+
+    // Hook
+    const { calculateAndUpdateDSR } = useCalculation();
+
+    // Determine type based on ID (Mock Implementation)
+    // ID 2 is Purna, others (1, 3) are Prapurna
+    const isPurna = id === "2";
+    const category = isPurna ? "purna" : "prapurna";
+
+    // Initialize mock data when page loads
+    useEffect(() => {
+        // Reset tab to A
+        setCurrentTab("tab-a");
+
+        // Simulate fetching data
+        const mockData = {
+            // General
+            nama_lengkap: id === "1" ? "Ahmad Sudirman" : id === "2" ? "Budi Raharjo" : "Citra Dewi",
+            nik: id === "1" ? "7501234567890001" : id === "2" ? "7501234567890002" : "7501234567890003",
+            tempat_lahir: "Jakarta",
+            tanggal_lahir: "1980-01-01",
+            no_handphone: "081234567890",
+
+            // Segmentasi
+            segmentasi: id === "2" ? "asabri" : "taspen",
+            jenis_pengajuan: id === "1" ? "baru" : id === "2" ? "top_up" : "takeover",
+
+            // Specifics
+            ...(isPurna ? {
+                nopen: "123456789",
+                pensiun_bulan_jumlah: "4500000"
+            } : {
+                instansi: "Kementerian Keuangan",
+                golongan: "III/a",
+                estimasi_hak_pensiun: "500000000"
+            })
+        };
+
+        setFormData(mockData as any);
+
+    }, [id, setCurrentTab, setFormData, isPurna]);
+
+    // Effect: Calculate DSR automatically
+    useEffect(() => {
+        calculateAndUpdateDSR(category);
+    }, [
+        formData,
+        calculateAndUpdateDSR,
+        category
+    ]);
+
+    // Handle Save (Update)
+    const handleSave = async () => {
+        setIsSubmitting(true);
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        alert("Perubahan berhasil disimpan!");
+        setIsSubmitting(false);
+        router.push("/debitur");
+    };
+
+    // Handle Cancel
+    const handleCancel = () => {
+        resetForm();
+        router.push("/debitur");
+    };
+
+    // Render active tab content
+    const renderTabContent = () => {
+        switch (currentTab) {
+            case "tab-a":
+                return <TabAIdentitas />;
+            case "tab-b":
+                return isPurna ? <TabBDataPensiun /> : <TabBPekerjaan />;
+            case "tab-c":
+                return isPurna ? <TabCPenghasilanPurna /> : <TabCPenghasilan />;
+            case "tab-d":
+                return <TabDSlik />;
+            case "tab-e":
+                return <TabEUsulan />;
+            default:
+                return <TabAIdentitas />;
+        }
+    };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-24">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link
-                        href={`/debitur/${id}`}
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#323249] transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                    </Link>
-                    <div>
-                        <h1 className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">
-                            Edit Data Debitur
-                        </h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            ID: {id}
-                        </p>
-                    </div>
+                <div>
+                    <h1 className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">
+                        Edit Data {isPurna ? "Purna" : "Prapurna"}
+                    </h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {isPurna ? "BNI Fleksi Pensiun Purna" : "BNI Fleksi Pensiun Prapurna"} &bull; {formData.nama_lengkap || "Loading..."}
+                    </p>
                 </div>
             </div>
 
-            {/* Placeholder Message */}
-            <div className="card p-8 text-center">
-                <div className="max-w-md mx-auto">
-                    <div className="w-16 h-16 bg-[#e0f2f1] dark:bg-[#00665e]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Save className="w-8 h-8 text-[#00665e] dark:text-[#80cbc4]" />
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                        Form Edit Debitur
-                    </h2>
-                    <p className="text-gray-500 dark:text-gray-400 mb-6">
-                        Form ini akan memuat data debitur yang sudah ada dan memungkinkan Anda untuk mengubahnya.
-                        Form yang sama dengan form input baru akan digunakan.
-                    </p>
-                    <div className="flex justify-center gap-3">
-                        <Link
-                            href={`/debitur/${id}`}
-                            className="px-6 py-2.5 border-2 border-gray-300 dark:border-[#444564] 
-                text-gray-600 dark:text-gray-400 rounded-lg font-medium
-                hover:bg-gray-50 dark:hover:bg-[#323249] transition-all duration-200"
-                        >
-                            Kembali
-                        </Link>
-                        <button
-                            className="px-6 py-2.5 bg-[#00665e] hover:bg-[#004d47] text-white 
-                rounded-lg font-medium transition-all duration-200
-                flex items-center gap-2"
-                        >
-                            <Save className="w-4 h-4" />
-                            Simpan Perubahan
-                        </button>
-                    </div>
+            {/* Form Section */}
+            <div className="relative">
+                {/* Tab Navigation */}
+                <FormTabs kategori={category} />
+
+                {/* Tab Content */}
+                <div className="mt-6 animate-fade-in">
+                    {renderTabContent()}
                 </div>
             </div>
+
+            {/* DSR Widget - Only shown in Usulan Tab */}
+            {currentTab === "tab-e" && (
+                <DSRCalculator
+                    dsrValue={dsrResult?.dsr || 0}
+                    limit={90}
+                    penghasilan={dsrResult?.penghasilan || 0}
+                    totalAngsuran={dsrResult?.totalAngsuranBaru || 0}
+                />
+            )}
+
+            {/* Actions */}
+            <FormActions
+                onSave={handleSave}
+                onPreview={openPreviewModal}
+                isSubmitting={isSubmitting}
+                onCancel={handleCancel}
+                cancelHref=""
+            />
         </div>
     );
 }

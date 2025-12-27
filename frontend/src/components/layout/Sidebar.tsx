@@ -208,7 +208,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                                     <button
                                         onClick={toggleDarkMode}
                                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                      text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#323249] hover:text-[#f15a23]
+                      text-[#00665e] dark:text-[#80cbc4] hover:bg-gray-100 dark:hover:bg-[#323249] hover:text-[#f15a23]
                       transition-all duration-200"
                                     >
                                         {isDarkMode ? (
