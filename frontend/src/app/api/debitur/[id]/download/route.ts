@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/backend/lib/auth';
 import { DebiturService } from '@/backend/services/debitur.service';
 import { DocumentService } from '@/backend/services/document.service';
+import { DocumentTemplateService } from '@/backend/services/document-template.service';
 import { TemplateService } from '@/backend/services/template.service';
 import type { ApiResponse } from '@/types/api';
 
@@ -62,28 +63,30 @@ export async function GET(
         const templateExists = await TemplateService.fileExists(debitur.kategori as Kategori);
 
         let docBuffer: Buffer;
+        const debiturData = {
+            namaPemohon: debitur.namaPemohon,
+            noKtp: debitur.noKtp,
+            kategori: debitur.kategori,
+            jenisPengajuan: debitur.jenisPengajuan,
+            segmentasi: debitur.segmentasi,
+            dataLengkap: debitur.dataLengkap as Record<string, unknown>,
+        };
 
         if (templateExists) {
-            // TODO: Implement template-based generation with docx-templater
-            // For now, use simple document generation
-            docBuffer = await DocumentService.generateSimpleDocx({
-                namaPemohon: debitur.namaPemohon,
-                noKtp: debitur.noKtp,
-                kategori: debitur.kategori,
-                jenisPengajuan: debitur.jenisPengajuan,
-                segmentasi: debitur.segmentasi,
-                dataLengkap: debitur.dataLengkap as Record<string, unknown>,
-            });
+            // Use template-based generation with docxtemplater
+            try {
+                docBuffer = await DocumentTemplateService.generateFromTemplate(
+                    debitur.kategori as Kategori,
+                    debiturData
+                );
+            } catch (templateError) {
+                console.error('Template generation failed, falling back to simple:', templateError);
+                // Fallback to simple document if template generation fails
+                docBuffer = await DocumentService.generateSimpleDocx(debiturData);
+            }
         } else {
             // Generate simple document without template
-            docBuffer = await DocumentService.generateSimpleDocx({
-                namaPemohon: debitur.namaPemohon,
-                noKtp: debitur.noKtp,
-                kategori: debitur.kategori,
-                jenisPengajuan: debitur.jenisPengajuan,
-                segmentasi: debitur.segmentasi,
-                dataLengkap: debitur.dataLengkap as Record<string, unknown>,
-            });
+            docBuffer = await DocumentService.generateSimpleDocx(debiturData);
         }
 
         // Generate filename
