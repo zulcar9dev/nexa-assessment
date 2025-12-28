@@ -3,18 +3,20 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Lock, User, AlertCircle, Clock } from "lucide-react";
 
 export default function LoginPage() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/";
     const authError = searchParams.get("error");
+    const logoutReason = searchParams.get("reason");
 
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(
         authError === "CredentialsSignin" ? "Email/ID atau password salah" : null
     );
+    const [idleLogout] = useState(logoutReason === "idle");
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -88,7 +90,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-full flex-1">
+        <div className="flex h-full flex-1">
             {/* Left Side: Branding Panel */}
             <div className="relative hidden w-0 flex-1 lg:flex lg:flex-col">
                 {/* Background Image */}
@@ -137,7 +139,7 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side: Login Form */}
-            <div className="flex flex-1 flex-col justify-center bg-white dark:bg-[#1e293b] px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 overflow-y-auto">
+            <div className="flex flex-1 flex-col justify-center bg-white dark:bg-[#1e293b] px-4 py-6 sm:px-6 lg:flex-none lg:px-20 xl:px-24 overflow-y-auto">
                 <div className="mx-auto w-full max-w-sm lg:w-96">
                     {/* Mobile Logo */}
                     <div className="flex lg:hidden items-center gap-3 mb-8 text-[#00665e]">
@@ -150,7 +152,7 @@ export default function LoginPage() {
                     </div>
 
                     {/* Heading */}
-                    <div className="flex flex-col gap-2 mb-8">
+                    <div className="flex flex-col gap-1 mb-6">
                         <h2 className="text-3xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
                             Masuk
                         </h2>
@@ -158,6 +160,21 @@ export default function LoginPage() {
                             Selamat datang kembali! Silakan masukkan data Anda.
                         </p>
                     </div>
+
+                    {/* Idle Timeout Alert */}
+                    {idleLogout && (
+                        <div className="mb-6 flex items-start gap-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 border border-amber-200 dark:border-amber-800">
+                            <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+                                    Sesi Berakhir
+                                </p>
+                                <p className="text-sm text-amber-700 dark:text-amber-400 leading-relaxed">
+                                    Anda telah logout otomatis karena tidak ada aktivitas selama 10 menit. Silakan login kembali.
+                                </p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Error Alert */}
                     {error && (
@@ -353,7 +370,7 @@ export default function LoginPage() {
                     </div>
 
                     {/* Security Notice */}
-                    <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                    <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
                         <div className="flex items-start gap-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 border border-amber-200 dark:border-amber-800">
                             <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                             <p className="text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
@@ -366,7 +383,7 @@ export default function LoginPage() {
                     </div>
 
                     {/* Footer */}
-                    <p className="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
                         © {new Date().getFullYear()} PT Bank Negara Indonesia (Persero) Tbk.
                     </p>
                 </div>

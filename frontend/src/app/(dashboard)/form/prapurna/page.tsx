@@ -40,11 +40,11 @@ export default function FormPrapurnaPage() {
     // Hook
     const { calculateAndUpdateDSR } = useCalculation();
 
-    // Effect: Set initial tab on mount
+    // Effect: Reset form and set initial tab on mount
     useEffect(() => {
+        resetForm();
         setCurrentTab("tab-a");
-        clearErrors();
-    }, [setCurrentTab, clearErrors]);
+    }, [resetForm, setCurrentTab]);
 
     // Effect: Calculate DSR automatically when relevant data changes
     useEffect(() => {

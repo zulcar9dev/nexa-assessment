@@ -23,6 +23,55 @@ export default function TabCPenghasilanPurna() {
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
             <form className="space-y-8">
+                {/* Section: Bank Pembayaran */}
+                <div>
+                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
+                        <Banknote className="w-6 h-6 text-[#00665e]" />
+                        Bank Pembayaran Pensiun
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Nama Bank */}
+                        <div>
+                            <label
+                                htmlFor="nama_bank_pembayaran"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Nama Bank
+                            </label>
+                            <input
+                                id="nama_bank_pembayaran"
+                                name="nama_bank_pembayaran"
+                                type="text"
+                                value={formData.nama_bank_pembayaran || ""}
+                                onChange={(e) => updateField("nama_bank_pembayaran", e.target.value)}
+                                placeholder="e.g. Bank Sulutgo"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            />
+                        </div>
+
+                        {/* No Rekening Payroll */}
+                        <div>
+                            <label
+                                htmlFor="payroll_no_rek"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                No. Rekening Payroll
+                            </label>
+                            <input
+                                id="payroll_no_rek"
+                                name="payroll_no_rek"
+                                type="text"
+                                value={formData.payroll_no_rek || ""}
+                                onChange={(e) => updateField("payroll_no_rek", e.target.value)}
+                                placeholder="e.g. 01502060066122"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <hr className="border-[#cdeae7] dark:border-opacity-10" />
+
                 {/* Section: Data Gaji Pensiun */}
                 <div>
                     <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">

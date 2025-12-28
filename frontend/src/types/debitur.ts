@@ -37,7 +37,13 @@ export interface DebiturFormData {
     no_telepon: string;
     status_perkawinan: string;
     status_rumah?: string;
+    lama_tinggal?: string;
     nama_lengkap?: string; // Legacy field used in edit page
+
+    // Tab A - Kerabat (untuk Purna)
+    nama_kerabat?: string;
+    hubungan_kerabat?: string;
+    no_telepon_kerabat?: string;
 
     // Tab B - Pekerjaan / Pensiun
     segmentasi: Segmentasi;
@@ -56,6 +62,7 @@ export interface DebiturFormData {
 
     // Tab C - Penghasilan
     nama_bank_pembayaran?: string;
+    payroll_no_rek?: string;
     gaji_bulan_1_nama?: string;
     gaji_bulan_1_jumlah?: string;
     gaji_bulan_2_nama?: string;
@@ -80,6 +87,7 @@ export interface DebiturFormData {
     usulan_jangka_waktu_bulan: string;
     usulan_bunga_persen: string;
     usulan_angsuran?: string;
+    tujuan_kredit?: string;
 }
 
 export interface SlikFacility {

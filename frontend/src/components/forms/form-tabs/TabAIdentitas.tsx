@@ -155,6 +155,25 @@ export default function TabAIdentitas() {
                             </select>
                         </div>
 
+                        {/* Lama Tinggal */}
+                        <div className="lg:col-span-2">
+                            <label
+                                htmlFor="lama_tinggal"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Lama Tinggal
+                            </label>
+                            <input
+                                id="lama_tinggal"
+                                name="lama_tinggal"
+                                type="text"
+                                value={formData.lama_tinggal || ""}
+                                onChange={(e) => updateField("lama_tinggal", e.target.value)}
+                                placeholder="e.g. 10 Tahun 5 Bulan"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            />
+                        </div>
+
                         {/* Alamat Domisili */}
                         <div className="col-span-1 md:col-span-2 lg:col-span-4">
                             <label
@@ -191,6 +210,85 @@ export default function TabAIdentitas() {
                                     type="text"
                                     value={formData.no_telepon || ""}
                                     onChange={(e) => updateField("no_telepon", e.target.value)}
+                                    placeholder="812 3456 7890"
+                                    className="block w-full rounded-lg border-[#cdeae7] pl-12 focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr className="border-[#cdeae7] dark:border-opacity-10" />
+
+                {/* Section 3: Kerabat */}
+                <div>
+                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
+                        <User className="w-6 h-6 text-[#00665e]" />
+                        Data Kerabat (Verifikasi)
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Nama Kerabat */}
+                        <div>
+                            <label
+                                htmlFor="nama_kerabat"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Nama Kerabat
+                            </label>
+                            <input
+                                id="nama_kerabat"
+                                name="nama_kerabat"
+                                type="text"
+                                value={formData.nama_kerabat || ""}
+                                onChange={(e) => updateField("nama_kerabat", e.target.value)}
+                                placeholder="e.g. Ahmad Susanto"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            />
+                        </div>
+
+                        {/* Hubungan Kerabat */}
+                        <div>
+                            <label
+                                htmlFor="hubungan_kerabat"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Hubungan
+                            </label>
+                            <select
+                                id="hubungan_kerabat"
+                                name="hubungan_kerabat"
+                                value={formData.hubungan_kerabat || ""}
+                                onChange={(e) => updateField("hubungan_kerabat", e.target.value)}
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            >
+                                <option value="">Pilih Hubungan</option>
+                                <option value="anak_kandung">Anak Kandung</option>
+                                <option value="suami">Suami</option>
+                                <option value="istri">Istri</option>
+                                <option value="saudara_kandung">Saudara Kandung</option>
+                                <option value="orang_tua">Orang Tua</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        {/* No Telepon Kerabat */}
+                        <div>
+                            <label
+                                htmlFor="no_telepon_kerabat"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                No. Telepon Kerabat
+                            </label>
+                            <div className="relative rounded-lg shadow-sm">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 sm:text-sm">
+                                    +62
+                                </span>
+                                <input
+                                    id="no_telepon_kerabat"
+                                    name="no_telepon_kerabat"
+                                    type="text"
+                                    value={formData.no_telepon_kerabat || ""}
+                                    onChange={(e) => updateField("no_telepon_kerabat", e.target.value)}
                                     placeholder="812 3456 7890"
                                     className="block w-full rounded-lg border-[#cdeae7] pl-12 focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                                 />

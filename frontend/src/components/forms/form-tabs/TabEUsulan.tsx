@@ -66,6 +66,27 @@ export default function TabEUsulan() {
                         className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
                     />
                 </div>
+
+                {/* Tujuan Kredit */}
+                <div>
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Tujuan Penggunaan Kredit
+                    </label>
+                    <select
+                        value={formData.tujuan_kredit || ""}
+                        onChange={(e) => updateField("tujuan_kredit", e.target.value)}
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                    >
+                        <option value="">Pilih Tujuan</option>
+                        <option value="modal_usaha">Modal Usaha</option>
+                        <option value="renovasi_rumah">Renovasi Rumah</option>
+                        <option value="biaya_pendidikan">Biaya Pendidikan</option>
+                        <option value="biaya_kesehatan">Biaya Kesehatan</option>
+                        <option value="pembelian_kendaraan">Pembelian Kendaraan</option>
+                        <option value="kebutuhan_konsumtif">Kebutuhan Konsumtif</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
             </div>
         </div>
     );

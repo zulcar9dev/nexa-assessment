@@ -30,7 +30,7 @@ export default function FormActions({
                     {cancelHref ? (
                         <Link
                             href={cancelHref}
-                            className="flex-1 sm:flex-none px-6 py-2.5 border border-[#cdeae7] text-[#0c1d1b] dark:text-gray-300 font-bold rounded-lg hover:bg-[#f5f8f8] transition-colors text-center"
+                            className="flex-1 sm:flex-none px-6 py-2.5 border border-[#cdeae7] text-[#0c1d1b] dark:text-white font-bold rounded-lg hover:bg-[#f5f8f8] dark:hover:bg-white/10 transition-colors text-center"
                         >
                             Batal
                         </Link>
@@ -38,7 +38,7 @@ export default function FormActions({
                         <button
                             type="button"
                             onClick={onCancel}
-                            className="flex-1 sm:flex-none px-6 py-2.5 border border-[#cdeae7] text-[#0c1d1b] font-bold rounded-lg hover:bg-[#f5f8f8] transition-colors"
+                            className="flex-1 sm:flex-none px-6 py-2.5 border border-[#cdeae7] text-[#0c1d1b] dark:text-white font-bold rounded-lg hover:bg-[#f5f8f8] dark:hover:bg-white/10 transition-colors"
                         >
                             Batal
                         </button>
