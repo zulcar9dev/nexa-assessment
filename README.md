@@ -2,31 +2,38 @@
 
 Aplikasi berbasis web untuk mempermudah proses input, validasi, perhitungan kelayakan kredit (RPC/DSR), dan pembuatan dokumen (Surat/Laporan) secara otomatis untuk produk Kredit Pensiun (Fleksi Purna & Prapurna).
 
-Dibangun dengan **Python Flask**, aplikasi ini dirancang untuk efisiensi operasional dengan antarmuka yang ramah pengguna dan fitur validasi risiko terintegrasi.
+Dibangun dengan **Next.js + TypeScript + Prisma**, aplikasi ini dirancang untuk efisiensi operasional dengan antarmuka yang ramah pengguna dan fitur validasi risiko terintegrasi.
 
 ---
 
 ## 🚀 Fitur Utama
 
-* **Manajemen Debitur**: Input data debitur Prapurna dan Purna dengan formulir yang dinamis.
-* **Kalkulator Kredit Real-time**:
-    * Perhitungan angsuran (PMT) otomatis.
-    * Validasi **DSR (Debt Service Ratio)** dengan batas maksimal 90% (Hard Block).
-    * Perhitungan biaya (Provisi, Admin, dll) otomatis.
-* **Generate Dokumen Otomatis**: Menghasilkan file `.docx` siap cetak berdasarkan template yang bisa diatur, menggunakan library `docxtpl`.
-* **Riwayat & Pencarian**: Filter data berdasarkan Nama, NIK, Jenis Pengajuan (Baru/TopUp/TakeOver), dan Segmentasi (Taspen/Asabri).
-* **Manajemen Template**: Admin dapat mengganti file template `.docx` langsung dari aplikasi tanpa mengubah kode.
-* **UI Modern**: Tema BNI (Tosca & Orange) dengan fitur *Dark Mode*.
+- **Autentikasi & Otorisasi**: Sistem login dengan NextAuth.js, mendukung role ADMIN dan USER.
+- **Manajemen Debitur**: Input data debitur Prapurna dan Purna dengan formulir yang dinamis.
+- **Kalkulator Kredit Real-time**:
+  - Perhitungan angsuran (PMT) otomatis.
+  - Validasi **DSR (Debt Service Ratio)** dengan batas maksimal 90% (Hard Block).
+  - Perhitungan biaya (Provisi, Admin, dll) otomatis.
+- **Generate Dokumen Otomatis**: Menghasilkan file `.docx` siap cetak berdasarkan template yang bisa diatur.
+- **Riwayat & Pencarian**: Filter data berdasarkan Nama, NIK, Jenis Pengajuan (Baru/TopUp/TakeOver), dan Segmentasi (Taspen/Asabri).
+- **Manajemen Template**: Admin dapat mengganti file template `.docx` langsung dari aplikasi.
+- **UI Modern**: Tema BNI dengan dark mode support menggunakan TailwindCSS.
 
 ---
 
 ## 🛠️ Teknologi yang Digunakan
 
-* **Backend**: Python 3.x, Flask 3.0.0
-* **Database**: SQLite (via Flask-SQLAlchemy)
-* **Templating**: Jinja2 (HTML), DocxTpl (Word Documents)
-* **Frontend**: HTML5, CSS3, JavaScript (Vanilla), Bootstrap 5
-* **Aset**: Boxicons (Ikon), Fonts Google (Public Sans)
+| Layer                   | Teknologi                   |
+| ----------------------- | --------------------------- |
+| **Framework**           | Next.js 16.x (App Router)   |
+| **Language**            | TypeScript                  |
+| **Database**            | PostgreSQL (via Prisma ORM) |
+| **Auth**                | NextAuth.js v4              |
+| **Styling**             | TailwindCSS 4               |
+| **State Management**    | Zustand                     |
+| **Document Generation** | docxtemplater + PizZip      |
+| **Validation**          | Zod                         |
+| **Icons**               | Lucide React                |
 
 ---
 
@@ -34,106 +41,121 @@ Dibangun dengan **Python Flask**, aplikasi ini dirancang untuk efisiensi operasi
 
 ```text
 APP_KREDIT_KONSUMER_BNI/
-├── instance/
-│   └── debitur.db           # Database SQLite (Otomatis dibuat saat run pertama)
-├── static/
-│   ├── assets/              # CSS, Images, Vendor Libraries
-│   └── js/
-│       └── script.js        # Logika Kalkulasi & Validasi Client-side
-├── templates/
-│   ├── admin.html           # Halaman Kelola Template
-│   ├── base.html            # Layout Utama (Navbar/Sidebar)
-│   ├── index.html           # Dashboard
-│   ├── riwayat.html         # Tabel Data Debitur
-│   ├── form_prapurna.html   # Form Input Prapurna
-│   └── form_purna.html      # Form Input Purna
-├── app.py                   # Main Application Logic (Server)
-├── requirements.txt         # Daftar Library Python
-├── README.md                # Dokumentasi Proyek
-└── *.docx                   # Template Dokumen (e.g., template_prapurna_reguler.docx)
-````
-
------
-
-## ⚙️ Cara Instalasi & Menjalankan Aplikasi
-
-Ikuti langkah-langkah berikut untuk menjalankan aplikasi di komputer lokal (Localhost):
-
-### 1\. Prasyarat
-
-Pastikan **Python** (versi 3.8 ke atas) sudah terinstal di komputer Anda.
-
-### 2\. Persiapkan Lingkungan (Environment)
-
-Disarankan menggunakan *Virtual Environment* agar library tidak tercampur. Buka terminal/cmd di folder proyek:
-
-```bash
-# Untuk Windows
-python -m venv venv
-venv\Scripts\activate
-
-# Untuk Mac/Linux
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3\. Instal Library
-
-Instal semua kebutuhan aplikasi yang tertera di `requirements.txt`:
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4\. Jalankan Aplikasi
-
-Jalankan server Flask:
-
-```bash
-python app.py
-```
-
-  * Aplikasi akan berjalan di `http://127.0.0.1:5000/`.
-  * Browser akan otomatis terbuka (jika fitur auto-open aktif).
-  * Database `debitur.db` akan otomatis dibuat di folder `instance/` jika belum ada.
-
------
-
-## 📖 Panduan Penggunaan
-
-1.  **Dashboard**: Pilih jenis produk kredit (Prapurna/Purna) untuk memulai input.
-2.  **Formulir Input**:
-      * Isi data sesuai tab (A sampai E).
-      * **Perhatian**: Jika DSR \> 90%, sistem akan menolak penyimpanan data (muncul peringatan merah).
-      * Gunakan fitur **Preview** untuk mengecek data sebelum disimpan.
-3.  **Riwayat**:
-      * Gunakan filter di atas tabel untuk mencari debitur.
-      * Klik tombol **Download (Ikon Hijau)** untuk mengunduh dokumen Word.
-      * Klik tombol **Edit (Ikon Kuning)** untuk mengubah data.
-4.  **Admin (Kelola Template)**:
-      * Masuk ke menu *Pengaturan \> Kelola Template*.
-      * Upload file `.docx` baru untuk mengganti template surat sesuai kategori produk.
-
------
-
-## ⚠️ Catatan Teknis untuk Pengembang
-
-  * **Logic Kalkulasi**:
-      * Logika perhitungan Frontend ada di `static/js/script.js`.
-      * Logika verifikasi Backend & Rendering Docx ada di `app.py` (Route `/generate`).
-  * **Format Template**:
-      * Template Word menggunakan sintaks Jinja2, contoh: `{{ nama_pemohon }}`, `{{ usulan_plafon_kredit }}`.
-      * Jangan mengubah nama variabel di dalam `.docx` kecuali Anda juga menyesuaikan *key* JSON di `app.py`.
-  * **Production**:
-      * Saat ini `app.py` menggunakan `debug=True`. Ubah menjadi `False` sebelum *deploy* ke server produksi (IIS/Nginx/Apache).
-
------
-
-## 📝 Lisensi & Kredit
-
-**Dikembangkan untuk:** BNI (Internal Use)
-**Tahun:** 2024/2025
-
+├── docs/                        # Dokumentasi implementasi
+│   ├── backend_implementation_plan.md
+│   ├── frontend_implementation_plan.md
+│   └── implementation_plan.md
+├── frontend/                    # Aplikasi Next.js utama
+│   ├── prisma/
+│   │   ├── schema.prisma        # Database schema
+│   │   └── migrations/          # Database migrations
+│   ├── public/                  # Static assets
+│   ├── src/
+│   │   ├── app/                 # Next.js App Router pages
+│   │   │   ├── (auth)/          # Login page
+│   │   │   ├── (dashboard)/     # Dashboard, form, debitur pages
+│   │   │   └── api/             # API routes
+│   │   ├── backend/             # Backend services & lib
+│   │   ├── components/          # React components
+│   │   ├── hooks/               # Custom React hooks
+│   │   ├── lib/                 # Utility libraries
+│   │   ├── stores/              # Zustand stores
+│   │   └── types/               # TypeScript types
+│   ├── templates/               # Template DOCX untuk generate dokumen
+│   ├── package.json
+│   └── tsconfig.json
+└── README.md
 ```
 
 ---
+
+## ⚙️ Cara Instalasi & Menjalankan Aplikasi
+
+### 1. Prasyarat
+
+- **Node.js** versi 18.x atau lebih baru
+- **PostgreSQL** untuk database (atau gunakan SQLite untuk development)
+
+### 2. Clone & Install Dependencies
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd app_kredit_konsumer_bni/frontend
+
+# Install dependencies
+npm install
+```
+
+### 3. Setup Environment
+
+Buat file `.env` di folder `frontend/`:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/kredit_konsumer"
+
+# NextAuth
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 4. Setup Database
+
+```bash
+# Generate Prisma client
+npm run db:generate
+
+# Run migrations
+npm run db:migrate
+
+# (Optional) Seed initial data
+npm run db:seed
+```
+
+### 5. Jalankan Aplikasi
+
+```bash
+# Development mode
+npm run dev
+```
+
+Aplikasi akan berjalan di `http://localhost:3000`
+
+---
+
+## 📖 Panduan Penggunaan
+
+1. **Login**: Masuk dengan akun yang sudah terdaftar.
+2. **Dashboard**: Pilih jenis produk kredit (Prapurna/Purna) untuk memulai input.
+3. **Formulir Input**:
+   - Isi data sesuai tab (Data Pribadi, Data Kredit, dll).
+   - **Perhatian**: Jika DSR > 90%, sistem akan menolak penyimpanan data.
+   - Gunakan fitur **Preview** untuk mengecek data sebelum disimpan.
+4. **Riwayat Debitur**:
+   - Gunakan filter untuk mencari debitur.
+   - Klik tombol **Download** untuk mengunduh dokumen Word.
+   - Klik tombol **Edit** untuk mengubah data.
+5. **Admin (Kelola Template)**:
+   - Akses menu khusus Admin untuk mengelola template dokumen.
+
+---
+
+## 🔧 Script yang Tersedia
+
+| Script                | Keterangan                        |
+| --------------------- | --------------------------------- |
+| `npm run dev`         | Jalankan development server       |
+| `npm run build`       | Build untuk production            |
+| `npm run start`       | Jalankan production server        |
+| `npm run lint`        | Jalankan ESLint                   |
+| `npm run db:generate` | Generate Prisma client            |
+| `npm run db:migrate`  | Jalankan database migration       |
+| `npm run db:studio`   | Buka Prisma Studio (GUI database) |
+
+---
+
+## 📝 Lisensi & Kredit
+
+**Dikembangkan untuk:** BNI (Internal Use)  
+**Tahun:** 2024/2025
