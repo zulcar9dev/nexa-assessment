@@ -79,7 +79,7 @@ export interface DebiturQueryParams {
 export interface CreateDebiturRequest {
     namaPemohon: string;
     noKtp: string;
-    kategori: 'PRAPURNA_REGULER' | 'PRAPURNA_TAKEOVER' | 'PURNA_REGULER' | 'PURNA_TAKEOVER';
+    kategori: 'PRAPURNA' | 'PURNA';
     jenisPengajuan: 'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER';
     segmentasi: 'TASPEN' | 'ASABRI';
     dataLengkap: Record<string, unknown>;

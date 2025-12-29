@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 
 // Local type definitions matching schema
 type Role = 'ADMIN' | 'USER';
-type Kategori = 'PRAPURNA_REGULER' | 'PRAPURNA_TAKEOVER' | 'PURNA_REGULER' | 'PURNA_TAKEOVER';
+type Kategori = 'PRAPURNA' | 'PURNA';
 
 async function main() {
     console.log('🌱 Starting database seed...');
@@ -55,28 +55,16 @@ async function main() {
         path: string;
     }> = [
             {
-                kategori: 'PRAPURNA_REGULER',
-                name: 'Template Prapurna Reguler',
-                filename: 'template_prapurna_reguler.docx',
-                path: 'templates/template_prapurna_reguler.docx',
+                kategori: 'PRAPURNA',
+                name: 'Template Prapurna',
+                filename: 'template_prapurna.docx',
+                path: 'templates/template_prapurna.docx',
             },
             {
-                kategori: 'PRAPURNA_TAKEOVER',
-                name: 'Template Prapurna Takeover',
-                filename: 'template_prapurna_takeover.docx',
-                path: 'templates/template_prapurna_takeover.docx',
-            },
-            {
-                kategori: 'PURNA_REGULER',
-                name: 'Template Purna Reguler',
-                filename: 'template_purna_reguler.docx',
-                path: 'templates/template_purna_reguler.docx',
-            },
-            {
-                kategori: 'PURNA_TAKEOVER',
-                name: 'Template Purna Takeover',
-                filename: 'template_purna_takeover.docx',
-                path: 'templates/template_purna_takeover.docx',
+                kategori: 'PURNA',
+                name: 'Template Purna',
+                filename: 'template_purna.docx',
+                path: 'templates/template_purna.docx',
             },
         ];
 
@@ -97,7 +85,7 @@ async function main() {
             id: 'sample-debitur-1',
             namaPemohon: 'Budi Santoso',
             noKtp: '3275012345678901',
-            kategori: 'PRAPURNA_REGULER',
+            kategori: 'PRAPURNA',
             jenisPengajuan: 'BARU',
             segmentasi: 'TASPEN',
             dataLengkap: {

@@ -1,14 +1,16 @@
 "use client";
 
 import { useFormStore } from "@/stores/form-store";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { Briefcase } from "lucide-react";
 
 export default function TabBDataPensiun() {
     const { formData, updateField } = useFormStore();
+    const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-b">
             <form className="space-y-8">
                 {/* Section: Data Pensiun */}
                 <div>
@@ -25,11 +27,13 @@ export default function TabBDataPensiun() {
                             >
                                 Segmentasi
                             </label>
+                            {/* First field: Shift+Tab goes to previous tab */}
                             <select
                                 id="segmentasi"
                                 name="segmentasi"
                                 value={formData.segmentasi || ""}
                                 onChange={(e) => updateField("segmentasi", e.target.value)}
+                                onKeyDown={handleTabToPrev}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             >
                                 <option value="">Pilih Segmentasi</option>
@@ -135,6 +139,25 @@ export default function TabBDataPensiun() {
                             />
                         </div>
 
+                        {/* NOPEN (Nomor Pensiun) */}
+                        <div>
+                            <label
+                                htmlFor="nopen"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Nomor Pensiun (NOPEN)
+                            </label>
+                            <input
+                                id="nopen"
+                                name="nopen"
+                                type="text"
+                                value={formData.nopen || ""}
+                                onChange={(e) => updateField("nopen", e.target.value)}
+                                placeholder="Nomor Pensiun"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                            />
+                        </div>
+
                         {/* Golongan */}
                         <div>
                             <label
@@ -143,12 +166,14 @@ export default function TabBDataPensiun() {
                             >
                                 Golongan / Pangkat Terakhir
                             </label>
+                            {/* Last field: Tab goes to next tab */}
                             <input
                                 id="golongan"
                                 name="golongan"
                                 type="text"
                                 value={formData.golongan || ""}
                                 onChange={(e) => updateField("golongan", e.target.value)}
+                                onKeyDown={handleTabToNext}
                                 placeholder="Contoh: IV/a"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />

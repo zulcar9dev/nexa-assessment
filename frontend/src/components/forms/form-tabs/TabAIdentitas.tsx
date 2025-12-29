@@ -1,14 +1,16 @@
 "use client";
 
 import { useFormStore } from "@/stores/form-store";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { User, MapPin } from "lucide-react";
 
 export default function TabAIdentitas() {
     const { formData, updateField } = useFormStore();
+    const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-a">
             <form className="space-y-8">
                 {/* Section 1: Data Diri */}
                 <div>
@@ -17,7 +19,7 @@ export default function TabAIdentitas() {
                         Data Diri Pemohon
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {/* Full Name */}
+                        {/* Full Name - First field: Shift+Tab goes to previous tab */}
                         <div className="col-span-1 md:col-span-2">
                             <label
                                 htmlFor="nama_pemohon"
@@ -31,6 +33,7 @@ export default function TabAIdentitas() {
                                 type="text"
                                 value={formData.nama_pemohon || ""}
                                 onChange={(e) => updateField("nama_pemohon", e.target.value)}
+                                onKeyDown={handleTabToPrev}
                                 placeholder="e.g. Budi Santoso"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
@@ -128,6 +131,7 @@ export default function TabAIdentitas() {
                                 rows={3}
                                 value={formData.alamat_ktp || ""}
                                 onChange={(e) => updateField("alamat_ktp", e.target.value)}
+                                placeholder="e.g. Jl. Sudirman No. 123, RT 01/RW 02, Kel. Menteng, Kec. Menteng, Jakarta Pusat"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
                         </div>
@@ -174,23 +178,49 @@ export default function TabAIdentitas() {
                             />
                         </div>
 
-                        {/* Alamat Domisili */}
-                        <div className="col-span-1 md:col-span-2 lg:col-span-4">
-                            <label
-                                htmlFor="alamat_domisili"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                Alamat Domisili
+                        {/* Checkbox Domisili Berbeda */}
+                        <div className="col-span-1 md:col-span-2 lg:col-span-6">
+                            <label className="flex items-center gap-3 cursor-pointer group">
+                                <input
+                                    id="domisili_berbeda"
+                                    name="domisili_berbeda"
+                                    type="checkbox"
+                                    checked={formData.domisili_berbeda || false}
+                                    onChange={(e) => {
+                                        updateField("domisili_berbeda", e.target.checked);
+                                        // Reset alamat domisili jika checkbox di-uncheck
+                                        if (!e.target.checked) {
+                                            updateField("alamat_domisili", "");
+                                        }
+                                    }}
+                                    className="w-5 h-5 rounded border-[#cdeae7] text-[#00665e] focus:ring-[#00665e] focus:ring-offset-0 cursor-pointer transition-all duration-200"
+                                />
+                                <span className="text-sm font-medium text-[#0c1d1b] dark:text-gray-300 group-hover:text-[#00665e] dark:group-hover:text-[#80cbc4] transition-colors duration-200">
+                                    Alamat domisili berbeda dengan alamat KTP
+                                </span>
                             </label>
-                            <textarea
-                                id="alamat_domisili"
-                                name="alamat_domisili"
-                                rows={3}
-                                value={formData.alamat_domisili || ""}
-                                onChange={(e) => updateField("alamat_domisili", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
-                            />
                         </div>
+
+                        {/* Alamat Domisili - Conditional */}
+                        {formData.domisili_berbeda && (
+                            <div className="col-span-1 md:col-span-2 lg:col-span-4 animate-fade-in">
+                                <label
+                                    htmlFor="alamat_domisili"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Alamat Domisili
+                                </label>
+                                <textarea
+                                    id="alamat_domisili"
+                                    name="alamat_domisili"
+                                    rows={3}
+                                    value={formData.alamat_domisili || ""}
+                                    onChange={(e) => updateField("alamat_domisili", e.target.value)}
+                                    placeholder="Masukkan alamat domisili saat ini..."
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        )}
 
                         {/* Phone Number */}
                         <div className="lg:col-span-2">
@@ -271,7 +301,7 @@ export default function TabAIdentitas() {
                             </select>
                         </div>
 
-                        {/* No Telepon Kerabat */}
+                        {/* No Telepon Kerabat - Last field: Tab goes to next tab */}
                         <div>
                             <label
                                 htmlFor="no_telepon_kerabat"
@@ -289,6 +319,7 @@ export default function TabAIdentitas() {
                                     type="text"
                                     value={formData.no_telepon_kerabat || ""}
                                     onChange={(e) => updateField("no_telepon_kerabat", e.target.value)}
+                                    onKeyDown={handleTabToNext}
                                     placeholder="812 3456 7890"
                                     className="block w-full rounded-lg border-[#cdeae7] pl-12 focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                                 />

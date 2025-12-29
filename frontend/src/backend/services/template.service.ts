@@ -8,7 +8,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 // Local type definition - matches Prisma enum
-type Kategori = 'PRAPURNA_REGULER' | 'PRAPURNA_TAKEOVER' | 'PURNA_REGULER' | 'PURNA_TAKEOVER';
+type Kategori = 'PRAPURNA' | 'PURNA';
 
 export class TemplateService {
     private static TEMPLATE_DIR = path.join(process.cwd(), 'templates');
@@ -73,10 +73,8 @@ export class TemplateService {
      */
     private static getDefaultName(kategori: Kategori): string {
         const names: Record<Kategori, string> = {
-            PRAPURNA_REGULER: 'Template Prapurna Reguler',
-            PRAPURNA_TAKEOVER: 'Template Prapurna Takeover',
-            PURNA_REGULER: 'Template Purna Reguler',
-            PURNA_TAKEOVER: 'Template Purna Takeover',
+            PRAPURNA: 'Template Prapurna',
+            PURNA: 'Template Purna',
         };
         return names[kategori] || 'Template';
     }
@@ -150,10 +148,8 @@ export class TemplateService {
         await this.ensureTemplateDir();
 
         const defaultTemplates: Array<{ kategori: Kategori; filename: string }> = [
-            { kategori: 'PRAPURNA_REGULER', filename: 'template_prapurna_reguler.docx' },
-            { kategori: 'PRAPURNA_TAKEOVER', filename: 'template_prapurna_takeover.docx' },
-            { kategori: 'PURNA_REGULER', filename: 'template_purna_reguler.docx' },
-            { kategori: 'PURNA_TAKEOVER', filename: 'template_purna_takeover.docx' },
+            { kategori: 'PRAPURNA', filename: 'template_prapurna.docx' },
+            { kategori: 'PURNA', filename: 'template_purna.docx' },
         ];
 
         for (const template of defaultTemplates) {

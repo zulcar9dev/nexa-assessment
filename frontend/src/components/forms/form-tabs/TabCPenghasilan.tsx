@@ -1,12 +1,14 @@
 "use client";
 
 import { useFormStore } from "@/stores/form-store";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { formatRupiah } from "@/lib/utils";
 
 import { Banknote, Landmark } from "lucide-react";
 
 export default function TabCPenghasilan() {
     const { formData, updateField } = useFormStore();
+    const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     const handleCurrencyChange = (field: string, value: string) => {
         // Remove non-numeric characters except comma
@@ -22,7 +24,7 @@ export default function TabCPenghasilan() {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-c">
             <form className="space-y-8">
                 {/* Section: Data Gaji */}
                 <div>
@@ -38,14 +40,34 @@ export default function TabCPenghasilan() {
                         >
                             Nama Bank Pembayaran Gaji/Penghasilan
                         </label>
+                        {/* First field: Shift+Tab goes to previous tab */}
                         <input
                             id="nama_bank_pembayaran"
                             name="nama_bank_pembayaran"
                             type="text"
                             value={formData.nama_bank_pembayaran || ""}
                             onChange={(e) => updateField("nama_bank_pembayaran", e.target.value)}
+                            onKeyDown={handleTabToPrev}
                             placeholder="e.g. Bank Sulutgo, Bank Mandiri Taspen, Bank BSI"
                             className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                        />
+                    </div>
+
+                    <div className="mb-6">
+                        <label
+                            htmlFor="payroll_no_rek"
+                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                        >
+                            No. Rekening Payroll
+                        </label>
+                        <input
+                            id="payroll_no_rek"
+                            name="payroll_no_rek"
+                            type="text"
+                            value={formData.payroll_no_rek || ""}
+                            onChange={(e) => updateField("payroll_no_rek", e.target.value)}
+                            placeholder="e.g. 01502060066122"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
                         />
                     </div>
 
@@ -177,6 +199,7 @@ export default function TabCPenghasilan() {
                                     type="text"
                                     value={formatCurrencyDisplay(formData.estimasi_hak_pensiun)}
                                     onChange={(e) => handleCurrencyChange("estimasi_hak_pensiun", e.target.value)}
+                                    onKeyDown={handleTabToNext}
                                     placeholder="0"
                                     className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right font-bold"
                                 />

@@ -29,7 +29,8 @@ Berdasarkan analisis file `Kredit_Rukmin Jusuf_7503066501650002.docx`:
 | Tgl. Call Memo | `{{ tgl_call_memo }}` | `new Date()` (tanggal hari ini) | `22 April 2025` |
 | Yang Diverifikasi | `{{ nama_pemohon }}` | `dataLengkap.nama_pemohon` | `Rukmin Jusuf` |
 | Bentuk Call (Telepon) | `{{ no_telepon }}` | `dataLengkap.no_telepon` | `085241788994` |
-| Alamat di KTP | `{{ alamat_ktp }}` | `dataLengkap.alamat_ktp` | `Desa Bongohulawa Kecamatan Tilongkabila...` |
+| Alamat di KTP | `{{ alamat_ktp }}` | `dataLengkap.alamat_ktp` | `Jl. Sudirman No. 123, RT 01/RW 02...` |
+| Alamat Domisili | `{{ alamat_domisili }}` | `dataLengkap.alamat_domisili` | *(Muncul jika `domisili_berbeda` = true)* |
 | Status Rumah | `{{ status_rumah }}` | `dataLengkap.status_rumah` | `Milik Sendiri` |
 | Lama Tinggal | `{{ lama_tinggal }}` | `dataLengkap.lama_tinggal` | `40 Tahun 00 Bulan` |
 | Tanggal Lahir | `{{ tgl_lahir }}` | `dataLengkap.tgl_lahir_pemohon` | `25 Januari 1965` |
@@ -136,6 +137,23 @@ Berdasarkan analisis file `Kredit_Rukmin Jusuf_7503066501650002.docx`:
 
 ---
 
+### 7. ALIASES & ADDITIONAL FIELDS
+(Untuk memastikan kompatibilitas template)
+
+| Field / Alias | Data Source |
+|---------------|-------------|
+| `{{ Nama_Pemohon }}`, `{{ Nama_Lengkap }}` | Same as `{{ nama_pemohon }}` |
+| `{{ No_Ktp }}`, `{{ NIK }}` | Same as `{{ no_ktp }}` |
+| `{{ Tgl_Call_Memo }}`, `{{ Tanggal_Call_Memo }}` | Same as `{{ tgl_call_memo }}` |
+| `{{ No_Telepon }}` | Same as `{{ no_telepon }}` |
+| `{{ Alamat_Ktp }}`, `{{ Alamat }}` | Same as `{{ alamat_ktp }}` |
+| `{{ pensiun_bulan_jumlah }}` | `dataLengkap.pensiun_bulan_jumlah` |
+| `{{ hak_pensiun }}` | `dataLengkap.pensiun_bulan_jumlah` |
+| `{{ tgl_mulai_kerja }}` | `dataLengkap.tgl_mulai_kerja` |
+| `{{ alamat_kantor }}` | `dataLengkap.alamat_kantor` |
+
+---
+
 ## 📊 Data Source Summary
 
 ### Dari `DebiturFormData` (dataLengkap)
@@ -143,20 +161,23 @@ Berdasarkan analisis file `Kredit_Rukmin Jusuf_7503066501650002.docx`:
 ```typescript
 interface DebiturFormData {
     // Identitas
-    nama_pemohon: string;
-    no_ktp_pemohon: string;
+    nama_pemohon: string;           // placeholder: "e.g. Budi Santoso"
+    no_ktp_pemohon: string;         // placeholder: "3201xxxxxxxxxxxx"
     tgl_lahir_pemohon: string;
-    alamat_ktp: string;
-    alamat_domisili: string;
-    no_telepon: string;
+    alamat_ktp: string;             // placeholder: "e.g. Jl. Sudirman No. 123, RT 01/RW 02, Kel. Menteng, Kec. Menteng, Jakarta Pusat"
+    domisili_berbeda?: boolean;     // checkbox: "Alamat domisili berbeda dengan alamat KTP"
+    alamat_domisili: string;        // placeholder: "Masukkan alamat domisili saat ini..." (muncul kondisional jika domisili_berbeda = true)
+    no_telepon: string;             // placeholder: "812 3456 7890"
     status_perkawinan: string;
     status_rumah: string;
-    lama_tinggal: string;
+    lama_tinggal: string;           // placeholder: "e.g. 10 Tahun 5 Bulan"
     
     // Pekerjaan/Pensiun
     segmentasi: 'taspen' | 'asabri';
     jenis_pengajuan: string;
     instansi: string;
+    jabatan: string;        // [NEW] Added to match code
+    golongan: string;
     golongan: string;
     nip: string;
     nopen: string;
@@ -164,6 +185,11 @@ interface DebiturFormData {
     no_sk_pensiun: string;
     tgl_sk_pensiun: string;
     
+    // Data Tambahan (Prapurna)
+    tgl_mulai_kerja: string;
+    alamat_kantor: string;
+    tgl_pensiun_pemohon: string;
+
     // Bank Pembayaran
     nama_bank_pembayaran: string;
     payroll_no_rek: string;
@@ -185,6 +211,9 @@ interface DebiturFormData {
     pensiun_bulan_3_nama: string;
     pensiun_bulan_3_jumlah: string;
     
+    // Hak Pensiun
+    pensiun_bulan_jumlah: string;
+    
     // SLIK
     fasilitas_nihil: 'ya' | 'tidak';
     slik_facilities: SlikFacility[];
@@ -196,9 +225,9 @@ interface DebiturFormData {
     tujuan_kredit: string;
     
     // Kerabat
-    nama_kerabat: string;
+    nama_kerabat: string;           // placeholder: "e.g. Ahmad Susanto"
     hubungan_kerabat: string;
-    no_telepon_kerabat: string;
+    no_telepon_kerabat: string;     // placeholder: "812 3456 7890"
 }
 ```
 

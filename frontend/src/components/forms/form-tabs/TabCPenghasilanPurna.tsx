@@ -1,11 +1,13 @@
 "use client";
 
 import { useFormStore } from "@/stores/form-store";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { Banknote } from "lucide-react";
 
 export default function TabCPenghasilanPurna() {
     const { formData, updateField } = useFormStore();
+    const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     const handleCurrencyChange = (field: string, value: string) => {
         // Remove non-numeric characters except comma
@@ -21,7 +23,7 @@ export default function TabCPenghasilanPurna() {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-c">
             <form className="space-y-8">
                 {/* Section: Bank Pembayaran */}
                 <div>
@@ -38,12 +40,14 @@ export default function TabCPenghasilanPurna() {
                             >
                                 Nama Bank
                             </label>
+                            {/* First field: Shift+Tab goes to previous tab */}
                             <input
                                 id="nama_bank_pembayaran"
                                 name="nama_bank_pembayaran"
                                 type="text"
                                 value={formData.nama_bank_pembayaran || ""}
                                 onChange={(e) => updateField("nama_bank_pembayaran", e.target.value)}
+                                onKeyDown={handleTabToPrev}
                                 placeholder="e.g. Bank Sulutgo"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
@@ -190,12 +194,14 @@ export default function TabCPenghasilanPurna() {
                                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
                                     Rp
                                 </span>
+                                {/* Last field: Tab goes to next tab */}
                                 <input
                                     id="pensiun_bulan_jumlah"
                                     name="pensiun_bulan_jumlah"
                                     type="text"
                                     value={formatCurrencyDisplay(formData.pensiun_bulan_jumlah)}
                                     onChange={(e) => handleCurrencyChange("pensiun_bulan_jumlah", e.target.value)}
+                                    onKeyDown={handleTabToNext}
                                     placeholder="0"
                                     className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right font-bold"
                                 />

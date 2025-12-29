@@ -15,8 +15,8 @@ const BULAN_INDONESIA = [
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
 ];
 
-// Kategori type - matches Prisma enum
-type Kategori = 'PRAPURNA_REGULER' | 'PRAPURNA_TAKEOVER' | 'PURNA_REGULER' | 'PURNA_TAKEOVER';
+// Kategori type - simplified for document generation
+export type KategoriDoc = 'prapurna' | 'purna';
 
 interface SlikFacility {
     nama_bank: string;
@@ -84,22 +84,20 @@ export class DocumentTemplateService {
     /**
      * Get template file path based on kategori
      */
-    static getTemplatePath(kategori: Kategori): string {
-        const templateMap: Record<Kategori, string> = {
-            'PRAPURNA_REGULER': 'template_prapurna_reguler.docx',
-            'PRAPURNA_TAKEOVER': 'template_prapurna_takeover.docx',
-            'PURNA_REGULER': 'template_purna_reguler.docx',
-            'PURNA_TAKEOVER': 'template_purna_takeover.docx',
+    static getTemplatePath(kategori: KategoriDoc): string {
+        const templateMap: Record<KategoriDoc, string> = {
+            'prapurna': 'template_prapurna.docx',
+            'purna': 'template_purna.docx',
         };
 
-        const filename = templateMap[kategori] || 'template_prapurna_reguler.docx';
+        const filename = templateMap[kategori] || 'template_prapurna.docx';
         return path.join(this.TEMPLATE_DIR, filename);
     }
 
     /**
      * Check if template file exists
      */
-    static async templateExists(kategori: Kategori): Promise<boolean> {
+    static async templateExists(kategori: KategoriDoc): Promise<boolean> {
         try {
             const templatePath = this.getTemplatePath(kategori);
             await fs.access(templatePath);
@@ -145,6 +143,20 @@ export class DocumentTemplateService {
     }
 
     /**
+     * Helper to convert snake_case to Title Case
+     * e.g. "milik_sendiri" -> "Milik Sendiri"
+     */
+    static toTitleCase(str: string | undefined): string {
+        if (!str) return '';
+        return str
+            .replace(/_/g, ' ')
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    /**
      * Prepare template context from debitur data
      * Maps DebiturFormData fields to template placeholders
      */
@@ -155,7 +167,8 @@ export class DocumentTemplateService {
 
         // Get penghasilan based on category (gaji for prapurna, pensiun for purna)
         let penghasilan = 0;
-        const isPurna = debitur.kategori.includes('PURNA');
+        // Kategori has been normalized to 'purna' or 'prapurna'
+        const isPurna = debitur.kategori === 'purna';
 
         if (isPurna) {
             // For Purna: use pensiun amount
@@ -203,7 +216,7 @@ export class DocumentTemplateService {
         const biayaProvisi = Math.round(plafon * 0.01);
         const biayaTatalaksana = Math.round(plafon * 0.02);
 
-        // Base context
+        // Base context with original keys
         const context: Record<string, unknown> = {
             // Date fields
             tgl_call_memo: this.formatDateIndonesian(today.toISOString()),
@@ -217,13 +230,13 @@ export class DocumentTemplateService {
             alamat: data.alamat_ktp || data.alamat_domisili || '',
             alamat_ktp: data.alamat_ktp || '',
             alamat_domisili: data.alamat_domisili || '',
-            status_rumah: data.status_rumah || '',
+            status_rumah: this.toTitleCase(data.status_rumah as string),
             lama_tinggal: data.lama_tinggal || '',
-            status_perkawinan: data.status_perkawinan || '',
+            status_perkawinan: this.toTitleCase(data.status_perkawinan as string),
 
             // Pekerjaan/Pensiun
             segmentasi: (debitur.segmentasi || data.segmentasi || '').toString().toUpperCase(),
-            jenis_pengajuan: (debitur.jenisPengajuan || data.jenis_pengajuan || '').toString().replace(/_/g, ' '),
+            jenis_pengajuan: this.toTitleCase((debitur.jenisPengajuan || data.jenis_pengajuan || '').toString()),
             kategori: debitur.kategori.replace(/_/g, ' '),
             instansi: data.instansi || '',
             jabatan: data.jabatan || '',
@@ -258,7 +271,7 @@ export class DocumentTemplateService {
             pensiun_bulan_3: this.formatRupiah(data.pensiun_bulan_3_jumlah as string),
 
             // SLIK
-            fasilitas_nihil: data.fasilitas_nihil === 'ya' ? 'ya' : 'tidak',
+            fasilitas_nihil: data.fasilitas_nihil === 'ya' ? 'Ya' : 'Tidak',
 
             // RPC (Repayment Capacity) Calculations
             rpc_penghasilan: this.formatRupiah(penghasilan),
@@ -284,11 +297,133 @@ export class DocumentTemplateService {
 
             // Tujuan
             tujuan_kredit: data.tujuan_kredit || 'Modal Usaha',
+
+            // Kerabat (Call Memo)
+            nama_kerabat: data.nama_kerabat || '',
+            hubungan_kerabat: this.toTitleCase(data.hubungan_kerabat as string),
+            no_telepon_kerabat: data.no_telepon_kerabat || '',
+
+            // Pekerjaan (Prapurna)
+            tgl_mulai_kerja: this.formatDateIndonesian(data.tgl_mulai_kerja as string),
+            alamat_kantor: data.alamat_kantor || '',
+            tgl_pensiun_pemohon: this.formatDateIndonesian(data.tgl_pensiun_pemohon as string),
+
+            // Hak Pensiun Bulanan (Purna)
+            pensiun_bulan_jumlah: this.formatRupiah(data.pensiun_bulan_jumlah as string),
+            hak_pensiun: this.formatRupiah(data.pensiun_bulan_jumlah as string),
         };
 
-        // Add indexed SLIK fields
+        // --- EXTENSIVE ALIASES FOR COMPATIBILITY ---
+        // Maps Capitalized, SNAKE_CASE, and other variations to their values
+        const aliases: Record<string, unknown> = {
+            // Identitas
+            Nama_Pemohon: context.nama_pemohon,
+            Nama_Lengkap: context.nama_pemohon,
+            No_Ktp: context.no_ktp,
+            NIK: context.no_ktp,
+            No_Telepon: context.no_telepon,
+            Tgl_Lahir: context.tgl_lahir,
+            Alamat: context.alamat,
+            Alamat_Ktp: context.alamat_ktp,
+            Alamat_Domisili: context.alamat_domisili,
+            Status_Rumah: context.status_rumah,
+            Lama_Tinggal: context.lama_tinggal,
+            Status_Perkawinan: context.status_perkawinan,
+
+            // Pekerjaan & Pensiun
+            Segmentasi: context.segmentasi,
+            Jenis_Pengajuan: context.jenis_pengajuan,
+            Kategori: context.kategori,
+            Instansi: context.instansi,
+            Jabatan: context.jabatan,
+            Golongan: context.golongan,
+            NIP: context.nip,
+            NOPEN: context.nopen,
+            Tgl_Pensiun: context.tgl_pensiun,
+            Tgl_Pensiun_Tmt: context.tgl_pensiun_tmt,
+            No_Sk_Pensiun: context.no_sk_pensiun,
+            Tgl_Sk_Pensiun: context.tgl_sk_pensiun,
+
+            // Additional Prapurna Fields
+            Tgl_Mulai_Kerja: context.tgl_mulai_kerja,
+            Alamat_Kantor: context.alamat_kantor,
+
+            // Bank & Payroll
+            Nama_Bank: context.nama_bank_pembayaran,
+            Nama_Bank_Pembayaran: context.nama_bank_pembayaran,
+            Payroll_Bank: context.payroll_bank,
+            Payroll_No_Rek: context.payroll_no_rek,
+            No_Rek: context.payroll_no_rek,
+
+            // Gaji (Prapurna)
+            Gaji_Bulan_1_Nama: context.gaji_bulan_1_nama,
+            Gaji_Bulan_1: context.gaji_bulan_1,
+            Gaji_Bulan_2_Nama: context.gaji_bulan_2_nama,
+            Gaji_Bulan_2: context.gaji_bulan_2,
+            Gaji_Bulan_3_Nama: context.gaji_bulan_3_nama,
+            Gaji_Bulan_3: context.gaji_bulan_3,
+            Estimasi_Hak_Pensiun: context.estimasi_hak_pensiun,
+
+            // Pensiun (Purna)
+            Pensiun_Bulan_1_Nama: context.pensiun_bulan_1_nama,
+            Pensiun_Bulan_1: context.pensiun_bulan_1,
+            Pensiun_Bulan_2_Nama: context.pensiun_bulan_2_nama,
+            Pensiun_Bulan_2: context.pensiun_bulan_2,
+            Pensiun_Bulan_3_Nama: context.pensiun_bulan_3_nama,
+            Pensiun_Bulan_3: context.pensiun_bulan_3,
+            Pensiun_Bulan_1_Jumlah: context.pensiun_bulan_1,
+            Pensiun_Bulan_2_Jumlah: context.pensiun_bulan_2,
+            Pensiun_Bulan_3_Jumlah: context.pensiun_bulan_3,
+            Pensiun_Bulan_Jumlah: context.pensiun_bulan_jumlah,
+            Hak_Pensiun: context.hak_pensiun,
+
+            // SLIK
+            Fasilitas_Nihil: context.fasilitas_nihil,
+            Tgl_Slik: context.tgl_slik,
+
+            // RPC
+            Rpc_Penghasilan: context.rpc_penghasilan,
+            Rpc_Dsc_90: context.rpc_dsc_90,
+            Rpc_Total_Angsuran_Eksisting: context.rpc_total_angsuran_eksisting,
+            Rpc_Maksimal_Angsuran: context.rpc_maksimal_angsuran,
+            Rpc_Angsuran_Diusulkan: context.rpc_angsuran_diusulkan,
+            Rpc_Total_Angsuran_Baru: context.rpc_total_angsuran_baru,
+            Rpc_Dsr: context.rpc_dsr,
+
+            // Usulan Kredit
+            Plafon: context.plafon,
+            Usulan_Plafon: context.usulan_plafon,
+            Tenor: context.tenor,
+            Tenor_Bulan: context.tenor_bulan,
+            Usulan_Jangka_Waktu: context.usulan_jangka_waktu,
+            Bunga: context.bunga,
+            Bunga_Persen: context.bunga_persen,
+            Biaya_Provisi: context.biaya_provisi,
+            Biaya_Tatalaksana: context.biaya_tatalaksana,
+            Tujuan_Kredit: context.tujuan_kredit,
+
+            // Call Memo / Kerabat
+            Nama_Kerabat: context.nama_kerabat,
+            Hubungan_Kerabat: context.hubungan_kerabat,
+            No_Telepon_Kerabat: context.no_telepon_kerabat,
+            Tgl_Call_Memo: context.tgl_call_memo,
+            Tanggal_Call_Memo: context.tgl_call_memo,
+        };
+
+        Object.assign(context, aliases);
+
+        // Add indexed SLIK fields with Alias support
         const slikFields = this.mapSlikToIndexedFields(slikFacilities);
-        Object.assign(context, slikFields);
+
+        // Create aliases for SLIK fields (e.g. Slik_Bank_1_Nama)
+        const slikAliases: Record<string, unknown> = {};
+        Object.keys(slikFields).forEach(key => {
+            const capitalizedKey = key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+            slikAliases[capitalizedKey] = slikFields[key];
+        });
+
+        // Merge all SLIK fields
+        Object.assign(context, slikFields, slikAliases);
 
         return context;
     }
@@ -298,10 +433,11 @@ export class DocumentTemplateService {
      * Configured with Jinja2-style delimiters {{ }}
      */
     static async generateFromTemplate(
-        kategori: Kategori,
+        kategori: KategoriDoc,
         debitur: DebiturData
     ): Promise<Buffer> {
         const templatePath = this.getTemplatePath(kategori);
+        console.log(`[TEMPLATE] Using template path: ${templatePath}`);
 
         // Read template file
         const templateBuffer = await fs.readFile(templatePath);
@@ -319,11 +455,21 @@ export class DocumentTemplateService {
                 end: '}}',
             },
             // Handle undefined values - return empty string
-            nullGetter: () => '',
+            nullGetter: (part) => {
+                // console.log(`[TEMPLATE] Missing value for placeholder: ${part.value}`);
+                return '';
+            },
         });
 
         // Prepare data context
         const context = this.prepareTemplateContext(debitur);
+        console.log('[TEMPLATE] Context keys:', Object.keys(context));
+        console.log('[TEMPLATE] Sample context values:', {
+            nama_pemohon: context.nama_pemohon,
+            Nama_Pemohon: context.Nama_Pemohon,
+            tgl_call_memo: context.tgl_call_memo,
+            Tgl_Call_Memo: context.Tgl_Call_Memo
+        });
 
         // Render template with data
         doc.render(context);

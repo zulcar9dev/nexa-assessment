@@ -1,32 +1,18 @@
 // Product Categories
 export const PRODUCT_CATEGORIES = {
-    prapurna_reguler: {
-        key: "prapurna_reguler",
+    prapurna: {
+        key: "prapurna",
         nama: "BNI Fleksi Pensiun Prapurna",
         description: "Kredit untuk PNS yang akan memasuki masa pensiun",
-        templateDocx: "template_prapurna_reguler.docx",
+        templateDocx: "template_prapurna.docx",
         showOnDashboard: true,
     },
-    prapurna_takeover: {
-        key: "prapurna_takeover",
-        nama: "BNI Fleksi Pensiun Prapurna Take Over",
-        description: "Kredit take over untuk PNS prapurna",
-        templateDocx: "template_prapurna_takeover.docx",
-        showOnDashboard: false,
-    },
-    purna_reguler: {
-        key: "purna_reguler",
+    purna: {
+        key: "purna",
         nama: "BNI Fleksi Pensiun Purna",
         description: "Kredit untuk pensiunan PNS/TNI/POLRI",
-        templateDocx: "template_purna_reguler.docx",
+        templateDocx: "template_purna.docx",
         showOnDashboard: true,
-    },
-    purna_takeover: {
-        key: "purna_takeover",
-        nama: "BNI Fleksi Pensiun Purna Take Over",
-        description: "Kredit take over untuk pensiunan",
-        templateDocx: "template_purna_reguler.docx",
-        showOnDashboard: false,
     },
 } as const;
 

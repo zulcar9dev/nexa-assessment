@@ -32,7 +32,7 @@ interface FormStore {
 
     // Actions
     setFormData: (data: Partial<DebiturFormData>) => void;
-    updateField: (field: string, value: string) => void;
+    updateField: (field: string, value: string | boolean) => void;
     setCurrentTab: (tab: string) => void;
     setDsrResult: (result: DSRResult | null) => void;
     setIsSubmitting: (isSubmitting: boolean) => void;
@@ -54,11 +54,8 @@ const initialFormData: Partial<DebiturFormData> = {
 };
 
 // Helper function to determine kategori based on form data
-function getKategori(isPurna: boolean, jenisPengajuan?: string): string {
-    if (isPurna) {
-        return jenisPengajuan === "takeover" ? "PURNA_TAKEOVER" : "PURNA_REGULER";
-    }
-    return jenisPengajuan === "takeover" ? "PRAPURNA_TAKEOVER" : "PRAPURNA_REGULER";
+function getKategori(isPurna: boolean): string {
+    return isPurna ? "PURNA" : "PRAPURNA";
 }
 
 // Helper function to map jenis pengajuan to API enum
@@ -150,7 +147,7 @@ export const useFormStore = create<FormStore>()(
                     const requestData = {
                         namaPemohon: formData.nama_pemohon || "",
                         noKtp: formData.no_ktp_pemohon || "",
-                        kategori: getKategori(isPurna, formData.jenis_pengajuan),
+                        kategori: getKategori(isPurna),
                         jenisPengajuan: mapJenisPengajuan(formData.jenis_pengajuan),
                         segmentasi: mapSegmentasi(formData.segmentasi),
                         dataLengkap: formData,

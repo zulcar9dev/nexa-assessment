@@ -259,13 +259,11 @@ export class DocumentService {
      */
     static getTemplatePath(kategori: string): string {
         const templateMap: Record<string, string> = {
-            'PRAPURNA_REGULER': 'template_prapurna_reguler.docx',
-            'PRAPURNA_TAKEOVER': 'template_prapurna_takeover.docx',
-            'PURNA_REGULER': 'template_purna_reguler.docx',
-            'PURNA_TAKEOVER': 'template_purna_takeover.docx',
+            'PRAPURNA': 'template_prapurna.docx',
+            'PURNA': 'template_purna.docx',
         };
 
-        const filename = templateMap[kategori] || 'template_prapurna_reguler.docx';
+        const filename = templateMap[kategori] || 'template_prapurna.docx';
         return path.join(process.cwd(), 'templates', filename);
     }
 

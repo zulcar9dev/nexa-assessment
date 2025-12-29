@@ -7,11 +7,11 @@ import prisma from '@/backend/lib/prisma';
 import type { DebiturQueryParams, CreateDebiturRequest, UpdateDebiturRequest } from '@/types/api';
 
 // Local type definitions - these match the Prisma schema
-type Kategori = 'PRAPURNA_REGULER' | 'PRAPURNA_TAKEOVER' | 'PURNA_REGULER' | 'PURNA_TAKEOVER';
+type Kategori = 'PRAPURNA' | 'PURNA';
 type JenisPengajuan = 'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER';
 type Segmentasi = 'TASPEN' | 'ASABRI';
 
-const VALID_KATEGORI: Kategori[] = ['PRAPURNA_REGULER', 'PRAPURNA_TAKEOVER', 'PURNA_REGULER', 'PURNA_TAKEOVER'];
+const VALID_KATEGORI: Kategori[] = ['PRAPURNA', 'PURNA'];
 const VALID_JENIS: JenisPengajuan[] = ['BARU', 'TOP_UP', 'TOP_UP_SISA_GAJI', 'TAKEOVER'];
 const VALID_SEGMENTASI: Segmentasi[] = ['TASPEN', 'ASABRI'];
 

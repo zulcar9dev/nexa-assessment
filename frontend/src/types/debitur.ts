@@ -33,6 +33,7 @@ export interface DebiturFormData {
     no_ktp_pemohon: string;
     tgl_lahir_pemohon: string;
     alamat_ktp: string;
+    domisili_berbeda?: boolean;
     alamat_domisili: string;
     no_telepon: string;
     status_perkawinan: string;

@@ -3,12 +3,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/backend/lib/auth';
 import { DebiturService } from '@/backend/services/debitur.service';
 import { DocumentService } from '@/backend/services/document.service';
-import { DocumentTemplateService } from '@/backend/services/document-template.service';
+import { DocumentTemplateService, KategoriDoc } from '@/backend/services/document-template.service';
 import { TemplateService } from '@/backend/services/template.service';
 import type { ApiResponse } from '@/types/api';
 
 // Kategori type - matches Prisma enum
-type Kategori = 'PRAPURNA_REGULER' | 'PRAPURNA_TAKEOVER' | 'PURNA_REGULER' | 'PURNA_TAKEOVER';
+
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -59,14 +59,23 @@ export async function GET(
             }, { status: 403 });
         }
 
+        // Normalize category
+        let kategoriDoc: KategoriDoc = 'prapurna'; // default
+        if (debitur.kategori.includes('purna') && !debitur.kategori.includes('prapurna')) {
+            kategoriDoc = 'purna';
+        }
+
         // Check if template exists
-        const templateExists = await TemplateService.fileExists(debitur.kategori as Kategori);
+        // TemplateService expects Prisma Enum (UPPERCASE), so we convert it
+        const dbKategori = kategoriDoc.toUpperCase() as 'PRAPURNA' | 'PURNA';
+        const templateExists = await TemplateService.fileExists(dbKategori);
+        console.log(`[DOWNLOAD] Checking template for category ${kategoriDoc} (DB: ${dbKategori}): ${templateExists}`);
 
         let docBuffer: Buffer;
         const debiturData = {
             namaPemohon: debitur.namaPemohon,
             noKtp: debitur.noKtp,
-            kategori: debitur.kategori,
+            kategori: kategoriDoc,
             jenisPengajuan: debitur.jenisPengajuan,
             segmentasi: debitur.segmentasi,
             dataLengkap: debitur.dataLengkap as Record<string, unknown>,
@@ -75,16 +84,19 @@ export async function GET(
         if (templateExists) {
             // Use template-based generation with docxtemplater
             try {
+                console.log('[DOWNLOAD] Attempting to generate from template...');
                 docBuffer = await DocumentTemplateService.generateFromTemplate(
-                    debitur.kategori as Kategori,
+                    kategoriDoc,
                     debiturData
                 );
+                console.log('[DOWNLOAD] Template generation successful');
             } catch (templateError) {
-                console.error('Template generation failed, falling back to simple:', templateError);
+                console.error('[DOWNLOAD] Template generation failed, falling back to simple:', templateError);
                 // Fallback to simple document if template generation fails
                 docBuffer = await DocumentService.generateSimpleDocx(debiturData);
             }
         } else {
+            console.log('[DOWNLOAD] Template not found, using simple generation');
             // Generate simple document without template
             docBuffer = await DocumentService.generateSimpleDocx(debiturData);
         }

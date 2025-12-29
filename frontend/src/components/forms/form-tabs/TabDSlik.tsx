@@ -1,11 +1,13 @@
 "use client";
 
 import { useFormStore } from "@/stores/form-store";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { Plus, Trash2, ClipboardCheck } from "lucide-react";
 import type { SlikFacility } from "@/types/debitur";
 
 export default function TabDSlik() {
     const { formData, setFormData } = useFormStore();
+    const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     const facilities = formData.slik_facilities || [];
 
@@ -54,7 +56,7 @@ export default function TabDSlik() {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-d">
             <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
                 <ClipboardCheck className="w-6 h-6 text-[#00665e]" />
                 Hasil SLIK
@@ -76,13 +78,14 @@ export default function TabDSlik() {
                 {/* Dynamic Rows */}
                 {facilities.map((facility, index) => (
                     <div key={index} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
-                        {/* Bank Name */}
+                        {/* Bank Name - First field in row, add Shift+Tab for first row */}
                         <div className="col-span-1 lg:col-span-3">
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
                             <input
                                 type="text"
                                 value={facility.nama_bank}
                                 onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
+                                onKeyDown={index === 0 ? handleTabToPrev : undefined}
                                 placeholder="Nama Bank"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                             />
@@ -164,10 +167,18 @@ export default function TabDSlik() {
                     </div>
                 )}
 
-                {/* Add Button */}
+                {/* Add Button - Last focusable element: Tab goes to next tab */}
                 <button
                     type="button"
                     onClick={addFacility}
+                    onKeyDown={(e) => {
+                        // Handle Tab to go to next tab
+                        handleTabToNext(e);
+                        // Handle Shift+Tab when no facilities exist
+                        if (facilities.length === 0) {
+                            handleTabToPrev(e);
+                        }
+                    }}
                     className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-[#00665e]/30 rounded-lg text-[#00665e] font-medium hover:bg-[#00665e]/5 hover:border-[#00665e] transition-all"
                 >
                     <Plus className="w-5 h-5" />

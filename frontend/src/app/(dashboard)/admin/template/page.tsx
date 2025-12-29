@@ -9,13 +9,13 @@ const templateCategories = [
     {
         key: "prapurna_reguler",
         nama: "BNI Fleksi Pensiun Prapurna",
-        filename: "template_prapurna_reguler.docx",
+        filename: "template_prapurna.docx",
         updatedAt: "2024-12-20",
     },
     {
         key: "purna_reguler",
         nama: "BNI Fleksi Pensiun Purna",
-        filename: "template_purna_reguler.docx",
+        filename: "template_purna.docx",
         updatedAt: "2024-12-15",
     },
 ];

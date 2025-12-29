@@ -6,14 +6,10 @@ import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye, Loader2, AlertCir
 import { useDebitur } from "@/hooks/use-debitur";
 
 const kategoriLabels: Record<string, string> = {
-    PRAPURNA_REGULER: "BNI Fleksi Pensiun Prapurna",
-    PRAPURNA_TAKEOVER: "BNI Fleksi Pensiun Prapurna Take Over",
-    PURNA_REGULER: "BNI Fleksi Pensiun Purna",
-    PURNA_TAKEOVER: "BNI Fleksi Pensiun Purna Take Over",
-    prapurna_reguler: "BNI Fleksi Pensiun Prapurna",
-    prapurna_takeover: "BNI Fleksi Pensiun Prapurna Take Over",
-    purna_reguler: "BNI Fleksi Pensiun Purna",
-    purna_takeover: "BNI Fleksi Pensiun Purna Take Over",
+    PRAPURNA: "BNI Fleksi Pensiun Prapurna",
+    PURNA: "BNI Fleksi Pensiun Purna",
+    prapurna: "BNI Fleksi Pensiun Prapurna",
+    purna: "BNI Fleksi Pensiun Purna",
 };
 
 const jenisBadgeColors: Record<string, string> = {

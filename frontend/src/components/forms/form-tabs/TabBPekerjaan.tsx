@@ -1,14 +1,16 @@
 "use client";
 
 import { useFormStore } from "@/stores/form-store";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { Briefcase } from "lucide-react";
 
 export default function TabBPekerjaan() {
     const { formData, updateField } = useFormStore();
+    const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8">
+        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-b">
             <form className="space-y-8">
                 {/* Section: Data Pekerjaan */}
                 <div>
@@ -25,11 +27,13 @@ export default function TabBPekerjaan() {
                             >
                                 Segmentasi
                             </label>
+                            {/* First field: Shift+Tab goes to previous tab */}
                             <select
                                 id="segmentasi"
                                 name="segmentasi"
                                 value={formData.segmentasi || ""}
                                 onChange={(e) => updateField("segmentasi", e.target.value)}
+                                onKeyDown={handleTabToPrev}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             >
                                 <option value="">Pilih Segmentasi</option>
@@ -181,12 +185,14 @@ export default function TabBPekerjaan() {
                             >
                                 Alamat Kantor/Instansi
                             </label>
+                            {/* Last field: Tab goes to next tab */}
                             <textarea
                                 id="alamat_kantor"
                                 name="alamat_kantor"
                                 rows={2}
                                 value={formData.alamat_kantor || ""}
                                 onChange={(e) => updateField("alamat_kantor", e.target.value)}
+                                onKeyDown={handleTabToNext}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
                         </div>
