@@ -20,7 +20,10 @@ export function formatRupiah(value: number | string): string {
 /**
  * Parse Rupiah formatted string to number
  */
-export function parseRupiah(value: string): number {
+export function parseRupiah(value: string | number | null | undefined): number {
+    if (value === null || value === undefined) return 0;
+    if (typeof value === "number") return value;
+    if (typeof value !== "string") return 0;
     return parseInt(value.replace(/\./g, ""), 10) || 0;
 }
 
