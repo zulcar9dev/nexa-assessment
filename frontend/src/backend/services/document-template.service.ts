@@ -454,22 +454,24 @@ export class DocumentTemplateService {
                 start: '{{',
                 end: '}}',
             },
+            // Custom parser to trim spaces from keys (e.g. {{ key }} -> key)
+            parser: (tag) => {
+                return {
+                    get(scope: Record<string, unknown>) {
+                        const key = tag.trim();
+                        return scope[key];
+                    }
+                };
+            },
+            
             // Handle undefined values - return empty string
-            nullGetter: (part) => {
-                // console.log(`[TEMPLATE] Missing value for placeholder: ${part.value}`);
+            nullGetter: () => {
                 return '';
             },
         });
 
         // Prepare data context
         const context = this.prepareTemplateContext(debitur);
-        console.log('[TEMPLATE] Context keys:', Object.keys(context));
-        console.log('[TEMPLATE] Sample context values:', {
-            nama_pemohon: context.nama_pemohon,
-            Nama_Pemohon: context.Nama_Pemohon,
-            tgl_call_memo: context.tgl_call_memo,
-            Tgl_Call_Memo: context.Tgl_Call_Memo
-        });
 
         // Render template with data
         doc.render(context);

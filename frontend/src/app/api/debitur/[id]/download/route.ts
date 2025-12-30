@@ -60,8 +60,15 @@ export async function GET(
         }
 
         // Normalize category
+        // Normalize category
+        const kategoriStr = String(debitur.kategori).toLowerCase();
         let kategoriDoc: KategoriDoc = 'prapurna'; // default
-        if (debitur.kategori.includes('purna') && !debitur.kategori.includes('prapurna')) {
+
+        // Logic selection: 
+        // 1. If it contains 'prapurna', it is PRAPURNA
+        // 2. If it contains 'purna' but NOT 'prapurna', it is PURNA
+        // The previous logic failed for Uppercase 'PURNA' because .includes is case sensitive
+        if (kategoriStr.includes('purna') && !kategoriStr.includes('prapurna')) {
             kategoriDoc = 'purna';
         }
 
