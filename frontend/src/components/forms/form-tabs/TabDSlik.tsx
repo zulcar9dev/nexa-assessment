@@ -10,6 +10,9 @@ export default function TabDSlik() {
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     const facilities = formData.slik_facilities || [];
+    
+    // Check if jenis_pengajuan is "takeover" to show takeover checkbox
+    const isTakeoverPengajuan = formData.jenis_pengajuan === "takeover";
 
     const addFacility = () => {
         const updatedFacilities = [
@@ -66,11 +69,14 @@ export default function TabDSlik() {
                 {/* Header Row (Hidden on mobile) */}
                 {facilities.length > 0 && (
                     <div className="hidden lg:grid grid-cols-12 gap-2 px-2 text-xs font-semibold text-[#0c1d1b] dark:text-gray-300">
-                        <div className="col-span-3">Nama Bank</div>
+                        <div className={isTakeoverPengajuan ? "col-span-2" : "col-span-3"}>Nama Bank</div>
                         <div className="col-span-2 text-right">Plafon Maks</div>
                         <div className="col-span-2 text-right">Outstanding</div>
                         <div className="col-span-2 text-right">Angsuran</div>
-                        <div className="col-span-2">Kolektibilitas</div>
+                        <div className={isTakeoverPengajuan ? "col-span-1" : "col-span-2"}>Kolektibilitas</div>
+                        {isTakeoverPengajuan && (
+                            <div className="col-span-2 text-center">Takeover</div>
+                        )}
                         <div className="col-span-1 text-center">Aksi</div>
                     </div>
                 )}
@@ -79,7 +85,7 @@ export default function TabDSlik() {
                 {facilities.map((facility, index) => (
                     <div key={index} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
                         {/* Bank Name - First field in row, add Shift+Tab for first row */}
-                        <div className="col-span-1 lg:col-span-3">
+                        <div className={`col-span-1 ${isTakeoverPengajuan ? "lg:col-span-2" : "lg:col-span-3"}`}>
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
                             <input
                                 type="text"
@@ -128,7 +134,7 @@ export default function TabDSlik() {
                         </div>
 
                         {/* Kolektibilitas */}
-                        <div className="col-span-1 lg:col-span-2">
+                        <div className={`col-span-1 ${isTakeoverPengajuan ? "lg:col-span-1" : "lg:col-span-2"}`}>
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Kolektibilitas</label>
                             <select
                                 value={facility.kolektibilitas || ""}
@@ -143,6 +149,24 @@ export default function TabDSlik() {
                                 <option value="5">5 - Macet</option>
                             </select>
                         </div>
+
+                        {/* Takeover Checkbox - Only shown when jenis_pengajuan is takeover */}
+                        {isTakeoverPengajuan && (
+                            <div className="col-span-1 lg:col-span-2 flex items-center justify-center">
+                                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1 mr-2">Takeover</label>
+                                <label className="flex items-center cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        checked={facility.is_takeover || false}
+                                        onChange={(e) => updateFacility(index, "is_takeover", e.target.checked)}
+                                        className="w-5 h-5 rounded border-[#cdeae7] text-[#00665e] focus:ring-[#00665e] cursor-pointer"
+                                    />
+                                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-300 lg:hidden group-hover:text-[#00665e]">
+                                        Ditakeover
+                                    </span>
+                                </label>
+                            </div>
+                        )}
 
                         {/* Delete Button */}
                         <div className="col-span-1 lg:col-span-1 flex justify-end lg:justify-center items-center mt-1 lg:mt-0">

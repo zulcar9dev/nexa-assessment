@@ -1,13 +1,32 @@
 "use client";
 
+import { useMemo } from "react";
+import { usePathname } from "next/navigation";
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 
-import { User, MapPin } from "lucide-react";
+import { User, MapPin, Calendar } from "lucide-react";
 
 export default function TabAIdentitas() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
+    const pathname = usePathname();
+
+    // Detect if current form is Purna
+    const isPurna = pathname?.includes('/purna') || pathname?.includes('/edit');
+
+    // Auto-calculate age from birth date
+    const usiaPemohon = useMemo(() => {
+        if (!formData.tgl_lahir_pemohon) return null;
+        const birthDate = new Date(formData.tgl_lahir_pemohon);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }, [formData.tgl_lahir_pemohon]);
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-a">
@@ -79,7 +98,68 @@ export default function TabAIdentitas() {
                             </div>
                         </div>
 
+                        {/* Usia Pemohon - Auto calculated */}
+                        <div>
+                            <label
+                                htmlFor="usia_pemohon"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Usia Pemohon
+                            </label>
+                            <div className="relative">
+                                <input
+                                    id="usia_pemohon"
+                                    name="usia_pemohon"
+                                    type="text"
+                                    value={usiaPemohon !== null ? `${usiaPemohon} Tahun` : ""}
+                                    readOnly
+                                    placeholder="Otomatis dari tanggal lahir"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm sm:text-sm py-2.5 px-3 bg-gray-100 dark:bg-[#0f2322]/30 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                                />
+                            </div>
+                        </div>
 
+                        {/* Tanggal Terbit KTP */}
+                        <div>
+                            <label
+                                htmlFor="tgl_terbit_ktp"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                <Calendar className="w-4 h-4 inline mr-1" />
+                                Tanggal Terbit KTP
+                            </label>
+                            <div className="relative">
+                                <input
+                                    id="tgl_terbit_ktp"
+                                    name="tgl_terbit_ktp"
+                                    type="date"
+                                    value={formData.tgl_terbit_ktp || ""}
+                                    onChange={(e) => updateField("tgl_terbit_ktp", e.target.value)}
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Pensiunan - Only for Purna */}
+                        {isPurna && (
+                            <div>
+                                <label
+                                    htmlFor="pensiunan"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Pensiunan
+                                </label>
+                                <input
+                                    id="pensiunan"
+                                    name="pensiunan"
+                                    type="text"
+                                    value={formData.pensiunan || ""}
+                                    onChange={(e) => updateField("pensiunan", e.target.value)}
+                                    placeholder="e.g. PNS / TNI / POLRI"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        )}
 
                         {/* Marital Status */}
                         <div>

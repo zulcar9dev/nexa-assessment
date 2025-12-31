@@ -31,3 +31,6 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
+
+# Database
+tools/pgsql/data/

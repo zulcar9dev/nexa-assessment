@@ -71,3 +71,36 @@
 2025-12-29 23:03:31.613 -05 [21328] FATAL:  terminando la conexión debido a una orden del administrador
 2025-12-29 23:03:31.632 -05 [8524] LOG:  apagando
 2025-12-29 23:03:31.672 -05 [21176] LOG:  el sistema de bases de datos está apagado
+2025-12-29 23:03:56.809 -05 [24884] LOG:  iniciando PostgreSQL 12.4, compiled by Visual C++ build 1914, 64-bit
+2025-12-29 23:03:56.824 -05 [24884] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2025-12-29 23:03:56.825 -05 [24884] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2025-12-29 23:03:56.988 -05 [22692] LOG:  el sistema de bases de datos fue apagado en 2025-12-29 23:03:31 -05
+2025-12-29 23:03:57.092 -05 [24884] LOG:  el sistema de bases de datos está listo para aceptar conexiones
+2025-12-29 23:08:02.565 -05 [24884] LOG:  se recibió petición de apagado rápido
+2025-12-29 23:08:02.570 -05 [24884] LOG:  abortando transacciones activas
+2025-12-29 23:08:02.576 -05 [29640] ERROR:  cancelando la sentencia debido a una petición del usuario
+2025-12-29 23:08:02.585 -05 [31136] FATAL:  terminando la conexión debido a una orden del administrador
+2025-12-29 23:08:02.589 -05 [23040] FATAL:  terminando la conexión debido a una orden del administrador
+2025-12-29 23:08:02.590 -05 [23040] LOG:  could not send data to client: An existing connection was forcibly closed by the remote host.
+	
+2025-12-29 23:08:02.591 -05 [24884] LOG:  proceso ayudante «logical replication launcher» (PID 29640) terminó con código de salida 1
+2025-12-29 23:08:02.611 -05 [7764] LOG:  apagando
+2025-12-29 23:08:02.668 -05 [24884] LOG:  el sistema de bases de datos está apagado
+2025-12-30 00:34:31.161 -05 [3188] LOG:  iniciando PostgreSQL 12.4, compiled by Visual C++ build 1914, 64-bit
+2025-12-30 00:34:31.169 -05 [3188] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2025-12-30 00:34:31.170 -05 [3188] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2025-12-30 00:34:31.263 -05 [22892] LOG:  el sistema de bases de datos fue apagado en 2025-12-29 23:08:02 -05
+2025-12-30 00:34:31.367 -05 [3188] LOG:  el sistema de bases de datos está listo para aceptar conexiones
+2025-12-30 08:59:10.715 -05 [3188] LOG:  se recibió petición de apagado rápido
+2025-12-30 08:59:10.722 -05 [3188] LOG:  abortando transacciones activas
+2025-12-30 08:59:10.727 -05 [2584] ERROR:  cancelando la sentencia debido a una petición del usuario
+2025-12-30 08:59:10.738 -05 [20328] FATAL:  terminando la conexión debido a una orden del administrador
+2025-12-30 08:59:10.738 -05 [10156] FATAL:  terminando la conexión debido a una orden del administrador
+2025-12-30 08:59:10.739 -05 [3188] LOG:  proceso ayudante «logical replication launcher» (PID 2584) terminó con código de salida 1
+2025-12-30 08:59:10.757 -05 [4772] LOG:  apagando
+2025-12-30 08:59:10.798 -05 [3188] LOG:  el sistema de bases de datos está apagado
+2025-12-30 21:19:41.390 -05 [23120] LOG:  iniciando PostgreSQL 12.4, compiled by Visual C++ build 1914, 64-bit
+2025-12-30 21:19:41.399 -05 [23120] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2025-12-30 21:19:41.399 -05 [23120] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2025-12-30 21:19:41.505 -05 [14496] LOG:  el sistema de bases de datos fue apagado en 2025-12-30 08:59:10 -05
+2025-12-30 21:19:41.589 -05 [23120] LOG:  el sistema de bases de datos está listo para aceptar conexiones

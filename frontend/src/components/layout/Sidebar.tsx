@@ -29,6 +29,11 @@ const menuItems = [
         href: "/debitur",
         icon: FileText,
     },
+    {
+        title: "Pengaturan",
+        href: "/settings",
+        icon: Settings,
+    },
 ];
 
 const adminItems = [
