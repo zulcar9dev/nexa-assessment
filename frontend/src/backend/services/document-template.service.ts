@@ -194,8 +194,23 @@ export class DocumentTemplateService {
         result[`slik_bank_${i}_topup`] = facility.is_topup_lunas
           ? "ya"
           : "tidak";
-        // Use manual alasan input
-        result[`slik_bank_${i}_alasan`] = facility.alasan || "";
+        // Use manual alasan input with local placeholder parsing
+        const alasanRaw = facility.alasan || "";
+        const localContext = {
+          nomor_rekening_pinjaman: facility.nomor_rekening_pinjaman || "",
+          nomor_pk: facility.nomor_pk || "",
+          nama_bank: facility.nama_bank || "",
+        };
+        // Simple replace for local context
+        const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
+          return (localContext as any)[key] || match; // Keep original if not found locally (let global handle it?)
+          // Actually, if we return match, global parser (if runs) might pick it up. 
+          // But global parser is docxtemplater. 
+          // docxtemplater will see {{nomor_rekening_pinjaman}} and if global context doesn't have it, it sets to empty.
+          // So we MUST replace it here if it matches local.
+        });
+
+        result[`slik_bank_${i}_alasan`] = alasanParsed;
         result[`slik_bank_${i}_norek_existing`] = facility.nomor_rekening_pinjaman || "";
         result[`slik_bank_${i}_nopk_existing`] = facility.nomor_pk || "";
       } else {
@@ -477,7 +492,21 @@ export class DocumentTemplateService {
 
       // Biaya
       biaya_provisi: this.formatRupiah(biayaProvisi),
+      biaya_provisi_percent: `${pctProvisi}%`,
       biaya_tatalaksana: this.formatRupiah(biayaTatalaksana),
+      biaya_tatalaksana_percent: `${pctTatalaksana}%`,
+
+      // Biaya PSJT
+      biaya_psjt: this.formatRupiah(Math.round(plafon * ((parseFloat(String(data.biaya_psjt_percent || 0)) || 0) / 100))),
+      biaya_psjt_percent: `${parseFloat(String(data.biaya_psjt_percent || 0))}%`,
+
+      // Biaya Administrasi
+      biaya_administrasi_is_bebas: data.biaya_administrasi_is_bebas,
+      biaya_administrasi_nominal: this.formatRupiah(data.biaya_administrasi_nominal as string),
+      // Specific Text Requirement
+      biaya_administrasi_text: data.biaya_administrasi_is_bebas
+        ? "Bebas Biaya Administrasi"
+        : `Biaya Administrasi sebesar Rp. ${this.formatRupiah(data.biaya_administrasi_nominal as string)},-`,
 
       // Tujuan
       tujuan_kredit: this.getTujuanKreditLabel(data.tujuan_kredit as string),
@@ -609,7 +638,14 @@ export class DocumentTemplateService {
       Bunga: context.bunga,
       Bunga_Persen: context.bunga_persen,
       Biaya_Provisi: context.biaya_provisi,
+      Biaya_Provisi_Percent: context.biaya_provisi_percent,
       Biaya_Tatalaksana: context.biaya_tatalaksana,
+      Biaya_Tatalaksana_Percent: context.biaya_tatalaksana_percent,
+      Biaya_Psjt: context.biaya_psjt,
+      Biaya_Psjt_Percent: context.biaya_psjt_percent,
+      Biaya_Administrasi_Text: context.biaya_administrasi_text,
+      Biaya_Administrasi_Nominal: context.biaya_administrasi_nominal,
+      Is_Bebas_Administrasi: context.biaya_administrasi_is_bebas,
       Tujuan_Kredit: context.tujuan_kredit,
       Kode_Program: context.kode_program,
       Catatan_Program_Pricing: context.catatan_program_pricing,
@@ -623,6 +659,25 @@ export class DocumentTemplateService {
     };
 
     Object.assign(context, aliases);
+
+    // --- HELPER: Parse Placeholders in String ---
+    const parsePlaceholders = (text: string, ctx: Record<string, unknown>): string => {
+      if (!text) return "";
+      return text.replace(/{{([\w_]+)}}/g, (match, key) => {
+        const value = ctx[key];
+        // If value exists and is not null/undefined
+        if (value !== undefined && value !== null) {
+          // If it's a number, format it? Or just return string
+          return String(value);
+        }
+        // If key not found, return empty string or keep original?
+        // Let's keep original if not found primarily, or empty. 
+        // Based on docxtemplater behavior, it usually empties it. 
+        // Let's return the value if we find it, otherwise keep empty string to be safe (or original for debugging).
+        // For this requirement, let's substitute empty string if missing.
+        return "";
+      });
+    };
 
     // Add indexed SLIK fields with Alias support
     const slikFields = this.mapSlikToIndexedFields(slikFacilities);
@@ -673,19 +728,32 @@ export class DocumentTemplateService {
       // Logic for Top Up and Top Up Sisa Gaji (starts with check for base text)
       syaratList.push("Jaminan yang telah ada sebelumnya berupa Asli SK Pensiun atas nama Pemohon tetap dipertahankan sebagai Jaminan Kredit di BNI.");
 
-      // Additional text for Top Up Sisa Gaji
-      if (jenisPengajuanLower === "top_up_sisa_gaji" || jenisPengajuanLower === "top up sisa gaji") {
-        // Find Slik facilities that have nomor_rekening_pinjaman or nomor_pk (assuming these are filled for the relevant existing facilities)
-        const existingFacilities = slikFacilities.filter(f => f.nomor_rekening_pinjaman || f.nomor_pk);
+      // Additional text for Top Up and Top Up Sisa Gaji
+      if (jenisPengajuanLower === "top_up_sisa_gaji" || jenisPengajuanLower === "top up sisa gaji" || jenisPengajuanLower === "top_up" || jenisPengajuanLower === "top up") {
+        // Find Slik facilities that have nomor_rekening_pinjaman (and optional nomor_pk)
+        const existingFacilities = slikFacilities.filter(f => f.nomor_rekening_pinjaman);
+
+        // [UPDATE] Add global context for manual parsing usage (e.g. {{nomor_rekening_pinjaman}} in textarea)
+        // Join multiple accounts with comma if exists, or just take the first one.
+        const globalNoRek = existingFacilities.map(f => f.nomor_rekening_pinjaman).join(", ");
+        const globalNoPk = existingFacilities.map(f => f.nomor_pk).join(", ");
+
+        // Inject into context so manual parser can see it
+        context.nomor_rekening_pinjaman = globalNoRek;
+        context.nomor_pk = globalNoPk;
 
         if (existingFacilities.length > 0) {
           existingFacilities.forEach(f => {
             const noRek = f.nomor_rekening_pinjaman || "-";
+            // Nomor PK might be empty for standard Top Up
             const noPk = f.nomor_pk || "-";
             syaratList.push(`Fasilitas kredit ini saling mengkait dengan fasilitas kredit sebelumnya nomor rekening pinjaman ${noRek} atas nama ${namaPemohonTitle}, No. PK ${noPk}`);
           });
-        } else {
-          // Fallback if no specific facility marked
+        } else if (jenisPengajuanLower.includes("sisa_gaji") || jenisPengajuanLower.includes("sisa gaji")) {
+          // Fallback for Sisa Gaji if not found (keep existing behavior for sisa gaji strictness)
+          // For standard Top Up we might not force this line if no account number is input, 
+          // but the requirement implies we should have it. 
+          // Let's keep the fallback generic if we want to force the text placeholder style:
           syaratList.push(`Fasilitas kredit ini saling mengkait dengan fasilitas kredit sebelumnya nomor rekening pinjaman (................) atas nama ${namaPemohonTitle}, No. PK (................)`);
         }
       }
@@ -715,40 +783,82 @@ export class DocumentTemplateService {
     context.Syarat_Pencairan_Kredit = syaratPencairanText;
     context.Syarat_Pencairan = syaratPencairanText;
 
+    // --- MANUAL OVERRIDE (MENTION FEATURE) ---
+    // Check for manual inputs: syarat_penandatanganan_text & syarat_pencairan_text
+    // If present, parse them and OVERRIDE the auto-generated text
 
-    // Append Syarat Penandatanganan Tambahan (Manual Input)
-    // Append Syarat Penandatanganan Tambahan (Manual Input)
+    const manualSyaratPenandatanganan = (data.syarat_penandatanganan_text as string) || "";
+    if (manualSyaratPenandatanganan.trim().length > 0) {
+      // Filter out comments (lines starting with /*)
+      const cleanText = manualSyaratPenandatanganan
+        .split("\n")
+        .filter(line => !line.trim().startsWith("/*"))
+        .join("\n");
+
+      // Parse placeholders using the fully built context (including aliases)
+      const parsedText = parsePlaceholders(cleanText, context);
+
+      // Override the context for Syarat Penandatanganan
+      context.syarat_penandatanganan = parsedText;
+      context.Syarat_Penandatanganan = parsedText;
+
+      // Also update the List version for template compatibility
+      const parsedList = parsedText
+        .split("\n")
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        .map(item => ({ text: item }));
+
+      context.list_syarat_penandatanganan = parsedList;
+    }
+
+    const manualSyaratPencairan = (data.syarat_pencairan_text as string) || "";
+    if (manualSyaratPencairan.trim().length > 0) {
+      // Filter out comments
+      const cleanText = manualSyaratPencairan
+        .split("\n")
+        .filter(line => !line.trim().startsWith("/*"))
+        .join("\n");
+
+      // Parse placeholders
+      const parsedText = parsePlaceholders(cleanText, context);
+
+      // Override the context for Syarat Pencairan
+      context.syarat_pencairan_kredit = parsedText;
+      context.Syarat_Pencairan_Kredit = parsedText;
+      context.Syarat_Pencairan = parsedText;
+
+      // Create List Version for Syarat Pencairan (Manual)
+      const parsedListPencairan = parsedText
+        .split("\n")
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        .map(item => ({ text: item }));
+
+      context.list_syarat_pencairan = parsedListPencairan;
+      context.list_syarat_pencairan_kredit = parsedListPencairan;
+
+      // Remove obsolete list_syarat_pencairan_tambahan if it was set anywhere else
+      delete context.list_syarat_pencairan_tambahan;
+    }
+
+    // --- CLEANUP & DEFAULT HANDLING ---
+    // Ensure lists are always arrays for template safety
+    if (!context.list_syarat_penandatanganan) {
+      context.list_syarat_penandatanganan = syaratList.map(item => ({ text: item }));
+    }
+    // Also support manual 'tambahan' fields if they exist but weren't caught above (fallback)
     const syaratTambahan = (data.syarat_penandatanganan_tambahan || "") as string;
-    // Logic removed: do not append manual input to auto-generated text to avoid duplication in template loops
-
-    context.syarat_penandatanganan = syaratPenandatanganan;
-    context.Syarat_Penandatanganan = syaratPenandatanganan;
-    // Map list for loop iteration in template {{#list_syarat_penandatanganan}} ... {{/list_syarat_penandatanganan}}
-    context.list_syarat_penandatanganan = syaratList.map(item => ({ text: item }));
-
-    context.syarat_penandatanganan_tambahan = syaratTambahan;
-
-    // Parse list for loop iteration in template
-    const listSyarat = syaratTambahan
-      .split("\n")
-      .map(item => item.trim())
-      .filter(item => item.length > 0)
-      .map(item => ({ text: item }));
-
-    context.list_syarat_tambahan = listSyarat;
-
-    // Append Syarat Pencairan Tambahan (Manual Input)
+    if (syaratTambahan) {
+      context.syarat_penandatanganan_tambahan = syaratTambahan;
+      context.list_syarat_tambahan = syaratTambahan.split("\n").map(t => ({ text: t.trim() })).filter(t => t.text);
+    }
     const syaratPencairanTambahan = (data.syarat_pencairan_tambahan || "") as string;
-    context.syarat_pencairan_tambahan = syaratPencairanTambahan;
-
-    // Parse list for loop iteration in template
-    const listSyaratPencairan = syaratPencairanTambahan
-      .split("\n")
-      .map(item => item.trim())
-      .filter(item => item.length > 0)
-      .map(item => ({ text: item }));
-
-    context.list_syarat_pencairan_tambahan = listSyaratPencairan;
+    if (syaratPencairanTambahan) {
+      context.syarat_pencairan_tambahan = syaratPencairanTambahan;
+      // Clean up legacy list naming if needed or keep for backward compat
+      context.list_syarat_pencairan_tambahan = []; // Explicitly empty it as requested by user to remove function
+    }
 
     return context;
   }

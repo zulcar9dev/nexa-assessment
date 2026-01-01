@@ -4,6 +4,8 @@ import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { Plus, Trash2, ClipboardCheck } from "lucide-react";
 import type { SlikFacility } from "@/types/debitur";
+import { MentionTextArea } from "@/components/ui/MentionTextArea";
+import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
 
 export default function TabDSlik() {
     const { formData, setFormData } = useFormStore();
@@ -167,11 +169,12 @@ export default function TabDSlik() {
                         {/* Alasan/Keterangan */}
                         <div className="col-span-1 lg:col-span-2">
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Ket/Alasan</label>
-                            <input
-                                type="text"
+                            <MentionTextArea
                                 value={facility.alasan || ""}
-                                onChange={(e) => updateFacility(index, "alasan", e.target.value)}
+                                onChange={(val) => updateFacility(index, "alasan", val)}
+                                options={DOCUMENT_PLACEHOLDERS}
                                 placeholder="Keterangan"
+                                rows={1}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                             />
                         </div>
@@ -189,9 +192,9 @@ export default function TabDSlik() {
                         </div>
 
                         {/* Top Up Sisa Gaji Specific Fields - Full Width Row */}
-                        {formData.jenis_pengajuan === "top_up_sisa_gaji" && (
+                        {(formData.jenis_pengajuan === "top_up_sisa_gaji" || formData.jenis_pengajuan === "top_up") && (
                             <div className="col-span-1 lg:col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 animate-in fade-in slide-in-from-top-2">
-                                <div>
+                                <div className={formData.jenis_pengajuan === "top_up" ? "lg:col-span-2" : ""}>
                                     <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor Rekening Pinjaman Existing</label>
                                     <input
                                         type="text"
@@ -201,16 +204,18 @@ export default function TabDSlik() {
                                         className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor PK Existing</label>
-                                    <input
-                                        type="text"
-                                        value={facility.nomor_pk || ""}
-                                        onChange={(e) => updateFacility(index, "nomor_pk", e.target.value)}
-                                        placeholder="Nomor PK"
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                                    />
-                                </div>
+                                {formData.jenis_pengajuan === "top_up_sisa_gaji" && (
+                                    <div>
+                                        <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor PK Existing</label>
+                                        <input
+                                            type="text"
+                                            value={facility.nomor_pk || ""}
+                                            onChange={(e) => updateFacility(index, "nomor_pk", e.target.value)}
+                                            placeholder="Nomor PK"
+                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

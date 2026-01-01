@@ -96,8 +96,13 @@ export interface DebiturFormData {
   kode_program?: string;
   biaya_provisi?: string;           // Biaya Provisi (percentage, default: 1)
   biaya_tatalaksana?: string;       // Biaya Tata Laksana (percentage, default: 2)
+  biaya_psjt_percent?: string;      // Biaya PSJT (percentage)
+  biaya_administrasi_is_bebas?: boolean; // Bebas Biaya Administrasi
+  biaya_administrasi_nominal?: string;   // Nominal Biaya Administrasi
   syarat_penandatanganan_tambahan?: string; // Syarat Penandatanganan Tambahan (Manual)
-  syarat_pencairan_tambahan?: string; // Syarat Pencairan Tambahan (Manual)
+  syarat_pencairan_tambahan?: string; // Syarat Pencairan Tambahan (Manual) - Legacy/Deprecated
+  syarat_penandatanganan_text?: string; // [NEW] Syarat Penandatanganan (Manual Full Text)
+  syarat_pencairan_text?: string;       // [NEW] Syarat Pencairan (Manual Full Text)
 }
 
 export interface SlikFacility {

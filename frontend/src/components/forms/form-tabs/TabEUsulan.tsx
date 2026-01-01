@@ -3,6 +3,8 @@
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { CreditCard } from "lucide-react";
+import { MentionTextArea } from "@/components/ui/MentionTextArea";
+import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
 
 export default function TabEUsulan() {
     const { formData, updateField } = useFormStore();
@@ -36,7 +38,7 @@ export default function TabEUsulan() {
                             onChange={(e) => updateField("usulan_plafon_kredit", e.target.value.replace(/[^0-9]/g, ""))}
                             onKeyDown={handleTabToPrev}
                             placeholder="0"
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right font-bold"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
                         />
                     </div>
                 </div>
@@ -140,41 +142,101 @@ export default function TabEUsulan() {
                     </div>
                 </div>
 
+                {/* Biaya PSJT */}
+                <div>
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Biaya PSJT (%)
+                    </label>
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={formData.biaya_psjt_percent || ""}
+                            onChange={(e) => updateField("biaya_psjt_percent", e.target.value)}
+                            placeholder="0"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                        />
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">%</span>
+                    </div>
+                </div>
+
+                {/* Biaya Administrasi */}
+                <div>
+                    <div className="flex justify-between items-center mb-1">
+                        <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300">
+                            Biaya Administrasi
+                        </label>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="bebas_biaya_admin"
+                                checked={formData.biaya_administrasi_is_bebas || false}
+                                onChange={(e) => {
+                                    updateField("biaya_administrasi_is_bebas", e.target.checked);
+                                    if (e.target.checked) {
+                                        updateField("biaya_administrasi_nominal", "0");
+                                    } else {
+                                        updateField("biaya_administrasi_nominal", "");
+                                    }
+                                }}
+                                className="w-3.5 h-3.5 text-[#00665e] bg-gray-100 border-gray-300 rounded focus:ring-[#00665e] dark:focus:ring-[#00665e] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                            <label htmlFor="bebas_biaya_admin" className="text-xs text-gray-500 dark:text-gray-400 select-none cursor-pointer">
+                                Bebas Biaya
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="relative">
+                        <span className={`absolute inset-y-0 left-0 pl-3 flex items-center text-sm ${formData.biaya_administrasi_is_bebas ? 'text-gray-400' : 'text-gray-500'}`}>Rp</span>
+                        <input
+                            type="text"
+                            value={formatCurrencyDisplay(formData.biaya_administrasi_nominal)}
+                            onChange={(e) => updateField("biaya_administrasi_nominal", e.target.value.replace(/[^0-9]/g, ""))}
+                            disabled={formData.biaya_administrasi_is_bebas}
+                            placeholder="0"
+                            className={`block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 text-right ${formData.biaya_administrasi_is_bebas
+                                ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
+                                : 'bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white'
+                                }`}
+                        />
+                    </div>
+                </div>
+
+                {/* Syarat Penandatanganan */}
                 <div className="md:col-span-2 lg:col-span-3">
                     <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Syarat Penandatanganan Tambahan <span className="text-gray-400 font-normal">(Opsional)</span>
+                        Syarat Penandatanganan (Manual)
                     </label>
                     <p className="text-xs text-gray-500 mb-2">
-                        Jika syarat lebih dari 1 poin, pisahkan dengan <strong>Enter</strong> ke bawah.
+                        Ketik <strong>@</strong> untuk menyebutkan field data (contoh: @Biaya Provisi).
                         <br />
-                        Contoh:
-                        <br />
-                        - Menyerahkan Pas Foto berwarna
-                        <br />
-                        - Menyerahkan Surat Rekomendasi
+                        Jika diisi, teks ini akan <strong>menggantikan</strong> syarat penandatanganan otomatis.
                     </p>
-                    <textarea
-                        value={formData.syarat_penandatanganan_tambahan || ""}
-                        onChange={(e) => updateField("syarat_penandatanganan_tambahan", e.target.value)}
-                        placeholder="Ketik syarat tambahan di sini..."
-                        rows={3}
-                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                    <MentionTextArea
+                        value={formData.syarat_penandatanganan_text || ""}
+                        onChange={(val) => updateField("syarat_penandatanganan_text", val)}
+                        options={DOCUMENT_PLACEHOLDERS}
+                        placeholder="Ketik syarat penandatanganan di sini... (Gunakan @ untuk insert data)"
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white font-mono text-sm"
                     />
                 </div>
 
+                {/* Syarat Pencairan */}
                 <div className="md:col-span-2 lg:col-span-3">
                     <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Syarat Pencairan Tambahan <span className="text-gray-400 font-normal">(Opsional)</span>
+                        Syarat Pencairan (Manual)
                     </label>
                     <p className="text-xs text-gray-500 mb-2">
-                        Jika syarat lebih dari 1 poin, pisahkan dengan <strong>Enter</strong> ke bawah.
+                        Ketik <strong>@</strong> untuk menyebutkan field data.
+                        <br />
+                        Jika diisi, teks ini akan <strong>menggantikan</strong> syarat pencairan otomatis.
                     </p>
-                    <textarea
-                        value={formData.syarat_pencairan_tambahan || ""}
-                        onChange={(e) => updateField("syarat_pencairan_tambahan", e.target.value)}
-                        placeholder="Ketik syarat pencairan tambahan di sini..."
-                        rows={3}
-                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                    <MentionTextArea
+                        value={formData.syarat_pencairan_text || ""}
+                        onChange={(val) => updateField("syarat_pencairan_text", val)}
+                        options={DOCUMENT_PLACEHOLDERS}
+                        placeholder="Ketik syarat pencairan di sini... (Gunakan @ untuk insert data)"
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white font-mono text-sm"
                     />
                 </div>
             </div>

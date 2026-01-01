@@ -97,9 +97,17 @@ Nihil - Tidak ada fasilitas kredit
 | `{{slik_bank_1_outs}}`     | `slik_facilities[0].outstanding`      | `66.393.279`                             |
 | `{{slik_bank_1_coll}}`     | `slik_facilities[0].kolektibilitas`   | `1`                                      |
 | `{{slik_bank_1_angsuran}}` | `slik_facilities[0].angsuran`         | `0`                                      |
-| `{{slik_bank_1_alasan}}`   | Manual input: `alasan`                | `Ket: Top Up` / `Di takeover` / dll      |
-| `{{slik_bank_1_norek_existing}}` | Manual input: `nomor_rekening_pinjaman` | `015xxx` (Only for Top Up Sisa Gaji) |
-| `{{slik_bank_1_nopk_existing}}`  | Manual input: `nomor_pk`                | `123xxx` (Only for Top Up Sisa Gaji) |
+| `{{slik_bank_1_alasan}}`   | Manual input: `alasan` (Support Mention)| `Ket: Top Up` / `Di takeover` / dll      |
+| `{{slik_bank_1_norek_existing}}` | Manual input: `nomor_rekening_pinjaman` | `015xxx` |
+| `{{slik_bank_1_nopk_existing}}`  | Manual input: `nomor_pk`                | `123xxx` |
+
+> **Fitur Mention & Global Placeholder:**
+> Aplikasi mendukung placeholder global yang akan menggabungkan semua nilai dari data SLIK yang tersedia:
+> - `{{nomor_rekening_pinjaman}}`: Menggabungkan semua no rek yang diinput (dipisah koma).
+> - `{{nomor_pk}}`: Menggabungkan semua no PK yang diinput (dipisah koma).
+> - `{{nama_bank}}`: Mengambil nama bank (biasanya digunakan per baris/context aware).
+>
+> Placeholder ini dapat digunakan di dalam **Input Manual Syarat** (Syarat Pencairan/Penandatanganan) dan akan otomatis terisi nilai dari SLIK jika jenis pengajuan relevan (Top Up).
 
 > Template mendukung hingga 15 bank: `slik_bank_1` sampai `slik_bank_15`
 
@@ -213,27 +221,32 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 | Bunga (angka saja)      | `{{bunga}}`               | `dataLengkap.usulan_bunga_persen`       | `11`                      |
 | Bunga (dengan label)    | `{{bunga_persen}}`        | `dataLengkap.usulan_bunga_persen`       | `11% p.a Efektif Anuitas` |
 | Biaya Provisi           | `{{biaya_provisi}}`       | `plafon * (input_persen / 100)` | `3.670.000`                          |
+| Biaya Provisi (%)       | `{{biaya_provisi_percent}}` | `input_persen`                | `1%`                                 |
 | Biaya Tata Laksana      | `{{biaya_tatalaksana}}`   | `plafon * (input_persen / 100)` | `7.340.000`                          |
+| Biaya Tata Laksana (%)  | `{{biaya_tatalaksana_percent}}` | `input_persen`              | `2%`                                 |
+| Biaya PSJT              | `{{biaya_psjt}}`          | `plafon * (input_persen / 100)` | `5.000.000`                          |
+| Biaya PSJT (%)          | `{{biaya_psjt_percent}}`  | `dataLengkap.biaya_psjt_percent` | `0.5%`                               |
+| Biaya Administrasi      | `{{biaya_administrasi_text}}` | Toggle Logic (Bebas/Charged) | `Bebas Biaya Administrasi` OR `Biaya Administrasi sebesar Rp. 500.000,-` |
 | Kode Program            | `{{kode_program}}`        | `dataLengkap.kode_program`              | `KK001`                              |
 | Catatan Program Pricing | `{{catatan_program_pricing}}` | Settings (Pengaturan Aplikasi) | `Cfm Surat No DNS/5.4/8023...`       |
 | Syarat Penandatanganan  | `{{syarat_penandatanganan}}` | Logic: `Auto (Jenis Kredit) Only` | `Menyerahkan Asli...` |
 | Syarat Pencairan Kredit | `{{syarat_pencairan_kredit}}` | Logic: `Auto (Jenis & Payroll)` | `Rekening Payroll...` |
-| Syarat Pencairan Tambahan (Manual) | `{{syarat_pencairan_tambahan}}` | `syarat_pencairan_tambahan` | `Tambahan syarat khusus...` |
-| Syarat Pencairan Tambahan (List Manual)| `{{#list_syarat_pencairan_tambahan}}` ... `{{/list_syarat_pencairan_tambahan}}` | `list_syarat_pencairan_tambahan` (Array) | Loop per baris input manual |
-| Syarat Penandatanganan (List)   | `{{#list_syarat_penandatanganan}}` ... `{{/list_syarat_penandatanganan}}` | `list_syarat_penandatanganan` (Array) | Loop untuk teks otomatis (Format List) |
-| Syarat Penandatanganan (Manual) | `{{syarat_penandatanganan_tambahan}}` | `syarat_penandatanganan_tambahan` | `Tambahan syarat khusus...` |
-| Syarat Penandatanganan (List Manual)| `{{#list_syarat_tambahan}}` ... `{{/list_syarat_tambahan}}` | `list_syarat_tambahan` (Array) | Loop per baris input manual |
+| Syarat Penandatanganan (List)   | `{{#list_syarat_penandatanganan}}` ... `{{/list_syarat_penandatanganan}}` | `list_syarat_penandatanganan` | Loop untuk teks otomatis ATAU manual (Overridden) |
+| Syarat Pencairan (List)         | `{{#list_syarat_pencairan}}` ... `{{/list_syarat_pencairan}}` | `list_syarat_pencairan` | Loop untuk teks syarat pencairan manual |
 
-> **Catatan:** `Syarat Penandatanganan` sekarang tersedia dalam format List. 
-> **Rekomendasi Template:** Gunakan format ini agar rapi (sesuaikan bullet style di Word):
-> ```
-> {{#list_syarat_penandatanganan}}
-> - {{text}}
-> {{/list_syarat_penandatanganan}}
-> {{#list_syarat_tambahan}}
-> - {{text}}
-> {{/list_syarat_tambahan}}
-> ```
+> **Update Terakhir: List Format untuk Manual Input**
+>
+> 1.  **Syarat Penandatanganan**:
+>     -   Jika User mengisi input manual, sistem akan **menimpa (override)** list otomatis.
+>     -   Gunakan template loop: `{{#list_syarat_penandatanganan}} - {{text}} {{/list_syarat_penandatanganan}}`.
+>
+> 2.  **Syarat Pencairan**:
+>     -   Untuk menampilkan input manual Syarat Pencairan, gunakan format list.
+>     -   Gunakan template loop: `{{#list_syarat_pencairan}} - {{text}} {{/list_syarat_pencairan}}`.
+>
+> **Fitur Mention**:
+> -   Input manual mendukung fitur mention (`@`) untuk menyisipkan nilai dinamis (misal: `@Biaya Provisi`).
+> -   Placeholder hasil mention akan diproses terlebih dahulu sebelum dokumen dibuat.
 
 ---
 
@@ -299,7 +312,13 @@ Semua placeholder memiliki alias dengan format **Title_Case** untuk kompatibilit
 | `{{bunga_persen}}`       | `{{Bunga_Persen}}`                 |
 | `{{tujuan_kredit}}`      | `{{Tujuan_Kredit}}`                |
 | `{{biaya_provisi}}`      | `{{Biaya_Provisi}}`                |
+| `{{biaya_provisi_percent}}` | `{{Biaya_Provisi_Percent}}`     |
 | `{{biaya_tatalaksana}}`  | `{{Biaya_Tatalaksana}}`            |
+| `{{biaya_tatalaksana_percent}}` | `{{Biaya_Tatalaksana_Percent}}` |
+| `{{biaya_psjt}}`         | `{{Biaya_Psjt}}`                   |
+| `{{biaya_psjt_percent}}` | `{{Biaya_Psjt_Percent}}`           |
+| `{{biaya_administrasi_text}}` | `{{Biaya_Administrasi_Text}}`   |
+| `{{biaya_administrasi_nominal}}` | `{{Biaya_Administrasi_Nominal}}` |
 | `{{kode_program}}`       | `{{Kode_Program}}`                 |
 | `{{catatan_program_pricing}}` | `{{Catatan_Program_Pricing}}` |
 | `{{syarat_penandatanganan}}`  | `{{Syarat_Penandatanganan}}`  |

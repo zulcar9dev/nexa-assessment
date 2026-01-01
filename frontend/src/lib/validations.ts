@@ -48,9 +48,25 @@ export const penghasilanPurnaSchema = z.object({
     pensiun_bulan_jumlah: z.string().min(1, "Hak pensiun bulanan wajib diisi"),
 });
 
+// Slik Facility Schema
+const slikFacilitySchema = z.object({
+    nama_bank: z.string().min(1, "Nama bank wajib diisi"),
+    jenis_kredit: z.string().optional(),
+    plafon_maks: z.string().optional(),
+    outstanding: z.string().optional(),
+    angsuran: z.string().optional(),
+    kolektibilitas: z.string().optional(),
+    alasan: z.string().optional(),
+    is_takeover: z.boolean().optional(),
+    is_topup_lunas: z.boolean().optional(),
+    nomor_rekening_pinjaman: z.string().optional(),
+    nomor_pk: z.string().optional(),
+});
+
 // Tab D - SLIK Validation
 export const slikSchema = z.object({
     fasilitas_nihil: z.enum(["ya", "tidak"]),
+    slik_facilities: z.array(slikFacilitySchema).optional(),
 });
 
 // Tab E - Usulan Validation
@@ -58,6 +74,17 @@ export const usulanSchema = z.object({
     usulan_plafon_kredit: z.string().min(1, "Plafon wajib diisi"),
     usulan_jangka_waktu_bulan: z.string().min(1, "Jangka waktu wajib diisi"),
     usulan_bunga_persen: z.string().min(1, "Bunga wajib diisi"),
+    biaya_psjt_percent: z.string().optional(),
+    biaya_administrasi_is_bebas: z.boolean().optional(),
+    biaya_administrasi_nominal: z.string().optional(),
+}).refine((data) => {
+    if (!data.biaya_administrasi_is_bebas && (!data.biaya_administrasi_nominal || data.biaya_administrasi_nominal === "")) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Nominal biaya administrasi wajib diisi jika tidak bebas biaya",
+    path: ["biaya_administrasi_nominal"],
 });
 
 // Complete Form Schema (Prapurna)
