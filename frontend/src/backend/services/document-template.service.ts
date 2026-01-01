@@ -173,7 +173,9 @@ export class DocumentTemplateService {
     // Map up to 15 SLIK facilities
     for (let i = 1; i <= 15; i++) {
       const facility = slikFacilities[i - 1];
-      if (facility) {
+      if (facility && facility.nama_bank) {
+        // Boolean flag for conditional rendering
+        result[`slik_bank_${i}_ada`] = true;
         result[`slik_bank_${i}_nama`] = facility.nama_bank || "";
         result[`slik_bank_${i}_jenis`] = "Konsumtif"; // Default type
         result[`slik_bank_${i}_maks`] = this.formatRupiah(facility.plafon_maks);
@@ -185,11 +187,18 @@ export class DocumentTemplateService {
         result[`slik_bank_${i}_takeover`] = facility.is_takeover
           ? "ya"
           : "tidak";
+        result[`slik_bank_${i}_topup`] = facility.is_topup_lunas
+          ? "ya"
+          : "tidak";
+        // Output "Ket: Take Over" or "Ket: Top Up" based on checkbox selection
         result[`slik_bank_${i}_alasan`] = facility.is_takeover
-          ? "Takeover"
-          : "";
+          ? "Ket: Take Over"
+          : facility.is_topup_lunas
+            ? "Ket: Top Up"
+            : "";
       } else {
-        // Empty placeholders for unused slots
+        // Empty placeholders for unused slots - boolean is false
+        result[`slik_bank_${i}_ada`] = false;
         result[`slik_bank_${i}_nama`] = "";
         result[`slik_bank_${i}_jenis`] = "";
         result[`slik_bank_${i}_maks`] = "";
@@ -197,6 +206,7 @@ export class DocumentTemplateService {
         result[`slik_bank_${i}_coll`] = "";
         result[`slik_bank_${i}_angsuran`] = "";
         result[`slik_bank_${i}_takeover`] = "";
+        result[`slik_bank_${i}_topup`] = "";
         result[`slik_bank_${i}_alasan`] = "";
       }
     }
@@ -321,7 +331,7 @@ export class DocumentTemplateService {
     if (tenor > 0 && monthlyRate > 0) {
       angsuranKredit = Math.round(
         (plafon * (monthlyRate * Math.pow(1 + monthlyRate, tenor))) /
-          (Math.pow(1 + monthlyRate, tenor) - 1)
+        (Math.pow(1 + monthlyRate, tenor) - 1)
       );
     } else if (tenor > 0) {
       angsuranKredit = Math.round(plafon / tenor);
@@ -363,7 +373,7 @@ export class DocumentTemplateService {
         String(data.status_perkawinan || "").toLowerCase() === "menikah",
       is_belum_menikah:
         String(data.status_perkawinan || "").toLowerCase() ===
-          "belum_menikah" ||
+        "belum_menikah" ||
         String(data.status_perkawinan || "").toLowerCase() === "belum menikah",
       is_cerai_hidup:
         String(data.status_perkawinan || "").toLowerCase() === "cerai_hidup" ||
@@ -668,6 +678,12 @@ export class DocumentTemplateService {
     // Debug: log conditional field values
     console.log("[TEMPLATE] domisili_berbeda:", context.domisili_berbeda);
     console.log("[TEMPLATE] alamat_domisili:", context.alamat_domisili);
+
+    // Debug: log SLIK fields
+    console.log("[TEMPLATE] slik_ada_fasilitas:", context.slik_ada_fasilitas);
+    console.log("[TEMPLATE] slik_bank_1_ada:", context.slik_bank_1_ada);
+    console.log("[TEMPLATE] slik_bank_1_nama:", context.slik_bank_1_nama);
+    console.log("[TEMPLATE] slik_bank_2_ada:", context.slik_bank_2_ada);
 
     // Render template with data
     doc.render(context);
