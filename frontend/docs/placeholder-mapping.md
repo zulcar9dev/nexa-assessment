@@ -88,16 +88,16 @@ Nihil - Tidak ada fasilitas kredit
 
 #### SLIK Bank (Index 1-15)
 
-| Placeholder                | Data Source                         | Contoh Output                            |
-| -------------------------- | ----------------------------------- | ---------------------------------------- |
-| `{{slik_bank_1_ada}}`      | Boolean: `nama_bank` tidak kosong   | `true` / `false`                         |
-| `{{slik_bank_1_nama}}`     | `slik_facilities[0].nama_bank`      | `PT Hasjrat Multifinance`                |
-| `{{slik_bank_1_jenis}}`    | Fixed: `Konsumtif`                  | `Konsumtif`                              |
-| `{{slik_bank_1_maks}}`     | `slik_facilities[0].plafon_maks`    | `102.661.552`                            |
-| `{{slik_bank_1_outs}}`     | `slik_facilities[0].outstanding`    | `66.393.279`                             |
-| `{{slik_bank_1_coll}}`     | `slik_facilities[0].kolektibilitas` | `1`                                      |
-| `{{slik_bank_1_angsuran}}` | `slik_facilities[0].angsuran`       | `0`                                      |
-| `{{slik_bank_1_alasan}}`   | Based on checkbox                   | `Ket: Take Over` / `Ket: Top Up` / ``    |
+| Placeholder                | Data Source                           | Contoh Output                            |
+| -------------------------- | ------------------------------------- | ---------------------------------------- |
+| `{{slik_bank_1_ada}}`      | Boolean: `nama_bank` tidak kosong     | `true` / `false`                         |
+| `{{slik_bank_1_nama}}`     | `slik_facilities[0].nama_bank`        | `PT Hasjrat Multifinance`                |
+| `{{slik_bank_1_jenis}}`    | Manual input: `jenis_kredit`          | `Konsumtif` / `Produktif` / dll          |
+| `{{slik_bank_1_maks}}`     | `slik_facilities[0].plafon_maks`      | `102.661.552`                            |
+| `{{slik_bank_1_outs}}`     | `slik_facilities[0].outstanding`      | `66.393.279`                             |
+| `{{slik_bank_1_coll}}`     | `slik_facilities[0].kolektibilitas`   | `1`                                      |
+| `{{slik_bank_1_angsuran}}` | `slik_facilities[0].angsuran`         | `0`                                      |
+| `{{slik_bank_1_alasan}}`   | Manual input: `alasan`                | `Ket: Top Up` / `Di takeover` / dll      |
 
 > Template mendukung hingga 15 bank: `slik_bank_1` sampai `slik_bank_15`
 
@@ -132,23 +132,14 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 
 > **Teks Mitigasi**: "Mitigasi Risiko Cfm. Surat No. DNS/5.4/5645 Tanggal 09 Juli 2025 Perihal Penyampaian Program Relaksasi SLIK untuk Pemrosesan BNI Fleksi Pensiun Semester II Tahun 2025."
 
-#### Takeover Option
+#### Field Manual Input
 
-Checkbox **"Takeover"** di form SLIK muncul secara kondisional:
+| Field | Default (jika kosong) | Deskripsi |
+|-------|----------------------|-----------|
+| `jenis_kredit` | "Konsumtif" | Jenis kredit (Konsumtif, Produktif, dll) |
+| `alasan` | `""` (kosong) | Keterangan/alasan (bebas diisi) |
 
-- **Hanya muncul** saat `jenis_pengajuan = "takeover"` (dipilih di Tab B)
-- User dapat mencentang fasilitas kredit mana yang akan di-takeover
-- Field `is_takeover` akan mempengaruhi perhitungan RPC (angsuran tidak dihitung jika ditakeover)
-- Jika dicentang, `{{slik_bank_N_alasan}}` = "Ket: Take Over"
-
-#### Top Up Option
-
-Checkbox **"Top Up"** di form SLIK muncul secara kondisional:
-
-- **Hanya muncul** saat `jenis_pengajuan = "top_up"` (dipilih di Tab B)
-- User dapat mencentang fasilitas kredit mana yang akan di-top up
-- Field `is_topup_lunas` akan mempengaruhi perhitungan RPC (angsuran tidak dihitung jika di-top up)
-- Jika dicentang, `{{slik_bank_N_alasan}}` = "Ket: Top Up"
+> **Catatan:** Checkbox "Takeover" dan "Top Up" sudah dihapus. Gunakan field `alasan` untuk mencatat keterangan seperti "Ket: Top Up" atau "Di Takeover".
 
 ---
 

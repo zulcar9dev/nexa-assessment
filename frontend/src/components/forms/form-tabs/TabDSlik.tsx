@@ -11,21 +11,17 @@ export default function TabDSlik() {
 
     const facilities = formData.slik_facilities || [];
 
-    // Check if jenis_pengajuan is "takeover" to show takeover checkbox
-    const isTakeoverPengajuan = formData.jenis_pengajuan === "takeover";
-
-    // Check if jenis_pengajuan is "top_up" to show top up checkbox
-    const isTopUpPengajuan = formData.jenis_pengajuan === "top_up";
-
     const addFacility = () => {
         const updatedFacilities = [
             ...facilities,
             {
                 nama_bank: "",
+                jenis_kredit: "",
                 plafon_maks: "",
                 outstanding: "",
                 angsuran: "",
                 kolektibilitas: "",
+                alasan: "",
                 is_takeover: false,
             } as SlikFacility
         ];
@@ -71,27 +67,23 @@ export default function TabDSlik() {
             <div className="space-y-4">
                 {/* Header Row (Hidden on mobile) */}
                 {facilities.length > 0 && (
-                    <div className="hidden lg:grid grid-cols-12 gap-2 px-2 text-xs font-semibold text-[#0c1d1b] dark:text-gray-300">
-                        <div className={(isTakeoverPengajuan || isTopUpPengajuan) ? "col-span-2" : "col-span-3"}>Nama Bank</div>
+                    <div className="hidden lg:grid grid-cols-13 gap-2 px-2 text-xs font-semibold text-[#0c1d1b] dark:text-gray-300">
+                        <div className="col-span-2">Nama Bank</div>
+                        <div className="col-span-1">Jenis</div>
                         <div className="col-span-2 text-right">Plafon Maks</div>
                         <div className="col-span-2 text-right">Outstanding</div>
                         <div className="col-span-2 text-right">Angsuran</div>
-                        <div className={(isTakeoverPengajuan || isTopUpPengajuan) ? "col-span-1" : "col-span-2"}>Kolektibilitas</div>
-                        {isTakeoverPengajuan && (
-                            <div className="col-span-2 text-center">Takeover</div>
-                        )}
-                        {isTopUpPengajuan && (
-                            <div className="col-span-2 text-center">Top Up</div>
-                        )}
+                        <div className="col-span-1">Coll</div>
+                        <div className="col-span-2">Ket/Alasan</div>
                         <div className="col-span-1 text-center">Aksi</div>
                     </div>
                 )}
 
                 {/* Dynamic Rows */}
                 {facilities.map((facility, index) => (
-                    <div key={index} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
-                        {/* Bank Name - First field in row, add Shift+Tab for first row */}
-                        <div className={`col-span-1 ${(isTakeoverPengajuan || isTopUpPengajuan) ? "lg:col-span-2" : "lg:col-span-3"}`}>
+                    <div key={index} className="grid grid-cols-1 lg:grid-cols-13 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
+                        {/* Bank Name */}
+                        <div className="col-span-1 lg:col-span-2">
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
                             <input
                                 type="text"
@@ -99,6 +91,18 @@ export default function TabDSlik() {
                                 onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
                                 onKeyDown={index === 0 ? handleTabToPrev : undefined}
                                 placeholder="Nama Bank"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                            />
+                        </div>
+
+                        {/* Jenis Kredit */}
+                        <div className="col-span-1 lg:col-span-1">
+                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Jenis Kredit</label>
+                            <input
+                                type="text"
+                                value={facility.jenis_kredit || ""}
+                                onChange={(e) => updateFacility(index, "jenis_kredit", e.target.value)}
+                                placeholder="Konsumtif"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                             />
                         </div>
@@ -140,57 +144,34 @@ export default function TabDSlik() {
                         </div>
 
                         {/* Kolektibilitas */}
-                        <div className={`col-span-1 ${(isTakeoverPengajuan || isTopUpPengajuan) ? "lg:col-span-1" : "lg:col-span-2"}`}>
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Kolektibilitas</label>
+                        <div className="col-span-1 lg:col-span-1">
+                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Coll</label>
                             <select
                                 value={facility.kolektibilitas || ""}
                                 onChange={(e) => updateFacility(index, "kolektibilitas", e.target.value)}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                             >
-                                <option value="">Pilih</option>
-                                <option value="1">1 - Lancar</option>
-                                <option value="2">2 - DPK</option>
-                                <option value="3">3 - Kurang Lancar</option>
-                                <option value="4">4 - Diragukan</option>
-                                <option value="5">5 - Macet</option>
+                                <option value="">-</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
                             </select>
                         </div>
 
-                        {/* Takeover Checkbox - Only shown when jenis_pengajuan is takeover */}
-                        {isTakeoverPengajuan && (
-                            <div className="col-span-1 lg:col-span-2 flex items-center justify-center">
-                                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1 mr-2">Takeover</label>
-                                <label className="flex items-center cursor-pointer group">
-                                    <input
-                                        type="checkbox"
-                                        checked={facility.is_takeover || false}
-                                        onChange={(e) => updateFacility(index, "is_takeover", e.target.checked)}
-                                        className="w-5 h-5 rounded border-[#cdeae7] text-[#00665e] focus:ring-[#00665e] cursor-pointer"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-300 lg:hidden group-hover:text-[#00665e]">
-                                        Ditakeover
-                                    </span>
-                                </label>
-                            </div>
-                        )}
+                        {/* Alasan/Keterangan */}
+                        <div className="col-span-1 lg:col-span-2">
+                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Ket/Alasan</label>
+                            <input
+                                type="text"
+                                value={facility.alasan || ""}
+                                onChange={(e) => updateFacility(index, "alasan", e.target.value)}
+                                placeholder="Keterangan"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                            />
+                        </div>
 
-                        {/* Top Up Checkbox - Only shown when jenis_pengajuan is top_up */}
-                        {isTopUpPengajuan && (
-                            <div className="col-span-1 lg:col-span-2 flex items-center justify-center">
-                                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1 mr-2">Top Up</label>
-                                <label className="flex items-center cursor-pointer group">
-                                    <input
-                                        type="checkbox"
-                                        checked={facility.is_topup_lunas || false}
-                                        onChange={(e) => updateFacility(index, "is_topup_lunas", e.target.checked)}
-                                        className="w-5 h-5 rounded border-[#cdeae7] text-[#00665e] focus:ring-[#00665e] cursor-pointer"
-                                    />
-                                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-300 lg:hidden group-hover:text-[#00665e]">
-                                        Di Top Up
-                                    </span>
-                                </label>
-                            </div>
-                        )}
 
                         {/* Delete Button */}
                         <div className="col-span-1 lg:col-span-1 flex justify-end lg:justify-center items-center mt-1 lg:mt-0">

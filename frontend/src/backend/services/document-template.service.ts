@@ -31,10 +31,12 @@ export type KategoriDoc = "prapurna" | "purna";
 
 interface SlikFacility {
   nama_bank: string;
+  jenis_kredit?: string;
   plafon_maks: string;
   outstanding: string;
   angsuran: string;
   kolektibilitas: string;
+  alasan?: string;
   is_takeover?: boolean;
   is_topup_lunas?: boolean;
 }
@@ -177,7 +179,7 @@ export class DocumentTemplateService {
         // Boolean flag for conditional rendering
         result[`slik_bank_${i}_ada`] = true;
         result[`slik_bank_${i}_nama`] = facility.nama_bank || "";
-        result[`slik_bank_${i}_jenis`] = "Konsumtif"; // Default type
+        result[`slik_bank_${i}_jenis`] = facility.jenis_kredit || "Konsumtif";
         result[`slik_bank_${i}_maks`] = this.formatRupiah(facility.plafon_maks);
         result[`slik_bank_${i}_outs`] = this.formatRupiah(facility.outstanding);
         result[`slik_bank_${i}_coll`] = facility.kolektibilitas || "1";
@@ -190,12 +192,8 @@ export class DocumentTemplateService {
         result[`slik_bank_${i}_topup`] = facility.is_topup_lunas
           ? "ya"
           : "tidak";
-        // Output "Ket: Take Over" or "Ket: Top Up" based on checkbox selection
-        result[`slik_bank_${i}_alasan`] = facility.is_takeover
-          ? "Ket: Take Over"
-          : facility.is_topup_lunas
-            ? "Ket: Top Up"
-            : "";
+        // Use manual alasan input
+        result[`slik_bank_${i}_alasan`] = facility.alasan || "";
       } else {
         // Empty placeholders for unused slots - boolean is false
         result[`slik_bank_${i}_ada`] = false;
