@@ -98,6 +98,8 @@ Nihil - Tidak ada fasilitas kredit
 | `{{slik_bank_1_coll}}`     | `slik_facilities[0].kolektibilitas`   | `1`                                      |
 | `{{slik_bank_1_angsuran}}` | `slik_facilities[0].angsuran`         | `0`                                      |
 | `{{slik_bank_1_alasan}}`   | Manual input: `alasan`                | `Ket: Top Up` / `Di takeover` / dll      |
+| `{{slik_bank_1_norek_existing}}` | Manual input: `nomor_rekening_pinjaman` | `015xxx` (Only for Top Up Sisa Gaji) |
+| `{{slik_bank_1_nopk_existing}}`  | Manual input: `nomor_pk`                | `123xxx` (Only for Top Up Sisa Gaji) |
 
 > Template mendukung hingga 15 bank: `slik_bank_1` sampai `slik_bank_15`
 
@@ -210,8 +212,28 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 | Tenor (dengan label)    | `{{tenor_bulan}}`         | `dataLengkap.usulan_jangka_waktu_bulan` | `175 Bulan`               |
 | Bunga (angka saja)      | `{{bunga}}`               | `dataLengkap.usulan_bunga_persen`       | `11`                      |
 | Bunga (dengan label)    | `{{bunga_persen}}`        | `dataLengkap.usulan_bunga_persen`       | `11% p.a Efektif Anuitas` |
-| Biaya Provisi (1%)      | `{{biaya_provisi}}`       | `plafon * 0.01`                         | `3.670.000`               |
-| Biaya Tata Laksana (2%) | `{{biaya_tatalaksana}}`   | `plafon * 0.02`                         | `7.340.000`               |
+| Biaya Provisi           | `{{biaya_provisi}}`       | `plafon * (input_persen / 100)` | `3.670.000`                          |
+| Biaya Tata Laksana      | `{{biaya_tatalaksana}}`   | `plafon * (input_persen / 100)` | `7.340.000`                          |
+| Kode Program            | `{{kode_program}}`        | `dataLengkap.kode_program`              | `KK001`                              |
+| Catatan Program Pricing | `{{catatan_program_pricing}}` | Settings (Pengaturan Aplikasi) | `Cfm Surat No DNS/5.4/8023...`       |
+| Syarat Penandatanganan  | `{{syarat_penandatanganan}}` | Logic: `Auto (Jenis Kredit) Only` | `Menyerahkan Asli...` |
+| Syarat Pencairan Kredit | `{{syarat_pencairan_kredit}}` | Logic: `Auto (Jenis & Payroll)` | `Rekening Payroll...` |
+| Syarat Pencairan Tambahan (Manual) | `{{syarat_pencairan_tambahan}}` | `syarat_pencairan_tambahan` | `Tambahan syarat khusus...` |
+| Syarat Pencairan Tambahan (List Manual)| `{{#list_syarat_pencairan_tambahan}}` ... `{{/list_syarat_pencairan_tambahan}}` | `list_syarat_pencairan_tambahan` (Array) | Loop per baris input manual |
+| Syarat Penandatanganan (List)   | `{{#list_syarat_penandatanganan}}` ... `{{/list_syarat_penandatanganan}}` | `list_syarat_penandatanganan` (Array) | Loop untuk teks otomatis (Format List) |
+| Syarat Penandatanganan (Manual) | `{{syarat_penandatanganan_tambahan}}` | `syarat_penandatanganan_tambahan` | `Tambahan syarat khusus...` |
+| Syarat Penandatanganan (List Manual)| `{{#list_syarat_tambahan}}` ... `{{/list_syarat_tambahan}}` | `list_syarat_tambahan` (Array) | Loop per baris input manual |
+
+> **Catatan:** `Syarat Penandatanganan` sekarang tersedia dalam format List. 
+> **Rekomendasi Template:** Gunakan format ini agar rapi (sesuaikan bullet style di Word):
+> ```
+> {{#list_syarat_penandatanganan}}
+> - {{text}}
+> {{/list_syarat_penandatanganan}}
+> {{#list_syarat_tambahan}}
+> - {{text}}
+> {{/list_syarat_tambahan}}
+> ```
 
 ---
 
@@ -278,6 +300,10 @@ Semua placeholder memiliki alias dengan format **Title_Case** untuk kompatibilit
 | `{{tujuan_kredit}}`      | `{{Tujuan_Kredit}}`                |
 | `{{biaya_provisi}}`      | `{{Biaya_Provisi}}`                |
 | `{{biaya_tatalaksana}}`  | `{{Biaya_Tatalaksana}}`            |
+| `{{kode_program}}`       | `{{Kode_Program}}`                 |
+| `{{catatan_program_pricing}}` | `{{Catatan_Program_Pricing}}` |
+| `{{syarat_penandatanganan}}`  | `{{Syarat_Penandatanganan}}`  |
+| `{{syarat_pencairan_kredit}}` | `{{Syarat_Pencairan_Kredit}}` |
 | `{{tgl_mulai_kerja}}`    | `{{Tgl_Mulai_Kerja}}`              |
 | `{{alamat_kantor}}`      | `{{Alamat_Kantor}}`                |
 
@@ -357,6 +383,10 @@ interface DebiturFormData {
   usulan_bunga_persen: string;
   usulan_angsuran?: string;
   tujuan_kredit?: string;
+  kode_program?: string; // Kode Program
+  biaya_provisi?: string; // Biaya Provisi (percentage, default: 1)
+  biaya_tatalaksana?: string; // Biaya Tata Laksana (percentage, default: 2)
+  syarat_penandatanganan_tambahan?: string; // [NEW] Tambahan syarat manual
 }
 
 interface SlikFacility {

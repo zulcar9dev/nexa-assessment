@@ -91,6 +91,92 @@ export default function TabEUsulan() {
                         <option value="lainnya">Lainnya</option>
                     </select>
                 </div>
+
+                {/* Kode Program */}
+                <div>
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Kode Program
+                    </label>
+                    <input
+                        type="text"
+                        value={formData.kode_program || ""}
+                        onChange={(e) => updateField("kode_program", e.target.value)}
+                        placeholder="Contoh: KK001"
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                    />
+                </div>
+
+                {/* Biaya Provisi */}
+                <div>
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Biaya Provisi (%)
+                    </label>
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={formData.biaya_provisi || ""}
+                            onChange={(e) => updateField("biaya_provisi", e.target.value)}
+                            placeholder="1"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                        />
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">%</span>
+                    </div>
+                </div>
+
+                {/* Biaya Tata Laksana */}
+                <div>
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Biaya Tata Laksana (%)
+                    </label>
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={formData.biaya_tatalaksana || ""}
+                            onChange={(e) => updateField("biaya_tatalaksana", e.target.value)}
+                            placeholder="2"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                        />
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">%</span>
+                    </div>
+                </div>
+
+                <div className="md:col-span-2 lg:col-span-3">
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Syarat Penandatanganan Tambahan <span className="text-gray-400 font-normal">(Opsional)</span>
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                        Jika syarat lebih dari 1 poin, pisahkan dengan <strong>Enter</strong> ke bawah.
+                        <br />
+                        Contoh:
+                        <br />
+                        - Menyerahkan Pas Foto berwarna
+                        <br />
+                        - Menyerahkan Surat Rekomendasi
+                    </p>
+                    <textarea
+                        value={formData.syarat_penandatanganan_tambahan || ""}
+                        onChange={(e) => updateField("syarat_penandatanganan_tambahan", e.target.value)}
+                        placeholder="Ketik syarat tambahan di sini..."
+                        rows={3}
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                    />
+                </div>
+
+                <div className="md:col-span-2 lg:col-span-3">
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Syarat Pencairan Tambahan <span className="text-gray-400 font-normal">(Opsional)</span>
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                        Jika syarat lebih dari 1 poin, pisahkan dengan <strong>Enter</strong> ke bawah.
+                    </p>
+                    <textarea
+                        value={formData.syarat_pencairan_tambahan || ""}
+                        onChange={(e) => updateField("syarat_pencairan_tambahan", e.target.value)}
+                        placeholder="Ketik syarat pencairan tambahan di sini..."
+                        rows={3}
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                    />
+                </div>
             </div>
         </div>
     );

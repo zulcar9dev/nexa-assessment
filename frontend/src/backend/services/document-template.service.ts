@@ -39,6 +39,8 @@ interface SlikFacility {
   alasan?: string;
   is_takeover?: boolean;
   is_topup_lunas?: boolean;
+  nomor_rekening_pinjaman?: string;
+  nomor_pk?: string;
 }
 
 interface DebiturData {
@@ -194,6 +196,8 @@ export class DocumentTemplateService {
           : "tidak";
         // Use manual alasan input
         result[`slik_bank_${i}_alasan`] = facility.alasan || "";
+        result[`slik_bank_${i}_norek_existing`] = facility.nomor_rekening_pinjaman || "";
+        result[`slik_bank_${i}_nopk_existing`] = facility.nomor_pk || "";
       } else {
         // Empty placeholders for unused slots - boolean is false
         result[`slik_bank_${i}_ada`] = false;
@@ -206,6 +210,8 @@ export class DocumentTemplateService {
         result[`slik_bank_${i}_takeover`] = "";
         result[`slik_bank_${i}_topup`] = "";
         result[`slik_bank_${i}_alasan`] = "";
+        result[`slik_bank_${i}_norek_existing`] = "";
+        result[`slik_bank_${i}_nopk_existing`] = "";
       }
     }
 
@@ -342,9 +348,16 @@ export class DocumentTemplateService {
         ? Math.round((totalAngsuranBaru / penghasilan) * 10000) / 100
         : 0;
 
-    // Calculate biaya
-    const biayaProvisi = Math.round(plafon * 0.01);
-    const biayaTatalaksana = Math.round(plafon * 0.02);
+    // Calculate biaya - use manual percentage input if provided, else auto-calculate (1% and 2%)
+    const pctProvisi = data.biaya_provisi
+      ? parseFloat(String(data.biaya_provisi))
+      : 1;
+    const biayaProvisi = Math.round(plafon * (pctProvisi / 100));
+
+    const pctTatalaksana = data.biaya_tatalaksana
+      ? parseFloat(String(data.biaya_tatalaksana))
+      : 2;
+    const biayaTatalaksana = Math.round(plafon * (pctTatalaksana / 100));
 
     // Base context with original keys
     const context: Record<string, unknown> = {
@@ -469,6 +482,12 @@ export class DocumentTemplateService {
       // Tujuan
       tujuan_kredit: this.getTujuanKreditLabel(data.tujuan_kredit as string),
 
+      // Kode Program
+      kode_program: data.kode_program || "",
+
+      // Catatan Program Pricing - will be set from settings later
+      catatan_program_pricing: "",
+
       // Kerabat (Call Memo)
       nama_kerabat: data.nama_kerabat || "",
       hubungan_kerabat: this.toTitleCase(data.hubungan_kerabat as string),
@@ -592,6 +611,8 @@ export class DocumentTemplateService {
       Biaya_Provisi: context.biaya_provisi,
       Biaya_Tatalaksana: context.biaya_tatalaksana,
       Tujuan_Kredit: context.tujuan_kredit,
+      Kode_Program: context.kode_program,
+      Catatan_Program_Pricing: context.catatan_program_pricing,
 
       // Call Memo / Kerabat
       Nama_Kerabat: context.nama_kerabat,
@@ -629,9 +650,105 @@ export class DocumentTemplateService {
     // Fetch settings dynamically
     const settings = await ConfigService.getSettings();
     const teksMitigasi = settings.slikMitigasiRiskText;
+    const catatanPricing = settings.catatanProgramPricing;
 
     context.slik_mitigasi_risiko = hasRiskyCol ? teksMitigasi : "";
     context.Slik_Mitigasi_Risiko = context.slik_mitigasi_risiko;
+
+    // Set Catatan Program Pricing from Settings
+    context.catatan_program_pricing = catatanPricing || "";
+    context.Catatan_Program_Pricing = catatanPricing || "";
+
+    // --- SYARAT PENANDATANGANAN KONDISIONAL ---
+    // Logika berdasarkan Jenis Pengajuan
+    const syaratList: string[] = [];
+    const jenisPengajuanLower = (debitur.jenisPengajuan || data.jenis_pengajuan || "").toString().toLowerCase();
+
+    // Create Nama Pemohon Title Case for usage in string
+    const namaPemohonTitle = this.toTitleCase(debitur.namaPemohon || data.nama_pemohon as string || "");
+
+    if (jenisPengajuanLower === "baru") {
+      syaratList.push("Menyerahkan Asli SK Pensiun atas nama Pemohon sebagai Jaminan Kredit BNI.");
+    } else if (jenisPengajuanLower.includes("top_up") || jenisPengajuanLower === "top up") {
+      // Logic for Top Up and Top Up Sisa Gaji (starts with check for base text)
+      syaratList.push("Jaminan yang telah ada sebelumnya berupa Asli SK Pensiun atas nama Pemohon tetap dipertahankan sebagai Jaminan Kredit di BNI.");
+
+      // Additional text for Top Up Sisa Gaji
+      if (jenisPengajuanLower === "top_up_sisa_gaji" || jenisPengajuanLower === "top up sisa gaji") {
+        // Find Slik facilities that have nomor_rekening_pinjaman or nomor_pk (assuming these are filled for the relevant existing facilities)
+        const existingFacilities = slikFacilities.filter(f => f.nomor_rekening_pinjaman || f.nomor_pk);
+
+        if (existingFacilities.length > 0) {
+          existingFacilities.forEach(f => {
+            const noRek = f.nomor_rekening_pinjaman || "-";
+            const noPk = f.nomor_pk || "-";
+            syaratList.push(`Fasilitas kredit ini saling mengkait dengan fasilitas kredit sebelumnya nomor rekening pinjaman ${noRek} atas nama ${namaPemohonTitle}, No. PK ${noPk}`);
+          });
+        } else {
+          // Fallback if no specific facility marked
+          syaratList.push(`Fasilitas kredit ini saling mengkait dengan fasilitas kredit sebelumnya nomor rekening pinjaman (................) atas nama ${namaPemohonTitle}, No. PK (................)`);
+        }
+      }
+    } else if (jenisPengajuanLower === "takeover") {
+      syaratList.push("Fasilitas Takeover (Syarat penandatanganan menyesuaikan)");
+    }
+
+    const syaratPenandatanganan = syaratList.join("\n");
+
+
+    // --- SYARAT PENCAIRAN KREDIT ---
+    // Logika berdasarkan Jenis Pengajuan dan Payroll BNI
+    const namaBankPayroll = (data.nama_bank_pembayaran || "").toString().toLowerCase();
+    const isPayrollBni = namaBankPayroll.includes("bni");
+    let syaratPencairanText = "";
+
+    const isBaru = jenisPengajuanLower === "baru";
+    const isTopUpOrSisaGaji = jenisPengajuanLower.includes("top_up") || jenisPengajuanLower === "top up" || jenisPengajuanLower === "top_up_sisa_gaji" || jenisPengajuanLower === "top up sisa gaji";
+
+    if ((isBaru || isTopUpOrSisaGaji) && isPayrollBni) {
+      syaratPencairanText = "Rekening Payroll Gaji Pensiun akan dijadikan sebagai Rekening Afiliasi Kredit dan diblokir sebesar 2 (dua) kali angsuran (Pokok+ Bunga serta ditambah saldo minimum, dapat dibuka blokir saat kredit lunas). Dana ini dapat dipotong dari Pencairan Kredit.";
+    } else if (isBaru && !isPayrollBni) {
+      syaratPencairanText = "Rekening BNI Taplus atas nama Pemohon yang menjadi Rekening Payroll Gaji Pensiun akan dijadikan sebagai Rekening Afiliasi Kredit dan diblokir sebesar 4 (empat) kali angsuran, 2 (dua) kali angsuran Pindah Gaji (dapat dibuka setelah Gaji Pensiun telah tercermin di Rekening Afiliasi Kredit BNI) dan 2 (dua) kali angsuran (Pokok+ Bunga serta ditambah saldo minimum, dapat dibuka blokir saat kredit lunas). Dana ini dapat dipotong dari Pencairan Kredit.";
+    }
+
+    context.syarat_pencairan_kredit = syaratPencairanText;
+    context.Syarat_Pencairan_Kredit = syaratPencairanText;
+    context.Syarat_Pencairan = syaratPencairanText;
+
+
+    // Append Syarat Penandatanganan Tambahan (Manual Input)
+    // Append Syarat Penandatanganan Tambahan (Manual Input)
+    const syaratTambahan = (data.syarat_penandatanganan_tambahan || "") as string;
+    // Logic removed: do not append manual input to auto-generated text to avoid duplication in template loops
+
+    context.syarat_penandatanganan = syaratPenandatanganan;
+    context.Syarat_Penandatanganan = syaratPenandatanganan;
+    // Map list for loop iteration in template {{#list_syarat_penandatanganan}} ... {{/list_syarat_penandatanganan}}
+    context.list_syarat_penandatanganan = syaratList.map(item => ({ text: item }));
+
+    context.syarat_penandatanganan_tambahan = syaratTambahan;
+
+    // Parse list for loop iteration in template
+    const listSyarat = syaratTambahan
+      .split("\n")
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .map(item => ({ text: item }));
+
+    context.list_syarat_tambahan = listSyarat;
+
+    // Append Syarat Pencairan Tambahan (Manual Input)
+    const syaratPencairanTambahan = (data.syarat_pencairan_tambahan || "") as string;
+    context.syarat_pencairan_tambahan = syaratPencairanTambahan;
+
+    // Parse list for loop iteration in template
+    const listSyaratPencairan = syaratPencairanTambahan
+      .split("\n")
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .map(item => ({ text: item }));
+
+    context.list_syarat_pencairan_tambahan = listSyaratPencairan;
 
     return context;
   }

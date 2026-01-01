@@ -64,6 +64,7 @@ function mapJenisPengajuan(jenis?: string): string {
         baru: "BARU",
         top_up: "TOP_UP",
         top_up_sisa_gaji: "TOP_UP_SISA_GAJI",
+        tht: "THT",
         takeover: "TAKEOVER",
     };
     return map[jenis || "baru"] || "BARU";

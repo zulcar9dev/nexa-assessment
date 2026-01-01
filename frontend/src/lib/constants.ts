@@ -20,7 +20,8 @@ export const PRODUCT_CATEGORIES = {
 export const JENIS_PENGAJUAN = {
     baru: { label: "Baru", color: "badge-primary" },
     top_up: { label: "Top Up", color: "badge-warning" },
-    top_up_sisa_gaji: { label: "Tunjangan Hari Tua (THT)", color: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300" },
+    top_up_sisa_gaji: { label: "Top Up Sisa Gaji", color: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300" },
+    tht: { label: "Tunjangan Hari Tua (THT)", color: "bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300" },
     takeover: { label: "Take Over", color: "badge-danger" },
 } as const;
 

@@ -3,10 +3,12 @@ import path from 'path';
 
 export interface AppSettings {
     slikMitigasiRiskText: string;
+    catatanProgramPricing: string;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
-    slikMitigasiRiskText: "Mitigasi Risiko Cfm. Surat No. DNS/5.4/5645 Tanggal 09 Juli 2025 Perihal Penyampaian Program Relaksasi SLIK untuk Pemrosesan BNI Fleksi Pensiun Semester II Tahun 2025."
+    slikMitigasiRiskText: "Mitigasi Risiko Cfm. Surat No. DNS/5.4/5645 Tanggal 09 Juli 2025 Perihal Penyampaian Program Relaksasi SLIK untuk Pemrosesan BNI Fleksi Pensiun Semester II Tahun 2025.",
+    catatanProgramPricing: "Cfm Surat No DNS/5.4/8023 Perihal Program Pricing BNI Fleksi (Aktif&Pensiun) Semester II 2025 tanggal 01-09-2025."
 };
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -30,7 +32,7 @@ export class ConfigService {
     static async getSettings(): Promise<AppSettings> {
         try {
             await this.ensureDataDir();
-            
+
             try {
                 const data = await fs.readFile(CONFIG_FILE, 'utf-8');
                 const settings = JSON.parse(data);
@@ -52,10 +54,10 @@ export class ConfigService {
         try {
             const current = await this.getSettings();
             const updated = { ...current, ...newSettings };
-            
+
             await this.ensureDataDir();
             await fs.writeFile(CONFIG_FILE, JSON.stringify(updated, null, 2), 'utf-8');
-            
+
             return updated;
         } catch (error) {
             console.error('[ConfigService] Error writing settings:', error);

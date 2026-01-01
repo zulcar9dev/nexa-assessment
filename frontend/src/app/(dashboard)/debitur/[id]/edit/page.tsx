@@ -115,9 +115,25 @@ export default function EditDebiturPage({
             return;
         }
 
+        // Map values to API format (Enum)
+        const mapJenisPengajuan = (val?: string) => {
+            if (!val) return undefined;
+            const map: Record<string, string> = {
+                "baru": "BARU",
+                "top_up": "TOP_UP",
+                "top_up_sisa_gaji": "TOP_UP_SISA_GAJI",
+                "takeover": "TAKEOVER",
+            };
+            return map[val] || val.toUpperCase();
+        };
+
+        const mapSegmentasi = (val?: string) => val ? val.toUpperCase() : undefined;
+
         const result = await updateDebitur(id, {
             namaPemohon: formData.nama_pemohon,
             noKtp: formData.no_ktp_pemohon,
+            jenisPengajuan: mapJenisPengajuan(formData.jenis_pengajuan),
+            segmentasi: mapSegmentasi(formData.segmentasi),
             dataLengkap: formData as Record<string, unknown>,
         });
 

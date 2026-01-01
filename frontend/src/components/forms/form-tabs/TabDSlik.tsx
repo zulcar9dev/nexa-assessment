@@ -21,8 +21,8 @@ export default function TabDSlik() {
                 outstanding: "",
                 angsuran: "",
                 kolektibilitas: "",
-                alasan: "",
-                is_takeover: false,
+                nomor_rekening_pinjaman: "",
+                nomor_pk: "",
             } as SlikFacility
         ];
         setFormData({ slik_facilities: updatedFacilities });
@@ -67,13 +67,13 @@ export default function TabDSlik() {
             <div className="space-y-4">
                 {/* Header Row (Hidden on mobile) */}
                 {facilities.length > 0 && (
-                    <div className="hidden lg:grid grid-cols-13 gap-2 px-2 text-xs font-semibold text-[#0c1d1b] dark:text-gray-300">
+                    <div className="hidden lg:grid grid-cols-12 gap-2 px-2 text-xs font-semibold text-[#0c1d1b] dark:text-gray-300">
                         <div className="col-span-2">Nama Bank</div>
                         <div className="col-span-1">Jenis</div>
                         <div className="col-span-2 text-right">Plafon Maks</div>
                         <div className="col-span-2 text-right">Outstanding</div>
-                        <div className="col-span-2 text-right">Angsuran</div>
-                        <div className="col-span-1">Coll</div>
+                        <div className="col-span-1 text-right">Angsuran</div>
+                        <div className="col-span-1 text-center">Coll</div>
                         <div className="col-span-2">Ket/Alasan</div>
                         <div className="col-span-1 text-center">Aksi</div>
                     </div>
@@ -81,18 +81,22 @@ export default function TabDSlik() {
 
                 {/* Dynamic Rows */}
                 {facilities.map((facility, index) => (
-                    <div key={index} className="grid grid-cols-1 lg:grid-cols-13 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
-                        {/* Bank Name */}
+                    <div key={index} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
+                        {/* Bank Name with Numbering */}
                         <div className="col-span-1 lg:col-span-2">
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
-                            <input
-                                type="text"
-                                value={facility.nama_bank}
-                                onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
-                                onKeyDown={index === 0 ? handleTabToPrev : undefined}
-                                placeholder="Nama Bank"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                            />
+                            <div className="flex gap-2 items-center">
+                                <span className="flex-none flex items-center justify-center w-6 h-6 rounded-full bg-[#00665e]/10 text-[#00665e] text-xs font-bold border border-[#00665e]/20">
+                                    {index + 1}
+                                </span>
+                                <input
+                                    type="text"
+                                    value={facility.nama_bank}
+                                    onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
+                                    placeholder="Nama Bank"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                                />
+                            </div>
                         </div>
 
                         {/* Jenis Kredit */}
@@ -132,7 +136,7 @@ export default function TabDSlik() {
                         </div>
 
                         {/* Angsuran */}
-                        <div className="col-span-1 lg:col-span-2">
+                        <div className="col-span-1 lg:col-span-1">
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Angsuran</label>
                             <input
                                 type="text"
@@ -144,7 +148,7 @@ export default function TabDSlik() {
                         </div>
 
                         {/* Kolektibilitas */}
-                        <div className="col-span-1 lg:col-span-1">
+                        <div className="col-span-1 lg:col-span-1 text-center">
                             <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Coll</label>
                             <select
                                 value={facility.kolektibilitas || ""}
@@ -172,18 +176,43 @@ export default function TabDSlik() {
                             />
                         </div>
 
-
                         {/* Delete Button */}
-                        <div className="col-span-1 lg:col-span-1 flex justify-end lg:justify-center items-center mt-1 lg:mt-0">
+                        <div className="col-span-1 lg:col-span-1 flex justify-end lg:justify-center items-end lg:items-center mt-6 lg:mt-0 h-full pb-2">
                             <button
                                 type="button"
                                 onClick={() => removeFacility(index)}
-                                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
+                                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors self-center"
                                 title="Hapus baris"
                             >
                                 <Trash2 className="w-5 h-5" />
                             </button>
                         </div>
+
+                        {/* Top Up Sisa Gaji Specific Fields - Full Width Row */}
+                        {formData.jenis_pengajuan === "top_up_sisa_gaji" && (
+                            <div className="col-span-1 lg:col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 animate-in fade-in slide-in-from-top-2">
+                                <div>
+                                    <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor Rekening Pinjaman Existing</label>
+                                    <input
+                                        type="text"
+                                        value={facility.nomor_rekening_pinjaman || ""}
+                                        onChange={(e) => updateFacility(index, "nomor_rekening_pinjaman", e.target.value)}
+                                        placeholder="Nomor Rekening"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor PK Existing</label>
+                                    <input
+                                        type="text"
+                                        value={facility.nomor_pk || ""}
+                                        onChange={(e) => updateFacility(index, "nomor_pk", e.target.value)}
+                                        placeholder="Nomor PK"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
 

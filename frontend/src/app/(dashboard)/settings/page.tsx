@@ -7,6 +7,7 @@ export default function SettingsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [mitigasiText, setMitigasiText] = useState("");
+    const [catatanPricing, setCatatanPricing] = useState("");
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     useEffect(() => {
@@ -19,6 +20,7 @@ export default function SettingsPage() {
             const data = await res.json();
             if (data.success) {
                 setMitigasiText(data.data.slikMitigasiRiskText);
+                setCatatanPricing(data.data.catatanProgramPricing || "");
             }
         } catch (error) {
             console.error('Failed to fetch settings:', error);
@@ -37,13 +39,17 @@ export default function SettingsPage() {
             const res = await fetch('/api/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ slikMitigasiRiskText: mitigasiText }),
+                body: JSON.stringify({
+                    slikMitigasiRiskText: mitigasiText,
+                    catatanProgramPricing: catatanPricing
+                }),
             });
-            
+
             const data = await res.json();
             if (data.success) {
                 setMessage({ type: 'success', text: 'Pengaturan berhasil disimpan.' });
                 setMitigasiText(data.data.slikMitigasiRiskText);
+                setCatatanPricing(data.data.catatanProgramPricing || "");
             } else {
                 throw new Error(data.error?.message || 'Gagal menyimpan');
             }
@@ -88,12 +94,28 @@ export default function SettingsPage() {
                         />
                     </div>
 
+                    <div>
+                        <label htmlFor="catatanPricing" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Catatan Program Pricing
+                        </label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            Referensi surat program pricing BNI Fleksi untuk dokumen usulan kredit.
+                        </p>
+                        <textarea
+                            id="catatanPricing"
+                            rows={3}
+                            value={catatanPricing}
+                            onChange={(e) => setCatatanPricing(e.target.value)}
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#0f2322] dark:text-gray-300"
+                            placeholder="Cfm Surat No DNS/5.4/8023 Perihal Program Pricing..."
+                        />
+                    </div>
+
                     {message && (
-                        <div className={`p-4 rounded-lg flex items-center gap-2 ${
-                            message.type === 'success' 
-                                ? 'bg-green-50 text-green-700 border border-green-200' 
+                        <div className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success'
+                                ? 'bg-green-50 text-green-700 border border-green-200'
                                 : 'bg-red-50 text-red-700 border border-red-200'
-                        }`}>
+                            }`}>
                             <AlertCircle className="w-5 h-5" />
                             <p className="text-sm font-medium">{message.text}</p>
                         </div>

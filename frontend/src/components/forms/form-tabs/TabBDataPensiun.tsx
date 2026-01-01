@@ -60,7 +60,7 @@ export default function TabBDataPensiun() {
                                 <option value="">Pilih Jenis</option>
                                 <option value="baru">Baru</option>
                                 <option value="top_up">Top Up</option>
-                                <option value="top_up_sisa_gaji">Tunjangan Hari Tua (THT)</option>
+                                <option value="top_up_sisa_gaji">Top Up Sisa Gaji</option>
                                 <option value="takeover">Take Over</option>
                             </select>
                         </div>

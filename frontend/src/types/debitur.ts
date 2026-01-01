@@ -10,6 +10,7 @@ export type JenisPengajuan =
   | "baru"
   | "top_up"
   | "top_up_sisa_gaji"
+  | "tht"
   | "takeover";
 
 export type Segmentasi = "taspen" | "asabri";
@@ -92,6 +93,11 @@ export interface DebiturFormData {
   usulan_bunga_persen: string;
   usulan_angsuran?: string;
   tujuan_kredit?: string;
+  kode_program?: string;
+  biaya_provisi?: string;           // Biaya Provisi (percentage, default: 1)
+  biaya_tatalaksana?: string;       // Biaya Tata Laksana (percentage, default: 2)
+  syarat_penandatanganan_tambahan?: string; // Syarat Penandatanganan Tambahan (Manual)
+  syarat_pencairan_tambahan?: string; // Syarat Pencairan Tambahan (Manual)
 }
 
 export interface SlikFacility {
@@ -104,6 +110,8 @@ export interface SlikFacility {
   alasan: string;
   is_takeover?: boolean;
   is_topup_lunas?: boolean;
+  nomor_rekening_pinjaman?: string;
+  nomor_pk?: string;
 }
 
 export interface DSRResult {
