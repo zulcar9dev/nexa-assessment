@@ -95,3 +95,133 @@ export function calculateMaxCapacity(
 ): number {
     return (penghasilan * 0.9) - angsuranEksisting;
 }
+
+/**
+ * Calculate remaining time from today to end date
+ * Returns object with years, months, weeks, days
+ */
+export function calculateRemainingTime(endDateStr: string): {
+    years: number;
+    months: number;
+    weeks: number;
+    days: number;
+    isPast: boolean;
+} {
+    if (!endDateStr) {
+        return { years: 0, months: 0, weeks: 0, days: 0, isPast: false };
+    }
+
+    const start = new Date();
+    const end = new Date(endDateStr);
+
+    // Reset hours to ensure calculation is based on dates only
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    if (end < start) {
+        return { years: 0, months: 0, weeks: 0, days: 0, isPast: true };
+    }
+
+    let years = end.getFullYear() - start.getFullYear();
+    let months = end.getMonth() - start.getMonth();
+    let days = end.getDate() - start.getDate();
+
+    // Adjust negative days
+    if (days < 0) {
+        months--;
+        // Get days in previous month
+        const prevMonthDate = new Date(end.getFullYear(), end.getMonth(), 0);
+        days += prevMonthDate.getDate();
+    }
+
+    // Adjust negative months
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    // Convert remaining days to weeks
+    const weeks = Math.floor(days / 7);
+    const remainingDays = days % 7;
+
+    return {
+        years,
+        months,
+        weeks,
+        days: remainingDays,
+        isPast: false
+    };
+}
+
+/**
+ * Format remaining time object to string
+ */
+export function formatRemainingTime(
+    duration: { years: number; months: number; weeks: number; days: number; isPast: boolean }
+): string {
+    if (duration.isPast) return "Sudah Pensiun";
+    
+    const parts = [];
+    if (duration.years > 0) parts.push(`${duration.years} Tahun`);
+    if (duration.months > 0) parts.push(`${duration.months} Bulan`);
+    if (duration.weeks > 0) parts.push(`${duration.weeks} Minggu`);
+    if (duration.days > 0) parts.push(`${duration.days} Hari`);
+
+    if (parts.length === 0) return "Hari Ini";
+    return parts.join(" ");
+}
+
+/**
+ * Calculate elapsed time from start date to today
+ * Returns object with years, months, weeks, days
+ */
+export function calculateElapsedTime(startDateStr: string): {
+    years: number;
+    months: number;
+    weeks: number;
+    days: number;
+    isFuture: boolean;
+} {
+    if (!startDateStr) {
+        return { years: 0, months: 0, weeks: 0, days: 0, isFuture: false };
+    }
+
+    const start = new Date(startDateStr);
+    const end = new Date();
+
+    // Reset hours
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    if (start > end) {
+        return { years: 0, months: 0, weeks: 0, days: 0, isFuture: true };
+    }
+
+    let years = end.getFullYear() - start.getFullYear();
+    let months = end.getMonth() - start.getMonth();
+    let days = end.getDate() - start.getDate();
+
+    // Adjust negative days
+    if (days < 0) {
+        months--;
+        const prevMonthDate = new Date(end.getFullYear(), end.getMonth(), 0);
+        days += prevMonthDate.getDate();
+    }
+
+    // Adjust negative months
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    const weeks = Math.floor(days / 7);
+    const remainingDays = days % 7;
+
+    return {
+        years,
+        months,
+        weeks,
+        days: remainingDays,
+        isFuture: false
+    };
+}

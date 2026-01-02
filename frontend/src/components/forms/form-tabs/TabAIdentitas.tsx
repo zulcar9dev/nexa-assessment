@@ -12,8 +12,7 @@ export default function TabAIdentitas() {
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
     const pathname = usePathname();
 
-    // Detect if current form is Purna
-    const isPurna = pathname?.includes('/purna') || pathname?.includes('/edit');
+
 
     // Auto-calculate age from birth date
     const usiaPemohon = useMemo(() => {
@@ -140,26 +139,7 @@ export default function TabAIdentitas() {
                             </div>
                         </div>
 
-                        {/* Pensiunan - Only for Purna */}
-                        {isPurna && (
-                            <div>
-                                <label
-                                    htmlFor="pensiunan"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                                >
-                                    Pensiunan
-                                </label>
-                                <input
-                                    id="pensiunan"
-                                    name="pensiunan"
-                                    type="text"
-                                    value={formData.pensiunan || ""}
-                                    onChange={(e) => updateField("pensiunan", e.target.value)}
-                                    placeholder="e.g. PNS / TNI / POLRI"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
-                                />
-                            </div>
-                        )}
+
 
                         {/* Marital Status */}
                         <div>

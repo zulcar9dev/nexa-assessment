@@ -104,3 +104,11 @@
 2025-12-30 21:19:41.399 -05 [23120] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
 2025-12-30 21:19:41.505 -05 [14496] LOG:  el sistema de bases de datos fue apagado en 2025-12-30 08:59:10 -05
 2025-12-30 21:19:41.589 -05 [23120] LOG:  el sistema de bases de datos está listo para aceptar conexiones
+2025-12-31 06:34:26.615 -05 [23120] LOG:  se recibió petición de apagado rápido
+2025-12-31 06:34:26.620 -05 [23120] LOG:  abortando transacciones activas
+2025-12-31 06:34:26.625 -05 [3632] ERROR:  cancelando la sentencia debido a una petición del usuario
+2025-12-31 06:34:26.634 -05 [5352] FATAL:  terminando la conexión debido a una orden del administrador
+2025-12-31 06:34:26.636 -05 [10660] FATAL:  terminando la conexión debido a una orden del administrador
+2025-12-31 06:34:26.637 -05 [23120] LOG:  proceso ayudante «logical replication launcher» (PID 3632) terminó con código de salida 1
+2025-12-31 06:34:26.654 -05 [17352] LOG:  apagando
+2025-12-31 06:34:26.694 -05 [23120] LOG:  el sistema de bases de datos está apagado

@@ -19,6 +19,24 @@ export default function TabBDataPensiun() {
                         Data Pensiun
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Pensiunan */}
+                        <div>
+                            <label
+                                htmlFor="pensiunan"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Pensiunan
+                            </label>
+                            <input
+                                id="pensiunan"
+                                name="pensiunan"
+                                type="text"
+                                value={formData.pensiunan || ""}
+                                onChange={(e) => updateField("pensiunan", e.target.value)}
+                                placeholder="e.g. PNS / TNI / POLRI"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            />
+                        </div>
                         {/* Segmentasi */}
                         <div>
                             <label

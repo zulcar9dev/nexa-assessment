@@ -34,3 +34,6 @@ yarn-error.log*
 
 # Database
 tools/pgsql/data/
+
+# Office Lock Files
+~$*

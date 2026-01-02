@@ -58,12 +58,26 @@ export interface DebiturFormData {
   golongan: string;
   nip?: string;
   tgl_mulai_kerja?: string;
+  masa_kerja?: string; // [NEW] Calculated field for elapsed service
+  // SK CPNS & Pangkat
+  no_sk_cpns?: string;
+  tgl_sk_cpns?: string;
+  no_sk_kenaikan_pangkat?: string;
+  tgl_sk_kenaikan_pangkat?: string;
+  // End SK
   alamat_kantor?: string;
   tgl_pensiun_pemohon?: string;
+  sisa_masa_kerja?: string; // [NEW] Calculated field for remaining service
   no_sk_pensiun?: string;
   tgl_sk_pensiun?: string;
   tgl_pensiun_tmt?: string;
   nopen?: string; // Nomor Pensiun for Purna
+
+  // Data Verifikasi
+  nama_bendahara?: string;
+  no_hp_bendahara?: string;
+  nama_rekan_kerja?: string;
+  no_hp_rekan_kerja?: string;
 
   // Tab C - Penghasilan
   nama_bank_pembayaran?: string;

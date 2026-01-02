@@ -88,21 +88,22 @@ Nihil - Tidak ada fasilitas kredit
 
 #### SLIK Bank (Index 1-15)
 
-| Placeholder                | Data Source                           | Contoh Output                            |
-| -------------------------- | ------------------------------------- | ---------------------------------------- |
-| `{{slik_bank_1_ada}}`      | Boolean: `nama_bank` tidak kosong     | `true` / `false`                         |
-| `{{slik_bank_1_nama}}`     | `slik_facilities[0].nama_bank`        | `PT Hasjrat Multifinance`                |
-| `{{slik_bank_1_jenis}}`    | Manual input: `jenis_kredit`          | `Konsumtif` / `Produktif` / dll          |
-| `{{slik_bank_1_maks}}`     | `slik_facilities[0].plafon_maks`      | `102.661.552`                            |
-| `{{slik_bank_1_outs}}`     | `slik_facilities[0].outstanding`      | `66.393.279`                             |
-| `{{slik_bank_1_coll}}`     | `slik_facilities[0].kolektibilitas`   | `1`                                      |
-| `{{slik_bank_1_angsuran}}` | `slik_facilities[0].angsuran`         | `0`                                      |
-| `{{slik_bank_1_alasan}}`   | Manual input: `alasan` (Support Mention)| `Ket: Top Up` / `Di takeover` / dll      |
-| `{{slik_bank_1_norek_existing}}` | Manual input: `nomor_rekening_pinjaman` | `015xxx` |
-| `{{slik_bank_1_nopk_existing}}`  | Manual input: `nomor_pk`                | `123xxx` |
+| Placeholder                      | Data Source                              | Contoh Output                       |
+| -------------------------------- | ---------------------------------------- | ----------------------------------- |
+| `{{slik_bank_1_ada}}`            | Boolean: `nama_bank` tidak kosong        | `true` / `false`                    |
+| `{{slik_bank_1_nama}}`           | `slik_facilities[0].nama_bank`           | `PT Hasjrat Multifinance`           |
+| `{{slik_bank_1_jenis}}`          | Manual input: `jenis_kredit`             | `Konsumtif` / `Produktif` / dll     |
+| `{{slik_bank_1_maks}}`           | `slik_facilities[0].plafon_maks`         | `102.661.552`                       |
+| `{{slik_bank_1_outs}}`           | `slik_facilities[0].outstanding`         | `66.393.279`                        |
+| `{{slik_bank_1_coll}}`           | `slik_facilities[0].kolektibilitas`      | `1`                                 |
+| `{{slik_bank_1_angsuran}}`       | `slik_facilities[0].angsuran`            | `0`                                 |
+| `{{slik_bank_1_alasan}}`         | Manual input: `alasan` (Support Mention) | `Ket: Top Up` / `Di takeover` / dll |
+| `{{slik_bank_1_norek_existing}}` | Manual input: `nomor_rekening_pinjaman`  | `015xxx`                            |
+| `{{slik_bank_1_nopk_existing}}`  | Manual input: `nomor_pk`                 | `123xxx`                            |
 
 > **Fitur Mention & Global Placeholder:**
 > Aplikasi mendukung placeholder global yang akan menggabungkan semua nilai dari data SLIK yang tersedia:
+>
 > - `{{nomor_rekening_pinjaman}}`: Menggabungkan semua no rek yang diinput (dipisah koma).
 > - `{{nomor_pk}}`: Menggabungkan semua no PK yang diinput (dipisah koma).
 > - `{{nama_bank}}`: Mengambil nama bank (biasanya digunakan per baris/context aware).
@@ -130,6 +131,7 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 ```
 
 **Format per baris:**
+
 ```
 -Fasilitas Kredit [jenis] di [nama] maks Rp. [maks] outs Rp. [outs] angsuran Rp. [angsuran] Coll [coll]. [alasan]
 ```
@@ -144,10 +146,10 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 
 #### Field Manual Input
 
-| Field | Default (jika kosong) | Deskripsi |
-|-------|----------------------|-----------|
-| `jenis_kredit` | "Konsumtif" | Jenis kredit (Konsumtif, Produktif, dll) |
-| `alasan` | `""` (kosong) | Keterangan/alasan (bebas diisi) |
+| Field          | Default (jika kosong) | Deskripsi                                |
+| -------------- | --------------------- | ---------------------------------------- |
+| `jenis_kredit` | "Konsumtif"           | Jenis kredit (Konsumtif, Produktif, dll) |
+| `alasan`       | `""` (kosong)         | Keterangan/alasan (bebas diisi)          |
 
 > **Catatan:** Checkbox "Takeover" dan "Top Up" sudah dihapus. Gunakan field `alasan` untuk mencatat keterangan seperti "Ket: Top Up" atau "Di Takeover".
 
@@ -212,51 +214,72 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 
 ### 6. USULAN ASISTEN KREDIT KONSUMER
 
-| Teks di Dokumen         | Placeholder               | Data Source                             | Contoh Output             |
-| ----------------------- | ------------------------- | --------------------------------------- | ------------------------- |
-| Maksimum Kredit         | `{{usulan_plafon}}`       | `dataLengkap.usulan_plafon_kredit`      | `367.000.000`             |
-| Jangka Waktu            | `{{usulan_jangka_waktu}}` | `dataLengkap.usulan_jangka_waktu_bulan` | `175 Bulan`               |
-| Tenor (bulan saja)      | `{{tenor}}`               | `dataLengkap.usulan_jangka_waktu_bulan` | `175`                     |
-| Tenor (dengan label)    | `{{tenor_bulan}}`         | `dataLengkap.usulan_jangka_waktu_bulan` | `175 Bulan`               |
-| Bunga (angka saja)      | `{{bunga}}`               | `dataLengkap.usulan_bunga_persen`       | `11`                      |
-| Bunga (dengan label)    | `{{bunga_persen}}`        | `dataLengkap.usulan_bunga_persen`       | `11% p.a Efektif Anuitas` |
-| Biaya Provisi           | `{{biaya_provisi}}`       | `plafon * (input_persen / 100)` | `3.670.000`                          |
-| Biaya Provisi (%)       | `{{biaya_provisi_percent}}` | `input_persen`                | `1%`                                 |
-| Biaya Tata Laksana      | `{{biaya_tatalaksana}}`   | `plafon * (input_persen / 100)` | `7.340.000`                          |
-| Biaya Tata Laksana (%)  | `{{biaya_tatalaksana_percent}}` | `input_persen`              | `2%`                                 |
-| Biaya PSJT              | `{{biaya_psjt}}`          | `plafon * (input_persen / 100)` | `5.000.000`                          |
-| Biaya PSJT (%)          | `{{biaya_psjt_percent}}`  | `dataLengkap.biaya_psjt_percent` | `0.5%`                               |
-| Biaya Administrasi      | `{{biaya_administrasi_text}}` | Toggle Logic (Bebas/Charged) | `Bebas Biaya Administrasi` OR `Biaya Administrasi sebesar Rp. 500.000,-` |
-| Kode Program            | `{{kode_program}}`        | `dataLengkap.kode_program`              | `KK001`                              |
-| Catatan Program Pricing | `{{catatan_program_pricing}}` | Settings (Pengaturan Aplikasi) | `Cfm Surat No DNS/5.4/8023...`       |
-| Syarat Penandatanganan  | `{{syarat_penandatanganan}}` | Logic: `Auto (Jenis Kredit) Only` | `Menyerahkan Asli...` |
-| Syarat Pencairan Kredit | `{{syarat_pencairan_kredit}}` | Logic: `Auto (Jenis & Payroll)` | `Rekening Payroll...` |
-| Syarat Penandatanganan (List)   | `{{#list_syarat_penandatanganan}}` ... `{{/list_syarat_penandatanganan}}` | `list_syarat_penandatanganan` | Loop untuk teks otomatis ATAU manual (Overridden) |
-| Syarat Pencairan (List)         | `{{#list_syarat_pencairan}}` ... `{{/list_syarat_pencairan}}` | `list_syarat_pencairan` | Loop untuk teks syarat pencairan manual |
+| Teks di Dokumen               | Placeholder                                                               | Data Source                             | Contoh Output                                                            |
+| ----------------------------- | ------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------ |
+| Maksimum Kredit               | `{{usulan_plafon}}`                                                       | `dataLengkap.usulan_plafon_kredit`      | `367.000.000`                                                            |
+| Jangka Waktu                  | `{{usulan_jangka_waktu}}`                                                 | `dataLengkap.usulan_jangka_waktu_bulan` | `175 Bulan`                                                              |
+| Tenor (bulan saja)            | `{{tenor}}`                                                               | `dataLengkap.usulan_jangka_waktu_bulan` | `175`                                                                    |
+| Tenor (dengan label)          | `{{tenor_bulan}}`                                                         | `dataLengkap.usulan_jangka_waktu_bulan` | `175 Bulan`                                                              |
+| Bunga (angka saja)            | `{{bunga}}`                                                               | `dataLengkap.usulan_bunga_persen`       | `11`                                                                     |
+| Bunga (dengan label)          | `{{bunga_persen}}`                                                        | `dataLengkap.usulan_bunga_persen`       | `11% p.a Efektif Anuitas`                                                |
+| Biaya Provisi                 | `{{biaya_provisi}}`                                                       | `plafon * (input_persen / 100)`         | `3.670.000`                                                              |
+| Biaya Provisi (%)             | `{{biaya_provisi_percent}}`                                               | `input_persen`                          | `1%`                                                                     |
+| Biaya Tata Laksana            | `{{biaya_tatalaksana}}`                                                   | `plafon * (input_persen / 100)`         | `7.340.000`                                                              |
+| Biaya Tata Laksana (%)        | `{{biaya_tatalaksana_percent}}`                                           | `input_persen`                          | `2%`                                                                     |
+| Biaya PSJT                    | `{{biaya_psjt}}`                                                          | `plafon * (input_persen / 100)`         | `5.000.000`                                                              |
+| Biaya PSJT (%)                | `{{biaya_psjt_percent}}`                                                  | `dataLengkap.biaya_psjt_percent`        | `0.5%`                                                                   |
+| Biaya Administrasi            | `{{biaya_administrasi_text}}`                                             | Toggle Logic (Bebas/Charged)            | `Bebas Biaya Administrasi` OR `Biaya Administrasi sebesar Rp. 500.000,-` |
+| Kode Program                  | `{{kode_program}}`                                                        | `dataLengkap.kode_program`              | `KK001`                                                                  |
+| Catatan Program Pricing       | `{{catatan_program_pricing}}`                                             | Settings (Pengaturan Aplikasi)          | `Cfm Surat No DNS/5.4/8023...`                                           |
+| Syarat Penandatanganan        | `{{syarat_penandatanganan}}`                                              | Logic: `Auto (Jenis Kredit) Only`       | `Menyerahkan Asli...`                                                    |
+| Syarat Pencairan Kredit       | `{{syarat_pencairan_kredit}}`                                             | Logic: `Auto (Jenis & Payroll)`         | `Rekening Payroll...`                                                    |
+| Syarat Penandatanganan (List) | `{{#list_syarat_penandatanganan}}` ... `{{/list_syarat_penandatanganan}}` | `list_syarat_penandatanganan`           | Loop untuk teks otomatis ATAU manual (Overridden)                        |
+| Syarat Pencairan (List)       | `{{#list_syarat_pencairan}}` ... `{{/list_syarat_pencairan}}`             | `list_syarat_pencairan`                 | Loop untuk teks syarat pencairan manual                                  |
 
 > **Update Terakhir: List Format untuk Manual Input**
 >
 > 1.  **Syarat Penandatanganan**:
->     -   Jika User mengisi input manual, sistem akan **menimpa (override)** list otomatis.
->     -   Gunakan template loop: `{{#list_syarat_penandatanganan}} - {{text}} {{/list_syarat_penandatanganan}}`.
+>
+>     - Jika User mengisi input manual, sistem akan **menimpa (override)** list otomatis.
+>     - Gunakan template loop: `{{#list_syarat_penandatanganan}} - {{text}} {{/list_syarat_penandatanganan}}`.
 >
 > 2.  **Syarat Pencairan**:
->     -   Untuk menampilkan input manual Syarat Pencairan, gunakan format list.
->     -   Gunakan template loop: `{{#list_syarat_pencairan}} - {{text}} {{/list_syarat_pencairan}}`.
+>     - Untuk menampilkan input manual Syarat Pencairan, gunakan format list.
+>     - Gunakan template loop: `{{#list_syarat_pencairan}} - {{text}} {{/list_syarat_pencairan}}`.
 >
 > **Fitur Mention**:
-> -   Input manual mendukung fitur mention (`@`) untuk menyisipkan nilai dinamis (misal: `@Biaya Provisi`).
-> -   Placeholder hasil mention akan diproses terlebih dahulu sebelum dokumen dibuat.
+>
+> - Input manual mendukung fitur mention (`@`) untuk menyisipkan nilai dinamis (misal: `@Biaya Provisi`).
+> - Placeholder hasil mention akan diproses terlebih dahulu sebelum dokumen dibuat.
 
 ---
 
 ### 7. PEKERJAAN (Prapurna Only)
 
-| Teks di Dokumen         | Placeholder               | Data Source                       | Contoh Output          |
-| ----------------------- | ------------------------- | --------------------------------- | ---------------------- |
-| Tanggal Mulai Kerja     | `{{tgl_mulai_kerja}}`     | `dataLengkap.tgl_mulai_kerja`     | `01 Maret 1990`        |
-| Alamat Kantor           | `{{alamat_kantor}}`       | `dataLengkap.alamat_kantor`       | `Jl. Pendidikan No. 1` |
-| Tanggal Pensiun Pemohon | `{{tgl_pensiun_pemohon}}` | `dataLengkap.tgl_pensiun_pemohon` | `01 Februari 2025`     |
+| Teks di Dokumen         | Placeholder                   | Data Source                           | Contoh Output                      |
+| ----------------------- | ----------------------------- | ------------------------------------- | ---------------------------------- |
+| Tanggal Mulai Kerja     | `{{tgl_mulai_kerja}}`         | `dataLengkap.tgl_mulai_kerja`         | `01 Maret 1990`                    |
+| Masa Kerja              | `{{masa_kerja}}`              | `dataLengkap.masa_kerja`              | `35 Tahun 2 Bulan 1 Minggu 0 Hari` |
+| Alamat Kantor           | `{{alamat_kantor}}`           | `dataLengkap.alamat_kantor`           | `Jl. Pendidikan No. 1`             |
+| Tanggal Pensiun Pemohon | `{{tgl_pensiun_pemohon}}`     | `dataLengkap.tgl_pensiun_pemohon`     | `01 Februari 2025`                 |
+| Sisa Masa Kerja         | `{{sisa_masa_kerja}}`         | `dataLengkap.sisa_masa_kerja`         | `5 Tahun 2 Bulan 1 Minggu 0 Hari`  |
+| **SK CPNS**             |                               |                                       |                                    |
+| No SK CPNS              | `{{no_sk_cpns}}`              | `dataLengkap.no_sk_cpns`              | `813/KEP-CPNS/2000`                |
+| Tanggal SK CPNS         | `{{tgl_sk_cpns}}`             | `dataLengkap.tgl_sk_cpns`             | `01 Januari 2000`                  |
+| **SK Pangkat**          |                               |                                       |                                    |
+| No SK Kenaikan Pangkat  | `{{no_sk_kenaikan_pangkat}}`  | `dataLengkap.no_sk_kenaikan_pangkat`  | `823/KEP-KP/2020`                  |
+| Tgl SK Kenaikan Pangkat | `{{tgl_sk_kenaikan_pangkat}}` | `dataLengkap.tgl_sk_kenaikan_pangkat` | `01 Januari 2020`                  |
+
+---
+
+### 7.a DATA VERIFIKASI (Bendahara & Rekan Kerja)
+
+| Teks di Dokumen   | Placeholder             | Data Source                     | Contoh Output  |
+| ----------------- | ----------------------- | ------------------------------- | -------------- |
+| Nama Bendahara    | `{{nama_bendahara}}`    | `dataLengkap.nama_bendahara`    | `Budi Santoso` |
+| No HP Bendahara   | `{{no_hp_bendahara}}`   | `dataLengkap.no_hp_bendahara`   | `081234567890` |
+| Nama Rekan Kerja  | `{{nama_rekan_kerja}}`  | `dataLengkap.nama_rekan_kerja`  | `Siti Aminah`  |
+| No HP Rekan Kerja | `{{no_hp_rekan_kerja}}` | `dataLengkap.no_hp_rekan_kerja` | `089876543210` |
 
 ---
 
@@ -273,58 +296,68 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 
 Semua placeholder memiliki alias dengan format **Title_Case** untuk kompatibilitas template. Contoh:
 
-| Original Placeholder     | Alias Placeholder                  |
-| ------------------------ | ---------------------------------- |
-| `{{nama_pemohon}}`       | `{{Nama_Pemohon}}`                 |
-| `{{no_ktp}}`             | `{{No_Ktp}}`, `{{NIK}}`            |
-| `{{tgl_call_memo}}`      | `{{Tgl_Call_Memo}}`                |
-| `{{no_telepon}}`         | `{{No_Telepon}}`                   |
-| `{{alamat_ktp}}`         | `{{Alamat_Ktp}}`, `{{Alamat}}`     |
-| `{{tgl_lahir}}`          | `{{Tgl_Lahir}}`                    |
-| `{{status_perkawinan}}`  | `{{Status_Perkawinan}}`            |
-| `{{status_rumah}}`       | `{{Status_Rumah}}`                 |
-| `{{lama_tinggal}}`       | `{{Lama_Tinggal}}`                 |
-| `{{tgl_terbit_ktp}}`     | `{{Tgl_Terbit_Ktp}}`               |
-| `{{usia_pemohon}}`       | `{{Usia_Pemohon}}`                 |
-| `{{pensiunan}}`          | `{{Pensiunan}}`                    |
-| `{{instansi}}`           | `{{Instansi}}`                     |
-| `{{jabatan}}`            | `{{Jabatan}}`                      |
-| `{{golongan}}`           | `{{Golongan}}`                     |
-| `{{nip}}`                | `{{NIP}}`                          |
-| `{{nopen}}`              | `{{NOPEN}}`                        |
-| `{{tgl_pensiun}}`        | `{{Tgl_Pensiun}}`                  |
-| `{{tgl_pensiun_tmt}}`    | `{{Tgl_Pensiun_Tmt}}`              |
-| `{{no_sk_pensiun}}`      | `{{No_Sk_Pensiun}}`                |
-| `{{tgl_sk_pensiun}}`     | `{{Tgl_Sk_Pensiun}}`               |
-| `{{segmentasi}}`         | `{{Segmentasi}}`                   |
-| `{{jenis_pengajuan}}`    | `{{Jenis_Pengajuan}}`              |
-| `{{kategori}}`           | `{{Kategori}}`                     |
-| `{{payroll_bank}}`       | `{{Payroll_Bank}}`                 |
-| `{{payroll_no_rek}}`     | `{{Payroll_No_Rek}}`, `{{No_Rek}}` |
-| `{{nama_kerabat}}`       | `{{Nama_Kerabat}}`                 |
-| `{{hubungan_kerabat}}`   | `{{Hubungan_Kerabat}}`             |
-| `{{no_telepon_kerabat}}` | `{{No_Telepon_Kerabat}}`           |
-| `{{plafon}}`             | `{{Plafon}}`                       |
-| `{{usulan_plafon}}`      | `{{Usulan_Plafon}}`                |
-| `{{tenor}}`              | `{{Tenor}}`                        |
-| `{{tenor_bulan}}`        | `{{Tenor_Bulan}}`                  |
-| `{{bunga}}`              | `{{Bunga}}`                        |
-| `{{bunga_persen}}`       | `{{Bunga_Persen}}`                 |
-| `{{tujuan_kredit}}`      | `{{Tujuan_Kredit}}`                |
-| `{{biaya_provisi}}`      | `{{Biaya_Provisi}}`                |
-| `{{biaya_provisi_percent}}` | `{{Biaya_Provisi_Percent}}`     |
-| `{{biaya_tatalaksana}}`  | `{{Biaya_Tatalaksana}}`            |
-| `{{biaya_tatalaksana_percent}}` | `{{Biaya_Tatalaksana_Percent}}` |
-| `{{biaya_psjt}}`         | `{{Biaya_Psjt}}`                   |
-| `{{biaya_psjt_percent}}` | `{{Biaya_Psjt_Percent}}`           |
-| `{{biaya_administrasi_text}}` | `{{Biaya_Administrasi_Text}}`   |
-| `{{biaya_administrasi_nominal}}` | `{{Biaya_Administrasi_Nominal}}` |
-| `{{kode_program}}`       | `{{Kode_Program}}`                 |
-| `{{catatan_program_pricing}}` | `{{Catatan_Program_Pricing}}` |
-| `{{syarat_penandatanganan}}`  | `{{Syarat_Penandatanganan}}`  |
-| `{{syarat_pencairan_kredit}}` | `{{Syarat_Pencairan_Kredit}}` |
-| `{{tgl_mulai_kerja}}`    | `{{Tgl_Mulai_Kerja}}`              |
-| `{{alamat_kantor}}`      | `{{Alamat_Kantor}}`                |
+| Original Placeholder             | Alias Placeholder                  |
+| -------------------------------- | ---------------------------------- |
+| `{{nama_pemohon}}`               | `{{Nama_Pemohon}}`                 |
+| `{{no_ktp}}`                     | `{{No_Ktp}}`, `{{NIK}}`            |
+| `{{tgl_call_memo}}`              | `{{Tgl_Call_Memo}}`                |
+| `{{no_telepon}}`                 | `{{No_Telepon}}`                   |
+| `{{alamat_ktp}}`                 | `{{Alamat_Ktp}}`, `{{Alamat}}`     |
+| `{{tgl_lahir}}`                  | `{{Tgl_Lahir}}`                    |
+| `{{status_perkawinan}}`          | `{{Status_Perkawinan}}`            |
+| `{{status_rumah}}`               | `{{Status_Rumah}}`                 |
+| `{{lama_tinggal}}`               | `{{Lama_Tinggal}}`                 |
+| `{{tgl_terbit_ktp}}`             | `{{Tgl_Terbit_Ktp}}`               |
+| `{{usia_pemohon}}`               | `{{Usia_Pemohon}}`                 |
+| `{{pensiunan}}`                  | `{{Pensiunan}}`                    |
+| `{{instansi}}`                   | `{{Instansi}}`                     |
+| `{{jabatan}}`                    | `{{Jabatan}}`                      |
+| `{{golongan}}`                   | `{{Golongan}}`                     |
+| `{{nip}}`                        | `{{NIP}}`                          |
+| `{{nopen}}`                      | `{{NOPEN}}`                        |
+| `{{tgl_pensiun}}`                | `{{Tgl_Pensiun}}`                  |
+| `{{tgl_pensiun_tmt}}`            | `{{Tgl_Pensiun_Tmt}}`              |
+| `{{no_sk_pensiun}}`              | `{{No_Sk_Pensiun}}`                |
+| `{{tgl_sk_pensiun}}`             | `{{Tgl_Sk_Pensiun}}`               |
+| `{{segmentasi}}`                 | `{{Segmentasi}}`                   |
+| `{{jenis_pengajuan}}`            | `{{Jenis_Pengajuan}}`              |
+| `{{kategori}}`                   | `{{Kategori}}`                     |
+| `{{payroll_bank}}`               | `{{Payroll_Bank}}`                 |
+| `{{payroll_no_rek}}`             | `{{Payroll_No_Rek}}`, `{{No_Rek}}` |
+| `{{nama_kerabat}}`               | `{{Nama_Kerabat}}`                 |
+| `{{hubungan_kerabat}}`           | `{{Hubungan_Kerabat}}`             |
+| `{{no_telepon_kerabat}}`         | `{{No_Telepon_Kerabat}}`           |
+| `{{plafon}}`                     | `{{Plafon}}`                       |
+| `{{usulan_plafon}}`              | `{{Usulan_Plafon}}`                |
+| `{{tenor}}`                      | `{{Tenor}}`                        |
+| `{{tenor_bulan}}`                | `{{Tenor_Bulan}}`                  |
+| `{{bunga}}`                      | `{{Bunga}}`                        |
+| `{{bunga_persen}}`               | `{{Bunga_Persen}}`                 |
+| `{{tujuan_kredit}}`              | `{{Tujuan_Kredit}}`                |
+| `{{biaya_provisi}}`              | `{{Biaya_Provisi}}`                |
+| `{{biaya_provisi_percent}}`      | `{{Biaya_Provisi_Percent}}`        |
+| `{{biaya_tatalaksana}}`          | `{{Biaya_Tatalaksana}}`            |
+| `{{biaya_tatalaksana_percent}}`  | `{{Biaya_Tatalaksana_Percent}}`    |
+| `{{biaya_psjt}}`                 | `{{Biaya_Psjt}}`                   |
+| `{{biaya_psjt_percent}}`         | `{{Biaya_Psjt_Percent}}`           |
+| `{{biaya_administrasi_text}}`    | `{{Biaya_Administrasi_Text}}`      |
+| `{{biaya_administrasi_nominal}}` | `{{Biaya_Administrasi_Nominal}}`   |
+| `{{kode_program}}`               | `{{Kode_Program}}`                 |
+| `{{catatan_program_pricing}}`    | `{{Catatan_Program_Pricing}}`      |
+| `{{syarat_penandatanganan}}`     | `{{Syarat_Penandatanganan}}`       |
+| `{{syarat_pencairan_kredit}}`    | `{{Syarat_Pencairan_Kredit}}`      |
+| `{{tgl_mulai_kerja}}`            | `{{Tgl_Mulai_Kerja}}`              |
+| `{{alamat_kantor}}`              | `{{Alamat_Kantor}}`                |
+| `{{nama_bendahara}}`             | `{{Nama_Bendahara}}`               |
+| `{{no_hp_bendahara}}`            | `{{No_Hp_Bendahara}}`              |
+| `{{nama_rekan_kerja}}`           | `{{Nama_Rekan_Kerja}}`             |
+| `{{no_hp_rekan_kerja}}`          | `{{No_Hp_Rekan_Kerja}}`            |
+| `{{sisa_masa_kerja}}`            | `{{Sisa_Masa_Kerja}}`              |
+| `{{masa_kerja}}`                 | `{{Masa_Kerja}}`                   |
+| `{{no_sk_cpns}}`                 | `{{No_Sk_Cpns}}`                   |
+| `{{tgl_sk_cpns}}`                | `{{Tgl_Sk_Cpns}}`                  |
+| `{{no_sk_kenaikan_pangkat}}`     | `{{No_Sk_Kenaikan_Pangkat}}`       |
+| `{{tgl_sk_kenaikan_pangkat}}`    | `{{Tgl_Sk_Kenaikan_Pangkat}}`      |
 
 ---
 
@@ -369,6 +402,12 @@ interface DebiturFormData {
   tgl_sk_pensiun?: string;
   tgl_pensiun_tmt?: string;
   nopen?: string; // Nomor Pensiun for Purna
+
+  // Data Verifikasi
+  nama_bendahara?: string;
+  no_hp_bendahara?: string;
+  nama_rekan_kerja?: string;
+  no_hp_rekan_kerja?: string;
 
   // Tab C - Penghasilan (Bank)
   nama_bank_pembayaran?: string;

@@ -1,13 +1,49 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
+import { calculateRemainingTime, formatRemainingTime, calculateElapsedTime } from "@/lib/utils";
 
-import { Briefcase } from "lucide-react";
+import { Briefcase, UserCheck } from "lucide-react";
 
 export default function TabBPekerjaan() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
+
+    // Effect: Calculate remaining service time when Date of Retirement changes
+    useEffect(() => {
+        if (formData.tgl_pensiun_pemohon) {
+            const remaining = calculateRemainingTime(formData.tgl_pensiun_pemohon);
+            const formatted = formatRemainingTime(remaining);
+            
+            // Only update if different to avoid infinite loops (though zustand handles this well)
+            if (formData.sisa_masa_kerja !== formatted) {
+                updateField("sisa_masa_kerja", formatted);
+            }
+        }
+    }, [formData.tgl_pensiun_pemohon, formData.sisa_masa_kerja, updateField]);
+
+    // Effect: Calculate elapsed service time (Masa Kerja)
+    useEffect(() => {
+        if (formData.tgl_mulai_kerja) {
+            const elapsed = calculateElapsedTime(formData.tgl_mulai_kerja);
+            // Reuse formatRemainingTime as the structure is compatible {years, months, weeks, days}
+            // but we need to handle isFuture
+            let formatted = "";
+            if (elapsed.isFuture) {
+                formatted = "Belum Mulai Kerja";
+            } else {
+                // Manually format to avoid "Sudah Pensiun" or just pass isPast: false shim
+                // Actually formatRemainingTime checks isPast. We can pass isPast: false.
+                formatted = formatRemainingTime({ ...elapsed, isPast: false });
+            }
+            
+            if (formData.masa_kerja !== formatted) {
+                updateField("masa_kerja", formatted);
+            }
+        }
+    }, [formData.tgl_mulai_kerja, formData.masa_kerja, updateField]);
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-b">
@@ -158,6 +194,86 @@ export default function TabBPekerjaan() {
                                 onChange={(e) => updateField("tgl_mulai_kerja", e.target.value)}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
+                            {/* Calculation Result Display */}
+                            {formData.tgl_mulai_kerja && (
+                                <p className="mt-1.5 text-xs font-medium text-[#00665e] dark:text-[#80cbc4]">
+                                    Masa Kerja: {formData.masa_kerja || "Menghitung..."}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* SK CPNS */}
+                        <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
+                            <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">Data SK CPNS</h4>
+                            <div>
+                                <label
+                                    htmlFor="no_sk_cpns"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Nomor SK CPNS
+                                </label>
+                                <input
+                                    id="no_sk_cpns"
+                                    name="no_sk_cpns"
+                                    type="text"
+                                    value={formData.no_sk_cpns || ""}
+                                    onChange={(e) => updateField("no_sk_cpns", e.target.value)}
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="tgl_sk_cpns"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Tanggal SK CPNS
+                                </label>
+                                <input
+                                    id="tgl_sk_cpns"
+                                    name="tgl_sk_cpns"
+                                    type="date"
+                                    value={formData.tgl_sk_cpns || ""}
+                                    onChange={(e) => updateField("tgl_sk_cpns", e.target.value)}
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        </div>
+
+                        {/* SK Kenaikan Pangkat */}
+                        <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
+                            <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">Data SK Kenaikan Pangkat Terakhir</h4>
+                            <div>
+                                <label
+                                    htmlFor="no_sk_kenaikan_pangkat"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Nomor SK Kenaikan Pangkat
+                                </label>
+                                <input
+                                    id="no_sk_kenaikan_pangkat"
+                                    name="no_sk_kenaikan_pangkat"
+                                    type="text"
+                                    value={formData.no_sk_kenaikan_pangkat || ""}
+                                    onChange={(e) => updateField("no_sk_kenaikan_pangkat", e.target.value)}
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="tgl_sk_kenaikan_pangkat"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Tanggal SK Kenaikan Pangkat
+                                </label>
+                                <input
+                                    id="tgl_sk_kenaikan_pangkat"
+                                    name="tgl_sk_kenaikan_pangkat"
+                                    type="date"
+                                    value={formData.tgl_sk_kenaikan_pangkat || ""}
+                                    onChange={(e) => updateField("tgl_sk_kenaikan_pangkat", e.target.value)}
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                />
+                            </div>
                         </div>
 
                         {/* Tanggal Pensiun */}
@@ -176,6 +292,12 @@ export default function TabBPekerjaan() {
                                 onChange={(e) => updateField("tgl_pensiun_pemohon", e.target.value)}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
+                            {/* Calculation Result Display */}
+                            {formData.tgl_pensiun_pemohon && (
+                                <p className="mt-1.5 text-xs font-medium text-[#00665e] dark:text-[#80cbc4]">
+                                    Sisa Masa Kerja: {formData.sisa_masa_kerja || "Menghitung..."}
+                                </p>
+                            )}
                         </div>
 
                         {/* Alamat Kantor */}
@@ -193,9 +315,100 @@ export default function TabBPekerjaan() {
                                 rows={2}
                                 value={formData.alamat_kantor || ""}
                                 onChange={(e) => updateField("alamat_kantor", e.target.value)}
-                                onKeyDown={handleTabToNext}
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section: Data Verifikasi */}
+                <div>
+                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
+                        <UserCheck className="w-6 h-6 text-[#00665e]" />
+                        Data Verifikasi
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Data Bendahara */}
+                        <div className="col-span-1 md:col-span-2 space-y-4">
+                            <h4 className="font-semibold text-[#00665e] dark:text-[#80cbc4]">Data Bendahara</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        htmlFor="nama_bendahara"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        Nama Bendahara
+                                    </label>
+                                    <input
+                                        id="nama_bendahara"
+                                        name="nama_bendahara"
+                                        type="text"
+                                        value={formData.nama_bendahara || ""}
+                                        onChange={(e) => updateField("nama_bendahara", e.target.value)}
+                                        placeholder="Contoh: Budi Santoso"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="no_hp_bendahara"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        No. HP Bendahara
+                                    </label>
+                                    <input
+                                        id="no_hp_bendahara"
+                                        name="no_hp_bendahara"
+                                        type="tel"
+                                        value={formData.no_hp_bendahara || ""}
+                                        onChange={(e) => updateField("no_hp_bendahara", e.target.value)}
+                                        placeholder="08xxxxxxxxxx"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Data Rekan Kerja */}
+                        <div className="col-span-1 md:col-span-2 space-y-4">
+                            <h4 className="font-semibold text-[#00665e] dark:text-[#80cbc4]">Data Rekan Kerja</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        htmlFor="nama_rekan_kerja"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        Nama Rekan Kerja
+                                    </label>
+                                    <input
+                                        id="nama_rekan_kerja"
+                                        name="nama_rekan_kerja"
+                                        type="text"
+                                        value={formData.nama_rekan_kerja || ""}
+                                        onChange={(e) => updateField("nama_rekan_kerja", e.target.value)}
+                                        placeholder="Contoh: Siti Aminah"
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="no_hp_rekan_kerja"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        No. HP Rekan Kerja
+                                    </label>
+                                    <input
+                                        id="no_hp_rekan_kerja"
+                                        name="no_hp_rekan_kerja"
+                                        type="tel"
+                                        value={formData.no_hp_rekan_kerja || ""}
+                                        onChange={(e) => updateField("no_hp_rekan_kerja", e.target.value)}
+                                        placeholder="08xxxxxxxxxx"
+                                        onKeyDown={handleTabToNext}
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
