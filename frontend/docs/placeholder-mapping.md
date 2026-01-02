@@ -185,6 +185,7 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 | `{{gaji_bulan_3_nama}}`    | `dataLengkap.gaji_bulan_3_nama`    | `Maret 2025`    |
 | `{{gaji_bulan_3}}`         | `dataLengkap.gaji_bulan_3_jumlah`  | `5.000.000`     |
 | `{{estimasi_hak_pensiun}}` | `dataLengkap.estimasi_hak_pensiun` | `4.500.000`     |
+| `{{estimasi_tht}}`         | `dataLengkap.estimasi_tht`         | `50.000.000`    |
 
 ---
 

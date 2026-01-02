@@ -72,6 +72,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Estimasi Hak Pensiun", value: "{{estimasi_hak_pensiun}}" },
     { label: "Estimasi THT", value: "{{estimasi_tht}}" },
 
+
     // 4. CALL MEMO (KERABAT)
     { label: "Nama Kerabat", value: "{{nama_kerabat}}" },
     { label: "Hubungan Kerabat", value: "{{hubungan_kerabat}}" },
@@ -114,7 +115,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Tanggal SK CPNS", value: "{{tgl_sk_cpns}}" },
     { label: "No SK Kenaikan Pangkat", value: "{{no_sk_kenaikan_pangkat}}" },
     { label: "Tanggal SK Kenaikan Pangkat", value: "{{tgl_sk_kenaikan_pangkat}}" },
-    
+
     // 7a. DATA VERIFIKASI
     { label: "Nama Bendahara", value: "{{nama_bendahara}}" },
     { label: "No HP Bendahara", value: "{{no_hp_bendahara}}" },
@@ -131,8 +132,5 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Total Blokiran (Jumlah)", value: "{{total_blokiran}}" },
     { label: "Total Blokiran (Terbilang)", value: "{{total_blokiran_terbilang}}" },
 
-    // Manual Lists
-    { label: "Syarat Penandatanganan Manual", value: "{{syarat_penandatanganan_tambahan}}" },
-    { label: "Syarat Pencairan Manual", value: "{{syarat_pencairan_tambahan}}" },
     // Lists are auto-handled by backend logic now (e.g. {{#list_syarat_pencairan}})
 ];
