@@ -200,15 +200,15 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 
 ### 5. PERHITUNGAN REPAYMENT CAPACITY (RPC)
 
-| Teks di Dokumen          | Placeholder                        | Data Source                        | Contoh Output |
-| ------------------------ | ---------------------------------- | ---------------------------------- | ------------- |
-| Penghasilan Pemohon      | `{{rpc_penghasilan}}`              | Calculated                         | `4.733.300`   |
-| DSC 90%                  | `{{rpc_dsc_90}}`                   | `penghasilan * 0.9`                | `4.259.970`   |
-| Total Angsuran Eksisting | `{{rpc_total_angsuran_eksisting}}` | Sum of SLIK angsuran               | `0`           |
-| Maksimal Angsuran        | `{{rpc_maksimal_angsuran}}`        | `dsc90 - total_angsuran`           | `4.259.970`   |
-| Angsuran Diusulkan       | `{{rpc_angsuran_diusulkan}}`       | Calculated annuity                 | `4.218.559`   |
-| Total Angsuran Baru      | `{{rpc_total_angsuran_baru}}`      | `eksisting + diusulkan`            | `4.218.559`   |
-| DSR                      | `{{rpc_dsr}}`                      | `(total_baru / penghasilan) * 100` | `89,13`       |
+| Teks di Dokumen          | Placeholder                        | Data Source                                                  | Contoh Output |
+| ------------------------ | ---------------------------------- | ------------------------------------------------------------ | ------------- |
+| Penghasilan Pemohon      | `{{rpc_penghasilan}}`              | `estimasi_hak_pensiun` (Prapurna) / Min Gaji 3 Bulan (Purna) | `4.733.300`   |
+| DSC 90%                  | `{{rpc_dsc_90}}`                   | `penghasilan * 0.9`                                          | `4.259.970`   |
+| Total Angsuran Eksisting | `{{rpc_total_angsuran_eksisting}}` | Sum of SLIK angsuran                                         | `0`           |
+| Maksimal Angsuran        | `{{rpc_maksimal_angsuran}}`        | `dsc90 - total_angsuran`                                     | `4.259.970`   |
+| Angsuran Diusulkan       | `{{rpc_angsuran_diusulkan}}`       | Calculated annuity                                           | `4.218.559`   |
+| Total Angsuran Baru      | `{{rpc_total_angsuran_baru}}`      | `eksisting + diusulkan`                                      | `4.218.559`   |
+| DSR                      | `{{rpc_dsr}}`                      | `(total_baru / penghasilan) * 100`                           | `89,13`       |
 
 ---
 

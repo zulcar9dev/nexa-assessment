@@ -37,3 +37,6 @@ tools/pgsql/data/
 
 # Office Lock Files
 ~$*
+
+# Database Logs
+tools/pgsql/log.txt

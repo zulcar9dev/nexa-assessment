@@ -303,23 +303,13 @@ export class DocumentTemplateService {
         ) || 0;
       penghasilan = pensiun3 || pensiun2 || pensiun1;
     } else {
-      // For Prapurna: use estimasi hak pensiun or gaji
-      const gaji1 =
+      // For Prapurna: use estimasi hak pensiun to match UI Calculation
+      const estimasiHakPensiun =
         parseInt(
-          String(data.gaji_bulan_1_jumlah || 0).replace(/[^0-9]/g, ""),
+          String(data.estimasi_hak_pensiun || 0).replace(/[^0-9]/g, ""),
           10
         ) || 0;
-      const gaji2 =
-        parseInt(
-          String(data.gaji_bulan_2_jumlah || 0).replace(/[^0-9]/g, ""),
-          10
-        ) || 0;
-      const gaji3 =
-        parseInt(
-          String(data.gaji_bulan_3_jumlah || 0).replace(/[^0-9]/g, ""),
-          10
-        ) || 0;
-      penghasilan = gaji3 || gaji2 || gaji1;
+      penghasilan = estimasiHakPensiun;
     }
 
     const dsc90 = Math.round(penghasilan * 0.9);
