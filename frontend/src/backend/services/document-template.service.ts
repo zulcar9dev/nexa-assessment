@@ -9,6 +9,7 @@ import PizZip from "pizzip";
 import { promises as fs } from "fs";
 import path from "path";
 import { ConfigService } from "./config.service";
+import { terbilang } from "../../lib/utils";
 
 // Indonesian month names
 const BULAN_INDONESIA = [
@@ -368,7 +369,7 @@ export class DocumentTemplateService {
     const context: Record<string, unknown> = {
       // Date fields
       tgl_call_memo: this.formatDateIndonesian(today.toISOString()),
-      tgl_slik: this.formatDateIndonesian(today.toISOString()),
+      tgl_slik: this.formatDateIndonesian((data.tgl_slik as string) || today.toISOString()),
 
       // Identitas
       nama_pemohon: debitur.namaPemohon || data.nama_pemohon || "",
@@ -443,6 +444,9 @@ export class DocumentTemplateService {
       estimasi_hak_pensiun: this.formatRupiah(
         data.estimasi_hak_pensiun as string
       ),
+      estimasi_tht: this.formatRupiah(
+        data.estimasi_tht as string
+      ),
 
       // Penghasilan - Pensiun (Purna)
       pensiun_bulan_1_nama: data.pensiun_bulan_1_nama || "Januari",
@@ -516,10 +520,34 @@ export class DocumentTemplateService {
       tgl_mulai_kerja: this.formatDateIndonesian(
         data.tgl_mulai_kerja as string
       ),
+      masa_kerja: data.masa_kerja || "",
       alamat_kantor: data.alamat_kantor || "",
+      // SK CPNS & Pangkat
+      no_sk_cpns: data.no_sk_cpns || "",
+      tgl_sk_cpns: this.formatDateIndonesian(data.tgl_sk_cpns as string),
+      no_sk_kenaikan_pangkat: data.no_sk_kenaikan_pangkat || "",
+      tgl_sk_kenaikan_pangkat: this.formatDateIndonesian(data.tgl_sk_kenaikan_pangkat as string),
+      // End SK
       tgl_pensiun_pemohon: this.formatDateIndonesian(
         data.tgl_pensiun_pemohon as string
       ),
+      sisa_masa_kerja: data.sisa_masa_kerja || "",
+
+      // Blokiran
+      blokiran_prapurna: (data.blokiran_prapurna_jml || 0),
+      blokiran_prapurna_terbilang: terbilang(data.blokiran_prapurna_jml || 0),
+      blokiran_pindah_gaji: (data.blokiran_pindah_gaji_jml || 0),
+      blokiran_pindah_gaji_terbilang: terbilang(data.blokiran_pindah_gaji_jml || 0),
+      blokiran_wajib: (data.blokiran_wajib_jml || 0),
+      blokiran_wajib_terbilang: terbilang(data.blokiran_wajib_jml || 0),
+      total_blokiran: (data.total_blokiran_jml || 0),
+      total_blokiran_terbilang: terbilang(data.total_blokiran_jml || 0),
+
+      // Data Verifikasi
+      nama_bendahara: data.nama_bendahara || "",
+      no_hp_bendahara: data.no_hp_bendahara || "",
+      nama_rekan_kerja: data.nama_rekan_kerja || "",
+      no_hp_rekan_kerja: data.no_hp_rekan_kerja || "",
 
       // Hak Pensiun Bulanan (Purna)
       pensiun_bulan_jumlah: this.formatRupiah(
@@ -571,7 +599,31 @@ export class DocumentTemplateService {
 
       // Additional Prapurna Fields
       Tgl_Mulai_Kerja: context.tgl_mulai_kerja,
+      Masa_Kerja: context.masa_kerja,
       Alamat_Kantor: context.alamat_kantor,
+      
+      // SK Aliases
+      No_Sk_Cpns: context.no_sk_cpns,
+      Tgl_Sk_Cpns: context.tgl_sk_cpns,
+      No_Sk_Kenaikan_Pangkat: context.no_sk_kenaikan_pangkat,
+      Tgl_Sk_Kenaikan_Pangkat: context.tgl_sk_kenaikan_pangkat,
+      Sisa_Masa_Kerja: context.sisa_masa_kerja,
+
+      // Blokiran Aliases
+      Blokiran_Prapurna: context.blokiran_prapurna,
+      Blokiran_Prapurna_Terbilang: context.blokiran_prapurna_terbilang,
+      Blokiran_Pindah_Gaji: context.blokiran_pindah_gaji,
+      Blokiran_Pindah_Gaji_Terbilang: context.blokiran_pindah_gaji_terbilang,
+      Blokiran_Wajib: context.blokiran_wajib,
+      Blokiran_Wajib_Terbilang: context.blokiran_wajib_terbilang,
+      Total_Blokiran: context.total_blokiran,
+      Total_Blokiran_Terbilang: context.total_blokiran_terbilang,
+
+      // Data Verifikasi Aliases
+      Nama_Bendahara: context.nama_bendahara,
+      No_Hp_Bendahara: context.no_hp_bendahara,
+      Nama_Rekan_Kerja: context.nama_rekan_kerja,
+      No_Hp_Rekan_Kerja: context.no_hp_rekan_kerja,
 
       // Bank & Payroll
       Nama_Bank: context.nama_bank_pembayaran,
@@ -587,7 +639,9 @@ export class DocumentTemplateService {
       Gaji_Bulan_2: context.gaji_bulan_2,
       Gaji_Bulan_3_Nama: context.gaji_bulan_3_nama,
       Gaji_Bulan_3: context.gaji_bulan_3,
+      Gaji_Bulan_3_Jumlah: context.gaji_bulan_3,
       Estimasi_Hak_Pensiun: context.estimasi_hak_pensiun,
+      Estimasi_Tht: context.estimasi_tht,
 
       // Pensiun (Purna)
       Pensiun_Bulan_1_Nama: context.pensiun_bulan_1_nama,
@@ -752,6 +806,8 @@ export class DocumentTemplateService {
     }
 
     const syaratPenandatanganan = syaratList.join("\n");
+    context.syarat_penandatanganan = syaratPenandatanganan;
+    context.Syarat_Penandatanganan = syaratPenandatanganan;
 
 
     // --- SYARAT PENCAIRAN KREDIT ---

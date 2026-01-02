@@ -30,6 +30,7 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
     const [searchTerm, setSearchTerm] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const suggestionRef = useRef<HTMLDivElement>(null);
+    const nextCursorPosition = useRef<number | null>(null);
 
     // Filter options based on search term
     const filteredOptions = options.filter(option =>
@@ -91,22 +92,28 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
     };
 
     const selectOption = (option: Option) => {
-        const textBeforeCursor = value.substring(0, cursorPosition);
+        // Use current selection start if available to ensure we have the most up-to-date position
+        const currentPos = textareaRef.current ? textareaRef.current.selectionStart : cursorPosition;
+        const textBeforeCursor = value.substring(0, currentPos);
         const lastAtPos = textBeforeCursor.lastIndexOf("@");
 
         if (lastAtPos !== -1) {
             const prefix = value.substring(0, lastAtPos);
-            const suffix = value.substring(cursorPosition);
+            const suffix = value.substring(currentPos);
+            const insertion = option.value + " "; // Add space after mention
+            
+            const newValue = `${prefix}${insertion}${suffix}`;
+            
+            // Calculate where cursor should be: prefix length + insertion length
+            const newCursorPos = prefix.length + insertion.length;
+            nextCursorPosition.current = newCursorPos;
 
-            const newValue = `${prefix}${option.value} ${suffix}`;
             onChange(newValue);
             setShowSuggestions(false);
 
-            // Reset focus
+            // Focus textarea
             if (textareaRef.current) {
                 textareaRef.current.focus();
-                // We can't easily set exact cursor position here without a timeout or layout effect
-                // because React state update is async. For now just focus.
             }
         }
     };
@@ -199,6 +206,14 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
             updateDropdownPosition();
         }
     }, [showSuggestions, value, cursorPosition]);
+
+    // Restore cursor position after value update
+    useEffect(() => {
+        if (nextCursorPosition.current !== null && textareaRef.current) {
+            textareaRef.current.setSelectionRange(nextCursorPosition.current, nextCursorPosition.current);
+            nextCursorPosition.current = null;
+        }
+    }, [value]);
 
     // Handle scroll sync for backdrop
     const handleScroll = () => {

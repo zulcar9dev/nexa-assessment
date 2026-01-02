@@ -38,9 +38,14 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "SLIK Ada Fasilitas (Boolean)", value: "{{slik_ada_fasilitas}}" },
     { label: "Jumlah Fasilitas SLIK", value: "{{slik_jumlah_fasilitas}}" },
     // Local SLIK Placeholders (Context Aware)
-    { label: "Nomor Rekening Pinjaman (Local)", value: "{{nomor_rekening_pinjaman}}" },
-    { label: "Nomor PK (Local)", value: "{{nomor_pk}}" },
-    { label: "Nama Bank (Local)", value: "{{nama_bank}}" },
+    { label: "Nomor Rekening Pinjaman (Fasilitas)", value: "{{nomor_rekening_pinjaman}}" },
+    { label: "Nomor PK (Fasilitas)", value: "{{nomor_pk}}" },
+    { label: "Nama Bank (Fasilitas)", value: "{{nama_bank}}" },
+    { label: "Jenis Kredit (Fasilitas)", value: "{{jenis_kredit}}" },
+    { label: "Plafon Maks (Fasilitas)", value: "{{plafon_maks}}" },
+    { label: "Outstanding (Fasilitas)", value: "{{outstanding}}" },
+    { label: "Angsuran (Fasilitas)", value: "{{angsuran}}" },
+    { label: "Kolektibilitas (Fasilitas)", value: "{{kolektibilitas}}" },
 
     // 3. VERIFIKASI PENGHASILAN
     { label: "Bank Pembayaran", value: "{{payroll_bank}}" },
@@ -65,6 +70,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Bulan Gaji 3 (Nama)", value: "{{gaji_bulan_3_nama}}" },
     { label: "Bulan Gaji 3 (Jumlah)", value: "{{gaji_bulan_3}}" },
     { label: "Estimasi Hak Pensiun", value: "{{estimasi_hak_pensiun}}" },
+    { label: "Estimasi THT", value: "{{estimasi_tht}}" },
 
     // 4. CALL MEMO (KERABAT)
     { label: "Nama Kerabat", value: "{{nama_kerabat}}" },
@@ -102,6 +108,28 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Tanggal Mulai Kerja", value: "{{tgl_mulai_kerja}}" },
     { label: "Alamat Kantor", value: "{{alamat_kantor}}" },
     { label: "Tanggal Pensiun Pemohon", value: "{{tgl_pensiun_pemohon}}" },
+    { label: "Masa Kerja", value: "{{masa_kerja}}" },
+    { label: "Sisa Masa Kerja", value: "{{sisa_masa_kerja}}" },
+    { label: "No SK CPNS", value: "{{no_sk_cpns}}" },
+    { label: "Tanggal SK CPNS", value: "{{tgl_sk_cpns}}" },
+    { label: "No SK Kenaikan Pangkat", value: "{{no_sk_kenaikan_pangkat}}" },
+    { label: "Tanggal SK Kenaikan Pangkat", value: "{{tgl_sk_kenaikan_pangkat}}" },
+    
+    // 7a. DATA VERIFIKASI
+    { label: "Nama Bendahara", value: "{{nama_bendahara}}" },
+    { label: "No HP Bendahara", value: "{{no_hp_bendahara}}" },
+    { label: "Nama Rekan Kerja", value: "{{nama_rekan_kerja}}" },
+    { label: "No HP Rekan Kerja", value: "{{no_hp_rekan_kerja}}" },
+
+    // 8. DATA BLOKIRAN (PRAPURNA)
+    { label: "Blokiran Prapurna (Jumlah)", value: "{{blokiran_prapurna}}" },
+    { label: "Blokiran Prapurna (Terbilang)", value: "{{blokiran_prapurna_terbilang}}" },
+    { label: "Blokiran Pindah Gaji (Jumlah)", value: "{{blokiran_pindah_gaji}}" },
+    { label: "Blokiran Pindah Gaji (Terbilang)", value: "{{blokiran_pindah_gaji_terbilang}}" },
+    { label: "Blokiran Wajib (Jumlah)", value: "{{blokiran_wajib}}" },
+    { label: "Blokiran Wajib (Terbilang)", value: "{{blokiran_wajib_terbilang}}" },
+    { label: "Total Blokiran (Jumlah)", value: "{{total_blokiran}}" },
+    { label: "Total Blokiran (Terbilang)", value: "{{total_blokiran_terbilang}}" },
 
     // Manual Lists
     { label: "Syarat Penandatanganan Manual", value: "{{syarat_penandatanganan_tambahan}}" },

@@ -32,8 +32,7 @@ export default function FormPurnaPage() {
         validationErrors,
         resetForm,
         setCurrentTab,
-        submitForm,
-        clearErrors
+        submitForm
     } = useFormStore();
     const { openPreviewModal } = useUIStore();
 
@@ -100,7 +99,7 @@ export default function FormPurnaPage() {
             case "tab-d":
                 return <TabDSlik />;
             case "tab-e":
-                return <TabEUsulan />;
+                return <TabEUsulan kategori="purna" />;
             default:
                 return <TabAIdentitas />;
         }

@@ -6,6 +6,8 @@ import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { calculateRemainingTime, formatRemainingTime, calculateElapsedTime } from "@/lib/utils";
 
 import { Briefcase, UserCheck } from "lucide-react";
+import { MentionTextArea } from "@/components/ui/MentionTextArea";
+import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
 
 export default function TabBPekerjaan() {
     const { formData, updateField } = useFormStore();
@@ -309,12 +311,12 @@ export default function TabBPekerjaan() {
                                 Alamat Kantor/Instansi
                             </label>
                             {/* Last field: Tab goes to next tab */}
-                            <textarea
-                                id="alamat_kantor"
-                                name="alamat_kantor"
-                                rows={2}
+                            <MentionTextArea
                                 value={formData.alamat_kantor || ""}
-                                onChange={(e) => updateField("alamat_kantor", e.target.value)}
+                                onChange={(val) => updateField("alamat_kantor", val)}
+                                options={DOCUMENT_PLACEHOLDERS}
+                                rows={2}
+                                placeholder="Ketik alamat kantor... (Gunakan @ untuk insert data)"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
                         </div>

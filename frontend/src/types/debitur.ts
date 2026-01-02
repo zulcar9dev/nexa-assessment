@@ -89,6 +89,14 @@ export interface DebiturFormData {
   gaji_bulan_3_nama?: string;
   gaji_bulan_3_jumlah?: string;
   estimasi_hak_pensiun?: string;
+  estimasi_tht?: string; // [NEW] Estimasi Tunjangan Hari Tua (THT)
+  
+  // Blokiran (Prapurna) - Numeric count (kali)
+  blokiran_prapurna_jml?: number;
+  blokiran_pindah_gaji_jml?: number;
+  blokiran_wajib_jml?: number;
+  total_blokiran_jml?: number; // Auto-calculated
+
   pensiun_bulan_1_nama?: string;
   pensiun_bulan_1_jumlah?: string;
   pensiun_bulan_2_nama?: string;
@@ -98,6 +106,7 @@ export interface DebiturFormData {
   pensiun_bulan_jumlah?: string;
 
   // Tab D - SLIK
+  tgl_slik?: string; // [NEW] Tanggal SLIK Manual
   fasilitas_nihil: "ya" | "tidak";
   slik_facilities?: SlikFacility[];
 

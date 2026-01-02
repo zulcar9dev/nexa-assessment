@@ -2,11 +2,18 @@
 
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Calculator } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import { calculateMonthsDifference, terbilang, calculateAge } from "@/lib/utils";
+import { useEffect, useMemo } from "react";
 
-export default function TabEUsulan() {
+
+interface TabEUsulanProps {
+    kategori?: "purna" | "prapurna";
+}
+
+export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
     const { formData, updateField } = useFormStore();
     const { handleTabToPrev } = useTabNavigation();
 
@@ -16,6 +23,81 @@ export default function TabEUsulan() {
         if (!numericValue) return "";
         return parseInt(numericValue, 10).toLocaleString("id-ID");
     };
+
+    // Calculate Max Duration based on Age and Category
+    const { maxDuration, currentAge, limitYears } = useMemo(() => {
+        const birthDate = formData.tgl_lahir_pemohon;
+        const age = birthDate ? calculateAge(birthDate) : 0;
+        
+        // Determine limit based on category
+        const isPrapurna = kategori === "prapurna";
+        const limit = isPrapurna ? 20 : 15;
+        
+        // Rule: Age + Duration <= 75
+        const maxByAge = 75 - age;
+        
+        // Calculate max years
+        let maxYears = Math.min(limit, maxByAge);
+
+        // Ensure not negative
+        maxYears = Math.max(0, maxYears);
+
+        return {
+            maxDuration: maxYears * 12, // in months
+            currentAge: age,
+            limitYears: limit
+        };
+    }, [formData.tgl_lahir_pemohon, kategori]);
+
+    // Validate duration on change
+    const handleDurationChange = (value: string) => {
+        let months = parseInt(value) || 0;
+        
+        // Don't allow negative
+        if (months < 0) months = 0;
+
+        // Check against max duration
+        if (months > maxDuration) {
+            // Logic for handling exceeding max duration handled in render
+        }
+        
+        updateField("usulan_jangka_waktu_bulan", months.toString());
+    };
+
+    // Auto-calculate Blokiran Fields
+    useEffect(() => {
+        const today = new Date().toISOString().split("T")[0];
+        const tglPensiun = formData.tgl_pensiun_pemohon; // from Tab B
+
+        // 1. Calculate Blokiran Prapurna (Months to Pension)
+        let prapurnaMonths = 0;
+        if (tglPensiun) {
+            prapurnaMonths = calculateMonthsDifference(today, tglPensiun);
+        }
+
+        // 2. Get Manual Inputs
+        const pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
+        const wajib = formData.blokiran_wajib_jml || 0;
+
+        // 3. Calculate Total
+        const total = prapurnaMonths + pindahGaji + wajib;
+
+        // Update if different to avoid loops
+        if (
+            formData.blokiran_prapurna_jml !== prapurnaMonths ||
+            formData.total_blokiran_jml !== total
+        ) {
+            updateField("blokiran_prapurna_jml", prapurnaMonths);
+            updateField("total_blokiran_jml", total);
+        }
+    }, [
+        formData.tgl_pensiun_pemohon,
+        formData.blokiran_pindah_gaji_jml,
+        formData.blokiran_wajib_jml,
+        formData.blokiran_prapurna_jml, 
+        formData.total_blokiran_jml,
+        updateField
+    ]);
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] p-6 md:p-8" data-tab-content="tab-e">
@@ -45,18 +127,32 @@ export default function TabEUsulan() {
 
                 {/* Jangka Waktu */}
                 <div>
-                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Jangka Waktu (Bulan)
-                    </label>
+                    <div className="flex justify-between items-center mb-1">
+                        <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300">
+                            Jangka Waktu (Bulan)
+                        </label>
+                        <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                            Max: {maxDuration} Bulan ({maxDuration/12} Tahun)
+                        </span>
+                    </div>
                     <input
                         type="number"
                         value={formData.usulan_jangka_waktu_bulan || ""}
-                        onChange={(e) => updateField("usulan_jangka_waktu_bulan", e.target.value)}
+                        onChange={(e) => handleDurationChange(e.target.value)}
                         placeholder="120"
                         min="12"
-                        max="180"
-                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        max={maxDuration}
+                        className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                            (parseInt(formData.usulan_jangka_waktu_bulan || "0") > maxDuration)
+                            ? "border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500" 
+                            : "border-[#cdeae7] focus:border-[#00665e] focus:ring-[#00665e]"
+                        }`}
                     />
+                    {(parseInt(formData.usulan_jangka_waktu_bulan || "0") > maxDuration) && (
+                         <p className="text-xs text-red-500 mt-1">
+                            Melebihi batas maksimal {limitYears} tahun atau usia 75 tahun (Usia saat ini: {currentAge} th)
+                         </p>
+                    )}
                 </div>
 
                 {/* Suku Bunga */}
@@ -201,6 +297,104 @@ export default function TabEUsulan() {
                         />
                     </div>
                 </div>
+
+                {/* --- DATA BLOKIRAN (KHUSUS PRAPURNA) --- */}
+                <div className="md:col-span-2 lg:col-span-3">
+                     <hr className="my-2 border-[#cdeae7] dark:border-opacity-10" />
+                     <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2 mt-4">
+                        <Calculator className="w-6 h-6 text-[#00665e]" />
+                        Data Blokiran (Khusus Prapurna)
+                    </h3>
+                </div>
+
+                {/* Blokiran Prapurna */}
+                <div>
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Blokiran Prapurna
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                        Otomatis: Selisih bulan (Tgl Pensiun - Hari Ini)
+                    </p>
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={formData.blokiran_prapurna_jml || ""}
+                            readOnly
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-gray-100 text-gray-500 sm:text-sm py-2.5 pr-12 pl-3 text-right"
+                        />
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                    </div>
+                </div>
+
+                {/* Blokiran Pindah Gaji */}
+                <div>
+                     <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Blokiran Pindah Gaji
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                         Input manual jumlah kali angsuran
+                    </p>
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={formData.blokiran_pindah_gaji_jml || ""}
+                            onChange={(e) => {
+                                const val = parseInt(e.target.value) || 0;
+                                updateField("blokiran_pindah_gaji_jml", val);
+                            }}
+                            placeholder="0"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                        />
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                    </div>
+                </div>
+
+                {/* Blokiran Wajib */}
+                <div>
+                     <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                        Blokiran Wajib
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">
+                         Input manual jumlah kali angsuran
+                    </p>
+                    <div className="relative">
+                        <input
+                            type="number"
+                            value={formData.blokiran_wajib_jml || ""}
+                            onChange={(e) => {
+                                const val = parseInt(e.target.value) || 0;
+                                updateField("blokiran_wajib_jml", val);
+                            }}
+                            placeholder="0"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                        />
+                         <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                    </div>
+                </div>
+
+                {/* Total Blokiran */}
+                <div className="md:col-span-2 lg:col-span-3 bg-[#e6f4f3] dark:bg-[#00665e]/20 rounded-lg p-4 mt-2">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                             <label className="block text-sm font-bold text-[#0c1d1b] dark:text-gray-200">
+                                Total Blokiran
+                            </label>
+                            <p className="text-sm text-[#00665e] italic">
+                                Terbilang: {formData.total_blokiran_jml ? terbilang(formData.total_blokiran_jml) : "Nol"}
+                            </p>
+                        </div>
+                        <div className="relative w-full md:w-1/3">
+                             <input
+                                type="number"
+                                value={formData.total_blokiran_jml || 0}
+                                readOnly
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-white font-bold text-[#00665e] sm:text-lg py-2.5 pr-12 pl-3 text-right"
+                            />
+                            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                        </div>
+                    </div>
+                </div>
+
 
                 {/* Syarat Penandatanganan */}
                 <div className="md:col-span-2 lg:col-span-3">

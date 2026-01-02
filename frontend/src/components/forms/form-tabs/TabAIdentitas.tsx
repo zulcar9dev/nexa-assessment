@@ -6,6 +6,8 @@ import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { User, MapPin, Calendar } from "lucide-react";
+import { MentionTextArea } from "@/components/ui/MentionTextArea";
+import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
 
 export default function TabAIdentitas() {
     const { formData, updateField } = useFormStore();
@@ -185,13 +187,12 @@ export default function TabAIdentitas() {
                             >
                                 Alamat Sesuai KTP
                             </label>
-                            <textarea
-                                id="alamat_ktp"
-                                name="alamat_ktp"
-                                rows={3}
+                            <MentionTextArea
                                 value={formData.alamat_ktp || ""}
-                                onChange={(e) => updateField("alamat_ktp", e.target.value)}
-                                placeholder="e.g. Jl. Sudirman No. 123, RT 01/RW 02, Kel. Menteng, Kec. Menteng, Jakarta Pusat"
+                                onChange={(val) => updateField("alamat_ktp", val)}
+                                options={DOCUMENT_PLACEHOLDERS}
+                                rows={3}
+                                placeholder="Ketik alamat KTP... (Gunakan @ untuk insert data)"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
                         </div>
@@ -270,13 +271,12 @@ export default function TabAIdentitas() {
                                 >
                                     Alamat Domisili
                                 </label>
-                                <textarea
-                                    id="alamat_domisili"
-                                    name="alamat_domisili"
-                                    rows={3}
+                                <MentionTextArea
                                     value={formData.alamat_domisili || ""}
-                                    onChange={(e) => updateField("alamat_domisili", e.target.value)}
-                                    placeholder="Masukkan alamat domisili saat ini..."
+                                    onChange={(val) => updateField("alamat_domisili", val)}
+                                    options={DOCUMENT_PLACEHOLDERS}
+                                    rows={3}
+                                    placeholder="Ketik alamat domisili... (Gunakan @ untuk insert data)"
                                     className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                                 />
                             </div>

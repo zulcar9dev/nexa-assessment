@@ -292,6 +292,21 @@ Cfm. Info SLIK Ideb posisi terakhir Tanggal {{tgl_slik}} Pemohon memiliki Fasili
 
 ---
 
+### 9. DATA BLOKIRAN (Prapurna Only)
+
+| Teks di Dokumen       | Placeholder                          | Data Source                            | Contoh Output |
+| --------------------- | ------------------------------------ | -------------------------------------- | ------------- |
+| Blokiran Prapurna     | `{{blokiran_prapurna}}`              | `dataLengkap.blokiran_prapurna_jml`    | `12`          |
+| Terbilang Prapurna    | `{{blokiran_prapurna_terbilang}}`    | `terbilang(blokiran_prapurna_jml)`     | `Dua Belas`   |
+| Blokiran Pindah Gaji  | `{{blokiran_pindah_gaji}}`           | `dataLengkap.blokiran_pindah_gaji_jml` | `1`           |
+| Terbilang Pindah Gaji | `{{blokiran_pindah_gaji_terbilang}}` | `terbilang(blokiran_pindah_gaji_jml)`  | `Satu`        |
+| Blokiran Wajib        | `{{blokiran_wajib}}`                 | `dataLengkap.blokiran_wajib_jml`       | `1`           |
+| Terbilang Wajib       | `{{blokiran_wajib_terbilang}}`       | `terbilang(blokiran_wajib_jml)`        | `Satu`        |
+| Total Blokiran        | `{{total_blokiran}}`                 | `Auto Sum`                             | `14`          |
+| Terbilang Total       | `{{total_blokiran_terbilang}}`       | `terbilang(total_blokiran_jml)`        | `Empat Belas` |
+
+---
+
 ## 📝 ALIASES & CAPITALIZED VARIANTS
 
 Semua placeholder memiliki alias dengan format **Title_Case** untuk kompatibilitas template. Contoh:
@@ -358,6 +373,11 @@ Semua placeholder memiliki alias dengan format **Title_Case** untuk kompatibilit
 | `{{tgl_sk_cpns}}`                | `{{Tgl_Sk_Cpns}}`                  |
 | `{{no_sk_kenaikan_pangkat}}`     | `{{No_Sk_Kenaikan_Pangkat}}`       |
 | `{{tgl_sk_kenaikan_pangkat}}`    | `{{Tgl_Sk_Kenaikan_Pangkat}}`      |
+| `{{blokiran_prapurna}}`          | `{{Blokiran_Prapurna}}`            |
+| `{{blokiran_pindah_gaji}}`       | `{{Blokiran_Pindah_Gaji}}`         |
+| `{{blokiran_wajib}}`             | `{{Blokiran_Wajib}}`               |
+| `{{total_blokiran}}`             | `{{Total_Blokiran}}`               |
+| `{{total_blokiran_terbilang}}`   | `{{Total_Blokiran_Terbilang}}`     |
 
 ---
 
@@ -421,6 +441,7 @@ interface DebiturFormData {
   gaji_bulan_3_nama?: string;
   gaji_bulan_3_jumlah?: string;
   estimasi_hak_pensiun?: string;
+  estimasi_tht?: string; // [NEW] Estimasi THT
 
   // Tab C - Penghasilan Pensiun (Purna)
   pensiun_bulan_1_nama?: string;
@@ -445,6 +466,12 @@ interface DebiturFormData {
   biaya_provisi?: string; // Biaya Provisi (percentage, default: 1)
   biaya_tatalaksana?: string; // Biaya Tata Laksana (percentage, default: 2)
   syarat_penandatanganan_tambahan?: string; // [NEW] Tambahan syarat manual
+
+  // Data Blokiran (Numeric)
+  blokiran_prapurna_jml?: number;
+  blokiran_pindah_gaji_jml?: number;
+  blokiran_wajib_jml?: number;
+  total_blokiran_jml?: number;
 }
 
 interface SlikFacility {

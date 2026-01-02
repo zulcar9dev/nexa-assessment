@@ -32,8 +32,7 @@ export default function FormPrapurnaPage() {
         validationErrors,
         resetForm,
         setCurrentTab,
-        submitForm,
-        clearErrors
+        submitForm
     } = useFormStore();
     const { openPreviewModal } = useUIStore();
 
@@ -97,7 +96,7 @@ export default function FormPrapurnaPage() {
             case "tab-d":
                 return <TabDSlik />;
             case "tab-e":
-                return <TabEUsulan />;
+                return <TabEUsulan kategori="prapurna" />;
             default:
                 return <TabAIdentitas />;
         }

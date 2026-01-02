@@ -2,7 +2,7 @@
 
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
-import { Plus, Trash2, ClipboardCheck } from "lucide-react";
+import { Plus, Trash2, ClipboardCheck, Calendar } from "lucide-react";
 import type { SlikFacility } from "@/types/debitur";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
@@ -65,6 +65,27 @@ export default function TabDSlik() {
                 <ClipboardCheck className="w-6 h-6 text-[#00665e]" />
                 Hasil SLIK
             </h3>
+
+            {/* Tanggal SLIK Input */}
+            <div className="mb-6 bg-[#f8fcfc] dark:bg-[#0f2322]/50 p-4 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
+                <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-2">
+                    Tanggal Pengecekan SLIK
+                </label>
+                <div className="relative max-w-sm">
+                    <input
+                        type="date"
+                        value={formData.tgl_slik || new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setFormData({ tgl_slik: e.target.value })}
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 pl-10 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Calendar className="h-4 w-4 text-gray-500" />
+                    </div>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                    Tanggal ini akan digunakan sebagai &quot;Tanggal SLIK&quot; pada dokumen yang dicetak.
+                </p>
+            </div>
 
             <div className="space-y-4">
                 {/* Header Row (Hidden on mobile) */}

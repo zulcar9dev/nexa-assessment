@@ -225,3 +225,87 @@ export function calculateElapsedTime(startDateStr: string): {
         isFuture: false
     };
 }
+
+/**
+ * Convert number to Indonesian text (Terbilang)
+ * Handles numbers up to Trillions
+ */
+export function terbilang(nilai: number): string {
+    const angka = Math.abs(nilai);
+    const baca = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+    let terbilang = "";
+
+    if (angka < 12) {
+        terbilang = " " + baca[angka];
+    } else if (angka < 20) {
+        terbilang = terbilangCalc(angka - 10) + " Belas";
+    } else if (angka < 100) {
+        terbilang = terbilangCalc(Math.floor(angka / 10)) + " Puluh" + terbilangCalc(angka % 10);
+    } else if (angka < 200) {
+        terbilang = " Seratus" + terbilangCalc(angka - 100);
+    } else if (angka < 1000) {
+        terbilang = terbilangCalc(Math.floor(angka / 100)) + " Ratus" + terbilangCalc(angka % 100);
+    } else if (angka < 2000) {
+        terbilang = " Seribu" + terbilangCalc(angka - 1000);
+    } else if (angka < 1000000) {
+        terbilang = terbilangCalc(Math.floor(angka / 1000)) + " Ribu" + terbilangCalc(angka % 1000);
+    } else if (angka < 1000000000) {
+        terbilang = terbilangCalc(Math.floor(angka / 1000000)) + " Juta" + terbilangCalc(angka % 1000000);
+    } else if (angka < 1000000000000) {
+        terbilang = terbilangCalc(Math.floor(angka / 1000000000)) + " Milyar" + terbilangCalc(angka % 1000000000);
+    } else if (angka < 1000000000000000) {
+        terbilang = terbilangCalc(Math.floor(angka / 1000000000000)) + " Trilyun" + terbilangCalc(angka % 1000000000000);
+    }
+
+    return terbilang.trim();
+}
+
+function terbilangCalc(nilai: number): string {
+    return " " + terbilang(nilai);
+}
+
+/**
+ * Calculate months difference between two dates
+ * Returns 0 if start date > end date
+ */
+export function calculateMonthsDifference(startDateStr: string, endDateStr: string): number {
+    if (!startDateStr || !endDateStr) return 0;
+
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+    
+    // Reset hours
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    if (start > end) return 0;
+
+    const years = end.getFullYear() - start.getFullYear();
+    const months = end.getMonth() - start.getMonth();
+    
+    // Calculate total months
+    const totalMonths = (years * 12) + months;
+    
+    return totalMonths > 0 ? totalMonths : 0;
+}
+
+/**
+ * Calculate age based on birth date string
+ */
+export function calculateAge(birthDateStr: string): number {
+    if (!birthDateStr) return 0;
+    
+    const birthDate = new Date(birthDateStr);
+    const today = new Date();
+    
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    return age;
+}
