@@ -167,6 +167,228 @@ export class DocumentTemplateService {
   }
 
   /**
+   * Generate Investigasi List (dynamic points) - Prapurna Aware
+   */
+  static generateInvestigasiList(context: Record<string, unknown>): Record<string, string>[] {
+    const list: string[] = [];
+    const isPrapurna = String(context.kategori || "").toLowerCase() === "prapurna";
+
+    // 1. Alamat KTP
+    if (context.alamat_ktp) {
+      list.push(`Alamat Pemohon di KTP di ${context.alamat_ktp}.`);
+    }
+
+    // 2. Alamat Domisili (Conditional)
+    if (context.domisili_berbeda) {
+      list.push(`Alamat Domisili di ${context.alamat_domisili}.`);
+    }
+
+    // 3. Status Rumah
+    if (context.status_rumah) {
+      list.push(`Status Rumah saat ini adalah ${context.status_rumah} dengan lama tinggal ± ${context.lama_tinggal || "-"}.`);
+    }
+
+    // 4. Usia & KTP Info
+    if (context.usia_pemohon) {
+      list.push(`Usia Pemohon ± ${context.usia_pemohon} Tahun (${context.tgl_lahir}) Cfm. KTP Nomor ${context.no_ktp} tanggal ${context.tgl_terbit_ktp}.`);
+    }
+
+    // 5. Status Perkawinan
+    const cfmStatus = context.cfm_status_perkawinan as string;
+    if (cfmStatus) {
+      list.push(cfmStatus);
+    }
+
+    if (isPrapurna) {
+      // --- PRAPURNA SPECIFIC ---
+      // 6a. Status Kepegawaian & Masa Kerja
+      if (context.status_kepegawaian) {
+        list.push(String(context.status_kepegawaian));
+      }
+      if (context.masa_kerja_text) {
+        list.push(String(context.masa_kerja_text));
+      }
+
+      // 6b. Golongan & Pangkat
+      const golongan = context.golongan || "-";
+      const noSkPangkat = context.no_sk_kenaikan_pangkat || "-";
+      const tglSkPangkat = context.tgl_sk_kenaikan_pangkat || "-";
+      list.push(`Golongan/Pangkat saat ini adalah ${golongan}. Cfm. SK Pangkat Terakhir No ${noSkPangkat} tanggal ${tglSkPangkat}.`);
+
+      // 6c. Jabatan
+      if (context.jabatan) {
+        list.push(`Jabatan Pemohon saat ini adalah ${context.jabatan}.`);
+      }
+
+      // 6d. Alamat Kantor
+      if (context.alamat_kantor) {
+        list.push(`Alamat Kantor Pemohon di ${context.alamat_kantor}.`);
+      }
+
+      // 6e. Batas Usia Pensiun
+      const tglPensiun = context.tgl_pensiun || "-";
+      list.push(`Pemohon akan memasuki Batas Usia Pensiun per Tanggal ${tglPensiun} Cfm. Estimasi Hak Tabungan Hari Tua dan Pensiun Pokok.`);
+
+    } else {
+      // --- PURNA (EXISTING) ---
+      // 6. Info Pensiunan
+      const pensiunan = context.pensiunan || "-";
+      const instansi = context.instansi || "-";
+      const noSk = context.no_sk_pensiun || "-";
+      const tglSk = context.tgl_sk_pensiun || "-";
+      list.push(`Pemohon merupakan Pensiunan ${pensiunan} di ${instansi}. Cfm ${noSk} tanggal ${tglSk}.`);
+    }
+
+    // 7. Maksud Pengajuan
+    const jenisPengajuan = context.jenis_pengajuan || "-";
+    const plafon = context.plafon || "0";
+    const tenor = context.tenor || "0";
+    const produkName = isPrapurna ? "BNI Fleksi Pensiun Prapurna" : "BNI Fleksi Pensiun";
+
+    list.push(`Maksud mengajukan fasilitas kredit ${produkName} ${jenisPengajuan} sebesar Rp. ${plafon} Jangka Waktu ${tenor} Bulan.`);
+
+    // 8. Tujuan Kredit
+    if (context.tujuan_kredit) {
+      list.push(`Tujuan kredit untuk ${context.tujuan_kredit}.`);
+    }
+
+    return list.map(text => ({ text }));
+  }
+
+  /**
+   * Generate Investigasi List (dynamic points)
+   */
+
+
+  /**
+   * Generate Call Memo List (dynamic points)
+   */
+  static generateCallMemoList(context: Record<string, unknown>): Record<string, string>[] {
+    const list: string[] = [];
+    const pensiunan = context.pensiunan || "-";
+    const instansi = context.instansi || "-";
+    const statusRumah = context.status_rumah || "-";
+
+    // 1. Pensiun Check
+    list.push(`Memang benar Pemohon merupakan Pensiun ${pensiunan} di ${instansi}.`);
+
+    // 2. Status Rumah Check
+    list.push(`Menurut Ybs. rumah yang di tempati Pemohon saat ini adalah rumah ${statusRumah}.`);
+
+    // 3. Kemampuan Bayar
+    list.push("Ybs. menyampaikan bahwa Pemohon memiliki kemampuan untuk menyetor angsuran atas kredit yang dimohon, dan");
+
+    // 4. Willingness to Remind
+    list.push("Ybs. bersedia untuk mengingatkan Pemohon untuk kewajiban angsuran perbulan.");
+
+    // 5. Character
+    list.push("Pemohon dikenal baik dan bertanggung jawab.");
+
+    return list.map(text => ({ text }));
+  }
+
+  // --- PRAPURNA CALL MEMO GENERATORS ---
+
+  static generateBendaharaList(context: Record<string, unknown>): Record<string, string>[] {
+    const list: string[] = [];
+    const statusKepegawaian = context.status_kepegawaian || "Calon Pensiunan"; // Dynamic w/ fallback
+    const instansi = context.instansi || "-";
+    const jabatan = context.jabatan || "-";
+    const masaKerja = context.masa_kerja || "-"; // Just number or partial text
+    const tglMulai = context.tgl_mulai_kerja || "-";
+    const tglPensiun = context.tgl_pensiun_pemohon || context.tgl_pensiun || "-";
+    const gaji = context.gaji_bulan_3 || "0";
+    const payrollBank = context.payroll_bank || "-";
+
+    list.push(`Memang benar Pemohon adalah ${statusKepegawaian} di ${instansi}.`);
+    list.push(`Jabatan saat ini Pemohon sebagai ${jabatan}.`);
+    list.push(`Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak ${tglMulai}.`);
+    list.push(`Pemohon akan memasuki Batas Usia Pensiun per Tanggal ${tglPensiun}.`);
+    list.push(`Gaji Aktif Pemohon saat ini berkisar Rp. ${gaji},-, dan pendapatan lainnya atau dapat dicocokkan pada Rekening Payroll ${payrollBank} (terlampir).`);
+    list.push(`Karakter dan Integritas yang baik dan bertanggung jawab.`);
+
+    return list.map(text => ({ text }));
+  }
+
+  static generateRekanKerjaList(context: Record<string, unknown>): Record<string, string>[] {
+    const list: string[] = [];
+    const statusKepegawaian = context.status_kepegawaian || "Calon Pensiunan";
+    const instansi = context.instansi || "-";
+    const jabatan = context.jabatan || "-";
+    const masaKerja = context.masa_kerja || "-";
+    const tglMulai = context.tgl_mulai_kerja || "-";
+    const tglPensiun = context.tgl_pensiun_pemohon || context.tgl_pensiun || "-";
+
+    list.push(`Memang benar Pemohon adalah ${statusKepegawaian} di ${instansi}.`);
+    list.push(`Jabatan saat ini Pemohon sebagai ${jabatan}.`);
+    list.push(`Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak ${tglMulai}.`);
+    list.push(`Pemohon akan memasuki Batas Usia Pensiun per Tanggal ${tglPensiun}.`);
+    list.push(`Karakter dan Integritas yang baik dan bertanggung jawab.`);
+
+    return list.map(text => ({ text }));
+  }
+
+  static generateTaspenList(context: Record<string, unknown>): Record<string, string>[] {
+    const list: string[] = [];
+    const tglPensiun = context.tgl_pensiun_pemohon || context.tgl_pensiun || "-";
+    const tht = context.estimasi_tht || "0";
+    const hakPensiun = context.estimasi_hak_pensiun || "0";
+
+    list.push(`Tanggal Pensiun ${tglPensiun}.`);
+    list.push(`THT +/- Rp. ${tht},-.`);
+    list.push(`Hak Pensiun +/- Rp. ${hakPensiun},-.`);
+
+    return list.map(text => ({ text }));
+  }
+
+  static generateKerabatPrapurnaList(context: Record<string, unknown>): Record<string, string>[] {
+    const list: string[] = [];
+    const statusKepegawaian = context.status_kepegawaian || "Calon Pensiunan PNS"; // User requested wording Pensiunan PNS but said use dynamic.
+    const instansi = context.instansi || "-";
+    const statusRumah = context.status_rumah || "-";
+
+    list.push(`Memang benar Pemohon adalah ${statusKepegawaian} di ${instansi}.`);
+    list.push(`Menurut Ybs. rumah yang di tempati Pemohon saat ini adalah Rumah ${statusRumah}.`);
+    list.push("Ybs. menyampaikan bahwa Pemohon memiliki kemampuan untuk menyetor angsuran atas kredit yang dimohon, dan Ybs bersedia untuk mengingatkan Pemohon untuk kewajiban angsuran perbulan"); // As per user request wording
+
+    return list.map(text => ({ text }));
+  }
+
+  /**
+   * Map SLIK facilities to List for Loop (optimized)
+   */
+  static mapSlikToList(
+    slikFacilities: SlikFacility[]
+  ): Record<string, unknown>[] {
+    return slikFacilities.map((facility) => {
+      const alasanRaw = facility.alasan || "";
+      const localContext = {
+        nomor_rekening_pinjaman: facility.nomor_rekening_pinjaman || "",
+        nomor_pk: facility.nomor_pk || "",
+        nama_bank: facility.nama_bank || "",
+      };
+
+      const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
+        return (localContext as any)[key] || match;
+      });
+
+      return {
+        nama_bank: facility.nama_bank || "",
+        jenis_kredit: facility.jenis_kredit || "Konsumtif",
+        plafon_maks: this.formatRupiah(facility.plafon_maks),
+        outstanding: this.formatRupiah(facility.outstanding),
+        angsuran: this.formatRupiah(facility.angsuran),
+        kolektibilitas: facility.kolektibilitas || "1",
+        alasan: alasanParsed,
+        norek_existing: facility.nomor_rekening_pinjaman || "",
+        nopk_existing: facility.nomor_pk || "",
+        is_takeover: facility.is_takeover, // Optional, might be useful
+        is_topup: facility.is_topup_lunas // Optional
+      };
+    });
+  }
+
+  /**
    * Map SLIK facilities to indexed fields (slik_bank_1, slik_bank_2, etc.)
    * Template uses indexed fields for each bank, up to 15 banks
    */
@@ -204,11 +426,7 @@ export class DocumentTemplateService {
         };
         // Simple replace for local context
         const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
-          return (localContext as any)[key] || match; // Keep original if not found locally (let global handle it?)
-          // Actually, if we return match, global parser (if runs) might pick it up. 
-          // But global parser is docxtemplater. 
-          // docxtemplater will see {{nomor_rekening_pinjaman}} and if global context doesn't have it, it sets to empty.
-          // So we MUST replace it here if it matches local.
+          return (localContext as any)[key] || match;
         });
 
         result[`slik_bank_${i}_alasan`] = alasanParsed;
@@ -256,19 +474,89 @@ export class DocumentTemplateService {
     const statusLower = status.toLowerCase().replace(/_/g, " ");
     switch (statusLower) {
       case "menikah":
-        return "Cfm. Kutipan Akta Menikah terlampir.";
+        return "Status pemohon Menikah. Cfm Kutipan Akta Nikah terlampir.";
       case "belum menikah":
       case "belum_menikah":
-        return "Cfm. Surat Keterangan Belum Menikah terlampir.";
+        return "Status pemohon Belum Menikah. Cfm Surat Keterangan Belum Menikah terlampir.";
       case "cerai hidup":
       case "cerai_hidup":
-        return "Cfm. Kutipan Akta Cerai terlampir.";
+        return "Status pemohon Cerai Hidup. Cfm Akta Cerai terlampir.";
       case "cerai mati":
       case "cerai_mati":
-        return "Cfm. Akta Kematian Pasangan terlampir.";
+        return "Status pemohon Cerai Mati. Cfm Akta Kematian Pasangan terlampir.";
       default:
         return "";
     }
+  }
+
+  /**
+   * Get status kepegawaian text based on segmentation and instance
+   */
+  static getStatusKepegawaian(debitur: DebiturData): string {
+    const data = debitur.dataLengkap;
+    const segmentasi = (debitur.segmentasi || data.segmentasi || "").toString().toLowerCase();
+    const instansi = (data.instansi as string || "").trim();
+    const instansiLower = instansi.toLowerCase();
+
+    // Kategori: purna or prapurna
+    // Note: debitur.kategori might be 'purna_reguler', etc. Check for 'prapurna'
+    const kategoriSlug = debitur.kategori.toLowerCase();
+    const isPrapurna = kategoriSlug.includes("prapurna");
+
+    // TASPEN (PNS)
+    if (segmentasi.includes("taspen")) {
+      // Logic: "Calon Pensiunan" only for Prapurna, otherwise "Pensiunan"
+      const statusText = isPrapurna ? "Calon Pensiunan" : "Pensiunan";
+      return `Pemohon merupakan ${statusText} PNS di ${instansi}.`;
+    }
+
+    // ASABRI (TNI/POLRI)
+    if (segmentasi.includes("asabri")) {
+      const polriKeywords = ["polri", "polres", "polda", "polsek", "brimob", "bhayangkara"];
+      const tniKeywords = ["tni", "ad", "al", "au", "kodam", "korem", "kodim", "koramil", "yonif", "kopassus", "marinir", "paskhas", "kostrad"];
+
+      let type = "TNI/POLRI"; // Default fallback
+
+      // Check keywords
+      if (polriKeywords.some(k => instansiLower.includes(k))) {
+        type = "POLRI";
+      } else if (tniKeywords.some(k => instansiLower.includes(k))) {
+        type = "TNI";
+      }
+
+      // Logic: Prompt requested "pensiunan POLRI/TNI". 
+      // Keeping it as "pensiunan" for both Purna and Prapurna based on strict prompt interpretation for Asabri, 
+      // unlike PNS where user specifically asked for "Calon" distinction on Prapurna.
+      return `Pemohon merupakan pensiunan ${type} di ${instansi}.`;
+    }
+
+    return "";
+  }
+
+  /**
+   * Get masa kerja text based on segmentation
+   */
+  static getMasaKerjaText(debitur: DebiturData): string {
+    const data = debitur.dataLengkap;
+    const segmentasi = (debitur.segmentasi || data.segmentasi || "").toString().toLowerCase();
+
+    const masaKerja = data.masa_kerja || "-";
+    const tglMulai = this.formatDateIndonesian(data.tgl_mulai_kerja as string);
+    // Use underlying data source (same for both, but label differs)
+    const noSk = data.no_sk_cpns || "-";
+    const tglSk = this.formatDateIndonesian(data.tgl_sk_cpns as string);
+
+    // TASPEN (PNS)
+    if (segmentasi.includes("taspen")) {
+      return `Lama Masa Kerja ± ${masaKerja} atau sejak ${tglMulai}. Cfm. SK CPNS No. ${noSk} tanggal ${tglSk}.`;
+    }
+
+    // ASABRI (TNI/POLRI)
+    if (segmentasi.includes("asabri")) {
+      return `Lama Masa Kerja ± ${masaKerja} atau sejak ${tglMulai}. Cfm. SK Pengangkatan No. ${noSk} tanggal ${tglSk}.`;
+    }
+
+    return "";
   }
 
   /**
@@ -405,7 +693,11 @@ export class DocumentTemplateService {
       usia_pemohon:
         data.usia_pemohon ||
         this.calculateAge(data.tgl_lahir_pemohon as string),
+
       pensiunan: data.pensiunan || "",
+
+      // Status Kepegawaian (New Placeholder)
+      status_kepegawaian: this.getStatusKepegawaian(debitur),
 
       // Pekerjaan/Pensiun
       segmentasi: (debitur.segmentasi || data.segmentasi || "")
@@ -465,6 +757,12 @@ export class DocumentTemplateService {
       fasilitas_nihil: slikFacilities.length === 0 ? "NIHIL" : "Tidak",
       fasilitas_nihil_text:
         slikFacilities.length === 0 ? "Nihil - Tidak ada fasilitas kredit" : "",
+
+      // OPTIMIZED SLIK LIST
+      list_fasilitas_kredit: this.mapSlikToList(slikFacilities),
+
+      // We will populate list_investigasi later using the full context
+      list_investigasi: [],
 
       // RPC (Repayment Capacity) Calculations
       rpc_penghasilan: this.formatRupiah(penghasilan),
@@ -534,14 +832,14 @@ export class DocumentTemplateService {
       sisa_masa_kerja: data.sisa_masa_kerja || "",
 
       // Blokiran
-      blokiran_prapurna: (data.blokiran_prapurna_jml || 0),
-      blokiran_prapurna_terbilang: terbilang(data.blokiran_prapurna_jml || 0),
-      blokiran_pindah_gaji: (data.blokiran_pindah_gaji_jml || 0),
-      blokiran_pindah_gaji_terbilang: terbilang(data.blokiran_pindah_gaji_jml || 0),
-      blokiran_wajib: (data.blokiran_wajib_jml || 0),
-      blokiran_wajib_terbilang: terbilang(data.blokiran_wajib_jml || 0),
-      total_blokiran: (data.total_blokiran_jml || 0),
-      total_blokiran_terbilang: terbilang(data.total_blokiran_jml || 0),
+      blokiran_prapurna: Number(data.blokiran_prapurna_jml || 0),
+      blokiran_prapurna_terbilang: terbilang(Number(data.blokiran_prapurna_jml || 0)),
+      blokiran_pindah_gaji: Number(data.blokiran_pindah_gaji_jml || 0),
+      blokiran_pindah_gaji_terbilang: terbilang(Number(data.blokiran_pindah_gaji_jml || 0)),
+      blokiran_wajib: Number(data.blokiran_wajib_jml || 0),
+      blokiran_wajib_terbilang: terbilang(Number(data.blokiran_wajib_jml || 0)),
+      total_blokiran: Number(data.total_blokiran_jml || 0),
+      total_blokiran_terbilang: terbilang(Number(data.total_blokiran_jml || 0)),
 
       // Data Verifikasi
       nama_bendahara: data.nama_bendahara || "",
@@ -582,6 +880,7 @@ export class DocumentTemplateService {
       Is_Cerai_Hidup: context.is_cerai_hidup,
       Is_Cerai_Mati: context.is_cerai_mati,
       Cfm_Status_Perkawinan: context.cfm_status_perkawinan,
+      Status_Kepegawaian: context.status_kepegawaian,
 
       // Pekerjaan & Pensiun
       Segmentasi: context.segmentasi,
@@ -600,14 +899,21 @@ export class DocumentTemplateService {
       // Additional Prapurna Fields
       Tgl_Mulai_Kerja: context.tgl_mulai_kerja,
       Masa_Kerja: context.masa_kerja,
+      // Calculate once or call method
+      masa_kerja_text: this.getMasaKerjaText(debitur),
+      Masa_Kerja_Text: this.getMasaKerjaText(debitur),
       Alamat_Kantor: context.alamat_kantor,
-      
+
       // SK Aliases
       No_Sk_Cpns: context.no_sk_cpns,
       Tgl_Sk_Cpns: context.tgl_sk_cpns,
       No_Sk_Kenaikan_Pangkat: context.no_sk_kenaikan_pangkat,
       Tgl_Sk_Kenaikan_Pangkat: context.tgl_sk_kenaikan_pangkat,
+
       Sisa_Masa_Kerja: context.sisa_masa_kerja,
+      // Alias SK Pengangkatan (ASABRI)
+      No_Sk_Pengangkatan: context.no_sk_cpns,
+      Tgl_Sk_Pengangkatan: context.tgl_sk_cpns,
 
       // Blokiran Aliases
       Blokiran_Prapurna: context.blokiran_prapurna,
@@ -741,17 +1047,37 @@ export class DocumentTemplateService {
 
     // --- MITIGASI RISIKO SLIK ---
     // Jika terdapat hasil slik yang selain kolektibilitas 1 - lancar
+    // --- MITIGASI RISIKO SLIK ---
+    // Jika terdapat hasil slik yang selain kolektibilitas 1 - lancar
     const hasRiskyCol = slikFacilities.some((f) => {
-      const kol = String(f.kolektibilitas || "1");
-      return kol !== "1";
+      // Ensure specific string conversion and trim
+      const val = f.kolektibilitas;
+      // Handle number 0 or similar falsy values correctly if valid
+      const kolStr = (val !== null && val !== undefined && val !== "") ? String(val).trim() : "1";
+
+      // Check if it is NOT "1"
+      const isRisky = kolStr !== "1";
+      if (isRisky) {
+        console.log(`[RISK CHECK] Found risky facility: ${f.nama_bank} with Coll ${kolStr}`);
+      }
+      return isRisky;
     });
+
+    console.log(`[RISK CHECK] hasRiskyCol: ${hasRiskyCol}`);
 
     // Fetch settings dynamically
     const settings = await ConfigService.getSettings();
     const teksMitigasi = settings.slikMitigasiRiskText;
     const catatanPricing = settings.catatanProgramPricing;
 
-    context.slik_mitigasi_risiko = hasRiskyCol ? teksMitigasi : "";
+    // Fallback if settings empty
+    const finalMitigasiText = teksMitigasi || "Mitigasi Risiko: Debitur memiliki riwayat kredit dengan kolektibilitas tidak lancar.";
+
+    if (hasRiskyCol && !teksMitigasi) {
+      console.warn("[RISK CHECK] Risk detected but logic text is empty in settings! Using fallback.");
+    }
+
+    context.slik_mitigasi_risiko = hasRiskyCol ? finalMitigasiText : "";
     context.Slik_Mitigasi_Risiko = context.slik_mitigasi_risiko;
 
     // Set Catatan Program Pricing from Settings
@@ -905,6 +1231,25 @@ export class DocumentTemplateService {
       // Clean up legacy list naming if needed or keep for backward compat
       context.list_syarat_pencairan_tambahan = []; // Explicitly empty it as requested by user to remove function
     }
+
+    // --- GENERATE INVESTIGASI LIST ---
+    // Generate the dynamic list for investigation section
+    context.list_investigasi = this.generateInvestigasiList(context);
+
+    // --- GENERATE CALL MEMO LIST ---
+    const isPrapurna = String(debitur.kategori || "").toLowerCase() === "prapurna";
+
+    // Explicitly add kategori to context for list generators
+    context.kategori = debitur.kategori;
+
+    // Use default call memo for Purna, or specific for Prapurna if needed
+    context.list_call_memo = this.generateCallMemoList(context);
+
+    // --- PRAPURNA SPECIFIC CALL MEMO LISTS ---
+    context.list_verifikasi_bendahara = this.generateBendaharaList(context);
+    context.list_verifikasi_rekan_kerja = this.generateRekanKerjaList(context);
+    context.list_verifikasi_internet = this.generateTaspenList(context);
+    context.list_verifikasi_kerabat = this.generateKerabatPrapurnaList(context);
 
     return context;
   }

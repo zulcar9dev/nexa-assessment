@@ -18,7 +18,7 @@ export default function TabBPekerjaan() {
         if (formData.tgl_pensiun_pemohon) {
             const remaining = calculateRemainingTime(formData.tgl_pensiun_pemohon);
             const formatted = formatRemainingTime(remaining);
-            
+
             // Only update if different to avoid infinite loops (though zustand handles this well)
             if (formData.sisa_masa_kerja !== formatted) {
                 updateField("sisa_masa_kerja", formatted);
@@ -40,7 +40,7 @@ export default function TabBPekerjaan() {
                 // Actually formatRemainingTime checks isPast. We can pass isPast: false.
                 formatted = formatRemainingTime({ ...elapsed, isPast: false });
             }
-            
+
             if (formData.masa_kerja !== formatted) {
                 updateField("masa_kerja", formatted);
             }
@@ -204,15 +204,17 @@ export default function TabBPekerjaan() {
                             )}
                         </div>
 
-                        {/* SK CPNS */}
+                        {/* SK CPNS / Pengangkatan */}
                         <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
-                            <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">Data SK CPNS</h4>
+                            <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">
+                                {formData.segmentasi === "asabri" ? "Data SK PENGANGKATAN" : "Data SK CPNS"}
+                            </h4>
                             <div>
                                 <label
                                     htmlFor="no_sk_cpns"
                                     className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
                                 >
-                                    Nomor SK CPNS
+                                    {formData.segmentasi === "asabri" ? "Nomor SK PENGANGKATAN" : "Nomor SK CPNS"}
                                 </label>
                                 <input
                                     id="no_sk_cpns"
@@ -228,7 +230,7 @@ export default function TabBPekerjaan() {
                                     htmlFor="tgl_sk_cpns"
                                     className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
                                 >
-                                    Tanggal SK CPNS
+                                    {formData.segmentasi === "asabri" ? "Tanggal SK PENGANGKATAN" : "Tanggal SK CPNS"}
                                 </label>
                                 <input
                                     id="tgl_sk_cpns"
