@@ -289,10 +289,32 @@ export class DocumentTemplateService {
 
   // --- PRAPURNA CALL MEMO GENERATORS ---
 
+  private static formatStatusKepegawaian(status: string, instansi: string): string {
+    let text = (status || "Calon Pensiunan").trim();
+    // Remove trailing dot if exists
+    if (text.endsWith('.')) text = text.slice(0, -1);
+
+    // HEURISTIC: If text starts with "Pemohon", assume it's a full sentence provided by user/system
+    // Example input: "Pemohon merupakan pensiunan POLRI di POLDA Gorontalo"
+    if (text.toLowerCase().startsWith("pemohon")) {
+      return `Memang benar ${text}.`;
+    }
+
+    // Standard case: "Calon Pensiunan PNS"
+    let result = `Memang benar Pemohon adalah ${text}`;
+
+    // Append instansi if not already present in the status text
+    if (instansi && instansi !== "-" && !text.toLowerCase().includes(instansi.toLowerCase())) {
+      result += ` di ${instansi}`;
+    }
+
+    return result + ".";
+  }
+
   static generateBendaharaList(context: Record<string, unknown>): Record<string, string>[] {
     const list: string[] = [];
-    const statusKepegawaian = context.status_kepegawaian || "Calon Pensiunan"; // Dynamic w/ fallback
-    const instansi = context.instansi || "-";
+    const statusKepegawaian = String(context.status_kepegawaian || "");
+    const instansi = String(context.instansi || "-");
     const jabatan = context.jabatan || "-";
     const masaKerja = context.masa_kerja || "-"; // Just number or partial text
     const tglMulai = context.tgl_mulai_kerja || "-";
@@ -300,7 +322,7 @@ export class DocumentTemplateService {
     const gaji = context.gaji_bulan_3 || "0";
     const payrollBank = context.payroll_bank || "-";
 
-    list.push(`Memang benar Pemohon adalah ${statusKepegawaian} di ${instansi}.`);
+    list.push(this.formatStatusKepegawaian(statusKepegawaian, instansi));
     list.push(`Jabatan saat ini Pemohon sebagai ${jabatan}.`);
     list.push(`Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak ${tglMulai}.`);
     list.push(`Pemohon akan memasuki Batas Usia Pensiun per Tanggal ${tglPensiun}.`);
@@ -312,14 +334,14 @@ export class DocumentTemplateService {
 
   static generateRekanKerjaList(context: Record<string, unknown>): Record<string, string>[] {
     const list: string[] = [];
-    const statusKepegawaian = context.status_kepegawaian || "Calon Pensiunan";
-    const instansi = context.instansi || "-";
+    const statusKepegawaian = String(context.status_kepegawaian || "Calon Pensiunan");
+    const instansi = String(context.instansi || "-");
     const jabatan = context.jabatan || "-";
     const masaKerja = context.masa_kerja || "-";
     const tglMulai = context.tgl_mulai_kerja || "-";
     const tglPensiun = context.tgl_pensiun_pemohon || context.tgl_pensiun || "-";
 
-    list.push(`Memang benar Pemohon adalah ${statusKepegawaian} di ${instansi}.`);
+    list.push(this.formatStatusKepegawaian(statusKepegawaian, instansi));
     list.push(`Jabatan saat ini Pemohon sebagai ${jabatan}.`);
     list.push(`Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak ${tglMulai}.`);
     list.push(`Pemohon akan memasuki Batas Usia Pensiun per Tanggal ${tglPensiun}.`);
@@ -343,11 +365,11 @@ export class DocumentTemplateService {
 
   static generateKerabatPrapurnaList(context: Record<string, unknown>): Record<string, string>[] {
     const list: string[] = [];
-    const statusKepegawaian = context.status_kepegawaian || "Calon Pensiunan PNS"; // User requested wording Pensiunan PNS but said use dynamic.
-    const instansi = context.instansi || "-";
+    const statusKepegawaian = String(context.status_kepegawaian || "Calon Pensiunan PNS"); // User requested wording Pensiunan PNS but said use dynamic.
+    const instansi = String(context.instansi || "-");
     const statusRumah = context.status_rumah || "-";
 
-    list.push(`Memang benar Pemohon adalah ${statusKepegawaian} di ${instansi}.`);
+    list.push(this.formatStatusKepegawaian(statusKepegawaian, instansi));
     list.push(`Menurut Ybs. rumah yang di tempati Pemohon saat ini adalah Rumah ${statusRumah}.`);
     list.push("Ybs. menyampaikan bahwa Pemohon memiliki kemampuan untuk menyetor angsuran atas kredit yang dimohon, dan Ybs bersedia untuk mengingatkan Pemohon untuk kewajiban angsuran perbulan"); // As per user request wording
 
@@ -1063,7 +1085,7 @@ export class DocumentTemplateService {
       return isRisky;
     });
 
-    console.log(`[RISK CHECK] hasRiskyCol: ${hasRiskyCol}`);
+    // console.log(`[RISK CHECK] hasRiskyCol: ${hasRiskyCol}`);
 
     // Fetch settings dynamically
     const settings = await ConfigService.getSettings();
@@ -1263,7 +1285,7 @@ export class DocumentTemplateService {
     debitur: DebiturData
   ): Promise<Buffer> {
     const templatePath = this.getTemplatePath(kategori);
-    console.log(`[TEMPLATE] Using template path: ${templatePath}`);
+    // console.log(`[TEMPLATE] Using template path: ${templatePath}`);
 
     // Read template file
     const templateBuffer = await fs.readFile(templatePath);
@@ -1292,14 +1314,14 @@ export class DocumentTemplateService {
     const context = await this.prepareTemplateContext(debitur);
 
     // Debug: log conditional field values
-    console.log("[TEMPLATE] domisili_berbeda:", context.domisili_berbeda);
-    console.log("[TEMPLATE] alamat_domisili:", context.alamat_domisili);
+    // console.log("[TEMPLATE] domisili_berbeda:", context.domisili_berbeda);
+    // console.log("[TEMPLATE] alamat_domisili:", context.alamat_domisili);
 
     // Debug: log SLIK fields
-    console.log("[TEMPLATE] slik_ada_fasilitas:", context.slik_ada_fasilitas);
-    console.log("[TEMPLATE] slik_bank_1_ada:", context.slik_bank_1_ada);
-    console.log("[TEMPLATE] slik_bank_1_nama:", context.slik_bank_1_nama);
-    console.log("[TEMPLATE] slik_bank_2_ada:", context.slik_bank_2_ada);
+    // console.log("[TEMPLATE] slik_ada_fasilitas:", context.slik_ada_fasilitas);
+    // console.log("[TEMPLATE] slik_bank_1_ada:", context.slik_bank_1_ada);
+    // console.log("[TEMPLATE] slik_bank_1_nama:", context.slik_bank_1_nama);
+    // console.log("[TEMPLATE] slik_bank_2_ada:", context.slik_bank_2_ada);
 
     // Render template with data
     doc.render(context);

@@ -4,18 +4,14 @@ import { useUIStore } from "@/stores/ui-store";
 import { useFormStore } from "@/stores/form-store";
 import { X } from "lucide-react";
 
+/**
+ * Main Preview Modal Component
+ */
 export default function PreviewModal() {
     const { isPreviewModalOpen, closePreviewModal } = useUIStore();
     const { formData, dsrResult } = useFormStore();
 
     if (!isPreviewModalOpen) return null;
-
-    const formatCurrency = (value: string | number | undefined) => {
-        if (!value) return "Rp 0";
-        if (value === "0" || value === 0) return "Rp 0";
-        const num = typeof value === "string" ? parseFloat(value.replace(/[^0-9]/g, "")) : value;
-        return `Rp ${num.toLocaleString("id-ID")}`;
-    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 font-sans">
@@ -28,7 +24,6 @@ export default function PreviewModal() {
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a]">
                     <h2 className="text-xl font-bold text-[#00665e] dark:text-[#80cbc4]">Preview Data Pengajuan</h2>
                     <div className="flex items-center gap-2">
-
                         <button
                             onClick={closePreviewModal}
                             className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -41,12 +36,9 @@ export default function PreviewModal() {
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-gray-50 dark:bg-[#152322]">
+
                     {/* Identitas */}
-                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
-                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
-                            Data Identitas
-                        </h3>
+                    <PreviewSection title="Data Identitas">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                             <PreviewItem label="Nama Pemohon" value={formData.nama_pemohon} />
                             <PreviewItem label="No. KTP" value={formData.no_ktp_pemohon} />
@@ -56,28 +48,20 @@ export default function PreviewModal() {
                             <PreviewItem label="Alamat KTP" value={formData.alamat_ktp} />
                             <PreviewItem label="Alamat Domisili" value={formData.alamat_domisili} fullWidth />
                         </div>
-                    </section>
+                    </PreviewSection>
 
                     {/* Pekerjaan */}
-                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
-                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
-                            Data Pekerjaan / Pensiun
-                        </h3>
+                    <PreviewSection title="Data Pekerjaan / Pensiun">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                             <PreviewItem label="Instansi" value={formData.instansi} />
                             <PreviewItem label="Golongan" value={formData.golongan} />
                             <PreviewItem label="NIP" value={formData.nip} />
                             <PreviewItem label="No. SK Pensiun" value={formData.no_sk_pensiun} />
                         </div>
-                    </section>
+                    </PreviewSection>
 
                     {/* Penghasilan */}
-                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
-                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
-                            Data Penghasilan
-                        </h3>
+                    <PreviewSection title="Data Penghasilan">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                             <PreviewItem label="Nama Bank Pembayaran" value={formData.nama_bank_pembayaran} />
                             <PreviewItem
@@ -111,67 +95,16 @@ export default function PreviewModal() {
                                 <PreviewItem label="Estimasi Hak Pensiun" value={formatCurrency(formData.estimasi_hak_pensiun)} className="font-bold text-[#00665e]" />
                             )}
                         </div>
-                    </section>
+                    </PreviewSection>
 
                     {/* Data SLIK */}
-                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
-                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
-                            Data SLIK
-                        </h3>
-
+                    <PreviewSection title="Data SLIK">
                         {formData.fasilitas_nihil === "ya" ? (
-                            <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-                                <p className="font-medium text-green-600 dark:text-green-400">✓ Fasilitas Nihil</p>
-                                <p className="text-sm mt-1">Tidak ada pinjaman eksisting</p>
-                            </div>
+                            <SLIKStatus status="NIHIL" />
                         ) : (
                             <>
                                 {formData.slik_facilities && formData.slik_facilities.length > 0 ? (
-                                    <div className="space-y-3">
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full text-sm">
-                                                <thead>
-                                                    <tr className="border-b border-gray-200 dark:border-gray-700">
-                                                        <th className="text-left py-2 px-2 text-xs text-gray-500 uppercase">Bank</th>
-                                                        <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Plafon</th>
-                                                        <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Outstanding</th>
-                                                        <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Angsuran</th>
-                                                        <th className="text-center py-2 px-2 text-xs text-gray-500 uppercase">Kol</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {formData.slik_facilities.map((facility, idx) => (
-                                                        <tr key={idx} className="border-b border-gray-100 dark:border-gray-800">
-                                                            <td className="py-2 px-2 font-medium">{facility.nama_bank || "-"}</td>
-                                                            <td className="py-2 px-2 text-right">{formatCurrency(facility.plafon_maks)}</td>
-                                                            <td className="py-2 px-2 text-right">{formatCurrency(facility.outstanding)}</td>
-                                                            <td className="py-2 px-2 text-right font-semibold text-[#00665e] dark:text-[#80cbc4]">
-                                                                {formatCurrency(facility.angsuran)}
-                                                            </td>
-                                                            <td className="py-2 px-2 text-center">
-                                                                <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${facility.kolektibilitas === "1" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
-                                                                    facility.kolektibilitas === "2" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
-                                                                        "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                                                                    }`}>
-                                                                    {facility.kolektibilitas || "-"}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr className="bg-gray-50 dark:bg-[#0f2322] font-bold">
-                                                        <td colSpan={3} className="py-2 px-2 text-right">Total Angsuran Eksisting:</td>
-                                                        <td className="py-2 px-2 text-right text-[#00665e] dark:text-[#80cbc4]">
-                                                            {formatCurrency(dsrResult?.totalAngsuranEksisting || 0)}
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
+                                    <SLIKTable facilities={formData.slik_facilities} totalAngsuran={dsrResult?.totalAngsuranEksisting || 0} />
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                                         <PreviewItem label="Status SLIK" value="Belum ada data fasilitas" />
@@ -180,14 +113,10 @@ export default function PreviewModal() {
                                 )}
                             </>
                         )}
-                    </section>
+                    </PreviewSection>
 
                     {/* Usulan */}
-                    <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
-                            <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
-                            Usulan Kredit
-                        </h3>
+                    <PreviewSection title="Usulan Kredit">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                             <PreviewItem label="Segmentasi" value={formData.segmentasi} />
                             <PreviewItem label="Jenis Pengajuan" value={formData.jenis_pengajuan} />
@@ -195,11 +124,11 @@ export default function PreviewModal() {
                             <PreviewItem label="Jangka Waktu" value={`${formData.usulan_jangka_waktu_bulan || 0} Bulan`} />
                             <PreviewItem label="Suku Bunga" value={`${formData.usulan_bunga_persen || 0}%`} />
                         </div>
-                    </section>
+                    </PreviewSection>
 
                     {/* DSR Result */}
                     {dsrResult && (
-                        <section className="bg-[#f0f9f8] dark:bg-[#0f2322] p-4 rounded-lg shadow-sm border border-[#cdeae7] dark:border-[#1a2c2a]">
+                        <div className="bg-[#f0f9f8] dark:bg-[#0f2322] p-4 rounded-lg shadow-sm border border-[#cdeae7] dark:border-[#1a2c2a]">
                             <h3 className="text-lg font-bold text-[#00665e] dark:text-[#80cbc4] mb-4 pb-2 border-b border-[#cdeae7] dark:border-[#2d4a48] flex items-center gap-2">
                                 <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
                                 Hasil Analisa DSR
@@ -217,7 +146,7 @@ export default function PreviewModal() {
                             <div className={`mt-4 p-3 rounded-lg text-center font-bold text-sm ${dsrResult.isValid ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
                                 {dsrResult.isValid ? "DSR MASUK / LAYAK" : "DSR TIDAK MASUK / TIDAK LAYAK"}
                             </div>
-                        </section>
+                        </div>
                     )}
 
                 </div>
@@ -236,6 +165,20 @@ export default function PreviewModal() {
     );
 }
 
+// --- Sub Components ---
+
+function PreviewSection({ title, children }: { title: string, children: React.ReactNode }) {
+    return (
+        <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+            <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                {title}
+            </h3>
+            {children}
+        </section>
+    );
+}
+
 function PreviewItem({ label, value, fullWidth = false, className = "" }: { label: string, value: string | undefined | number, fullWidth?: boolean, className?: string }) {
     return (
         <div className={`${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
@@ -244,3 +187,69 @@ function PreviewItem({ label, value, fullWidth = false, className = "" }: { labe
         </div>
     );
 }
+
+function SLIKStatus({ status }: { status: "NIHIL" | string }) {
+    return (
+        <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+            <p className="font-medium text-green-600 dark:text-green-400">✓ Fasilitas {status}</p>
+            <p className="text-sm mt-1">Tidak ada pinjaman eksisting</p>
+        </div>
+    );
+}
+
+function SLIKTable({ facilities, totalAngsuran }: { facilities: any[], totalAngsuran: number }) {
+    return (
+        <div className="space-y-3">
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="border-b border-gray-200 dark:border-gray-700">
+                            <th className="text-left py-2 px-2 text-xs text-gray-500 uppercase">Bank</th>
+                            <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Plafon</th>
+                            <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Outstanding</th>
+                            <th className="text-right py-2 px-2 text-xs text-gray-500 uppercase">Angsuran</th>
+                            <th className="text-center py-2 px-2 text-xs text-gray-500 uppercase">Kol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {facilities.map((facility, idx) => (
+                            <tr key={idx} className="border-b border-gray-100 dark:border-gray-800">
+                                <td className="py-2 px-2 font-medium">{facility.nama_bank || "-"}</td>
+                                <td className="py-2 px-2 text-right">{formatCurrency(facility.plafon_maks)}</td>
+                                <td className="py-2 px-2 text-right">{formatCurrency(facility.outstanding)}</td>
+                                <td className="py-2 px-2 text-right font-semibold text-[#00665e] dark:text-[#80cbc4]">
+                                    {formatCurrency(facility.angsuran)}
+                                </td>
+                                <td className="py-2 px-2 text-center">
+                                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${facility.kolektibilitas === "1" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
+                                        facility.kolektibilitas === "2" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
+                                            "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                                        }`}>
+                                        {facility.kolektibilitas || "-"}
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                    <tfoot>
+                        <tr className="bg-gray-50 dark:bg-[#0f2322] font-bold">
+                            <td colSpan={3} className="py-2 px-2 text-right">Total Angsuran Eksisting:</td>
+                            <td className="py-2 px-2 text-right text-[#00665e] dark:text-[#80cbc4]">
+                                {formatCurrency(totalAngsuran)}
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    );
+}
+
+// Helper
+const formatCurrency = (value: string | number | undefined) => {
+    if (!value) return "Rp 0";
+    if (value === "0" || value === 0) return "Rp 0";
+    const num = typeof value === "string" ? parseFloat(value.replace(/[^0-9]/g, "")) : value;
+    return `Rp ${num.toLocaleString("id-ID")}`;
+};

@@ -174,21 +174,35 @@ export class DebiturService {
     /**
      * Get statistics for dashboard
      */
+    /**
+     * Get statistics for dashboard
+     */
     static async getStats(userId?: string) {
         const where: DebiturWhereInput = userId ? { userId } : {};
 
-        const [total, byKategori, bySegmentasi, recentCount, debiturs] = await Promise.all([
+        // Calculate date 30 days ago for recent stats
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const [total, byKategori, bySegmentasi, recentCount, dailyStats] = await Promise.all([
+            // Total count
             prisma.debitur.count({ where: where as any }),
+
+            // Group by Kategori
             prisma.debitur.groupBy({
                 by: ['kategori'],
                 where: where as any,
                 _count: true,
             }),
+
+            // Group by Segmentasi
             prisma.debitur.groupBy({
                 by: ['segmentasi'],
                 where: where as any,
                 _count: true,
             }),
+
+            // Recent count (last 7 days - kept for compatibility if needed, or just general "new" metric)
             prisma.debitur.count({
                 where: {
                     ...where,
@@ -197,13 +211,25 @@ export class DebiturService {
                     },
                 } as any,
             }),
+
+            // Daily stats (limited to last 30 days for performance)
+            // Note: SQLite/some adapters might not support date truncation in groupBy easily via Prisma interface without raw query.
+            // For safety and compatibility across DBs without raw SQL, we fetch just the dates for the last 30 days.
+            // This is much lighter than fetching ALL rows.
             prisma.debitur.findMany({
-                where: where as any,
+                where: {
+                    ...where,
+                    createdAt: {
+                        gte: thirtyDaysAgo
+                    }
+                } as any,
                 select: { createdAt: true },
+                orderBy: { createdAt: 'asc' }
             }),
         ]);
 
-        const groupedByDate = debiturs.reduce((acc: Record<string, number>, item) => {
+        // Process daily stats in memory (now limited to subset of data)
+        const groupedByDate = dailyStats.reduce((acc: Record<string, number>, item) => {
             const date = new Date(item.createdAt).toISOString().split('T')[0];
             acc[date] = (acc[date] || 0) + 1;
             return acc;
