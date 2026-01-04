@@ -13,6 +13,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Tanggal Terbit KTP", value: "{{tgl_terbit_ktp}}" },
     { label: "Usia Pemohon", value: "{{usia_pemohon}}" },
     { label: "Status Perkawinan", value: "{{status_perkawinan}}" },
+    { label: "Status Kepegawaian (Lengkap)", value: "{{status_kepegawaian}}" },
     { label: "Instansi", value: "{{instansi}}" },
     { label: "Jabatan", value: "{{jabatan}}" },
     { label: "Golongan", value: "{{golongan}}" },
@@ -46,6 +47,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Outstanding (Fasilitas)", value: "{{outstanding}}" },
     { label: "Angsuran (Fasilitas)", value: "{{angsuran}}" },
     { label: "Kolektibilitas (Fasilitas)", value: "{{kolektibilitas}}" },
+    { label: "Mitigasi Risiko SLIK", value: "{{slik_mitigasi_risiko}}" },
 
     // 3. VERIFIKASI PENGHASILAN
     { label: "Bank Pembayaran", value: "{{payroll_bank}}" },
@@ -99,7 +101,8 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Biaya Tata Laksana (%)", value: "{{biaya_tatalaksana_percent}}" },
     { label: "Biaya PSJT (Nominal)", value: "{{biaya_psjt}}" },
     { label: "Biaya PSJT (%)", value: "{{biaya_psjt_percent}}" },
-    { label: "Biaya Administrasi", value: "{{biaya_administrasi_text}}" },
+    { label: "Biaya Administrasi (Ket)", value: "{{biaya_administrasi_text}}" },
+    { label: "Biaya Administrasi (Nominal)", value: "{{biaya_administrasi_nominal}}" },
     { label: "Kode Program", value: "{{kode_program}}" },
     { label: "Catatan Program Pricing", value: "{{catatan_program_pricing}}" },
     { label: "Syarat Penandatanganan (Auto)", value: "{{syarat_penandatanganan}}" },
@@ -110,6 +113,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Alamat Kantor", value: "{{alamat_kantor}}" },
     { label: "Tanggal Pensiun Pemohon", value: "{{tgl_pensiun_pemohon}}" },
     { label: "Masa Kerja", value: "{{masa_kerja}}" },
+    { label: "Masa Kerja (Text)", value: "{{masa_kerja_text}}" },
     { label: "Sisa Masa Kerja", value: "{{sisa_masa_kerja}}" },
     { label: "No SK CPNS", value: "{{no_sk_cpns}}" },
     { label: "Tanggal SK CPNS", value: "{{tgl_sk_cpns}}" },

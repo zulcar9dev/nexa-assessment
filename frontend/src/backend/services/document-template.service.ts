@@ -388,6 +388,10 @@ export class DocumentTemplateService {
         nomor_rekening_pinjaman: facility.nomor_rekening_pinjaman || "",
         nomor_pk: facility.nomor_pk || "",
         nama_bank: facility.nama_bank || "",
+        plafon_maks: this.formatRupiah(facility.plafon_maks),
+        outstanding: this.formatRupiah(facility.outstanding),
+        jenis_kredit: facility.jenis_kredit || "Konsumtif",
+        kolektibilitas: facility.kolektibilitas || "1",
       };
 
       const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
@@ -445,6 +449,10 @@ export class DocumentTemplateService {
           nomor_rekening_pinjaman: facility.nomor_rekening_pinjaman || "",
           nomor_pk: facility.nomor_pk || "",
           nama_bank: facility.nama_bank || "",
+          plafon_maks: this.formatRupiah(facility.plafon_maks),
+          outstanding: this.formatRupiah(facility.outstanding),
+          jenis_kredit: facility.jenis_kredit || "Konsumtif",
+          kolektibilitas: facility.kolektibilitas || "1",
         };
         // Simple replace for local context
         const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
