@@ -5,7 +5,7 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Nama Pemohon", value: "{{nama_pemohon}}" },
     { label: "No Telepon", value: "{{no_telepon}}" },
     { label: "Alamat KTP", value: "{{alamat_ktp}}" },
-    { label: "Alamat Domisili", value: "{{alamat_domisili}}" },
+    { label: "Alamat Tempat Tinggal", value: "{{alamat_tempat_tinggal}}" },
     { label: "Status Rumah", value: "{{status_rumah}}" },
     { label: "Lama Tinggal", value: "{{lama_tinggal}}" },
     { label: "Tanggal Lahir", value: "{{tgl_lahir}}" },

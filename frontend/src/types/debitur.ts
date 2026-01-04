@@ -37,8 +37,8 @@ export interface DebiturFormData {
   usia_pemohon?: number;
   pensiunan?: string; // Only for Purna
   alamat_ktp: string;
-  domisili_berbeda?: boolean;
-  alamat_domisili: string;
+  tempat_tinggal_berbeda?: boolean;
+  alamat_tempat_tinggal: string;
   no_telepon: string;
   status_perkawinan: string;
   status_rumah?: string;
@@ -90,7 +90,7 @@ export interface DebiturFormData {
   gaji_bulan_3_jumlah?: string;
   estimasi_hak_pensiun?: string;
   estimasi_tht?: string; // [NEW] Estimasi Tunjangan Hari Tua (THT)
-  
+
   // Blokiran (Prapurna) - Numeric count (kali)
   blokiran_prapurna_jml?: number;
   blokiran_pindah_gaji_jml?: number;

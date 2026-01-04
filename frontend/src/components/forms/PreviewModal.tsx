@@ -46,7 +46,7 @@ export default function PreviewModal() {
                             <PreviewItem label="No. Telepon" value={formData.no_telepon} />
                             <PreviewItem label="Status Perkawinan" value={formData.status_perkawinan} />
                             <PreviewItem label="Alamat KTP" value={formData.alamat_ktp} />
-                            <PreviewItem label="Alamat Domisili" value={formData.alamat_domisili} fullWidth />
+                            <PreviewItem label="Alamat Tempat Tinggal" value={formData.alamat_tempat_tinggal} fullWidth />
                         </div>
                     </PreviewSection>
 

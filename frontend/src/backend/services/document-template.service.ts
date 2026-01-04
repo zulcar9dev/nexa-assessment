@@ -175,12 +175,12 @@ export class DocumentTemplateService {
 
     // 1. Alamat KTP
     if (context.alamat_ktp) {
-      list.push(`Alamat Pemohon di KTP di ${context.alamat_ktp}.`);
+      list.push(`Alamat Pemohon sesuai KTP di ${context.alamat_ktp}.`);
     }
 
-    // 2. Alamat Domisili (Conditional)
-    if (context.domisili_berbeda) {
-      list.push(`Alamat Domisili di ${context.alamat_domisili}.`);
+    // 2. Alamat Tempat Tinggal (Conditional)
+    if (context.tempat_tinggal_berbeda) {
+      list.push(`Alamat Tempat Tinggal saat ini di ${context.alamat_tempat_tinggal}.`);
     }
 
     // 3. Status Rumah
@@ -694,12 +694,18 @@ export class DocumentTemplateService {
       no_ktp: debitur.noKtp || data.no_ktp_pemohon || "",
       no_telepon: data.no_telepon || "",
       tgl_lahir: this.formatDateIndonesian(data.tgl_lahir_pemohon as string),
-      alamat: data.alamat_ktp || data.alamat_domisili || "",
+      alamat: data.alamat_ktp || data.alamat_tempat_tinggal || "",
       alamat_ktp: data.alamat_ktp || "",
-      alamat_domisili: data.alamat_domisili || "",
-      // Kondisional: tampilkan alamat domisili hanya jika checkbox dicentang
+      // Map both new and old keys for compatibility
+      alamat_tempat_tinggal: data.alamat_tempat_tinggal || "",
+      alamat_domisili: data.alamat_tempat_tinggal || "", // Backward compat
+
+      // Kondisional: tampilkan alamat tempat tinggal hanya jika checkbox dicentang
+      tempat_tinggal_berbeda:
+        data.tempat_tinggal_berbeda === true || data.tempat_tinggal_berbeda === "true",
+      // Backward compat for templates:
       domisili_berbeda:
-        data.domisili_berbeda === true || data.domisili_berbeda === "true",
+        data.tempat_tinggal_berbeda === true || data.tempat_tinggal_berbeda === "true",
       status_rumah: this.toTitleCase(data.status_rumah as string),
       lama_tinggal: data.lama_tinggal || "",
       status_perkawinan: this.toTitleCase(data.status_perkawinan as string),

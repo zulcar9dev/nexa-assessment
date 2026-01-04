@@ -221,7 +221,7 @@ export default function DebiturDetailPage({
                         <div className="flex justify-between">
                             <span className="text-gray-500 dark:text-gray-400">Alamat</span>
                             <span className="text-gray-800 dark:text-gray-200 text-right max-w-[200px]">
-                                {data.alamat_ktp || data.alamat_domisili || "-"}
+                                {data.alamat_ktp || data.alamat_tempat_tinggal || "-"}
                             </span>
                         </div>
                     </div>

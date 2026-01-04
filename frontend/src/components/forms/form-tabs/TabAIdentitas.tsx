@@ -243,40 +243,40 @@ export default function TabAIdentitas() {
                         <div className="col-span-1 md:col-span-2 lg:col-span-6">
                             <label className="flex items-center gap-3 cursor-pointer group">
                                 <input
-                                    id="domisili_berbeda"
-                                    name="domisili_berbeda"
+                                    id="tempat_tinggal_berbeda"
+                                    name="tempat_tinggal_berbeda"
                                     type="checkbox"
-                                    checked={formData.domisili_berbeda || false}
+                                    checked={formData.tempat_tinggal_berbeda || false}
                                     onChange={(e) => {
-                                        updateField("domisili_berbeda", e.target.checked);
-                                        // Reset alamat domisili jika checkbox di-uncheck
+                                        updateField("tempat_tinggal_berbeda", e.target.checked);
+                                        // Reset alamat tempat tinggal jika checkbox di-uncheck
                                         if (!e.target.checked) {
-                                            updateField("alamat_domisili", "");
+                                            updateField("alamat_tempat_tinggal", "");
                                         }
                                     }}
                                     className="w-5 h-5 rounded border-[#cdeae7] text-[#00665e] focus:ring-[#00665e] focus:ring-offset-0 cursor-pointer transition-all duration-200"
                                 />
                                 <span className="text-sm font-medium text-[#0c1d1b] dark:text-gray-300 group-hover:text-[#00665e] dark:group-hover:text-[#80cbc4] transition-colors duration-200">
-                                    Alamat domisili berbeda dengan alamat KTP
+                                    Alamat Tempat Tinggal berbeda dengan Alamat KTP
                                 </span>
                             </label>
                         </div>
 
-                        {/* Alamat Domisili - Conditional */}
-                        {formData.domisili_berbeda && (
+                        {/* Alamat Tempat Tinggal - Conditional */}
+                        {formData.tempat_tinggal_berbeda && (
                             <div className="col-span-1 md:col-span-2 lg:col-span-4 animate-fade-in">
                                 <label
-                                    htmlFor="alamat_domisili"
+                                    htmlFor="alamat_tempat_tinggal"
                                     className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
                                 >
-                                    Alamat Domisili
+                                    Alamat Tempat Tinggal
                                 </label>
                                 <MentionTextArea
-                                    value={formData.alamat_domisili || ""}
-                                    onChange={(val) => updateField("alamat_domisili", val)}
+                                    value={formData.alamat_tempat_tinggal || ""}
+                                    onChange={(val) => updateField("alamat_tempat_tinggal", val)}
                                     options={DOCUMENT_PLACEHOLDERS}
                                     rows={3}
-                                    placeholder="Ketik alamat domisili... (Gunakan @ untuk insert data)"
+                                    placeholder="Ketik alamat tempat tinggal... (Gunakan @ untuk insert data)"
                                     className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                                 />
                             </div>
