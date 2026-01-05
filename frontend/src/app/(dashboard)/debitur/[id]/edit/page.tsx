@@ -164,7 +164,7 @@ export default function EditDebiturPage({
             case "tab-d":
                 return <TabDSlik />;
             case "tab-e":
-                return <TabEUsulan />;
+                return <TabEUsulan kategori={category} />;
             default:
                 return <TabAIdentitas />;
         }

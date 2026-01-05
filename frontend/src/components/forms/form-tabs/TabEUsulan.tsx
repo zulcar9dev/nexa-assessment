@@ -26,26 +26,43 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
 
     // Calculate Max Duration based on Age and Category
     const { maxDuration, currentAge, limitYears } = useMemo(() => {
-        const birthDate = formData.tgl_lahir_pemohon;
-        const age = birthDate ? calculateAge(birthDate) : 0;
+        const birthDateStr = formData.tgl_lahir_pemohon;
+        const age = birthDateStr ? calculateAge(birthDateStr) : 0;
         
         // Determine limit based on category
         const isPrapurna = kategori === "prapurna";
-        const limit = isPrapurna ? 20 : 15;
-        
-        // Rule: Age + Duration <= 75
-        const maxByAge = 75 - age;
-        
-        // Calculate max years
-        let maxYears = Math.min(limit, maxByAge);
+        const limitYears = isPrapurna ? 20 : 15;
+        const limitMonths = limitYears * 12;
+
+        let maxMonthsByAge = 0;
+
+        if (birthDateStr) {
+            const birthDate = new Date(birthDateStr);
+            // Calculate 75th birthday
+            const seventyFifthBirthday = new Date(birthDate);
+            seventyFifthBirthday.setFullYear(birthDate.getFullYear() + 75);
+            
+            const today = new Date();
+            const todayStr = today.toISOString().split("T")[0];
+            const maxAgeStatStr = seventyFifthBirthday.toISOString().split("T")[0];
+
+            // Use months difference
+            maxMonthsByAge = calculateMonthsDifference(todayStr, maxAgeStatStr);
+        } else {
+            // Fallback if no birthdate (though it should be there)
+            maxMonthsByAge = (75 - age) * 12; 
+        }
+
+        // Calculate max allowed
+        let maxAllowed = Math.min(limitMonths, maxMonthsByAge);
 
         // Ensure not negative
-        maxYears = Math.max(0, maxYears);
+        maxAllowed = Math.max(0, maxAllowed);
 
         return {
-            maxDuration: maxYears * 12, // in months
+            maxDuration: maxAllowed, // in months
             currentAge: age,
-            limitYears: limit
+            limitYears: limitYears
         };
     }, [formData.tgl_lahir_pemohon, kategori]);
 
