@@ -2,25 +2,21 @@
 
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
+import { formatNumberForDisplay, cleanNumberInput } from "@/lib/utils";
 
 import { Banknote } from "lucide-react";
+import React from "react";
 
-export default function TabCPenghasilanPurna() {
+export default React.memo(function TabCPenghasilanPurna() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     const handleCurrencyChange = (field: string, value: string) => {
-        // Remove non-numeric characters except comma
-        const numericValue = value.replace(/[^0-9]/g, "");
+        const numericValue = cleanNumberInput(value);
         updateField(field, numericValue);
     };
 
-    const formatCurrencyDisplay = (value: string | undefined) => {
-        if (!value) return "";
-        const numericValue = value.replace(/[^0-9]/g, "");
-        if (!numericValue) return "";
-        return parseInt(numericValue, 10).toLocaleString("id-ID");
-    };
+    // Removed local formatCurrencyDisplay, using utils
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-c">
@@ -107,7 +103,7 @@ export default function TabCPenghasilanPurna() {
                                         id="pensiun_bulan_1_jumlah"
                                         name="pensiun_bulan_1_jumlah"
                                         type="text"
-                                        value={formatCurrencyDisplay(formData.pensiun_bulan_1_jumlah)}
+                                        value={formatNumberForDisplay(formData.pensiun_bulan_1_jumlah)}
                                         onChange={(e) => handleCurrencyChange("pensiun_bulan_1_jumlah", e.target.value)}
                                         placeholder="0"
                                         className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
@@ -140,7 +136,7 @@ export default function TabCPenghasilanPurna() {
                                         id="pensiun_bulan_2_jumlah"
                                         name="pensiun_bulan_2_jumlah"
                                         type="text"
-                                        value={formatCurrencyDisplay(formData.pensiun_bulan_2_jumlah)}
+                                        value={formatNumberForDisplay(formData.pensiun_bulan_2_jumlah)}
                                         onChange={(e) => handleCurrencyChange("pensiun_bulan_2_jumlah", e.target.value)}
                                         placeholder="0"
                                         className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
@@ -173,7 +169,7 @@ export default function TabCPenghasilanPurna() {
                                         id="pensiun_bulan_3_jumlah"
                                         name="pensiun_bulan_3_jumlah"
                                         type="text"
-                                        value={formatCurrencyDisplay(formData.pensiun_bulan_3_jumlah)}
+                                        value={formatNumberForDisplay(formData.pensiun_bulan_3_jumlah)}
                                         onChange={(e) => handleCurrencyChange("pensiun_bulan_3_jumlah", e.target.value)}
                                         placeholder="0"
                                         className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
@@ -199,7 +195,7 @@ export default function TabCPenghasilanPurna() {
                                     id="pensiun_bulan_jumlah"
                                     name="pensiun_bulan_jumlah"
                                     type="text"
-                                    value={formatCurrencyDisplay(formData.pensiun_bulan_jumlah)}
+                                    value={formatNumberForDisplay(formData.pensiun_bulan_jumlah)}
                                     onChange={(e) => handleCurrencyChange("pensiun_bulan_jumlah", e.target.value)}
                                     onKeyDown={handleTabToNext}
                                     placeholder="0"
@@ -218,4 +214,4 @@ export default function TabCPenghasilanPurna() {
             </form>
         </div>
     );
-}
+});

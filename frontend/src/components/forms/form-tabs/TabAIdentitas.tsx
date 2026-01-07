@@ -8,8 +8,9 @@ import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { User, MapPin, Calendar } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import React from "react";
 
-export default function TabAIdentitas() {
+export default React.memo(function TabAIdentitas() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
     const pathname = usePathname();
@@ -390,4 +391,4 @@ export default function TabAIdentitas() {
             </form>
         </div>
     );
-}
+});

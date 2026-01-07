@@ -139,37 +139,48 @@ export function useCalculation() {
     );
 
     /**
+     * Helper to calculate Penghasilan based on Kategori
+     */
+    const getPenghasilan = useCallback((kategori: "prapurna" | "purna") => {
+        if (kategori === "prapurna") {
+            return parseRupiah(formData.estimasi_hak_pensiun || "0");
+        } else {
+            const gaji1 = parseRupiah(formData.pensiun_bulan_1_jumlah || "0");
+            const gaji2 = parseRupiah(formData.pensiun_bulan_2_jumlah || "0");
+            const gaji3 = parseRupiah(formData.pensiun_bulan_jumlah || "0");
+
+            const gajiList = [gaji1, gaji2, gaji3].filter((g) => g > 0);
+            return gajiList.length > 0 ? Math.min(...gajiList) : 0;
+        }
+    }, [formData]);
+
+    /**
+     * Helper to get Existing Installments (SLIK)
+     */
+    const getExistingInstallments = useCallback(() => {
+        const angsuranExisting: number[] = [];
+        if (formData.fasilitas_nihil !== "ya" && formData.slik_facilities) {
+            formData.slik_facilities.forEach((facility) => {
+                angsuranExisting.push(parseRupiah(facility.angsuran));
+            });
+        }
+        return angsuranExisting;
+    }, [formData]);
+
+    /**
      * Calculate DSR and update store - Local calculation (fast)
      */
     const calculateAndUpdateDSR = useCallback(
         (kategori: "prapurna" | "purna") => {
-            // Get penghasilan based on kategori
-            let penghasilan = 0;
-
-            if (kategori === "prapurna") {
-                // Use estimasi_hak_pensiun for prapurna
-                penghasilan = parseRupiah(formData.estimasi_hak_pensiun || "0");
-            } else {
-                // For purna, use minimum of 3 months
-                const gaji1 = parseRupiah(formData.pensiun_bulan_1_jumlah || "0");
-                const gaji2 = parseRupiah(formData.pensiun_bulan_2_jumlah || "0");
-                const gaji3 = parseRupiah(formData.pensiun_bulan_jumlah || "0");
-
-                const gajiList = [gaji1, gaji2, gaji3].filter((g) => g > 0);
-                penghasilan = gajiList.length > 0 ? Math.min(...gajiList) : 0;
-            }
+            // Get penghasilan
+            const penghasilan = getPenghasilan(kategori);
 
             // Calculate angsuran baru
             const angsuranBaru = calculateInstallment();
 
             // Calculate total angsuran eksisting from SLIK
-            let totalAngsuranEksisting = 0;
-            if (formData.fasilitas_nihil !== "ya" && formData.slik_facilities) {
-                totalAngsuranEksisting = formData.slik_facilities.reduce(
-                    (sum, facility) => sum + parseRupiah(facility.angsuran),
-                    0
-                );
-            }
+            const existingInstallments = getExistingInstallments();
+            const totalAngsuranEksisting = existingInstallments.reduce((sum, a) => sum + a, 0);
 
             // Calculate DSR
             const totalAngsuran = totalAngsuranEksisting + angsuranBaru;
@@ -191,7 +202,7 @@ export function useCalculation() {
             setDsrResult(result);
             return result;
         },
-        [formData, calculateInstallment, setDsrResult]
+        [getPenghasilan, calculateInstallment, getExistingInstallments, setDsrResult]
     );
 
     /**
@@ -199,30 +210,14 @@ export function useCalculation() {
      */
     const calculateAndUpdateDSRApi = useCallback(
         async (kategori: "prapurna" | "purna") => {
-            // Get penghasilan based on kategori
-            let penghasilan = 0;
-
-            if (kategori === "prapurna") {
-                penghasilan = parseRupiah(formData.estimasi_hak_pensiun || "0");
-            } else {
-                const gaji1 = parseRupiah(formData.pensiun_bulan_1_jumlah || "0");
-                const gaji2 = parseRupiah(formData.pensiun_bulan_2_jumlah || "0");
-                const gaji3 = parseRupiah(formData.pensiun_bulan_jumlah || "0");
-
-                const gajiList = [gaji1, gaji2, gaji3].filter((g) => g > 0);
-                penghasilan = gajiList.length > 0 ? Math.min(...gajiList) : 0;
-            }
+            // Get penghasilan
+            const penghasilan = getPenghasilan(kategori);
 
             // Calculate angsuran baru
             const angsuranBaru = calculateInstallment();
 
             // Get angsuran eksisting from SLIK
-            const angsuranEksisting: number[] = [];
-            if (formData.fasilitas_nihil !== "ya" && formData.slik_facilities) {
-                formData.slik_facilities.forEach((facility) => {
-                    angsuranEksisting.push(parseRupiah(facility.angsuran));
-                });
-            }
+            const angsuranEksisting = getExistingInstallments();
 
             // Call API
             const apiResult = await calculateDSRApi(penghasilan, angsuranBaru, angsuranEksisting);
@@ -246,7 +241,7 @@ export function useCalculation() {
 
             return null;
         },
-        [formData, calculateInstallment, calculateDSRApi, setDsrResult]
+        [getPenghasilan, calculateInstallment, getExistingInstallments, calculateDSRApi, setDsrResult]
     );
 
     return {

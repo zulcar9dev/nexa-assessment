@@ -3,6 +3,7 @@
 import { useUIStore } from "@/stores/ui-store";
 import { useFormStore } from "@/stores/form-store";
 import { X } from "lucide-react";
+import { formatRupiah } from "@/lib/utils";
 
 /**
  * Main Preview Modal Component
@@ -66,33 +67,33 @@ export default function PreviewModal() {
                             <PreviewItem label="Nama Bank Pembayaran" value={formData.nama_bank_pembayaran} />
                             <PreviewItem
                                 label="Rata-rata Penghasilan"
-                                value={formatCurrency(
+                                value={`Rp ${formatRupiah(
                                     formData.estimasi_hak_pensiun ||
                                     formData.pensiun_bulan_jumlah ||
                                     formData.gaji_bulan_1_jumlah ||
                                     dsrResult?.penghasilan ||
                                     0
-                                )}
+                                )}`}
                             />
                             {/* Show breakdown if available */}
                             {(formData.gaji_bulan_1_jumlah || formData.pensiun_bulan_1_jumlah) && (
                                 <>
                                     <PreviewItem
                                         label={formData.gaji_bulan_1_jumlah ? "Gaji Bulan 1" : "Pensiun Bulan 1"}
-                                        value={formatCurrency(formData.gaji_bulan_1_jumlah || formData.pensiun_bulan_1_jumlah)}
+                                        value={`Rp ${formatRupiah(formData.gaji_bulan_1_jumlah || formData.pensiun_bulan_1_jumlah || 0)}`}
                                     />
                                     <PreviewItem
                                         label={formData.gaji_bulan_2_jumlah ? "Gaji Bulan 2" : "Pensiun Bulan 2"}
-                                        value={formatCurrency(formData.gaji_bulan_2_jumlah || formData.pensiun_bulan_2_jumlah)}
+                                        value={`Rp ${formatRupiah(formData.gaji_bulan_2_jumlah || formData.pensiun_bulan_2_jumlah || 0)}`}
                                     />
                                     <PreviewItem
                                         label={formData.gaji_bulan_3_jumlah ? "Gaji Bulan 3" : "Pensiun Bulan 3"}
-                                        value={formatCurrency(formData.gaji_bulan_3_jumlah || formData.pensiun_bulan_3_jumlah)}
+                                        value={`Rp ${formatRupiah(formData.gaji_bulan_3_jumlah || formData.pensiun_bulan_3_jumlah || 0)}`}
                                     />
                                 </>
                             )}
                             {formData.estimasi_hak_pensiun && (
-                                <PreviewItem label="Estimasi Hak Pensiun" value={formatCurrency(formData.estimasi_hak_pensiun)} className="font-bold text-[#00665e]" />
+                                <PreviewItem label="Estimasi Hak Pensiun" value={`Rp ${formatRupiah(formData.estimasi_hak_pensiun)}`} className="font-bold text-[#00665e]" />
                             )}
                         </div>
                     </PreviewSection>
@@ -108,7 +109,7 @@ export default function PreviewModal() {
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                                         <PreviewItem label="Status SLIK" value="Belum ada data fasilitas" />
-                                        <PreviewItem label="Total Angsuran Eksisting" value={formatCurrency(dsrResult?.totalAngsuranEksisting || 0)} />
+                                        <PreviewItem label="Total Angsuran Eksisting" value={`Rp ${formatRupiah(dsrResult?.totalAngsuranEksisting || 0)}`} />
                                     </div>
                                 )}
                             </>
@@ -120,48 +121,50 @@ export default function PreviewModal() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
                             <PreviewItem label="Segmentasi" value={formData.segmentasi} />
                             <PreviewItem label="Jenis Pengajuan" value={formData.jenis_pengajuan} />
-                            <PreviewItem label="Plafon Kredit" value={formatCurrency(formData.usulan_plafon_kredit)} />
+                            <PreviewItem label="Plafon Kredit" value={`Rp ${formatRupiah(formData.usulan_plafon_kredit || 0)}`} />
                             <PreviewItem label="Jangka Waktu" value={`${formData.usulan_jangka_waktu_bulan || 0} Bulan`} />
                             <PreviewItem label="Suku Bunga" value={`${formData.usulan_bunga_persen || 0}%`} />
                         </div>
                     </PreviewSection>
 
                     {/* DSR Result */}
-                    {dsrResult && (
-                        <div className="bg-[#f0f9f8] dark:bg-[#0f2322] p-4 rounded-lg shadow-sm border border-[#cdeae7] dark:border-[#1a2c2a]">
-                            <h3 className="text-lg font-bold text-[#00665e] dark:text-[#80cbc4] mb-4 pb-2 border-b border-[#cdeae7] dark:border-[#2d4a48] flex items-center gap-2">
-                                <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
-                                Hasil Analisa DSR
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                                <PreviewItem label="Total Penghasilan (Net)" value={formatCurrency(dsrResult.penghasilan)} />
-                                <PreviewItem label="Maksimal Angsuran (90%)" value={formatCurrency(dsrResult.maksimalAngsuran)} />
-                                <PreviewItem label="Total Angsuran Bar" value={formatCurrency(dsrResult.totalAngsuranBaru)} />
-                                <PreviewItem
-                                    label="Ratio DSR"
-                                    value={`${dsrResult.dsr.toFixed(2)}%`}
-                                    className={dsrResult.isValid ? "text-green-600 dark:text-green-400 font-bold text-lg" : "text-red-500 dark:text-red-400 font-bold text-lg"}
-                                />
+                    {
+                        dsrResult && (
+                            <div className="bg-[#f0f9f8] dark:bg-[#0f2322] p-4 rounded-lg shadow-sm border border-[#cdeae7] dark:border-[#1a2c2a]">
+                                <h3 className="text-lg font-bold text-[#00665e] dark:text-[#80cbc4] mb-4 pb-2 border-b border-[#cdeae7] dark:border-[#2d4a48] flex items-center gap-2">
+                                    <span className="w-1 h-5 bg-[#00665e] rounded-full"></span>
+                                    Hasil Analisa DSR
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                                    <PreviewItem label="Total Penghasilan (Net)" value={`Rp ${formatRupiah(dsrResult.penghasilan)}`} />
+                                    <PreviewItem label="Maksimal Angsuran (90%)" value={`Rp ${formatRupiah(dsrResult.maksimalAngsuran)}`} />
+                                    <PreviewItem label="Total Angsuran Bar" value={`Rp ${formatRupiah(dsrResult.totalAngsuranBaru)}`} />
+                                    <PreviewItem
+                                        label="Ratio DSR"
+                                        value={`${dsrResult.dsr.toFixed(2)}%`}
+                                        className={dsrResult.isValid ? "text-green-600 dark:text-green-400 font-bold text-lg" : "text-red-500 dark:text-red-400 font-bold text-lg"}
+                                    />
+                                </div>
+                                <div className={`mt-4 p-3 rounded-lg text-center font-bold text-sm ${dsrResult.isValid ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+                                    {dsrResult.isValid ? "DSR MASUK / LAYAK" : "DSR TIDAK MASUK / TIDAK LAYAK"}
+                                </div>
                             </div>
-                            <div className={`mt-4 p-3 rounded-lg text-center font-bold text-sm ${dsrResult.isValid ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
-                                {dsrResult.isValid ? "DSR MASUK / LAYAK" : "DSR TIDAK MASUK / TIDAK LAYAK"}
-                            </div>
-                        </div>
-                    )}
+                        )
+                    }
 
-                </div>
+                </div >
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex justify-end">
+                < div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex justify-end" >
                     <button
                         onClick={closePreviewModal}
                         className="px-6 py-2.5 bg-[#00665e] text-white rounded-lg hover:bg-[#00554e] transition-colors font-bold shadow-lg shadow-[#00665e]/20"
                     >
                         Tutup
                     </button>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     );
 }
 
@@ -215,10 +218,10 @@ function SLIKTable({ facilities, totalAngsuran }: { facilities: any[], totalAngs
                         {facilities.map((facility, idx) => (
                             <tr key={idx} className="border-b border-gray-100 dark:border-gray-800">
                                 <td className="py-2 px-2 font-medium">{facility.nama_bank || "-"}</td>
-                                <td className="py-2 px-2 text-right">{formatCurrency(facility.plafon_maks)}</td>
-                                <td className="py-2 px-2 text-right">{formatCurrency(facility.outstanding)}</td>
+                                <td className="py-2 px-2 text-right">{`Rp ${formatRupiah(facility.plafon_maks)}`}</td>
+                                <td className="py-2 px-2 text-right">{`Rp ${formatRupiah(facility.outstanding)}`}</td>
                                 <td className="py-2 px-2 text-right font-semibold text-[#00665e] dark:text-[#80cbc4]">
-                                    {formatCurrency(facility.angsuran)}
+                                    {`Rp ${formatRupiah(facility.angsuran)}`}
                                 </td>
                                 <td className="py-2 px-2 text-center">
                                     <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${facility.kolektibilitas === "1" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
@@ -235,7 +238,7 @@ function SLIKTable({ facilities, totalAngsuran }: { facilities: any[], totalAngs
                         <tr className="bg-gray-50 dark:bg-[#0f2322] font-bold">
                             <td colSpan={3} className="py-2 px-2 text-right">Total Angsuran Eksisting:</td>
                             <td className="py-2 px-2 text-right text-[#00665e] dark:text-[#80cbc4]">
-                                {formatCurrency(totalAngsuran)}
+                                {`Rp ${formatRupiah(totalAngsuran)}`}
                             </td>
                             <td></td>
                         </tr>
@@ -246,10 +249,4 @@ function SLIKTable({ facilities, totalAngsuran }: { facilities: any[], totalAngs
     );
 }
 
-// Helper
-const formatCurrency = (value: string | number | undefined) => {
-    if (!value) return "Rp 0";
-    if (value === "0" || value === 0) return "Rp 0";
-    const num = typeof value === "string" ? parseFloat(value.replace(/[^0-9]/g, "")) : value;
-    return `Rp ${num.toLocaleString("id-ID")}`;
-};
+// Helper removed (use formatRupiah)

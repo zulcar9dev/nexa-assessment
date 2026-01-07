@@ -4,8 +4,9 @@ import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { Briefcase } from "lucide-react";
+import React from "react";
 
-export default function TabBDataPensiun() {
+export default React.memo(function TabBDataPensiun() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
@@ -201,4 +202,4 @@ export default function TabBDataPensiun() {
             </form>
         </div>
     );
-}
+});

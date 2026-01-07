@@ -8,8 +8,9 @@ import { calculateRemainingTime, formatRemainingTime, calculateElapsedTime } fro
 import { Briefcase, UserCheck } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import React from "react";
 
-export default function TabBPekerjaan() {
+export default React.memo(function TabBPekerjaan() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
@@ -419,4 +420,4 @@ export default function TabBPekerjaan() {
             </form>
         </div>
     );
-}
+});

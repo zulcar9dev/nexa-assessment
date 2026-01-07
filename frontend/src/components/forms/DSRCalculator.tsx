@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormStore } from "@/stores/form-store";
+import { formatRupiah } from "@/lib/utils";
 
 interface DSRCalculatorProps {
     dsrValue: number;
@@ -17,13 +17,6 @@ export default function DSRCalculator({
 }: DSRCalculatorProps) {
     const isValid = dsrValue <= limit;
     const percentage = Math.min(dsrValue, 100);
-
-    const formatRupiah = (value: number) => {
-        if (value >= 1000000) {
-            return `Rp ${(value / 1000000).toFixed(1)}jt`;
-        }
-        return `Rp ${value.toLocaleString("id-ID")}`;
-    };
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 flex flex-col md:flex-row items-center gap-6">
@@ -66,11 +59,11 @@ export default function DSRCalculator({
             <div className="flex flex-col gap-1 min-w-[140px]">
                 <div className="flex justify-between text-sm">
                     <span className="text-[#45a199] dark:text-[#80cbc4]">Income:</span>
-                    <span className="font-bold text-[#0c1d1b] dark:text-white">{formatRupiah(penghasilan)}</span>
+                    <span className="font-bold text-[#0c1d1b] dark:text-white">{`Rp ${formatRupiah(penghasilan)}`}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                     <span className="text-[#45a199] dark:text-[#80cbc4]">Debt:</span>
-                    <span className="font-bold text-[#0c1d1b] dark:text-white">{formatRupiah(totalAngsuran)}</span>
+                    <span className="font-bold text-[#0c1d1b] dark:text-white">{`Rp ${formatRupiah(totalAngsuran)}`}</span>
                 </div>
             </div>
         </div>

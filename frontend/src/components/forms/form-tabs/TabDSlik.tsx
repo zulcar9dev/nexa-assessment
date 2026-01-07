@@ -6,14 +6,176 @@ import { Plus, Trash2, ClipboardCheck, Calendar } from "lucide-react";
 import type { SlikFacility } from "@/types/debitur";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import React, { useCallback } from "react";
+import { formatNumberForDisplay, cleanNumberInput } from "@/lib/utils";
 
-export default function TabDSlik() {
+// Helper for number display
+// Removed local formatNumber, using utils
+
+interface SlikFacilityRowProps {
+    index: number;
+    facility: SlikFacility;
+    updateFacility: (index: number, field: keyof SlikFacility, value: string | boolean) => void;
+    removeFacility: (index: number) => void;
+    handleNumberInput: (index: number, field: keyof SlikFacility, value: string) => void;
+    jenisPengajuan?: string;
+}
+
+const SlikFacilityRow = React.memo(function SlikFacilityRow({
+    index,
+    facility,
+    updateFacility,
+    removeFacility,
+    handleNumberInput,
+    jenisPengajuan
+}: SlikFacilityRowProps) {
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
+            {/* Bank Name with Numbering */}
+            <div className="col-span-1 lg:col-span-2">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
+                <div className="flex gap-2 items-center">
+                    <span className="flex-none flex items-center justify-center w-6 h-6 rounded-full bg-[#00665e]/10 text-[#00665e] text-xs font-bold border border-[#00665e]/20">
+                        {index + 1}
+                    </span>
+                    <input
+                        type="text"
+                        value={facility.nama_bank}
+                        onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
+                        placeholder="Nama Bank"
+                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                    />
+                </div>
+            </div>
+
+            {/* Jenis Kredit */}
+            <div className="col-span-1 lg:col-span-1">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Jenis Kredit</label>
+                <input
+                    type="text"
+                    value={facility.jenis_kredit || ""}
+                    onChange={(e) => updateFacility(index, "jenis_kredit", e.target.value)}
+                    placeholder="Konsumtif"
+                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                />
+            </div>
+
+            {/* Plafon Maks */}
+            <div className="col-span-1 lg:col-span-2">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Plafon Maks</label>
+                <input
+                    type="text"
+                    value={formatNumberForDisplay(facility.plafon_maks)}
+                    onChange={(e) => handleNumberInput(index, "plafon_maks", e.target.value)}
+                    placeholder="0"
+                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
+                />
+            </div>
+
+            {/* Outstanding */}
+            <div className="col-span-1 lg:col-span-2">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Outstanding</label>
+                <input
+                    type="text"
+                    value={formatNumberForDisplay(facility.outstanding)}
+                    onChange={(e) => handleNumberInput(index, "outstanding", e.target.value)}
+                    placeholder="0"
+                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
+                />
+            </div>
+
+            {/* Angsuran */}
+            <div className="col-span-1 lg:col-span-1">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Angsuran</label>
+                <input
+                    type="text"
+                    value={formatNumberForDisplay(facility.angsuran)}
+                    onChange={(e) => handleNumberInput(index, "angsuran", e.target.value)}
+                    placeholder="0"
+                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
+                />
+            </div>
+
+            {/* Kolektibilitas */}
+            <div className="col-span-1 lg:col-span-1 text-center">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Coll</label>
+                <select
+                    value={facility.kolektibilitas || ""}
+                    onChange={(e) => updateFacility(index, "kolektibilitas", e.target.value)}
+                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                >
+                    <option value="">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            {/* Alasan/Keterangan */}
+            <div className="col-span-1 lg:col-span-2">
+                <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Ket/Alasan</label>
+                <MentionTextArea
+                    value={facility.alasan || ""}
+                    onChange={(val) => updateFacility(index, "alasan", val)}
+                    options={DOCUMENT_PLACEHOLDERS}
+                    placeholder="Keterangan"
+                    rows={1}
+                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                />
+            </div>
+
+            {/* Delete Button */}
+            <div className="col-span-1 lg:col-span-1 flex justify-end lg:justify-center items-end lg:items-center mt-6 lg:mt-0 h-full pb-2">
+                <button
+                    type="button"
+                    onClick={() => removeFacility(index)}
+                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors self-center"
+                    title="Hapus baris"
+                >
+                    <Trash2 className="w-5 h-5" />
+                </button>
+            </div>
+
+            {/* Top Up Sisa Gaji Specific Fields - Full Width Row */}
+            {(jenisPengajuan === "top_up_sisa_gaji" || jenisPengajuan === "top_up") && (
+                <div className="col-span-1 lg:col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 animate-in fade-in slide-in-from-top-2">
+                    <div className={jenisPengajuan === "top_up" ? "lg:col-span-2" : ""}>
+                        <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor Rekening Pinjaman Existing</label>
+                        <input
+                            type="text"
+                            value={facility.nomor_rekening_pinjaman || ""}
+                            onChange={(e) => updateFacility(index, "nomor_rekening_pinjaman", e.target.value)}
+                            placeholder="Nomor Rekening"
+                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                        />
+                    </div>
+                    {jenisPengajuan === "top_up_sisa_gaji" && (
+                        <div>
+                            <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor PK Existing</label>
+                            <input
+                                type="text"
+                                value={facility.nomor_pk || ""}
+                                onChange={(e) => updateFacility(index, "nomor_pk", e.target.value)}
+                                placeholder="Nomor PK"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+});
+
+export default React.memo(function TabDSlik() {
     const { formData, setFormData } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     const facilities = formData.slik_facilities || [];
 
-    const addFacility = () => {
+    const addFacility = useCallback(() => {
         const updatedFacilities = [
             ...facilities,
             {
@@ -28,14 +190,14 @@ export default function TabDSlik() {
             } as SlikFacility
         ];
         setFormData({ slik_facilities: updatedFacilities });
-    };
+    }, [facilities, setFormData]);
 
-    const removeFacility = (index: number) => {
+    const removeFacility = useCallback((index: number) => {
         const updatedFacilities = facilities.filter((_, i) => i !== index);
         setFormData({ slik_facilities: updatedFacilities });
-    };
+    }, [facilities, setFormData]);
 
-    const updateFacility = (index: number, field: keyof SlikFacility, value: string | boolean) => {
+    const updateFacility = useCallback((index: number, field: keyof SlikFacility, value: string | boolean) => {
         const updatedFacilities = facilities.map((f, i) => {
             if (i === index) {
                 return { ...f, [field]: value };
@@ -43,21 +205,24 @@ export default function TabDSlik() {
             return f;
         });
         setFormData({ slik_facilities: updatedFacilities });
-    };
+    }, [facilities, setFormData]);
 
     // Helper for number input with formatting
-    const handleNumberInput = (index: number, field: keyof SlikFacility, value: string) => {
-        const numericValue = value.replace(/[^0-9]/g, "");
-        updateFacility(index, field, numericValue);
-    };
-
-    // Format number for display
-    const formatNumber = (value: string | undefined) => {
-        if (!value) return "";
-        const num = parseInt(value, 10);
-        if (isNaN(num)) return value;
-        return num.toLocaleString("id-ID");
-    };
+    const handleNumberInput = useCallback((index: number, field: keyof SlikFacility, value: string) => {
+        const numericValue = cleanNumberInput(value);
+        // We can call updateFacility here, but need to make sure updateFacility is in deps or stable.
+        // To avoid chaining deps, let's just duplicate logic or call the function.
+        // Since updateFacility is useCallback'd, we can use it.
+        // But better to just inline to avoid complexity with deps if not needed.
+        // Let's use updateFacility since it is there.
+        const updatedFacilities = facilities.map((f, i) => {
+            if (i === index) {
+                return { ...f, [field]: numericValue };
+            }
+            return f;
+        });
+        setFormData({ slik_facilities: updatedFacilities });
+    }, [facilities, setFormData]);
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-d">
@@ -104,142 +269,15 @@ export default function TabDSlik() {
 
                 {/* Dynamic Rows */}
                 {facilities.map((facility, index) => (
-                    <div key={index} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start bg-[#f8fcfc] dark:bg-[#0f2322]/30 p-4 lg:p-2 rounded-lg border border-[#e6f4f3] dark:border-gray-700">
-                        {/* Bank Name with Numbering */}
-                        <div className="col-span-1 lg:col-span-2">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
-                            <div className="flex gap-2 items-center">
-                                <span className="flex-none flex items-center justify-center w-6 h-6 rounded-full bg-[#00665e]/10 text-[#00665e] text-xs font-bold border border-[#00665e]/20">
-                                    {index + 1}
-                                </span>
-                                <input
-                                    type="text"
-                                    value={facility.nama_bank}
-                                    onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
-                                    placeholder="Nama Bank"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Jenis Kredit */}
-                        <div className="col-span-1 lg:col-span-1">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Jenis Kredit</label>
-                            <input
-                                type="text"
-                                value={facility.jenis_kredit || ""}
-                                onChange={(e) => updateFacility(index, "jenis_kredit", e.target.value)}
-                                placeholder="Konsumtif"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                            />
-                        </div>
-
-                        {/* Plafon Maks */}
-                        <div className="col-span-1 lg:col-span-2">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Plafon Maks</label>
-                            <input
-                                type="text"
-                                value={formatNumber(facility.plafon_maks)}
-                                onChange={(e) => handleNumberInput(index, "plafon_maks", e.target.value)}
-                                placeholder="0"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
-                            />
-                        </div>
-
-                        {/* Outstanding */}
-                        <div className="col-span-1 lg:col-span-2">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Outstanding</label>
-                            <input
-                                type="text"
-                                value={formatNumber(facility.outstanding)}
-                                onChange={(e) => handleNumberInput(index, "outstanding", e.target.value)}
-                                placeholder="0"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
-                            />
-                        </div>
-
-                        {/* Angsuran */}
-                        <div className="col-span-1 lg:col-span-1">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Angsuran</label>
-                            <input
-                                type="text"
-                                value={formatNumber(facility.angsuran)}
-                                onChange={(e) => handleNumberInput(index, "angsuran", e.target.value)}
-                                placeholder="0"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
-                            />
-                        </div>
-
-                        {/* Kolektibilitas */}
-                        <div className="col-span-1 lg:col-span-1 text-center">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Coll</label>
-                            <select
-                                value={facility.kolektibilitas || ""}
-                                onChange={(e) => updateFacility(index, "kolektibilitas", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                            >
-                                <option value="">-</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </div>
-
-                        {/* Alasan/Keterangan */}
-                        <div className="col-span-1 lg:col-span-2">
-                            <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Ket/Alasan</label>
-                            <MentionTextArea
-                                value={facility.alasan || ""}
-                                onChange={(val) => updateFacility(index, "alasan", val)}
-                                options={DOCUMENT_PLACEHOLDERS}
-                                placeholder="Keterangan"
-                                rows={1}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                            />
-                        </div>
-
-                        {/* Delete Button */}
-                        <div className="col-span-1 lg:col-span-1 flex justify-end lg:justify-center items-end lg:items-center mt-6 lg:mt-0 h-full pb-2">
-                            <button
-                                type="button"
-                                onClick={() => removeFacility(index)}
-                                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors self-center"
-                                title="Hapus baris"
-                            >
-                                <Trash2 className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Top Up Sisa Gaji Specific Fields - Full Width Row */}
-                        {(formData.jenis_pengajuan === "top_up_sisa_gaji" || formData.jenis_pengajuan === "top_up") && (
-                            <div className="col-span-1 lg:col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2 animate-in fade-in slide-in-from-top-2">
-                                <div className={formData.jenis_pengajuan === "top_up" ? "lg:col-span-2" : ""}>
-                                    <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor Rekening Pinjaman Existing</label>
-                                    <input
-                                        type="text"
-                                        value={facility.nomor_rekening_pinjaman || ""}
-                                        onChange={(e) => updateFacility(index, "nomor_rekening_pinjaman", e.target.value)}
-                                        placeholder="Nomor Rekening"
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                                    />
-                                </div>
-                                {formData.jenis_pengajuan === "top_up_sisa_gaji" && (
-                                    <div>
-                                        <label className="block text-xs font-semibold text-[#0c1d1b] dark:text-gray-300 mb-1">Nomor PK Existing</label>
-                                        <input
-                                            type="text"
-                                            value={facility.nomor_pk || ""}
-                                            onChange={(e) => updateFacility(index, "nomor_pk", e.target.value)}
-                                            placeholder="Nomor PK"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                    <SlikFacilityRow
+                        key={index}
+                        index={index}
+                        facility={facility}
+                        updateFacility={updateFacility}
+                        removeFacility={removeFacility}
+                        handleNumberInput={handleNumberInput}
+                        jenisPengajuan={formData.jenis_pengajuan}
+                    />
                 ))}
 
                 {/* Empty State */}
@@ -271,4 +309,4 @@ export default function TabDSlik() {
             </div>
         </div>
     );
-}
+});

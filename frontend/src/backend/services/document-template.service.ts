@@ -9,7 +9,7 @@ import PizZip from "pizzip";
 import { promises as fs } from "fs";
 import path from "path";
 import { ConfigService } from "./config.service";
-import { terbilang } from "../../lib/utils";
+import { terbilang, formatRupiah, cleanNumberInput } from "../../lib/utils";
 
 // Indonesian month names
 const BULAN_INDONESIA = [
@@ -117,28 +117,7 @@ export class DocumentTemplateService {
     }
   }
 
-  /**
-   * Format number to Indonesian currency: 1000000 -> "1.000.000"
-   */
-  static formatCurrency(value: string | number | undefined): string {
-    if (value === null || value === undefined) return "0";
-
-    const num =
-      typeof value === "string"
-        ? parseInt(value.replace(/[^0-9]/g, ""), 10)
-        : value;
-
-    if (isNaN(num)) return "0";
-    return Math.round(num).toLocaleString("id-ID");
-  }
-
-  /**
-   * Format number with Rp prefix: 1000000 -> "Rp. 1.000.000"
-   */
-  static formatRupiah(value: string | number | undefined): string {
-    const formatted = this.formatCurrency(value);
-    return formatted === "0" ? "0" : formatted;
-  }
+  // formatCurrency and formatRupiah removed (imported from utils)
 
   /**
    * Get template file path based on kategori
@@ -388,8 +367,8 @@ export class DocumentTemplateService {
         nomor_rekening_pinjaman: facility.nomor_rekening_pinjaman || "",
         nomor_pk: facility.nomor_pk || "",
         nama_bank: facility.nama_bank || "",
-        plafon_maks: this.formatRupiah(facility.plafon_maks),
-        outstanding: this.formatRupiah(facility.outstanding),
+        plafon_maks: formatRupiah(facility.plafon_maks),
+        outstanding: formatRupiah(facility.outstanding),
         jenis_kredit: facility.jenis_kredit || "Konsumtif",
         kolektibilitas: facility.kolektibilitas || "1",
       };
@@ -401,9 +380,9 @@ export class DocumentTemplateService {
       return {
         nama_bank: facility.nama_bank || "",
         jenis_kredit: facility.jenis_kredit || "Konsumtif",
-        plafon_maks: this.formatRupiah(facility.plafon_maks),
-        outstanding: this.formatRupiah(facility.outstanding),
-        angsuran: this.formatRupiah(facility.angsuran),
+        plafon_maks: formatRupiah(facility.plafon_maks),
+        outstanding: formatRupiah(facility.outstanding),
+        angsuran: formatRupiah(facility.angsuran),
         kolektibilitas: facility.kolektibilitas || "1",
         alasan: alasanParsed,
         norek_existing: facility.nomor_rekening_pinjaman || "",
@@ -431,10 +410,10 @@ export class DocumentTemplateService {
         result[`slik_bank_${i}_ada`] = true;
         result[`slik_bank_${i}_nama`] = facility.nama_bank || "";
         result[`slik_bank_${i}_jenis`] = facility.jenis_kredit || "Konsumtif";
-        result[`slik_bank_${i}_maks`] = this.formatRupiah(facility.plafon_maks);
-        result[`slik_bank_${i}_outs`] = this.formatRupiah(facility.outstanding);
+        result[`slik_bank_${i}_maks`] = formatRupiah(facility.plafon_maks);
+        result[`slik_bank_${i}_outs`] = formatRupiah(facility.outstanding);
         result[`slik_bank_${i}_coll`] = facility.kolektibilitas || "1";
-        result[`slik_bank_${i}_angsuran`] = this.formatRupiah(
+        result[`slik_bank_${i}_angsuran`] = formatRupiah(
           facility.angsuran
         );
         result[`slik_bank_${i}_takeover`] = facility.is_takeover
@@ -449,8 +428,8 @@ export class DocumentTemplateService {
           nomor_rekening_pinjaman: facility.nomor_rekening_pinjaman || "",
           nomor_pk: facility.nomor_pk || "",
           nama_bank: facility.nama_bank || "",
-          plafon_maks: this.formatRupiah(facility.plafon_maks),
-          outstanding: this.formatRupiah(facility.outstanding),
+          plafon_maks: formatRupiah(facility.plafon_maks),
+          outstanding: formatRupiah(facility.outstanding),
           jenis_kredit: facility.jenis_kredit || "Konsumtif",
           kolektibilitas: facility.kolektibilitas || "1",
         };
@@ -764,25 +743,25 @@ export class DocumentTemplateService {
 
       // Penghasilan - Gaji (Prapurna)
       gaji_bulan_1_nama: data.gaji_bulan_1_nama || "",
-      gaji_bulan_1: this.formatRupiah(data.gaji_bulan_1_jumlah as string),
+      gaji_bulan_1: formatRupiah(data.gaji_bulan_1_jumlah as string),
       gaji_bulan_2_nama: data.gaji_bulan_2_nama || "",
-      gaji_bulan_2: this.formatRupiah(data.gaji_bulan_2_jumlah as string),
+      gaji_bulan_2: formatRupiah(data.gaji_bulan_2_jumlah as string),
       gaji_bulan_3_nama: data.gaji_bulan_3_nama || "",
-      gaji_bulan_3: this.formatRupiah(data.gaji_bulan_3_jumlah as string),
-      estimasi_hak_pensiun: this.formatRupiah(
+      gaji_bulan_3: formatRupiah(data.gaji_bulan_3_jumlah as string),
+      estimasi_hak_pensiun: formatRupiah(
         data.estimasi_hak_pensiun as string
       ),
-      estimasi_tht: this.formatRupiah(
+      estimasi_tht: formatRupiah(
         data.estimasi_tht as string
       ),
 
       // Penghasilan - Pensiun (Purna)
       pensiun_bulan_1_nama: data.pensiun_bulan_1_nama || "Januari",
-      pensiun_bulan_1: this.formatRupiah(data.pensiun_bulan_1_jumlah as string),
+      pensiun_bulan_1: formatRupiah(data.pensiun_bulan_1_jumlah as string),
       pensiun_bulan_2_nama: data.pensiun_bulan_2_nama || "Februari",
-      pensiun_bulan_2: this.formatRupiah(data.pensiun_bulan_2_jumlah as string),
+      pensiun_bulan_2: formatRupiah(data.pensiun_bulan_2_jumlah as string),
       pensiun_bulan_3_nama: data.pensiun_bulan_3_nama || "Maret",
-      pensiun_bulan_3: this.formatRupiah(data.pensiun_bulan_3_jumlah as string),
+      pensiun_bulan_3: formatRupiah(data.pensiun_bulan_3_jumlah as string),
 
       // SLIK - Conditional rendering based on data availability
       // slik_nihil: true = tidak ada fasilitas kredit (tampilkan "Nihil - Tidak ada fasilitas kredit")

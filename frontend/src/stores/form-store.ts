@@ -33,6 +33,7 @@ interface FormStore {
     // Actions
     setFormData: (data: Partial<DebiturFormData>) => void;
     updateField: (field: string, value: string | boolean | number | null) => void;
+    batchUpdateFields: (fields: Partial<DebiturFormData>) => void;
     setCurrentTab: (tab: string) => void;
     setDsrResult: (result: DSRResult | null) => void;
     setIsSubmitting: (isSubmitting: boolean) => void;
@@ -97,6 +98,12 @@ export const useFormStore = create<FormStore>()(
             updateField: (field: string, value: string | boolean | number | null) =>
                 set((state) => ({
                     formData: { ...state.formData, [field]: value },
+                    isDirty: true,
+                })),
+
+            batchUpdateFields: (fields: Partial<DebiturFormData>) =>
+                set((state) => ({
+                    formData: { ...state.formData, ...fields },
                     isDirty: true,
                 })),
 

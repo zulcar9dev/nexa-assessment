@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Download, Edit, Calendar, User, Building, CreditCard, Loader2, AlertCircle } from "lucide-react";
 import { useDebitur } from "@/hooks/use-debitur";
 import type { Debitur } from "@/types/debitur";
+import { formatRupiah } from "@/lib/utils";
 
 export default function DebiturDetailPage({
     params,
@@ -25,11 +26,7 @@ export default function DebiturDetailPage({
         fetchData();
     }, [id, getDebitur]);
 
-    const formatRupiah = (value: string | number | undefined) => {
-        if (!value) return "0";
-        const num = typeof value === "string" ? parseInt(value.replace(/[^0-9]/g, ""), 10) : value;
-        return num.toLocaleString("id-ID");
-    };
+    // formatRupiah removed (imported from utils)
 
     const formatDate = (dateStr: string | undefined) => {
         if (!dateStr) return "-";

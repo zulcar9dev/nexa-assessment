@@ -11,10 +11,35 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format number as Indonesian Rupiah
  */
-export function formatRupiah(value: number | string): string {
-    const number = typeof value === "string" ? parseFloat(value.replace(/\./g, "")) : value;
+/**
+ * Format number as Indonesian Rupiah
+ */
+export function formatRupiah(value: number | string | undefined | null): string {
+    if (value === undefined || value === null || value === "") return "0";
+    if (typeof value === "number") return value.toLocaleString("id-ID");
+    const cleaned = cleanNumberInput(value);
+    if (!cleaned) return "0";
+    const number = parseInt(cleaned, 10);
     if (isNaN(number)) return "0";
     return number.toLocaleString("id-ID");
+}
+
+/**
+ * Clean non-numeric characters from string
+ */
+export function cleanNumberInput(value: string): string {
+    return value.replace(/[^0-9]/g, "");
+}
+
+/**
+ * Format number for input display (returns empty string if invalid/empty)
+ * Useful for controlled inputs where "0" might be undesirable when empty.
+ */
+export function formatNumberForDisplay(value: string | number | undefined | null): string {
+    if (value === undefined || value === null || value === "") return "";
+    const num = typeof value === "string" ? parseInt(cleanNumberInput(value), 10) : value;
+    if (isNaN(num)) return String(value);
+    return num.toLocaleString("id-ID");
 }
 
 /**
@@ -24,7 +49,7 @@ export function parseRupiah(value: string | number | null | undefined): number {
     if (value === null || value === undefined) return 0;
     if (typeof value === "number") return value;
     if (typeof value !== "string") return 0;
-    return parseInt(value.replace(/\./g, ""), 10) || 0;
+    return parseInt(cleanNumberInput(value), 10) || 0;
 }
 
 /**
@@ -160,7 +185,7 @@ export function formatRemainingTime(
     duration: { years: number; months: number; weeks: number; days: number; isPast: boolean }
 ): string {
     if (duration.isPast) return "Sudah Pensiun";
-    
+
     const parts = [];
     if (duration.years > 0) parts.push(`${duration.years} Tahun`);
     if (duration.months > 0) parts.push(`${duration.months} Bulan`);
@@ -275,7 +300,7 @@ export function calculateMonthsDifference(startDateStr: string, endDateStr: stri
     const end = new Date(endDateStr);
 
     if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
-    
+
     // Reset hours
     start.setHours(0, 0, 0, 0);
     end.setHours(0, 0, 0, 0);
@@ -284,10 +309,10 @@ export function calculateMonthsDifference(startDateStr: string, endDateStr: stri
 
     const years = end.getFullYear() - start.getFullYear();
     const months = end.getMonth() - start.getMonth();
-    
+
     // Calculate total months
     const totalMonths = (years * 12) + months;
-    
+
     return totalMonths > 0 ? totalMonths : 0;
 }
 
@@ -296,16 +321,16 @@ export function calculateMonthsDifference(startDateStr: string, endDateStr: stri
  */
 export function calculateAge(birthDateStr: string): number {
     if (!birthDateStr) return 0;
-    
+
     const birthDate = new Date(birthDateStr);
     const today = new Date();
-    
+
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
         age--;
     }
-    
+
     return age;
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 // Stores & Hooks
 import { useFormStore } from "@/stores/form-store";
+import { useShallow } from "zustand/react/shallow";
 import { useUIStore } from "@/stores/ui-store";
 import { useCalculation } from "@/hooks/use-calculation";
 
@@ -23,9 +24,10 @@ import TabEUsulan from "@/components/forms/form-tabs/TabEUsulan";
 export default function FormPrapurnaPage() {
     // Store
     const router = useRouter();
+
+    // Use shallow selectors to prevent re-renders on unrelated changes
     const {
         currentTab,
-        formData,
         dsrResult,
         isSubmitting,
         submitError,
@@ -33,8 +35,28 @@ export default function FormPrapurnaPage() {
         resetForm,
         setCurrentTab,
         submitForm
-    } = useFormStore();
+    } = useFormStore(useShallow(state => ({
+        currentTab: state.currentTab,
+        dsrResult: state.dsrResult,
+        isSubmitting: state.isSubmitting,
+        submitError: state.submitError,
+        validationErrors: state.validationErrors,
+        resetForm: state.resetForm,
+        setCurrentTab: state.setCurrentTab,
+        submitForm: state.submitForm
+    })));
+
     const { openPreviewModal } = useUIStore();
+
+    // Select only data needed for DSR calculation
+    const dsrInputs = useFormStore(useShallow(state => ({
+        estimasi_hak_pensiun: state.formData.estimasi_hak_pensiun,
+        slik_facilities: state.formData.slik_facilities,
+        usulan_plafon_kredit: state.formData.usulan_plafon_kredit,
+        usulan_jangka_waktu_bulan: state.formData.usulan_jangka_waktu_bulan,
+        usulan_bunga_persen: state.formData.usulan_bunga_persen,
+        fasilitas_nihil: state.formData.fasilitas_nihil,
+    })));
 
     // Hook
     const { calculateAndUpdateDSR } = useCalculation();
@@ -49,19 +71,20 @@ export default function FormPrapurnaPage() {
     useEffect(() => {
         calculateAndUpdateDSR("prapurna");
     }, [
-        formData.estimasi_hak_pensiun,
-        formData.slik_facilities,
-        formData.usulan_plafon_kredit,
-        formData.usulan_jangka_waktu_bulan,
-        formData.usulan_bunga_persen,
-        formData.fasilitas_nihil,
+        dsrInputs.estimasi_hak_pensiun,
+        dsrInputs.slik_facilities,
+        dsrInputs.usulan_plafon_kredit,
+        dsrInputs.usulan_jangka_waktu_bulan,
+        dsrInputs.usulan_bunga_persen,
+        dsrInputs.fasilitas_nihil,
         calculateAndUpdateDSR
     ]);
 
     // Handle Save - Uses real API
     const handleSave = async () => {
+        const currentFormData = useFormStore.getState().formData;
         // Validate required fields
-        if (!formData.nama_pemohon || !formData.no_ktp_pemohon) {
+        if (!currentFormData.nama_pemohon || !currentFormData.no_ktp_pemohon) {
             alert("Nama Pemohon dan NIK harus diisi!");
             setCurrentTab("tab-a");
             return;

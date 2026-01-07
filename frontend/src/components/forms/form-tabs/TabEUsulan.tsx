@@ -5,30 +5,25 @@ import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { CreditCard, Calculator } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
-import { calculateMonthsDifference, terbilang, calculateAge } from "@/lib/utils";
-import { useEffect, useMemo } from "react";
+import { calculateMonthsDifference, terbilang, calculateAge, formatNumberForDisplay, cleanNumberInput } from "@/lib/utils";
+import React, { useEffect, useMemo } from "react";
 
 
 interface TabEUsulanProps {
-    kategori?: "purna" | "prapurna";
+    kategori?: "purna" | "prapurna" | "fleksi_aktif";
 }
 
-export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
+export default React.memo(function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
     const { formData, updateField } = useFormStore();
     const { handleTabToPrev } = useTabNavigation();
 
-    const formatCurrencyDisplay = (value: string | undefined) => {
-        if (!value) return "";
-        const numericValue = value.replace(/[^0-9]/g, "");
-        if (!numericValue) return "";
-        return parseInt(numericValue, 10).toLocaleString("id-ID");
-    };
+    // Removed local formatCurrencyDisplay, using utils
 
     // Calculate Max Duration based on Age and Category
     const { maxDuration, currentAge, limitYears } = useMemo(() => {
         const birthDateStr = formData.tgl_lahir_pemohon;
         const age = birthDateStr ? calculateAge(birthDateStr) : 0;
-        
+
         // Determine limit based on category
         const isPrapurna = kategori === "prapurna";
         const limitYears = isPrapurna ? 20 : 15;
@@ -41,7 +36,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
             // Calculate 75th birthday
             const seventyFifthBirthday = new Date(birthDate);
             seventyFifthBirthday.setFullYear(birthDate.getFullYear() + 75);
-            
+
             const today = new Date();
             const todayStr = today.toISOString().split("T")[0];
             const maxAgeStatStr = seventyFifthBirthday.toISOString().split("T")[0];
@@ -50,7 +45,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
             maxMonthsByAge = calculateMonthsDifference(todayStr, maxAgeStatStr);
         } else {
             // Fallback if no birthdate (though it should be there)
-            maxMonthsByAge = (75 - age) * 12; 
+            maxMonthsByAge = (75 - age) * 12;
         }
 
         // Calculate max allowed
@@ -69,7 +64,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
     // Validate duration on change
     const handleDurationChange = (value: string) => {
         let months = parseInt(value) || 0;
-        
+
         // Don't allow negative
         if (months < 0) months = 0;
 
@@ -77,7 +72,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
         if (months > maxDuration) {
             // Logic for handling exceeding max duration handled in render
         }
-        
+
         updateField("usulan_jangka_waktu_bulan", months.toString());
     };
 
@@ -86,35 +81,72 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
         const today = new Date().toISOString().split("T")[0];
         const tglPensiun = formData.tgl_pensiun_pemohon; // from Tab B
 
-        // 1. Calculate Blokiran Prapurna (Months to Pension)
+        // 1. Calculate Blokiran Prapurna (Months to Pension) - ONLY for Prapurna
         let prapurnaMonths = 0;
-        if (tglPensiun) {
+        if (kategori === "prapurna" && tglPensiun) {
             prapurnaMonths = calculateMonthsDifference(today, tglPensiun);
         }
 
         // 2. Get Manual Inputs
-        const pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
+        // Blokiran Pindah Gaji should not be counted for fleksi_aktif (and hidden in UI)
+        let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
+        if (kategori === "fleksi_aktif") {
+            pindahGaji = 0;
+        }
+
         const wajib = formData.blokiran_wajib_jml || 0;
 
         // 3. Calculate Total
         const total = prapurnaMonths + pindahGaji + wajib;
 
         // Update if different to avoid loops
-        if (
-            formData.blokiran_prapurna_jml !== prapurnaMonths ||
-            formData.total_blokiran_jml !== total
-        ) {
+        if (formData.blokiran_prapurna_jml !== prapurnaMonths) {
             updateField("blokiran_prapurna_jml", prapurnaMonths);
+        }
+
+        if (formData.total_blokiran_jml !== total) {
             updateField("total_blokiran_jml", total);
         }
     }, [
         formData.tgl_pensiun_pemohon,
         formData.blokiran_pindah_gaji_jml,
         formData.blokiran_wajib_jml,
-        formData.blokiran_prapurna_jml, 
-        formData.total_blokiran_jml,
-        updateField
+        // Removed output dependencies to prevent cycles:
+        // formData.blokiran_prapurna_jml,
+        // formData.total_blokiran_jml,
+        updateField,
+        kategori
     ]);
+
+    // Auto-calculate Total Blokiran, Max Plafond, and Take Home Pay
+    const calculationResult = useMemo(() => {
+        // Blokiran
+        let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
+        // Logic for fleksi_aktif already handled above for defaults, but here for safety
+        if (kategori === "fleksi_aktif") pindahGaji = 0;
+
+        const blokirWajib = formData.blokiran_wajib_jml || 0;
+
+        // We need to read directly from formData
+        const totalBlokiran = (formData.blokiran_prapurna_jml || 0) +
+            pindahGaji + blokirWajib;
+
+        return {
+            totalBlokiran
+        };
+    }, [
+        formData.blokiran_prapurna_jml,
+        formData.blokiran_pindah_gaji_jml,
+        formData.blokiran_wajib_jml,
+        kategori
+    ]);
+
+    const handleCurrencyChange = (field: string, value: string) => {
+        const numericValue = cleanNumberInput(value);
+        updateField(field, numericValue);
+    };
+    // The `kategori` dependency was duplicated here, removed it.
+    // The `calculationResult` useMemo already has `kategori` as a dependency.
 
     return (
         <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] p-6 md:p-8" data-tab-content="tab-e">
@@ -133,8 +165,8 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                         {/* First field: Shift+Tab goes to previous tab */}
                         <input
                             type="text"
-                            value={formatCurrencyDisplay(formData.usulan_plafon_kredit)}
-                            onChange={(e) => updateField("usulan_plafon_kredit", e.target.value.replace(/[^0-9]/g, ""))}
+                            value={formatNumberForDisplay(formData.usulan_plafon_kredit)}
+                            onChange={(e) => handleCurrencyChange("usulan_plafon_kredit", e.target.value)}
                             onKeyDown={handleTabToPrev}
                             placeholder="0"
                             className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
@@ -149,7 +181,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                             Jangka Waktu (Bulan)
                         </label>
                         <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">
-                            Max: {maxDuration} Bulan ({maxDuration/12} Tahun)
+                            Max: {maxDuration} Bulan ({maxDuration / 12} Tahun)
                         </span>
                     </div>
                     <input
@@ -159,16 +191,15 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                         placeholder="120"
                         min="12"
                         max={maxDuration}
-                        className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                            (parseInt(formData.usulan_jangka_waktu_bulan || "0") > maxDuration)
-                            ? "border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500" 
+                        className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${(parseInt(formData.usulan_jangka_waktu_bulan || "0") > maxDuration)
+                            ? "border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500"
                             : "border-[#cdeae7] focus:border-[#00665e] focus:ring-[#00665e]"
-                        }`}
+                            }`}
                     />
                     {(parseInt(formData.usulan_jangka_waktu_bulan || "0") > maxDuration) && (
-                         <p className="text-xs text-red-500 mt-1">
+                        <p className="text-xs text-red-500 mt-1">
                             Melebihi batas maksimal {limitYears} tahun atau usia 75 tahun (Usia saat ini: {currentAge} th)
-                         </p>
+                        </p>
                     )}
                 </div>
 
@@ -303,8 +334,8 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                         <span className={`absolute inset-y-0 left-0 pl-3 flex items-center text-sm ${formData.biaya_administrasi_is_bebas ? 'text-gray-400' : 'text-gray-500'}`}>Rp</span>
                         <input
                             type="text"
-                            value={formatCurrencyDisplay(formData.biaya_administrasi_nominal)}
-                            onChange={(e) => updateField("biaya_administrasi_nominal", e.target.value.replace(/[^0-9]/g, ""))}
+                            value={formatNumberForDisplay(formData.biaya_administrasi_nominal)}
+                            onChange={(e) => handleCurrencyChange("biaya_administrasi_nominal", e.target.value)}
                             disabled={formData.biaya_administrasi_is_bebas}
                             placeholder="0"
                             className={`block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-10 pr-3 text-right ${formData.biaya_administrasi_is_bebas
@@ -317,8 +348,8 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
 
                 {/* --- DATA BLOKIRAN (KHUSUS PRAPURNA) --- */}
                 <div className="md:col-span-2 lg:col-span-3">
-                     <hr className="my-2 border-[#cdeae7] dark:border-opacity-10" />
-                     <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2 mt-4">
+                    <hr className="my-2 border-[#cdeae7] dark:border-opacity-10" />
+                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2 mt-4">
                         <Calculator className="w-6 h-6 text-[#00665e]" />
                         Data Blokiran (Khusus Prapurna)
                     </h3>
@@ -345,11 +376,11 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
 
                 {/* Blokiran Pindah Gaji */}
                 <div>
-                     <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
                         Blokiran Pindah Gaji
                     </label>
                     <p className="text-xs text-gray-500 mb-2">
-                         Input manual jumlah kali angsuran
+                        Input manual jumlah kali angsuran
                     </p>
                     <div className="relative">
                         <input
@@ -368,11 +399,11 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
 
                 {/* Blokiran Wajib */}
                 <div>
-                     <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
                         Blokiran Wajib
                     </label>
                     <p className="text-xs text-gray-500 mb-2">
-                         Input manual jumlah kali angsuran
+                        Input manual jumlah kali angsuran
                     </p>
                     <div className="relative">
                         <input
@@ -385,7 +416,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                             placeholder="0"
                             className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
                         />
-                         <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
                     </div>
                 </div>
 
@@ -393,7 +424,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                 <div className="md:col-span-2 lg:col-span-3 bg-[#e6f4f3] dark:bg-[#00665e]/20 rounded-lg p-4 mt-2">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div>
-                             <label className="block text-sm font-bold text-[#0c1d1b] dark:text-gray-200">
+                            <label className="block text-sm font-bold text-[#0c1d1b] dark:text-gray-200">
                                 Total Blokiran
                             </label>
                             <p className="text-sm text-[#00665e] italic">
@@ -401,7 +432,7 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
                             </p>
                         </div>
                         <div className="relative w-full md:w-1/3">
-                             <input
+                            <input
                                 type="number"
                                 value={formData.total_blokiran_jml || 0}
                                 readOnly
@@ -453,4 +484,4 @@ export default function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
             </div>
         </div>
     );
-}
+});
