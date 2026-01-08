@@ -25,15 +25,16 @@ Dibangun dengan **Next.js + TypeScript + Prisma**, aplikasi ini dirancang untuk 
 
 | Layer                   | Teknologi                   |
 | ----------------------- | --------------------------- |
-| **Framework**           | Next.js 16.x (App Router)   |
-| **Language**            | TypeScript                  |
+| **Framework**           | Next.js 16.1.1 (App Router) |
+| **Language**            | TypeScript 5.x              |
 | **Database**            | PostgreSQL (via Prisma ORM) |
 | **Auth**                | NextAuth.js v4              |
-| **Styling**             | TailwindCSS 4               |
-| **State Management**    | Zustand                     |
+| **Styling**             | TailwindCSS 4.x             |
+| **State Management**    | Zustand 5.x                 |
 | **Document Generation** | docxtemplater + PizZip      |
-| **Validation**          | Zod                         |
+| **Validation**          | Zod 4.x                     |
 | **Icons**               | Lucide React                |
+| **Runtime**             | React 19.2.3                |
 
 ---
 
@@ -41,15 +42,13 @@ Dibangun dengan **Next.js + TypeScript + Prisma**, aplikasi ini dirancang untuk 
 
 ```text
 APP_KREDIT_KONSUMER_BNI/
-├── docs/                        # Dokumentasi implementasi
-│   ├── backend_implementation_plan.md
-│   ├── frontend_implementation_plan.md
-│   └── implementation_plan.md
+├── .github/                     # GitHub workflows & configurations
 ├── frontend/                    # Aplikasi Next.js utama
 │   ├── prisma/
 │   │   ├── schema.prisma        # Database schema
 │   │   └── migrations/          # Database migrations
 │   ├── public/                  # Static assets
+│   ├── scripts/                 # Database seeding scripts
 │   ├── src/
 │   │   ├── app/                 # Next.js App Router pages
 │   │   │   ├── (auth)/          # Login page
@@ -64,6 +63,10 @@ APP_KREDIT_KONSUMER_BNI/
 │   ├── templates/               # Template DOCX untuk generate dokumen
 │   ├── package.json
 │   └── tsconfig.json
+├── tools/                       # Development tools (portable)
+│   ├── node-v25.2.1-win-x64/    # Portable Node.js
+│   └── pgsql/                   # Portable PostgreSQL
+├── run-app.bat                  # Script untuk menjalankan aplikasi di Windows
 └── README.md
 ```
 
@@ -71,12 +74,24 @@ APP_KREDIT_KONSUMER_BNI/
 
 ## ⚙️ Cara Instalasi & Menjalankan Aplikasi
 
-### 1. Prasyarat
+### Opsi 1: Menggunakan Script (Windows - Recommended)
+
+Untuk pengguna Windows, cukup jalankan:
+
+```bash
+run-app.bat
+```
+
+Script ini akan otomatis menjalankan PostgreSQL dan aplikasi menggunakan tools portable yang sudah disediakan.
+
+### Opsi 2: Instalasi Manual
+
+#### 1. Prasyarat
 
 - **Node.js** versi 18.x atau lebih baru
-- **PostgreSQL** untuk database (atau gunakan SQLite untuk development)
+- **PostgreSQL** untuk database
 
-### 2. Clone & Install Dependencies
+#### 2. Clone & Install Dependencies
 
 ```bash
 # Clone repository
@@ -87,7 +102,7 @@ cd app_kredit_konsumer_bni/frontend
 npm install
 ```
 
-### 3. Setup Environment
+#### 3. Setup Environment
 
 Buat file `.env` di folder `frontend/`:
 
@@ -100,7 +115,7 @@ NEXTAUTH_SECRET="your-secret-key"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
-### 4. Setup Database
+#### 4. Setup Database
 
 ```bash
 # Generate Prisma client
@@ -113,7 +128,7 @@ npm run db:migrate
 npm run db:seed
 ```
 
-### 5. Jalankan Aplikasi
+#### 5. Jalankan Aplikasi
 
 ```bash
 # Development mode
@@ -143,15 +158,17 @@ Aplikasi akan berjalan di `http://localhost:3000`
 
 ## 🔧 Script yang Tersedia
 
-| Script                | Keterangan                        |
-| --------------------- | --------------------------------- |
-| `npm run dev`         | Jalankan development server       |
-| `npm run build`       | Build untuk production            |
-| `npm run start`       | Jalankan production server        |
-| `npm run lint`        | Jalankan ESLint                   |
-| `npm run db:generate` | Generate Prisma client            |
-| `npm run db:migrate`  | Jalankan database migration       |
-| `npm run db:studio`   | Buka Prisma Studio (GUI database) |
+| Script                | Keterangan                            |
+| --------------------- | ------------------------------------- |
+| `npm run dev`         | Jalankan development server           |
+| `npm run build`       | Build untuk production                |
+| `npm run start`       | Jalankan production server            |
+| `npm run lint`        | Jalankan ESLint                       |
+| `npm run db:generate` | Generate Prisma client                |
+| `npm run db:migrate`  | Jalankan database migration           |
+| `npm run db:push`     | Push schema ke database tanpa migrasi |
+| `npm run db:seed`     | Seed data awal ke database            |
+| `npm run db:studio`   | Buka Prisma Studio (GUI database)     |
 
 ---
 
