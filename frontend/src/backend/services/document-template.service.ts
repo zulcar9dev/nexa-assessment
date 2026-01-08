@@ -780,17 +780,17 @@ export class DocumentTemplateService {
       list_investigasi: [],
 
       // RPC (Repayment Capacity) Calculations
-      rpc_penghasilan: this.formatRupiah(penghasilan),
-      rpc_dsc_90: this.formatRupiah(dsc90),
-      rpc_total_angsuran_eksisting: this.formatRupiah(totalAngsuranSlik),
-      rpc_maksimal_angsuran: this.formatRupiah(maksimalAngsuran),
-      rpc_angsuran_diusulkan: this.formatRupiah(angsuranKredit),
-      rpc_total_angsuran_baru: this.formatRupiah(totalAngsuranBaru),
+      rpc_penghasilan: formatRupiah(penghasilan),
+      rpc_dsc_90: formatRupiah(dsc90),
+      rpc_total_angsuran_eksisting: formatRupiah(totalAngsuranSlik),
+      rpc_maksimal_angsuran: formatRupiah(maksimalAngsuran),
+      rpc_angsuran_diusulkan: formatRupiah(angsuranKredit),
+      rpc_total_angsuran_baru: formatRupiah(totalAngsuranBaru),
       rpc_dsr: `${dsr}`,
 
       // Usulan Kredit
-      plafon: this.formatRupiah(plafon),
-      usulan_plafon: this.formatRupiah(plafon),
+      plafon: formatRupiah(plafon),
+      usulan_plafon: formatRupiah(plafon),
       tenor: tenor,
       tenor_bulan: `${tenor} Bulan`,
       usulan_jangka_waktu: `${tenor} Bulan`,
@@ -798,22 +798,22 @@ export class DocumentTemplateService {
       bunga_persen: `${bunga}% p.a Efektif Anuitas`,
 
       // Biaya
-      biaya_provisi: this.formatRupiah(biayaProvisi),
+      biaya_provisi: formatRupiah(biayaProvisi),
       biaya_provisi_percent: `${pctProvisi}%`,
-      biaya_tatalaksana: this.formatRupiah(biayaTatalaksana),
+      biaya_tatalaksana: formatRupiah(biayaTatalaksana),
       biaya_tatalaksana_percent: `${pctTatalaksana}%`,
 
       // Biaya PSJT
-      biaya_psjt: this.formatRupiah(Math.round(plafon * ((parseFloat(String(data.biaya_psjt_percent || 0)) || 0) / 100))),
+      biaya_psjt: formatRupiah(Math.round(plafon * ((parseFloat(String(data.biaya_psjt_percent || 0)) || 0) / 100))),
       biaya_psjt_percent: `${parseFloat(String(data.biaya_psjt_percent || 0))}%`,
 
       // Biaya Administrasi
       biaya_administrasi_is_bebas: data.biaya_administrasi_is_bebas,
-      biaya_administrasi_nominal: this.formatRupiah(data.biaya_administrasi_nominal as string),
+      biaya_administrasi_nominal: formatRupiah(data.biaya_administrasi_nominal as string),
       // Specific Text Requirement
       biaya_administrasi_text: data.biaya_administrasi_is_bebas
         ? "Bebas Biaya Administrasi"
-        : `Biaya Administrasi sebesar Rp. ${this.formatRupiah(data.biaya_administrasi_nominal as string)},-`,
+        : `Biaya Administrasi sebesar Rp. ${formatRupiah(data.biaya_administrasi_nominal as string)},-`,
 
       // Tujuan
       tujuan_kredit: this.getTujuanKreditLabel(data.tujuan_kredit as string),
@@ -863,10 +863,10 @@ export class DocumentTemplateService {
       no_hp_rekan_kerja: data.no_hp_rekan_kerja || "",
 
       // Hak Pensiun Bulanan (Purna)
-      pensiun_bulan_jumlah: this.formatRupiah(
+      pensiun_bulan_jumlah: formatRupiah(
         data.pensiun_bulan_jumlah as string
       ),
-      hak_pensiun: this.formatRupiah(data.pensiun_bulan_jumlah as string),
+      hak_pensiun: formatRupiah(data.pensiun_bulan_jumlah as string),
     };
 
     // --- EXTENSIVE ALIASES FOR COMPATIBILITY ---
