@@ -6,6 +6,7 @@ import { DocumentService } from '@/backend/services/document.service';
 import { DocumentTemplateService, KategoriDoc } from '@/backend/services/document-template.service';
 import { TemplateService } from '@/backend/services/template.service';
 import type { ApiResponse } from '@/types/api';
+import { AuthenticatedUser } from '@/types/auth';
 
 // Kategori type - matches Prisma enum
 
@@ -49,7 +50,7 @@ export async function GET(
         }
 
         // Check ownership for non-admin users
-        const user = session.user as any;
+        const user = session.user as unknown as AuthenticatedUser;
         if (user.role !== 'ADMIN' && debitur.userId !== user.id) {
             return NextResponse.json<ApiResponse>({
                 success: false,

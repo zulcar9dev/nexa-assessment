@@ -4,6 +4,7 @@
  */
 
 import prisma from '@/backend/lib/prisma';
+import { Prisma } from '@prisma/client';
 import type { DebiturQueryParams, CreateDebiturRequest, UpdateDebiturRequest } from '@/types/api';
 
 // Local type definitions - these match the Prisma schema
@@ -45,8 +46,16 @@ interface DebiturWhereInput {
     createdAt?: { gte: Date };
 }
 
+interface StatsResult {
+    total: number;
+    recentCount: number;
+    byKategori: Record<string, number>;
+    bySegmentasi: Record<string, number>;
+    groupedByDate: Record<string, number>;
+}
+
 export class DebiturService {
-    private static statsCache = new Map<string, { data: any; expiry: number }>();
+    private static statsCache = new Map<string, { data: StatsResult; expiry: number }>();
 
     /**
      * Get paginated list of debiturs with optional filters
@@ -54,7 +63,7 @@ export class DebiturService {
     static async getList(params: DebiturQueryParams, userId?: string) {
         const { q, jenis, segmentasi, kategori, page = 1, limit = 10 } = params;
 
-        const where: DebiturWhereInput = {};
+        const where: Prisma.DebiturWhereInput = {};
 
         // Add userId filter if provided (non-admin users only see their own data)
         if (userId) {
@@ -88,7 +97,7 @@ export class DebiturService {
 
         const [data, total] = await Promise.all([
             prisma.debitur.findMany({
-                where: where as any,
+                where,
                 skip,
                 take: limit,
                 orderBy: { createdAt: 'desc' },
@@ -218,7 +227,7 @@ export class DebiturService {
             return cached.data;
         }
 
-        const where: DebiturWhereInput = userId ? { userId } : {};
+        const where: Prisma.DebiturWhereInput = userId ? { userId } : {};
 
         // Calculate date 30 days ago for recent stats
         const thirtyDaysAgo = new Date();
@@ -226,7 +235,7 @@ export class DebiturService {
 
         const [total, byKategori, bySegmentasi, recentCount, dailyStats] = await Promise.all([
             // Total count
-            prisma.debitur.count({ where: where as any }),
+            prisma.debitur.count({ where }),
 
             // Group by Kategori
             prisma.debitur.groupBy({

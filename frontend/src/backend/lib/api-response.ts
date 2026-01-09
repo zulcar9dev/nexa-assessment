@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
-import { ApiResponse, ErrorCode } from '@/types/api';
+import { ApiResponse, ErrorCode, ApiError } from '@/types/api';
 
 /**
  * Create a success response
@@ -19,7 +19,7 @@ export function successResponse<T>(data: T, message?: string, status: number = 2
 export function errorResponse(
     code: ErrorCode,
     message: string,
-    details?: any,
+    details?: ApiError['details'],
     status: number = 500
 ) {
     return NextResponse.json<ApiResponse>({

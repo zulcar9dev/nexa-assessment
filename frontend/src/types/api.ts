@@ -88,7 +88,7 @@ export interface CreateDebiturRequest {
     dataLengkap: Record<string, any>;
 }
 
-export interface UpdateDebiturRequest extends Partial<CreateDebiturRequest> { }
+export type UpdateDebiturRequest = Partial<CreateDebiturRequest>;
 
 // Template
 export interface Template {

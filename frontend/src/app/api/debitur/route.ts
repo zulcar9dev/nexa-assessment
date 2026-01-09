@@ -4,6 +4,7 @@ import { authOptions } from '@/backend/lib/auth';
 import { DebiturService } from '@/backend/services/debitur.service';
 import { CreateDebiturSchema, validateRequest } from '@/backend/lib/validators';
 import { DebiturQueryParams } from '@/types/api';
+import { AuthenticatedUser } from '@/types/auth'; // [NEW]
 import { successResponse, errorResponse, handleApiError } from '@/backend/lib/api-response';
 
 /**
@@ -30,7 +31,8 @@ export async function GET(request: NextRequest) {
         };
 
         // Admin sees all, regular users see only their own
-        const user = session.user as any;
+        // Admin sees all, regular users see only their own
+        const user = session.user as unknown as AuthenticatedUser;
         const userId = user.role === 'ADMIN' ? undefined : user.id;
 
         const result = await DebiturService.getList(params, userId);
@@ -69,7 +71,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const debitur = await DebiturService.create(validation.data, (session.user as any).id);
+        const debitur = await DebiturService.create(validation.data, (session.user as unknown as AuthenticatedUser).id);
 
         return successResponse(debitur, 'Data debitur berhasil disimpan', 201);
     } catch (error) {
