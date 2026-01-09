@@ -7,27 +7,47 @@ import prisma from '@/backend/lib/prisma';
 import type { DebiturQueryParams, CreateDebiturRequest, UpdateDebiturRequest } from '@/types/api';
 
 // Local type definitions - these match the Prisma schema
-type Kategori = 'PRAPURNA' | 'PURNA';
-type JenisPengajuan = 'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER';
-type Segmentasi = 'TASPEN' | 'ASABRI';
+import { 
+    Kategori as PrismaKategori, 
+    JenisPengajuan as PrismaJenisPengajuan, 
+    Segmentasi as PrismaSegmentasi 
+} from '@/types/common';
+import { Kategori, JenisPengajuan, Segmentasi } from '@/types/debitur';
 
-const VALID_KATEGORI: Kategori[] = ['PRAPURNA', 'PURNA'];
-const VALID_JENIS: JenisPengajuan[] = ['BARU', 'TOP_UP', 'TOP_UP_SISA_GAJI', 'TAKEOVER'];
-const VALID_SEGMENTASI: Segmentasi[] = ['TASPEN', 'ASABRI'];
+// Mapping Helpers
+function mapToPrismaKategori(k: Kategori | string): PrismaKategori {
+    if (k.includes('prapurna')) return PrismaKategori.PRAPURNA;
+    if (k.includes('purna')) return PrismaKategori.PURNA;
+    return PrismaKategori.PRAPURNA; // Fallback
+}
+
+function mapToPrismaJenis(j: JenisPengajuan | string): PrismaJenisPengajuan {
+    if (j === 'tht') return PrismaJenisPengajuan.TOP_UP; // Assuming THT maps to TOP_UP or similar
+    const upper = j.toUpperCase().replace(/ /g, '_');
+    // Try to match with existing
+    const match = Object.values(PrismaJenisPengajuan).find(v => v === upper);
+    return match || PrismaJenisPengajuan.BARU; // Fallback
+}
+
+function mapToPrismaSegmentasi(s: Segmentasi | string): PrismaSegmentasi {
+    return s.toUpperCase() as PrismaSegmentasi;
+}
 
 // Prisma-like where input type
 interface DebiturWhereInput {
     userId?: string;
     namaPemohon?: { contains: string; mode: string };
     noKtp?: { contains: string };
-    jenisPengajuan?: JenisPengajuan;
-    segmentasi?: Segmentasi;
-    kategori?: Kategori;
+    jenisPengajuan?: PrismaJenisPengajuan;
+    segmentasi?: PrismaSegmentasi;
+    kategori?: PrismaKategori;
     OR?: Array<{ namaPemohon?: { contains: string; mode: string }; noKtp?: { contains: string } }>;
     createdAt?: { gte: Date };
 }
 
 export class DebiturService {
+    private static statsCache = new Map<string, { data: any; expiry: number }>();
+
     /**
      * Get paginated list of debiturs with optional filters
      */
@@ -50,18 +70,18 @@ export class DebiturService {
         }
 
         // Filter by jenis pengajuan
-        if (jenis && VALID_JENIS.includes(jenis as JenisPengajuan)) {
-            where.jenisPengajuan = jenis as JenisPengajuan;
+        if (jenis) {
+            where.jenisPengajuan = mapToPrismaJenis(jenis);
         }
 
         // Filter by segmentasi
-        if (segmentasi && VALID_SEGMENTASI.includes(segmentasi as Segmentasi)) {
-            where.segmentasi = segmentasi as Segmentasi;
+        if (segmentasi) {
+            where.segmentasi = mapToPrismaSegmentasi(segmentasi);
         }
 
         // Filter by kategori
-        if (kategori && VALID_KATEGORI.includes(kategori as Kategori)) {
-            where.kategori = kategori as Kategori;
+        if (kategori) {
+            where.kategori = mapToPrismaKategori(kategori);
         }
 
         const skip = (page - 1) * limit;
@@ -72,11 +92,24 @@ export class DebiturService {
                 skip,
                 take: limit,
                 orderBy: { createdAt: 'desc' },
-                include: {
+                select: {
+                    id: true,
+                    namaPemohon: true,
+                    noKtp: true,
+                    kategori: true,
+                    jenisPengajuan: true,
+                    segmentasi: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    // dataLengkap excluded for optimization
                     createdBy: {
-                        select: { id: true, name: true, email: true },
-                    },
-                },
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true
+                        }
+                    }
+                }
             }),
             prisma.debitur.count({ where: where as any }),
         ]);
@@ -114,9 +147,9 @@ export class DebiturService {
             data: {
                 namaPemohon: data.namaPemohon,
                 noKtp: data.noKtp,
-                kategori: data.kategori,
-                jenisPengajuan: data.jenisPengajuan,
-                segmentasi: data.segmentasi,
+                kategori: mapToPrismaKategori(data.kategori),
+                jenisPengajuan: mapToPrismaJenis(data.jenisPengajuan),
+                segmentasi: mapToPrismaSegmentasi(data.segmentasi),
                 dataLengkap: data.dataLengkap as Record<string, any>, // Cast for Json type compatibility
                 userId,
             },
@@ -131,9 +164,9 @@ export class DebiturService {
 
         if (data.namaPemohon) updateData.namaPemohon = data.namaPemohon;
         if (data.noKtp) updateData.noKtp = data.noKtp;
-        if (data.kategori) updateData.kategori = data.kategori;
-        if (data.jenisPengajuan) updateData.jenisPengajuan = data.jenisPengajuan;
-        if (data.segmentasi) updateData.segmentasi = data.segmentasi;
+        if (data.kategori) updateData.kategori = mapToPrismaKategori(data.kategori);
+        if (data.jenisPengajuan) updateData.jenisPengajuan = mapToPrismaJenis(data.jenisPengajuan);
+        if (data.segmentasi) updateData.segmentasi = mapToPrismaSegmentasi(data.segmentasi);
         if (data.dataLengkap) updateData.dataLengkap = data.dataLengkap;
 
         return prisma.debitur.update({
@@ -178,6 +211,13 @@ export class DebiturService {
      * Get statistics for dashboard
      */
     static async getStats(userId?: string) {
+        const cacheKey = userId || 'all';
+        const cached = this.statsCache.get(cacheKey);
+        
+        if (cached && Date.now() < cached.expiry) {
+            return cached.data;
+        }
+
         const where: DebiturWhereInput = userId ? { userId } : {};
 
         // Calculate date 30 days ago for recent stats
@@ -235,7 +275,7 @@ export class DebiturService {
             return acc;
         }, {});
 
-        return {
+        const result = {
             total,
             recentCount,
             byKategori: byKategori.reduce((acc: Record<string, number>, item) => {
@@ -248,5 +288,9 @@ export class DebiturService {
             }, {} as Record<string, number>),
             groupedByDate,
         };
+
+        this.statsCache.set(cacheKey, { data: result, expiry: Date.now() + 30000 }); // 30s cache
+
+        return result;
     }
 }

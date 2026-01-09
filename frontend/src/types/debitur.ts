@@ -1,4 +1,5 @@
-// Debitur Types
+// export * from "./debitur"; (in index.ts)
+// Reverting to lowercase types to match frontend components
 
 export type Kategori =
   | "prapurna_reguler"
@@ -11,7 +12,8 @@ export type JenisPengajuan =
   | "top_up"
   | "top_up_sisa_gaji"
   | "tht"
-  | "takeover";
+  | "takeover"
+  | "fleksi_aktif";
 
 export type Segmentasi = "taspen" | "asabri";
 
@@ -22,7 +24,7 @@ export interface Debitur {
   kategori: Kategori;
   jenisPengajuan: JenisPengajuan;
   segmentasi: Segmentasi;
-  dataLengkap: DebiturFormData;
+  dataLengkap: Record<string, any>;
   createdAt: string;
   updatedAt: string;
   userId?: string;
@@ -90,6 +92,8 @@ export interface DebiturFormData {
   gaji_bulan_3_jumlah?: string;
   estimasi_hak_pensiun?: string;
   estimasi_tht?: string; // [NEW] Estimasi Tunjangan Hari Tua (THT)
+  tukin?: string;        // Tunjangan Kinerja (Fleksi Aktif)
+  uang_makan?: string;   // Uang Makan (Fleksi Aktif)
 
   // Blokiran (Prapurna) - Numeric count (kali)
   blokiran_prapurna_jml?: number;

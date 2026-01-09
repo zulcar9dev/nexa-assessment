@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff, Lock, User, AlertCircle, Clock } from "lucide-react";
 
-export default function LoginPage() {
+function LoginContent() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/";
     const authError = searchParams.get("error");
@@ -389,5 +389,22 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e293b]">
+                <div className="flex flex-col items-center gap-4">
+                     <div className="w-12 h-12 bg-[#00665e] rounded-xl flex items-center justify-center shadow-lg animate-pulse">
+                         <span className="text-white font-bold text-2xl">B</span>
+                     </div>
+                     <p className="text-[#00665e] font-medium text-sm animate-pulse">Memuat...</p>
+                </div>
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     );
 }

@@ -6,12 +6,14 @@
 import prisma from '@/backend/lib/prisma';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { SimpleCache } from '@/backend/lib/cache';
 
 // Local type definition - matches Prisma enum
 type Kategori = 'PRAPURNA' | 'PURNA';
 
 export class TemplateService {
     private static TEMPLATE_DIR = path.join(process.cwd(), 'templates');
+    private static cache = new SimpleCache<Buffer>();
 
     /**
      * Ensure template directory exists
@@ -101,6 +103,9 @@ export class TemplateService {
         // Update database record
         await this.upsert(kategori, filename);
 
+        // Update cache
+        this.cache.set(kategori, file);
+
         return filename;
     }
 
@@ -123,11 +128,18 @@ export class TemplateService {
      * Read template file
      */
     static async readFile(kategori: Kategori): Promise<Buffer | null> {
+        // Try get from cache first
+        const cached = this.cache.get(kategori);
+        if (cached) return cached;
+
         const filepath = await this.getFilePath(kategori);
         if (!filepath) return null;
 
         try {
-            return await fs.readFile(filepath);
+            const data = await fs.readFile(filepath);
+            // Store in cache
+            this.cache.set(kategori, data);
+            return data;
         } catch {
             return null;
         }

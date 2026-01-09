@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/backend/lib/auth';
 import { DebiturService } from '@/backend/services/debitur.service';
-import type { ApiResponse, CreateDebiturRequest, DebiturQueryParams, PaginatedResponse } from '@/types/api';
+import { CreateDebiturSchema, validateRequest } from '@/backend/lib/validators';
+import { DebiturQueryParams } from '@/types/api';
+import { successResponse, errorResponse, handleApiError } from '@/backend/lib/api-response';
 
 /**
  * GET /api/debitur
@@ -13,13 +15,7 @@ export async function GET(request: NextRequest) {
         const session = await getServerSession(authOptions);
 
         if (!session?.user) {
-            return NextResponse.json<ApiResponse>({
-                success: false,
-                error: {
-                    code: 'UNAUTHORIZED',
-                    message: 'Anda harus login untuk mengakses data',
-                },
-            }, { status: 401 });
+            return errorResponse('UNAUTHORIZED', 'Anda harus login untuk mengakses data', undefined, 401);
         }
 
         const { searchParams } = new URL(request.url);
@@ -34,24 +30,14 @@ export async function GET(request: NextRequest) {
         };
 
         // Admin sees all, regular users see only their own
-        const userId = session.user.role === 'ADMIN' ? undefined : session.user.id;
+        const user = session.user as any;
+        const userId = user.role === 'ADMIN' ? undefined : user.id;
 
         const result = await DebiturService.getList(params, userId);
 
-        return NextResponse.json<ApiResponse<PaginatedResponse<unknown>>>({
-            success: true,
-            data: result,
-            message: 'Data debitur berhasil diambil',
-        });
+        return successResponse(result, 'Data debitur berhasil diambil');
     } catch (error) {
-        console.error('Get debitur list error:', error);
-        return NextResponse.json<ApiResponse>({
-            success: false,
-            error: {
-                code: 'INTERNAL_ERROR',
-                message: 'Terjadi kesalahan saat mengambil data debitur',
-            },
-        }, { status: 500 });
+        return handleApiError(error);
     }
 }
 
@@ -64,68 +50,30 @@ export async function POST(request: NextRequest) {
         const session = await getServerSession(authOptions);
 
         if (!session?.user) {
-            return NextResponse.json<ApiResponse>({
-                success: false,
-                error: {
-                    code: 'UNAUTHORIZED',
-                    message: 'Anda harus login untuk menambah data',
-                },
-            }, { status: 401 });
+            return errorResponse('UNAUTHORIZED', 'Anda harus login untuk menambah data', undefined, 401);
         }
 
-        const body: CreateDebiturRequest = await request.json();
+        const body = await request.json();
 
-        // Validate required fields
-        const errors: Array<{ field: string; message: string }> = [];
+        const validation = validateRequest(CreateDebiturSchema, body);
 
-        if (!body.namaPemohon?.trim()) {
-            errors.push({ field: 'namaPemohon', message: 'Nama pemohon harus diisi' });
+        if (!validation.success) {
+            return errorResponse(
+                'VALIDATION_ERROR', 
+                'Data tidak lengkap atau tidak valid', 
+                validation.errors?.map((err) => ({
+                    field: err.path.join('.'),
+                    message: err.message,
+                })), 
+                400
+            );
         }
 
-        if (!body.noKtp?.trim()) {
-            errors.push({ field: 'noKtp', message: 'NIK harus diisi' });
-        } else if (body.noKtp.length !== 16) {
-            errors.push({ field: 'noKtp', message: 'NIK harus 16 digit' });
-        }
+        const debitur = await DebiturService.create(validation.data, (session.user as any).id);
 
-        if (!body.kategori) {
-            errors.push({ field: 'kategori', message: 'Kategori harus dipilih' });
-        }
-
-        if (!body.jenisPengajuan) {
-            errors.push({ field: 'jenisPengajuan', message: 'Jenis pengajuan harus dipilih' });
-        }
-
-        if (!body.segmentasi) {
-            errors.push({ field: 'segmentasi', message: 'Segmentasi harus dipilih' });
-        }
-
-        if (errors.length > 0) {
-            return NextResponse.json<ApiResponse>({
-                success: false,
-                error: {
-                    code: 'VALIDATION_ERROR',
-                    message: 'Data tidak lengkap atau tidak valid',
-                    details: errors,
-                },
-            }, { status: 400 });
-        }
-
-        const debitur = await DebiturService.create(body, session.user.id);
-
-        return NextResponse.json<ApiResponse>({
-            success: true,
-            data: debitur,
-            message: 'Data debitur berhasil disimpan',
-        }, { status: 201 });
+        return successResponse(debitur, 'Data debitur berhasil disimpan', 201);
     } catch (error) {
-        console.error('Create debitur error:', error);
-        return NextResponse.json<ApiResponse>({
-            success: false,
-            error: {
-                code: 'INTERNAL_ERROR',
-                message: 'Terjadi kesalahan saat menyimpan data debitur',
-            },
-        }, { status: 500 });
+        return handleApiError(error);
     }
 }
+

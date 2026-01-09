@@ -49,7 +49,8 @@ export async function GET(
         }
 
         // Check ownership for non-admin users
-        if (session.user.role !== 'ADMIN' && debitur.userId !== session.user.id) {
+        const user = session.user as any;
+        if (user.role !== 'ADMIN' && debitur.userId !== user.id) {
             return NextResponse.json<ApiResponse>({
                 success: false,
                 error: {

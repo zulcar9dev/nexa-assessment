@@ -68,21 +68,24 @@ export interface DSRResponse {
 // Debitur Query Params
 export interface DebiturQueryParams {
     q?: string;             // Search nama/NIK
-    jenis?: string;         // JenisPengajuan
-    segmentasi?: string;    // Segmentasi
-    kategori?: string;      // Kategori  
+    jenis?: JenisPengajuan | string;
+    segmentasi?: Segmentasi | string;
+    kategori?: Kategori | string;
     page?: number;
     limit?: number;
 }
 
 // Debitur Create/Update Request
+import { Kategori, JenisPengajuan, Segmentasi } from './debitur';
+
+// Debitur Create/Update Request
 export interface CreateDebiturRequest {
     namaPemohon: string;
     noKtp: string;
-    kategori: 'PRAPURNA' | 'PURNA';
-    jenisPengajuan: 'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER';
-    segmentasi: 'TASPEN' | 'ASABRI';
-    dataLengkap: Record<string, unknown>;
+    kategori: Kategori;
+    jenisPengajuan: JenisPengajuan;
+    segmentasi: Segmentasi;
+    dataLengkap: Record<string, any>;
 }
 
 export interface UpdateDebiturRequest extends Partial<CreateDebiturRequest> { }

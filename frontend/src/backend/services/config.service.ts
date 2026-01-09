@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { SimpleCache } from '@/backend/lib/cache';
 
 export interface AppSettings {
     slikMitigasiRiskText: string;
@@ -15,6 +16,8 @@ const DATA_DIR = path.join(process.cwd(), 'data');
 const CONFIG_FILE = path.join(DATA_DIR, 'app-settings.json');
 
 export class ConfigService {
+    private static cache = new SimpleCache<AppSettings>();
+
     /**
      * Ensure data directory exists
      */
@@ -30,13 +33,22 @@ export class ConfigService {
      * Get current application settings
      */
     static async getSettings(): Promise<AppSettings> {
+        // Try get from cache first
+        const cached = this.cache.get('settings');
+        if (cached) return cached;
+
         try {
             await this.ensureDataDir();
 
             try {
                 const data = await fs.readFile(CONFIG_FILE, 'utf-8');
                 const settings = JSON.parse(data);
-                return { ...DEFAULT_SETTINGS, ...settings };
+                const result = { ...DEFAULT_SETTINGS, ...settings };
+                
+                // Store in cache (longer TTL for config, e.g. 1 hour)
+                this.cache.set('settings', result, 60 * 60 * 1000);
+                
+                return result;
             } catch (error) {
                 // Return default settings if file doesn't exist or is invalid
                 return DEFAULT_SETTINGS;
@@ -57,6 +69,9 @@ export class ConfigService {
 
             await this.ensureDataDir();
             await fs.writeFile(CONFIG_FILE, JSON.stringify(updated, null, 2), 'utf-8');
+
+            // Update cache
+            this.cache.set('settings', updated, 60 * 60 * 1000);
 
             return updated;
         } catch (error) {
