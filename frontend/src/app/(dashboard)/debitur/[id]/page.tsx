@@ -126,8 +126,8 @@ export default function DebiturDetailPage({
                     <Link
                         href={`/debitur/${id}/edit`}
                         className="flex items-center gap-2 px-4 py-2
-              bg-[#00665e] hover:bg-[#004d47] text-white
-              rounded-lg font-medium transition-all duration-200"
+              bg-[#00665e] hover:bg-[#004d47] !text-white
+              rounded-lg font-semibold transition-all duration-200"
                     >
                         <Edit className="w-4 h-4" />
                         Edit
