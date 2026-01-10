@@ -10,7 +10,7 @@ import React, { useEffect, useMemo } from "react";
 
 
 interface TabEUsulanProps {
-    kategori?: "purna" | "prapurna" | "fleksi_aktif";
+    kategori?: "purna" | "prapurna" | "aktif";
 }
 
 export default React.memo(function TabEUsulan({ kategori = "purna" }: TabEUsulanProps) {
@@ -88,9 +88,9 @@ export default React.memo(function TabEUsulan({ kategori = "purna" }: TabEUsulan
         }
 
         // 2. Get Manual Inputs
-        // Blokiran Pindah Gaji should not be counted for fleksi_aktif (and hidden in UI)
+        // Blokiran Pindah Gaji should not be counted for aktif (and hidden in UI)
         let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
-        if (kategori === "fleksi_aktif") {
+        if (kategori === "aktif") {
             pindahGaji = 0;
         }
 
@@ -122,8 +122,8 @@ export default React.memo(function TabEUsulan({ kategori = "purna" }: TabEUsulan
     const calculationResult = useMemo(() => {
         // Blokiran
         let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
-        // Logic for fleksi_aktif already handled above for defaults, but here for safety
-        if (kategori === "fleksi_aktif") pindahGaji = 0;
+        // Logic for aktif already handled above for defaults, but here for safety
+        if (kategori === "aktif") pindahGaji = 0;
 
         const blokirWajib = formData.blokiran_wajib_jml || 0;
 

@@ -1,8 +1,16 @@
 import Link from "next/link";
-import { Briefcase, UserCheck } from "lucide-react";
+import { Briefcase, UserCheck, Zap } from "lucide-react";
 
 // Product category data matching the Flask app
 const productCategories = [
+    {
+        key: "aktif",
+        nama: "BNI Fleksi Aktif",
+        description: "Kredit untuk pegawai aktif (Payroll BNI)",
+        icon: Zap,
+        href: "/form/aktif",
+        color: "from-[#1976d2] to-[#0d47a1]",
+    },
     {
         key: "prapurna_reguler",
         nama: "BNI Fleksi Pensiun Prapurna",

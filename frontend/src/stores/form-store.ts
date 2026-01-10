@@ -45,7 +45,7 @@ interface FormStore {
     clearErrors: () => void;
 
     // API actions
-    submitForm: (kategori: "prapurna" | "purna", isPurna: boolean) => Promise<{ success: boolean; id?: string }>;
+    submitForm: (kategori: "prapurna" | "purna" | "aktif", isPurna: boolean) => Promise<{ success: boolean; id?: string }>;
 }
 
 const initialFormData: Partial<DebiturFormData> = {
@@ -55,8 +55,13 @@ const initialFormData: Partial<DebiturFormData> = {
 };
 
 // Helper function to determine kategori based on form data
-function getKategori(isPurna: boolean): string {
-    return isPurna ? "PURNA" : "PRAPURNA";
+function getKategori(kategori: "prapurna" | "purna" | "aktif"): string {
+    const map: Record<string, string> = {
+        prapurna: "PRAPURNA",
+        purna: "PURNA",
+        aktif: "AKTIF",
+    };
+    return map[kategori] || "PRAPURNA";
 }
 
 // Helper function to map jenis pengajuan to API enum
@@ -155,7 +160,7 @@ export const useFormStore = create<FormStore>()(
                     const requestData = {
                         namaPemohon: formData.nama_pemohon || "",
                         noKtp: formData.no_ktp_pemohon || "",
-                        kategori: getKategori(isPurna),
+                        kategori: getKategori(kategori),
                         jenisPengajuan: mapJenisPengajuan(formData.jenis_pengajuan),
                         segmentasi: mapSegmentasi(formData.segmentasi),
                         dataLengkap: formData,

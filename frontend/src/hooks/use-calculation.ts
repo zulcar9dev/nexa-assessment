@@ -141,8 +141,8 @@ export function useCalculation() {
     /**
      * Helper to calculate Penghasilan based on Kategori
      */
-    const getPenghasilan = useCallback((kategori: "prapurna" | "purna") => {
-        if (kategori === "prapurna") {
+    const getPenghasilan = useCallback((kategori: "prapurna" | "purna" | "aktif") => {
+        if (kategori === "prapurna" || kategori === "aktif") {
             return parseRupiah(formData.estimasi_hak_pensiun || "0");
         } else {
             const gaji1 = parseRupiah(formData.pensiun_bulan_1_jumlah || "0");
@@ -171,7 +171,7 @@ export function useCalculation() {
      * Calculate DSR and update store - Local calculation (fast)
      */
     const calculateAndUpdateDSR = useCallback(
-        (kategori: "prapurna" | "purna") => {
+        (kategori: "prapurna" | "purna" | "aktif") => {
             // Get penghasilan
             const penghasilan = getPenghasilan(kategori);
 
@@ -209,7 +209,7 @@ export function useCalculation() {
      * Calculate DSR via API and update store - For server validation
      */
     const calculateAndUpdateDSRApi = useCallback(
-        async (kategori: "prapurna" | "purna") => {
+        async (kategori: "prapurna" | "purna" | "aktif") => {
             // Get penghasilan
             const penghasilan = getPenghasilan(kategori);
 
