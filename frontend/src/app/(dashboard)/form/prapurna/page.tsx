@@ -113,7 +113,7 @@ export default function FormPrapurnaPage() {
             case "tab-a":
                 return <TabAIdentitas />;
             case "tab-b":
-                return <TabBPekerjaan />;
+                return <TabBPekerjaan kategori="prapurna" />;
             case "tab-c":
                 return <TabCPenghasilan />;
             case "tab-d":

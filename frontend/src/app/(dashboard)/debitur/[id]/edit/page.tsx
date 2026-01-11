@@ -37,7 +37,7 @@ export default function EditDebiturPage({
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [isPurna, setIsPurna] = useState(false);
-    const [category, setCategory] = useState<"prapurna" | "purna">("prapurna");
+    const [category, setCategory] = useState<"prapurna" | "purna" | "aktif">("prapurna");
 
     // Store
     const {
@@ -68,8 +68,14 @@ export default function EditDebiturPage({
                 // Determine if this is Purna or Prapurna based on kategori
                 const kategori = String(data.kategori).toLowerCase();
                 const isPurnaType = kategori.includes("purna") && !kategori.includes("prapurna");
+                const isAktifType = kategori.includes("aktif");
+
                 setIsPurna(isPurnaType);
-                setCategory(isPurnaType ? "purna" : "prapurna");
+                if (isAktifType) {
+                    setCategory("aktif" as any); // Force cast for now or update type if possible
+                } else {
+                    setCategory(isPurnaType ? "purna" : "prapurna");
+                }
 
                 // Load dataLengkap into form store
                 if (data.dataLengkap) {
@@ -158,9 +164,9 @@ export default function EditDebiturPage({
             case "tab-a":
                 return <TabAIdentitas />;
             case "tab-b":
-                return isPurna ? <TabBDataPensiun /> : <TabBPekerjaan />;
+                return isPurna ? <TabBDataPensiun /> : <TabBPekerjaan kategori={category} />;
             case "tab-c":
-                return isPurna ? <TabCPenghasilanPurna /> : <TabCPenghasilan />;
+                return isPurna ? <TabCPenghasilanPurna /> : <TabCPenghasilan kategori={category} />;
             case "tab-d":
                 return <TabDSlik />;
             case "tab-e":

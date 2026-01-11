@@ -15,7 +15,7 @@ export type JenisPengajuan =
   | "takeover"
   | "fleksi_aktif";
 
-export type Segmentasi = "taspen" | "asabri";
+export type Segmentasi = "taspen" | "asabri" | "bumd_bumn" | "swasta" | "pemerintahan";
 
 export interface Debitur {
   id: string;

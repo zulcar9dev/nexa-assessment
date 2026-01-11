@@ -131,9 +131,8 @@ function LoginContent() {
                         </p>
                     </div>
 
-                    {/* Footer Info */}
                     <div className="text-sm text-white/90 font-medium drop-shadow-sm">
-                        <p>Sistem Internal v1.0.0</p>
+                        <p>Sistem Internal v{process.env.APP_VERSION}</p>
                     </div>
                 </div>
             </div>
@@ -397,10 +396,10 @@ export default function LoginPage() {
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e293b]">
                 <div className="flex flex-col items-center gap-4">
-                     <div className="w-12 h-12 bg-[#00665e] rounded-xl flex items-center justify-center shadow-lg animate-pulse">
-                         <span className="text-white font-bold text-2xl">B</span>
-                     </div>
-                     <p className="text-[#00665e] font-medium text-sm animate-pulse">Memuat...</p>
+                    <div className="w-12 h-12 bg-[#00665e] rounded-xl flex items-center justify-center shadow-lg animate-pulse">
+                        <span className="text-white font-bold text-2xl">B</span>
+                    </div>
+                    <p className="text-[#00665e] font-medium text-sm animate-pulse">Memuat...</p>
                 </div>
             </div>
         }>

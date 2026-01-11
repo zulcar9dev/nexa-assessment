@@ -240,6 +240,13 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                             </ul>
                         </div>
                     </nav>
+
+                    {/* Version Info */}
+                    <div className="px-6 py-4 mt-auto border-t border-gray-200 dark:border-[#444564]">
+                        <p className="text-xs text-gray-400 text-center">
+                            Versi {process.env.APP_VERSION}
+                        </p>
+                    </div>
                 </div>
             </aside>
         </>

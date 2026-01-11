@@ -10,7 +10,7 @@ import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
 import React from "react";
 
-export default React.memo(function TabBPekerjaan() {
+export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: string }) {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
@@ -76,8 +76,18 @@ export default React.memo(function TabBPekerjaan() {
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             >
                                 <option value="">Pilih Segmentasi</option>
-                                <option value="taspen">TASPEN</option>
-                                <option value="asabri">ASABRI</option>
+                                {kategori === "aktif" ? (
+                                    <>
+                                        <option value="bumd_bumn">Perusahaan BUMD/BUMN (Group)</option>
+                                        <option value="swasta">Perusahaan Swasta (Payroll/Non Payroll)</option>
+                                        <option value="pemerintahan">Instansi Pemerintahan/Kementerian</option>
+                                    </>
+                                ) : (
+                                    <>
+                                        <option value="taspen">TASPEN</option>
+                                        <option value="asabri">ASABRI</option>
+                                    </>
+                                )}
                             </select>
                         </div>
 
@@ -208,14 +218,20 @@ export default React.memo(function TabBPekerjaan() {
                         {/* SK CPNS / Pengangkatan */}
                         <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
                             <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">
-                                {formData.segmentasi === "asabri" ? "Data SK PENGANGKATAN" : "Data SK CPNS"}
+                                {kategori === "aktif"
+                                    ? (formData.segmentasi === "pemerintahan" ? "Data SK CPNS" : "Data SK PENGANGKATAN")
+                                    : (formData.segmentasi === "asabri" ? "Data SK PENGANGKATAN" : "Data SK CPNS")
+                                }
                             </h4>
                             <div>
                                 <label
                                     htmlFor="no_sk_cpns"
                                     className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
                                 >
-                                    {formData.segmentasi === "asabri" ? "Nomor SK PENGANGKATAN" : "Nomor SK CPNS"}
+                                    {kategori === "aktif"
+                                        ? (formData.segmentasi === "pemerintahan" ? "Nomor SK CPNS" : "Nomor SK PENGANGKATAN")
+                                        : (formData.segmentasi === "asabri" ? "Nomor SK PENGANGKATAN" : "Nomor SK CPNS")
+                                    }
                                 </label>
                                 <input
                                     id="no_sk_cpns"
@@ -231,7 +247,10 @@ export default React.memo(function TabBPekerjaan() {
                                     htmlFor="tgl_sk_cpns"
                                     className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
                                 >
-                                    {formData.segmentasi === "asabri" ? "Tanggal SK PENGANGKATAN" : "Tanggal SK CPNS"}
+                                    {kategori === "aktif"
+                                        ? (formData.segmentasi === "pemerintahan" ? "Tanggal SK CPNS" : "Tanggal SK PENGANGKATAN")
+                                        : (formData.segmentasi === "asabri" ? "Tanggal SK PENGANGKATAN" : "Tanggal SK CPNS")
+                                    }
                                 </label>
                                 <input
                                     id="tgl_sk_cpns"
@@ -281,29 +300,31 @@ export default React.memo(function TabBPekerjaan() {
                             </div>
                         </div>
 
-                        {/* Tanggal Pensiun */}
-                        <div>
-                            <label
-                                htmlFor="tgl_pensiun_pemohon"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                Tanggal Pensiun (TMT)
-                            </label>
-                            <input
-                                id="tgl_pensiun_pemohon"
-                                name="tgl_pensiun_pemohon"
-                                type="date"
-                                value={formData.tgl_pensiun_pemohon || ""}
-                                onChange={(e) => updateField("tgl_pensiun_pemohon", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
-                            />
-                            {/* Calculation Result Display */}
-                            {formData.tgl_pensiun_pemohon && (
-                                <p className="mt-1.5 text-xs font-medium text-[#00665e] dark:text-[#80cbc4]">
-                                    Sisa Masa Kerja: {formData.sisa_masa_kerja || "Menghitung..."}
-                                </p>
-                            )}
-                        </div>
+                        {/* Tanggal Pensiun - Hidden for Aktif */}
+                        {kategori !== "aktif" && (
+                            <div>
+                                <label
+                                    htmlFor="tgl_pensiun_pemohon"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Tanggal Pensiun (TMT)
+                                </label>
+                                <input
+                                    id="tgl_pensiun_pemohon"
+                                    name="tgl_pensiun_pemohon"
+                                    type="date"
+                                    value={formData.tgl_pensiun_pemohon || ""}
+                                    onChange={(e) => updateField("tgl_pensiun_pemohon", e.target.value)}
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                                {/* Calculation Result Display */}
+                                {formData.tgl_pensiun_pemohon && (
+                                    <p className="mt-1.5 text-xs font-medium text-[#00665e] dark:text-[#80cbc4]">
+                                        Sisa Masa Kerja: {formData.sisa_masa_kerja || "Menghitung..."}
+                                    </p>
+                                )}
+                            </div>
+                        )}
 
                         {/* Alamat Kantor */}
                         <div className="col-span-1 md:col-span-2 lg:col-span-3">

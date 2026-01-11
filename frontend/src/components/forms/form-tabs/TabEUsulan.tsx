@@ -269,22 +269,24 @@ export default React.memo(function TabEUsulan({ kategori = "purna" }: TabEUsulan
                     </div>
                 </div>
 
-                {/* Biaya Tata Laksana */}
-                <div>
-                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Biaya Tata Laksana (%)
-                    </label>
-                    <div className="relative">
-                        <input
-                            type="number"
-                            value={formData.biaya_tatalaksana || ""}
-                            onChange={(e) => updateField("biaya_tatalaksana", e.target.value)}
-                            placeholder="2"
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
-                        />
-                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">%</span>
+                {/* Biaya Tata Laksana - Hidden for Aktif */}
+                {kategori !== "aktif" && (
+                    <div>
+                        <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                            Biaya Tata Laksana (%)
+                        </label>
+                        <div className="relative">
+                            <input
+                                type="number"
+                                value={formData.biaya_tatalaksana || ""}
+                                onChange={(e) => updateField("biaya_tatalaksana", e.target.value)}
+                                placeholder="2"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                            />
+                            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">%</span>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Biaya PSJT */}
                 <div>
@@ -346,102 +348,106 @@ export default React.memo(function TabEUsulan({ kategori = "purna" }: TabEUsulan
                     </div>
                 </div>
 
-                {/* --- DATA BLOKIRAN (KHUSUS PRAPURNA) --- */}
-                <div className="md:col-span-2 lg:col-span-3">
-                    <hr className="my-2 border-[#cdeae7] dark:border-opacity-10" />
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2 mt-4">
-                        <Calculator className="w-6 h-6 text-[#00665e]" />
-                        Data Blokiran (Khusus Prapurna)
-                    </h3>
-                </div>
+                {/* --- DATA BLOKIRAN (KHUSUS PRAPURNA) - Hidden for Aktif --- */}
+                {kategori !== "aktif" && (
+                    <>
+                        <div className="md:col-span-2 lg:col-span-3">
+                            <hr className="my-2 border-[#cdeae7] dark:border-opacity-10" />
+                            <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2 mt-4">
+                                <Calculator className="w-6 h-6 text-[#00665e]" />
+                                Data Blokiran (Khusus Prapurna)
+                            </h3>
+                        </div>
 
-                {/* Blokiran Prapurna */}
-                <div>
-                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Blokiran Prapurna
-                    </label>
-                    <p className="text-xs text-gray-500 mb-2">
-                        Otomatis: Selisih bulan (Tgl Pensiun - Hari Ini)
-                    </p>
-                    <div className="relative">
-                        <input
-                            type="number"
-                            value={formData.blokiran_prapurna_jml || ""}
-                            readOnly
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-gray-100 text-gray-500 sm:text-sm py-2.5 pr-12 pl-3 text-right"
-                        />
-                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
-                    </div>
-                </div>
-
-                {/* Blokiran Pindah Gaji */}
-                <div>
-                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Blokiran Pindah Gaji
-                    </label>
-                    <p className="text-xs text-gray-500 mb-2">
-                        Input manual jumlah kali angsuran
-                    </p>
-                    <div className="relative">
-                        <input
-                            type="number"
-                            value={formData.blokiran_pindah_gaji_jml || ""}
-                            onChange={(e) => {
-                                const val = parseInt(e.target.value) || 0;
-                                updateField("blokiran_pindah_gaji_jml", val);
-                            }}
-                            placeholder="0"
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
-                        />
-                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
-                    </div>
-                </div>
-
-                {/* Blokiran Wajib */}
-                <div>
-                    <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
-                        Blokiran Wajib
-                    </label>
-                    <p className="text-xs text-gray-500 mb-2">
-                        Input manual jumlah kali angsuran
-                    </p>
-                    <div className="relative">
-                        <input
-                            type="number"
-                            value={formData.blokiran_wajib_jml || ""}
-                            onChange={(e) => {
-                                const val = parseInt(e.target.value) || 0;
-                                updateField("blokiran_wajib_jml", val);
-                            }}
-                            placeholder="0"
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
-                        />
-                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
-                    </div>
-                </div>
-
-                {/* Total Blokiran */}
-                <div className="md:col-span-2 lg:col-span-3 bg-[#e6f4f3] dark:bg-[#00665e]/20 rounded-lg p-4 mt-2">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        {/* Blokiran Prapurna */}
                         <div>
-                            <label className="block text-sm font-bold text-[#0c1d1b] dark:text-gray-200">
-                                Total Blokiran
+                            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                                Blokiran Prapurna
                             </label>
-                            <p className="text-sm text-[#00665e] italic">
-                                Terbilang: {formData.total_blokiran_jml ? terbilang(formData.total_blokiran_jml) : "Nol"}
+                            <p className="text-xs text-gray-500 mb-2">
+                                Otomatis: Selisih bulan (Tgl Pensiun - Hari Ini)
                             </p>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={formData.blokiran_prapurna_jml || ""}
+                                    readOnly
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-gray-100 text-gray-500 sm:text-sm py-2.5 pr-12 pl-3 text-right"
+                                />
+                                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                            </div>
                         </div>
-                        <div className="relative w-full md:w-1/3">
-                            <input
-                                type="number"
-                                value={formData.total_blokiran_jml || 0}
-                                readOnly
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-white font-bold text-[#00665e] sm:text-lg py-2.5 pr-12 pl-3 text-right"
-                            />
-                            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+
+                        {/* Blokiran Pindah Gaji */}
+                        <div>
+                            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                                Blokiran Pindah Gaji
+                            </label>
+                            <p className="text-xs text-gray-500 mb-2">
+                                Input manual jumlah kali angsuran
+                            </p>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={formData.blokiran_pindah_gaji_jml || ""}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value) || 0;
+                                        updateField("blokiran_pindah_gaji_jml", val);
+                                    }}
+                                    placeholder="0"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                                />
+                                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
+
+                        {/* Blokiran Wajib */}
+                        <div>
+                            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+                                Blokiran Wajib
+                            </label>
+                            <p className="text-xs text-gray-500 mb-2">
+                                Input manual jumlah kali angsuran
+                            </p>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    value={formData.blokiran_wajib_jml || ""}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value) || 0;
+                                        updateField("blokiran_wajib_jml", val);
+                                    }}
+                                    placeholder="0"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                                />
+                                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                            </div>
+                        </div>
+
+                        {/* Total Blokiran */}
+                        <div className="md:col-span-2 lg:col-span-3 bg-[#e6f4f3] dark:bg-[#00665e]/20 rounded-lg p-4 mt-2">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-[#0c1d1b] dark:text-gray-200">
+                                        Total Blokiran
+                                    </label>
+                                    <p className="text-sm text-[#00665e] italic">
+                                        Terbilang: {formData.total_blokiran_jml ? terbilang(formData.total_blokiran_jml) : "Nol"}
+                                    </p>
+                                </div>
+                                <div className="relative w-full md:w-1/3">
+                                    <input
+                                        type="number"
+                                        value={formData.total_blokiran_jml || 0}
+                                        readOnly
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-white font-bold text-[#00665e] sm:text-lg py-2.5 pr-12 pl-3 text-right"
+                                    />
+                                    <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">Kali</span>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
 
 
                 {/* Syarat Penandatanganan */}

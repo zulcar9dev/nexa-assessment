@@ -113,9 +113,9 @@ export default function FormAktifPage() {
             case "tab-a":
                 return <TabAIdentitas />;
             case "tab-b":
-                return <TabBPekerjaan />;
+                return <TabBPekerjaan kategori="aktif" />;
             case "tab-c":
-                return <TabCPenghasilan />;
+                return <TabCPenghasilan kategori="aktif" />;
             case "tab-d":
                 return <TabDSlik />;
             case "tab-e":
