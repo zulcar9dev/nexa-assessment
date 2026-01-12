@@ -54,6 +54,7 @@ model Debitur {
 enum Kategori {
   PRAPURNA
   PURNA
+  AKTIF
 }
 
 enum JenisPengajuan {

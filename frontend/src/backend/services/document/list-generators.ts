@@ -69,9 +69,10 @@ export class ListGenerators {
       // 6. Info Pensiunan
       const pensiunan = context.pensiunan || "-";
       const instansi = context.instansi || "-";
+      const tmtPensiun = context.tgl_pensiun_tmt || "-";
       const noSk = context.no_sk_pensiun || "-";
       const tglSk = context.tgl_sk_pensiun || "-";
-      list.push(`Pemohon merupakan Pensiunan ${pensiunan} di ${instansi}. Cfm ${noSk} tanggal ${tglSk}.`);
+      list.push(`Pemohon merupakan Pensiunan ${pensiunan} di ${instansi} TMT Pensiun ${tmtPensiun}. Cfm ${noSk} tanggal ${tglSk}.`);
     }
 
     // 7. Maksud Pengajuan

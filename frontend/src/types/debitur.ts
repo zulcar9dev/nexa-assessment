@@ -2,10 +2,21 @@
 // Reverting to lowercase types to match frontend components
 
 export type Kategori =
-  | "prapurna_reguler"
+  // Prapurna
+  | "prapurna_baru"
+  | "prapurna_top_up"
+  | "prapurna_top_up_sisa_gaji"
+  | "prapurna_tht"
   | "prapurna_takeover"
-  | "purna_reguler"
-  | "purna_takeover";
+  // Purna
+  | "purna_baru"
+  | "purna_top_up"
+  | "purna_top_up_sisa_gaji"
+  | "purna_takeover"
+  // Aktif
+  | "aktif_baru"
+  | "aktif_top_up"
+  | "aktif_takeover";
 
 export type JenisPengajuan =
   | "baru"

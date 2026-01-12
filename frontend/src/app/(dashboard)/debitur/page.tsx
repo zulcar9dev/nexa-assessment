@@ -8,8 +8,10 @@ import { useDebitur } from "@/hooks/use-debitur";
 const kategoriLabels: Record<string, string> = {
     PRAPURNA: "BNI Fleksi Pensiun Prapurna",
     PURNA: "BNI Fleksi Pensiun Purna",
+    AKTIF: "BNI Fleksi Aktif",
     prapurna: "BNI Fleksi Pensiun Prapurna",
     purna: "BNI Fleksi Pensiun Purna",
+    aktif: "BNI Fleksi Aktif",
 };
 
 const jenisBadgeColors: Record<string, string> = {
@@ -17,10 +19,12 @@ const jenisBadgeColors: Record<string, string> = {
     TOP_UP: "badge-warning",
     TOP_UP_SISA_GAJI: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300",
     TAKEOVER: "badge-danger",
+    FLEKSI_AKTIF: "badge-success",
     baru: "badge-primary",
     top_up: "badge-warning",
     top_up_sisa_gaji: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300",
     takeover: "badge-danger",
+    fleksi_aktif: "badge-success",
 };
 
 const jenisLabels: Record<string, string> = {
@@ -28,15 +32,18 @@ const jenisLabels: Record<string, string> = {
     TOP_UP: "Top Up",
     TOP_UP_SISA_GAJI: "Top Up Sisa Gaji",
     TAKEOVER: "Take Over",
+    FLEKSI_AKTIF: "Fleksi Aktif",
     baru: "Baru",
     top_up: "Top Up",
     top_up_sisa_gaji: "Top Up Sisa Gaji",
     takeover: "Take Over",
+    fleksi_aktif: "Fleksi Aktif",
 };
 
 export default function RiwayatDebiturPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [jenisFilter, setJenisFilter] = useState("");
+    const [kategoriFilter, setKategoriFilter] = useState("");
     const [segmenFilter, setSegmenFilter] = useState("");
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
@@ -56,9 +63,10 @@ export default function RiwayatDebiturPage() {
         fetchDebitur({
             q: searchQuery || undefined,
             jenis: jenisFilter || undefined,
+            kategori: kategoriFilter || undefined,
             segmentasi: segmenFilter || undefined,
         });
-    }, [fetchDebitur, searchQuery, jenisFilter, segmenFilter]);
+    }, [fetchDebitur, searchQuery, jenisFilter, kategoriFilter, segmenFilter]);
 
     useEffect(() => {
         loadData();
@@ -67,6 +75,7 @@ export default function RiwayatDebiturPage() {
     const resetFilters = () => {
         setSearchQuery("");
         setJenisFilter("");
+        setKategoriFilter("");
         setSegmenFilter("");
     };
 
@@ -139,6 +148,23 @@ export default function RiwayatDebiturPage() {
                             />
                         </div>
 
+                        {/* Kategori Filter */}
+                        <select
+                            value={kategoriFilter}
+                            onChange={(e) => setKategoriFilter(e.target.value)}
+                            className="w-full px-4 py-2.5 
+                bg-white dark:bg-[#323249] 
+                border border-gray-200 dark:border-[#444564]
+                rounded-lg text-sm
+                focus:outline-none focus:ring-2 focus:ring-[#00665e]/20 focus:border-[#00665e]
+                transition-all duration-200"
+                        >
+                            <option value="">-- Semua Kategori --</option>
+                            <option value="PRAPURNA">Fleksi Pensiun Prapurna</option>
+                            <option value="PURNA">Fleksi Pensiun Purna</option>
+                            <option value="AKTIF">Fleksi Aktif</option>
+                        </select>
+
                         {/* Jenis Filter */}
                         <select
                             value={jenisFilter}
@@ -186,7 +212,7 @@ export default function RiwayatDebiturPage() {
                                 Input Baru
                             </Link>
 
-                            {(searchQuery || jenisFilter || segmenFilter) && (
+                            {(searchQuery || jenisFilter || kategoriFilter || segmenFilter) && (
                                 <button
                                     onClick={resetFilters}
                                     className="px-3 py-2.5 

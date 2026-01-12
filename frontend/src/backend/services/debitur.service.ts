@@ -17,6 +17,7 @@ import { Kategori, JenisPengajuan, Segmentasi } from '@/types/debitur';
 
 // Mapping Helpers
 function mapToPrismaKategori(k: Kategori | string): PrismaKategori {
+    if (k.includes('aktif')) return PrismaKategori.AKTIF;
     if (k.includes('prapurna')) return PrismaKategori.PRAPURNA;
     if (k.includes('purna')) return PrismaKategori.PURNA;
     return PrismaKategori.PRAPURNA; // Fallback
