@@ -14,6 +14,11 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
+    // Determine if civilian/rank-related fields should be hidden
+    // For "aktif" category: hide for BUMN/BUMD and Swasta (only show for Pemerintahan)
+    const shouldHideRankFields = kategori === "aktif" && 
+        (formData.segmentasi === "bumd_bumn" || formData.segmentasi === "swasta");
+
     // Effect: Calculate remaining service time when Date of Retirement changes
     useEffect(() => {
         if (formData.tgl_pensiun_pemohon) {
@@ -154,42 +159,48 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         </div>
 
                         {/* Golongan */}
-                        <div>
-                            <label
-                                htmlFor="golongan"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                Golongan/Pangkat
-                            </label>
-                            <input
-                                id="golongan"
-                                name="golongan"
-                                type="text"
-                                value={formData.golongan || ""}
-                                onChange={(e) => updateField("golongan", e.target.value)}
-                                placeholder="e.g. IV/a"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
-                            />
-                        </div>
+                        {/* Golongan - Hidden for BUMN/BUMD and Swasta */}
+                        {!shouldHideRankFields && (
+                            <div>
+                                <label
+                                    htmlFor="golongan"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Golongan/Pangkat
+                                </label>
+                                <input
+                                    id="golongan"
+                                    name="golongan"
+                                    type="text"
+                                    value={formData.golongan || ""}
+                                    onChange={(e) => updateField("golongan", e.target.value)}
+                                    placeholder="e.g. IV/a"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        )}
 
                         {/* NIP */}
-                        <div>
-                            <label
-                                htmlFor="nip"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                            >
-                                NIP/NRP
-                            </label>
-                            <input
-                                id="nip"
-                                name="nip"
-                                type="text"
-                                value={formData.nip || ""}
-                                onChange={(e) => updateField("nip", e.target.value)}
-                                placeholder="19xxxxxxxxxxxxxxxxx"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
-                            />
-                        </div>
+                        {/* NIP - Hidden for BUMN/BUMD and Swasta */}
+                        {!shouldHideRankFields && (
+                            <div>
+                                <label
+                                    htmlFor="nip"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    NIP/NRP
+                                </label>
+                                <input
+                                    id="nip"
+                                    name="nip"
+                                    type="text"
+                                    value={formData.nip || ""}
+                                    onChange={(e) => updateField("nip", e.target.value)}
+                                    placeholder="19xxxxxxxxxxxxxxxxx"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                                />
+                            </div>
+                        )}
 
                         {/* Tanggal Mulai Kerja */}
                         <div>
@@ -264,41 +275,44 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         </div>
 
                         {/* SK Kenaikan Pangkat */}
-                        <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
-                            <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">Data SK Kenaikan Pangkat Terakhir</h4>
-                            <div>
-                                <label
-                                    htmlFor="no_sk_kenaikan_pangkat"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                                >
-                                    Nomor SK Kenaikan Pangkat
-                                </label>
-                                <input
-                                    id="no_sk_kenaikan_pangkat"
-                                    name="no_sk_kenaikan_pangkat"
-                                    type="text"
-                                    value={formData.no_sk_kenaikan_pangkat || ""}
-                                    onChange={(e) => updateField("no_sk_kenaikan_pangkat", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
-                                />
+                        {/* SK Kenaikan Pangkat - Hidden for BUMN/BUMD and Swasta */}
+                        {!shouldHideRankFields && (
+                            <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
+                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">Data SK Kenaikan Pangkat Terakhir</h4>
+                                <div>
+                                    <label
+                                        htmlFor="no_sk_kenaikan_pangkat"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        Nomor SK Kenaikan Pangkat
+                                    </label>
+                                    <input
+                                        id="no_sk_kenaikan_pangkat"
+                                        name="no_sk_kenaikan_pangkat"
+                                        type="text"
+                                        value={formData.no_sk_kenaikan_pangkat || ""}
+                                        onChange={(e) => updateField("no_sk_kenaikan_pangkat", e.target.value)}
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="tgl_sk_kenaikan_pangkat"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        Tanggal SK Kenaikan Pangkat
+                                    </label>
+                                    <input
+                                        id="tgl_sk_kenaikan_pangkat"
+                                        name="tgl_sk_kenaikan_pangkat"
+                                        type="date"
+                                        value={formData.tgl_sk_kenaikan_pangkat || ""}
+                                        onChange={(e) => updateField("tgl_sk_kenaikan_pangkat", e.target.value)}
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <label
-                                    htmlFor="tgl_sk_kenaikan_pangkat"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
-                                >
-                                    Tanggal SK Kenaikan Pangkat
-                                </label>
-                                <input
-                                    id="tgl_sk_kenaikan_pangkat"
-                                    name="tgl_sk_kenaikan_pangkat"
-                                    type="date"
-                                    value={formData.tgl_sk_kenaikan_pangkat || ""}
-                                    onChange={(e) => updateField("tgl_sk_kenaikan_pangkat", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
-                                />
-                            </div>
-                        </div>
+                        )}
 
                         {/* Tanggal Pensiun - Hidden for Aktif */}
                         {kategori !== "aktif" && (

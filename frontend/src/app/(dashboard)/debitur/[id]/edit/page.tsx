@@ -78,8 +78,15 @@ export default function EditDebiturPage({
                 }
 
                 // Load dataLengkap into form store
-                if (data.dataLengkap) {
-                    setFormData(data.dataLengkap);
+                if (data.dataLengkap && Object.keys(data.dataLengkap as object).length > 0) {
+                     setFormData({
+                        ...(data.dataLengkap as any),
+                        // Ensure critical fields match DB columns
+                        nama_pemohon: data.namaPemohon,
+                        no_ktp_pemohon: data.noKtp,
+                        segmentasi: String(data.segmentasi).toLowerCase(),
+                        jenis_pengajuan: String(data.jenisPengajuan).toLowerCase(),
+                     });
                 } else {
                     // Fallback to basic data
                     setFormData({
@@ -219,10 +226,10 @@ export default function EditDebiturPage({
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-[#00665e] dark:text-[#80cbc4]">
-                        Edit Data {isPurna ? "Purna" : "Prapurna"}
+                        Edit Data {category === "aktif" ? "Aktif" : isPurna ? "Purna" : "Prapurna"}
                     </h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {isPurna ? "BNI Fleksi Pensiun Purna" : "BNI Fleksi Pensiun Prapurna"} &bull; {String(formData.nama_pemohon || formData.nama_lengkap || "Loading...")}
+                        {category === "aktif" ? "BNI Fleksi Aktif" : isPurna ? "BNI Fleksi Pensiun Purna" : "BNI Fleksi Pensiun Prapurna"} &bull; {String(formData.nama_pemohon || formData.nama_lengkap || "Loading...")}
                     </p>
                 </div>
             </div>
