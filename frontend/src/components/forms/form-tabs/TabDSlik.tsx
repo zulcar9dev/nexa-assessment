@@ -239,7 +239,7 @@ export default React.memo(function TabDSlik() {
                 <div className="relative max-w-sm">
                     <input
                         type="date"
-                        value={formData.tgl_slik || new Date().toISOString().split('T')[0]}
+                        value={formData.tgl_slik ?? ""}
                         onChange={(e) => setFormData({ tgl_slik: e.target.value })}
                         className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2 px-3 pl-10 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                     />
