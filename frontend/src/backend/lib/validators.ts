@@ -13,7 +13,7 @@ export const CreateDebiturSchema = z.object({
         "aktif_baru", "aktif_top_up", "aktif_takeover"
     ]),
     jenisPengajuan: z.enum(["baru", "top_up", "top_up_sisa_gaji", "tht", "takeover", "fleksi_aktif"]),
-    segmentasi: z.enum(["taspen", "asabri"]),
+    segmentasi: z.enum(["taspen", "asabri", "bumd_bumn", "swasta", "pemerintahan"]),
     dataLengkap: z.record(z.string(), z.any()).default({}), // Default to empty object if missing
 });
 

@@ -113,10 +113,11 @@ function mapJenisPengajuan(jenis?: string): string {
 }
 
 // Helper function to map segmentasi to API enum (lowercase)
-// Valid values: taspen, asabri
+// Valid values: taspen, asabri, bumd_bumn, swasta, pemerintahan
 function mapSegmentasi(segmentasi?: string): string {
+  const validOptions = ["taspen", "asabri", "bumd_bumn", "swasta", "pemerintahan"];
   const value = (segmentasi || "taspen").toLowerCase();
-  return value === "asabri" ? "asabri" : "taspen";
+  return validOptions.includes(value) ? value : "taspen";
 }
 
 export const useFormStore = create<FormStore>()(

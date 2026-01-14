@@ -105,6 +105,23 @@ export const debiturPurnaSchema = z.object({
     ...usulanSchema.shape,
 });
 
+// Tab B - Pekerjaan Validation (Aktif) - BARU
+export const pekerjaanAktifSchema = z.object({
+    segmentasi: z.enum(["bumd_bumn", "swasta", "pemerintahan"]),
+    jenis_pengajuan: z.enum(["baru", "top_up", "takeover"]),
+    instansi: z.string().min(1, "Instansi wajib diisi"),
+    tgl_mulai_kerja: z.string().optional(),
+});
+
+// Complete Form Schema (Aktif) - BARU
+export const debiturAktifSchema = z.object({
+    ...identitasSchema.shape,
+    ...pekerjaanAktifSchema.shape,
+    ...penghasilanPrapurnaSchema.shape,
+    ...slikSchema.shape,
+    ...usulanSchema.shape,
+});
+
 // Type exports
 export type IdentitasFormData = z.infer<typeof identitasSchema>;
 export type PekerjaanPrapurnaFormData = z.infer<typeof pekerjaanPrapurnaSchema>;
@@ -115,3 +132,5 @@ export type SlikFormData = z.infer<typeof slikSchema>;
 export type UsulanFormData = z.infer<typeof usulanSchema>;
 export type DebiturPrapurnaFormData = z.infer<typeof debiturPrapurnaSchema>;
 export type DebiturPurnaFormData = z.infer<typeof debiturPurnaSchema>;
+export type PekerjaanAktifFormData = z.infer<typeof pekerjaanAktifSchema>;
+export type DebiturAktifFormData = z.infer<typeof debiturAktifSchema>;

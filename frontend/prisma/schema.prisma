@@ -67,6 +67,9 @@ enum JenisPengajuan {
 enum Segmentasi {
   TASPEN
   ASABRI
+  BUMD_BUMN
+  SWASTA
+  PEMERINTAHAN
 }
 
 // ============ TEMPLATE ============
