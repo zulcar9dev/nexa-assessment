@@ -1,5 +1,5 @@
 
-export type KategoriDoc = "prapurna" | "purna";
+export type KategoriDoc = "prapurna" | "purna" | "aktif";
 
 export interface SlikFacility {
   nama_bank: string;

@@ -139,6 +139,28 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             />
                         </div>
 
+
+                        {/* Perusahaan Induk (BUMN/BUMD Only) */}
+                        {formData.segmentasi === "bumd_bumn" && (
+                            <div className="col-span-1 md:col-span-2">
+                                <label
+                                    htmlFor="parent_company"
+                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                >
+                                    Nama Perusahaan Induk
+                                </label>
+                                <input
+                                    id="parent_company"
+                                    name="parent_company"
+                                    type="text"
+                                    value={formData.parent_company || ""}
+                                    onChange={(e) => updateField("parent_company", e.target.value)}
+                                    placeholder="e.g. PT. PLN Nusa Daya"
+                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                />
+                            </div>
+                        )}
+
                         {/* Jabatan */}
                         <div>
                             <label
@@ -154,6 +176,26 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 value={formData.jabatan || ""}
                                 onChange={(e) => updateField("jabatan", e.target.value)}
                                 placeholder="e.g. Kepala Bagian"
+                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            />
+                        </div>
+
+
+                        {/* Unit Kerja / Penempatan */}
+                        <div>
+                            <label
+                                htmlFor="unit_kerja"
+                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            >
+                                Unit Kerja / Penempatan
+                            </label>
+                            <input
+                                id="unit_kerja"
+                                name="unit_kerja"
+                                type="text"
+                                value={formData.unit_kerja || ""}
+                                onChange={(e) => updateField("unit_kerja", e.target.value)}
+                                placeholder="e.g. ULP Limboto"
                                 className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
                             />
                         </div>

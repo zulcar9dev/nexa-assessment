@@ -142,8 +142,25 @@ export function useCalculation() {
      * Helper to calculate Penghasilan based on Kategori
      */
     const getPenghasilan = useCallback((kategori: "prapurna" | "purna" | "aktif") => {
-        if (kategori === "prapurna" || kategori === "aktif") {
+        if (kategori === "prapurna") {
             return parseRupiah(formData.estimasi_hak_pensiun || "0");
+        } else if (kategori === "aktif") {
+            // Untuk Aktif: hitung variance dan tentukan penghasilan
+            const gaji1 = parseRupiah(formData.gaji_bulan_1_jumlah || "0");
+            const gaji2 = parseRupiah(formData.gaji_bulan_2_jumlah || "0");
+            const gaji3 = parseRupiah(formData.gaji_bulan_3_jumlah || "0");
+            const gajiList = [gaji1, gaji2, gaji3].filter((g) => g > 0);
+
+            if (gajiList.length > 0) {
+                const maxGaji = Math.max(...gajiList);
+                const minGaji = Math.min(...gajiList);
+                const variance = maxGaji > 0 ? ((maxGaji - minGaji) / maxGaji) * 100 : 0;
+                // Variance ≤ 20%: rata-rata, selain itu terkecil
+                return variance <= 20
+                    ? Math.round(gajiList.reduce((a, b) => a + b, 0) / gajiList.length)
+                    : minGaji;
+            }
+            return 0;
         } else {
             const gaji1 = parseRupiah(formData.pensiun_bulan_1_jumlah || "0");
             const gaji2 = parseRupiah(formData.pensiun_bulan_2_jumlah || "0");
@@ -185,9 +202,14 @@ export function useCalculation() {
             // Calculate DSR
             const totalAngsuran = totalAngsuranEksisting + angsuranBaru;
             const dsr = calculateDSR(penghasilan, totalAngsuran);
-            const dsc90 = penghasilan * 0.9;
-            const maksimalAngsuran = calculateMaxCapacity(penghasilan, totalAngsuranEksisting);
-            const isValid = validateDSR(dsr);
+
+            // Determine limit based on category
+            const limitPercentage = kategori === "aktif" ? 60 : 90;
+            const limitMultiplier = kategori === "aktif" ? 0.6 : 0.9;
+
+            const dsc90 = penghasilan * 0.9; // Keep as 90 for compatibility / reference
+            const maksimalAngsuran = calculateMaxCapacity(penghasilan, totalAngsuranEksisting, limitMultiplier);
+            const isValid = validateDSR(dsr, limitPercentage);
 
             const result: DSRResult = {
                 dsr,

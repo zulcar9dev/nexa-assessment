@@ -89,6 +89,20 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Total Angsuran Baru", value: "{{rpc_total_angsuran_baru}}" },
     { label: "DSR (%)", value: "{{rpc_dsr}}" },
 
+    // 5a. RPC Fleksi Aktif (DSC 60%)
+    { label: "Gaji Pemohon (Terkecil/Rata-rata)", value: "{{aktif_gaji_pemohon}}" },
+    { label: "Nomor Rekening Gaji Aktif", value: "{{aktif_nomor_rekening_gaji}}" },
+    { label: "Bulan Gaji Aktif (Label)", value: "{{aktif_bulan_gaji}}" },
+    { label: "Jumlah Gaji Bulan Aktif", value: "{{aktif_jumlah_gaji_bulan}}" },
+    { label: "Penghasilan Calon Debitur Aktif", value: "{{aktif_penghasilan_calon_debitur}}" },
+    { label: "DSC 60%", value: "{{aktif_dsc_60}}" },
+    { label: "Total Angsuran Calon Debitur Aktif", value: "{{aktif_total_angsuran_calon_debitur}}" },
+    { label: "Maksimal Angsuran Aktif", value: "{{aktif_maksimal_angsuran}}" },
+    { label: "Angsuran Kredit Diusulkan Aktif", value: "{{aktif_angsuran_diusulkan}}" },
+    { label: "Total Angsuran Eksisting & Diusulkan", value: "{{aktif_total_angsuran_all}}" },
+    { label: "DSR Aktif (%)", value: "{{aktif_dsr}}" },
+    { label: "Keterangan DSR Limit", value: "{{aktif_dsr_keterangan}}" },
+
     // 6. USULAN KREDIT
     { label: "Maksimum Kredit (Usulan)", value: "{{usulan_plafon}}" },
     { label: "Jangka Waktu (Usulan)", value: "{{usulan_jangka_waktu}}" },

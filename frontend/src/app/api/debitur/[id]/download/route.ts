@@ -69,22 +69,33 @@ export async function GET(
         // Logic selection: 
         // 1. If it contains 'prapurna', it is PRAPURNA
         // 2. If it contains 'purna' but NOT 'prapurna', it is PURNA
-        // The previous logic failed for Uppercase 'PURNA' because .includes is case sensitive
-        if (kategoriStr.includes('purna') && !kategoriStr.includes('prapurna')) {
+        // 3. If it contains 'aktif', it is AKTIF
+        if (kategoriStr.includes('aktif')) {
+            kategoriDoc = 'aktif';
+        } else if (kategoriStr.includes('purna') && !kategoriStr.includes('prapurna')) {
             kategoriDoc = 'purna';
         }
 
         // Check if template exists
         // TemplateService expects Prisma Enum (UPPERCASE), so we convert it
-        const dbKategori = kategoriDoc.toUpperCase() as 'PRAPURNA' | 'PURNA';
-        const templateExists = await TemplateService.fileExists(dbKategori);
+        const dbKategori = kategoriDoc.toUpperCase() as 'PRAPURNA' | 'PURNA' | 'AKTIF';
+        let templateExists = await TemplateService.fileExists(dbKategori);
+        
+        // Self-healing: If template not found in DB, try to initialize defaults from disk
+        if (!templateExists) {
+            console.log(`[DOWNLOAD] Template record missing for ${dbKategori}, attempting to initialize defaults...`);
+            await TemplateService.initializeDefaults();
+            // Re-check
+            templateExists = await TemplateService.fileExists(dbKategori);
+        }
+        
         console.log(`[DOWNLOAD] Checking template for category ${kategoriDoc} (DB: ${dbKategori}): ${templateExists}`);
 
         let docBuffer: Buffer;
         const debiturData = {
             namaPemohon: debitur.namaPemohon,
             noKtp: debitur.noKtp,
-            kategori: kategoriDoc,
+            kategori: debitur.kategori, // Use original category for generator logic
             jenisPengajuan: debitur.jenisPengajuan,
             segmentasi: debitur.segmentasi,
             dataLengkap: debitur.dataLengkap as Record<string, unknown>,

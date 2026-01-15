@@ -49,8 +49,11 @@ export default function FormAktifPage() {
     const { openPreviewModal } = useUIStore();
 
     // Select only data needed for DSR calculation
+    // Select only data needed for DSR calculation
     const dsrInputs = useFormStore(useShallow(state => ({
-        estimasi_hak_pensiun: state.formData.estimasi_hak_pensiun,
+        gaji_bulan_1_jumlah: state.formData.gaji_bulan_1_jumlah,
+        gaji_bulan_2_jumlah: state.formData.gaji_bulan_2_jumlah,
+        gaji_bulan_3_jumlah: state.formData.gaji_bulan_3_jumlah,
         slik_facilities: state.formData.slik_facilities,
         usulan_plafon_kredit: state.formData.usulan_plafon_kredit,
         usulan_jangka_waktu_bulan: state.formData.usulan_jangka_waktu_bulan,
@@ -71,7 +74,9 @@ export default function FormAktifPage() {
     useEffect(() => {
         calculateAndUpdateDSR("aktif");
     }, [
-        dsrInputs.estimasi_hak_pensiun,
+        dsrInputs.gaji_bulan_1_jumlah,
+        dsrInputs.gaji_bulan_2_jumlah,
+        dsrInputs.gaji_bulan_3_jumlah,
         dsrInputs.slik_facilities,
         dsrInputs.usulan_plafon_kredit,
         dsrInputs.usulan_jangka_waktu_bulan,
@@ -172,7 +177,7 @@ export default function FormAktifPage() {
             {currentTab === "tab-e" && (
                 <DSRCalculator
                     dsrValue={dsrResult?.dsr || 0}
-                    limit={90}
+                    limit={60}
                     penghasilan={dsrResult?.penghasilan || 0}
                     totalAngsuran={dsrResult?.totalAngsuranBaru || 0}
                 />

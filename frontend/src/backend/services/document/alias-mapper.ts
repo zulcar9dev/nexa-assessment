@@ -128,6 +128,20 @@ export class AliasMapper {
       Rpc_Total_Angsuran_Baru: context.rpc_total_angsuran_baru,
       Rpc_Dsr: context.rpc_dsr,
 
+      // RPC Fleksi Aktif (DSC 60%)
+      Aktif_Gaji_Pemohon: context.aktif_gaji_pemohon,
+      Aktif_Nomor_Rekening_Gaji: context.aktif_nomor_rekening_gaji,
+      Aktif_Bulan_Gaji: context.aktif_bulan_gaji,
+      Aktif_Jumlah_Gaji_Bulan: context.aktif_jumlah_gaji_bulan,
+      Aktif_Penghasilan_Calon_Debitur: context.aktif_penghasilan_calon_debitur,
+      Aktif_Dsc_60: context.aktif_dsc_60,
+      Aktif_Total_Angsuran_Calon_Debitur: context.aktif_total_angsuran_calon_debitur,
+      Aktif_Maksimal_Angsuran: context.aktif_maksimal_angsuran,
+      Aktif_Angsuran_Diusulkan: context.aktif_angsuran_diusulkan,
+      Aktif_Total_Angsuran_All: context.aktif_total_angsuran_all,
+      Aktif_Dsr: context.aktif_dsr,
+      Aktif_Dsr_Keterangan: context.aktif_dsr_keterangan,
+
       // Usulan Kredit
       Plafon: context.plafon,
       Usulan_Plafon: context.usulan_plafon,

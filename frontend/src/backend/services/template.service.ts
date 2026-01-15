@@ -9,7 +9,7 @@ import path from 'path';
 import { SimpleCache } from '@/backend/lib/cache';
 
 // Local type definition - matches Prisma enum
-type Kategori = 'PRAPURNA' | 'PURNA';
+type Kategori = 'PRAPURNA' | 'PURNA' | 'AKTIF';
 
 export class TemplateService {
     private static TEMPLATE_DIR = path.join(process.cwd(), 'templates');
@@ -75,6 +75,7 @@ export class TemplateService {
      */
     private static getDefaultName(kategori: Kategori): string {
         const names: Record<Kategori, string> = {
+            AKTIF: 'Template Aktif',
             PRAPURNA: 'Template Prapurna',
             PURNA: 'Template Purna',
         };
@@ -160,6 +161,7 @@ export class TemplateService {
         await this.ensureTemplateDir();
 
         const defaultTemplates: Array<{ kategori: Kategori; filename: string }> = [
+            { kategori: 'AKTIF', filename: 'template_aktif.docx' },
             { kategori: 'PRAPURNA', filename: 'template_prapurna.docx' },
             { kategori: 'PURNA', filename: 'template_purna.docx' },
         ];

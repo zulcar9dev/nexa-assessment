@@ -8,8 +8,9 @@ export class ListGenerators {
     context: Record<string, unknown>
   ): Record<string, string>[] {
     const list: string[] = [];
-    const isPrapurna =
-      String(context.kategori || "").toLowerCase() === "prapurna";
+    const kategoriLower = String(context.kategori || "").toLowerCase();
+    const isPrapurna = kategoriLower.includes("prapurna");
+    const isAktif = kategoriLower.includes("aktif");
 
     // 1. Alamat KTP
     if (context.alamat_ktp) {
@@ -78,6 +79,9 @@ export class ListGenerators {
       list.push(
         `Pemohon akan memasuki Batas Usia Pensiun per Tanggal ${tglPensiun} Cfm. Estimasi Hak Tabungan Hari Tua dan Pensiun Pokok.`
       );
+    } else if (isAktif) {
+      // --- AKTIF SPECIFIC ---
+      ListGenerators.generateAktifInvestigasi(list, context);
     } else {
       // --- PURNA (EXISTING) ---
       // 6. Info Pensiunan
@@ -95,9 +99,13 @@ export class ListGenerators {
     const jenisPengajuan = context.jenis_pengajuan || "-";
     const plafon = context.plafon || "0";
     const tenor = context.tenor || "0";
-    const produkName = isPrapurna
-      ? "BNI Fleksi Pensiun Prapurna"
-      : "BNI Fleksi Pensiun";
+    let produkName = "BNI Fleksi Pensiun";
+    if (isPrapurna) {
+      produkName = "BNI Fleksi Pensiun Prapurna";
+    } else if (isAktif) {
+      // Default name for Aktif, can be adjusted if needed per segmentation
+      produkName = "Fasilitas Kredit Fleksi";
+    }
 
     list.push(
       `Maksud mengajukan fasilitas kredit ${produkName} ${jenisPengajuan} sebesar Rp. ${plafon} Jangka Waktu ${tenor} Bulan.`
@@ -240,5 +248,71 @@ export class ListGenerators {
     );
 
     return list.map((text) => ({ text }));
+  }
+
+  /**
+   * Helper: Generate specific points for Aktif (BUMN/BUMD, Swasta, Pemerintahan)
+   */
+  private static generateAktifInvestigasi(
+    list: string[],
+    context: Record<string, unknown>
+  ): void {
+    const segmentasi = String(context.segmentasi || "").toLowerCase();
+    const instansi = context.instansi || "-";
+    const noSk = context.no_sk_cpns || "-"; // SK Pengangkatan/CPNS
+    const tglSk = context.tgl_sk_cpns || "-";
+    const masaKerja = context.masa_kerja || "-";
+    const tglMulaiKerja = context.tgl_mulai_kerja || "-";
+    
+    // BUMN/BUMD Specific
+    if (segmentasi.includes("bumd") || segmentasi.includes("bumn")) {
+      // 5. Status kepegawaian PKWT
+      list.push(
+        `Pemohon adalah Pegawai PKWT pada ${instansi} Cfm. Surat Keputusan (SK) Pengangkatan No ${noSk} tanggal ${tglSk}.`
+      );
+
+      // 6. Lama bekerja
+      list.push(
+        `Lama bekerja Pemohon ± ${masaKerja} sejak ${tglMulaiKerja} Cfm. Surat Keputusan (SK) Pengangkatan No ${noSk} tanggal ${tglSk}.`
+      );
+
+      // 7. Info Perusahaan Induk (if available)
+      const parentCompany = context.parent_company || "";
+      if (parentCompany) {
+        list.push(
+          `${instansi} adalah anak Perusahaan dari ${parentCompany} yang termasuk Daftar Kelolaan SLN.`
+        );
+      }
+
+      // 8. Alamat Kantor
+      if (context.alamat_kantor) {
+        list.push(`Alamat ${instansi} di ${context.alamat_kantor}.`);
+      }
+
+      // 9. Jabatan dan penempatan
+      const jabatan = context.jabatan || "-";
+      const unitKerja = context.unit_kerja || "";
+      let jabatanText = `Jabatan Pemohon saat ini adalah ${jabatan}`;
+      if (unitKerja) {
+        jabatanText += ` yang ditempatkan di ${unitKerja}`;
+      }
+      list.push(jabatanText + ".");
+    } else {
+      // Default fallback for Swasta / Pemerintahan (use basic format)
+      // Similar to Prapurna logic simplified
+      const statusText = segmentasi === "pemerintahan" ? "PNS" : "Karyawan";
+      list.push(
+        `Pemohon adalah ${statusText} pada ${instansi} Cfm. SK Pengangkatan No ${noSk} tanggal ${tglSk}.`
+      );
+      list.push(
+        `Lama bekerja Pemohon ± ${masaKerja} sejak ${tglMulaiKerja}.`
+      );
+      if (context.alamat_kantor) {
+        list.push(`Alamat Kantor Pemohon di ${context.alamat_kantor}.`);
+      }
+      if (context.jabatan) {
+        list.push(`Jabatan Pemohon saat ini adalah ${context.jabatan}.`);
+      }
+    }
   }
 }

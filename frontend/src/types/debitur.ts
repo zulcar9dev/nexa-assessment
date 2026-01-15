@@ -79,6 +79,8 @@ export interface DebiturFormData {
   tgl_sk_kenaikan_pangkat?: string;
   // End SK
   alamat_kantor?: string;
+  parent_company?: string; // [NEW] Perusahaan Induk (BUMN/BUMD)
+  unit_kerja?: string;     // [NEW] Unit Kerja / Penempatan
   tgl_pensiun_pemohon?: string;
   sisa_masa_kerja?: string; // [NEW] Calculated field for remaining service
   no_sk_pensiun?: string;

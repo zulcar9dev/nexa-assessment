@@ -249,7 +249,7 @@ export default function EditDebiturPage({
             {currentTab === "tab-e" && (
                 <DSRCalculator
                     dsrValue={dsrResult?.dsr || 0}
-                    limit={90}
+                    limit={category === "aktif" ? 60 : 90}
                     penghasilan={dsrResult?.penghasilan || 0}
                     totalAngsuran={dsrResult?.totalAngsuranBaru || 0}
                 />

@@ -104,21 +104,22 @@ export function calculateDSR(
 }
 
 /**
- * Validate DSR (max 90%)
+ * Validate DSR (max limit%)
  */
-export function validateDSR(dsr: number): boolean {
-    return dsr <= 90;
+export function validateDSR(dsr: number, limit: number = 90): boolean {
+    return dsr <= limit;
 }
 
 /**
  * Calculate maximum installment capacity
- * Max = (90% * Penghasilan) - Angsuran Eksisting
+ * Max = (limit% * Penghasilan) - Angsuran Eksisting
  */
 export function calculateMaxCapacity(
     penghasilan: number,
-    angsuranEksisting: number
+    angsuranEksisting: number,
+    limitMultiplier: number = 0.9
 ): number {
-    return (penghasilan * 0.9) - angsuranEksisting;
+    return (penghasilan * limitMultiplier) - angsuranEksisting;
 }
 
 /**

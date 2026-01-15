@@ -85,6 +85,10 @@ export class TemplateContextBuilder {
       tgl_pensiun_pemohon: formatDateIndonesian(data.tgl_pensiun_pemohon as string),
       sisa_masa_kerja: data.sisa_masa_kerja || "",
 
+      // Aktif BUMN/BUMD Specific
+      parent_company: data.parent_company || "",
+      unit_kerja: data.unit_kerja || "",
+
       // Blokiran
       blokiran_prapurna: Number(data.blokiran_prapurna_jml || 0),
       blokiran_prapurna_terbilang: terbilang(Number(data.blokiran_prapurna_jml || 0)),

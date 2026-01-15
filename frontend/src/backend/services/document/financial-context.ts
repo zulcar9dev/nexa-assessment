@@ -4,21 +4,60 @@ import { formatRupiah } from '@/lib/utils';
 export class FinancialContextBuilder {
   static build(debitur: DebiturData, slikFacilities: SlikFacility[]): Record<string, unknown> {
     const data = debitur.dataLengkap;
-    const isPurna = debitur.kategori === "purna";
+    const kategoriLower = String(debitur.kategori || "").toLowerCase();
+    const isAktif = kategoriLower.includes("aktif");
+    const isPurna = kategoriLower.includes("purna") && !kategoriLower.includes("prapurna");
 
     // 1. Calculate Penghasilan
     let penghasilan = 0;
-    if (isPurna) {
+    let aktifPenghasilan = 0;
+    let aktifGajiBulan = "";
+    let aktifJumlahGaji = 0;
+    
+    // Logic Selection: Aktif -> Purna -> Prapurna (Default)
+    if (isAktif) {
+      // Untuk Aktif: hitung variance dan tentukan penghasilan
+      const gaji1 = parseInt(String(data.gaji_bulan_1_jumlah || 0).replace(/[^0-9]/g, ""), 10) || 0;
+      const gaji2 = parseInt(String(data.gaji_bulan_2_jumlah || 0).replace(/[^0-9]/g, ""), 10) || 0;
+      const gaji3 = parseInt(String(data.gaji_bulan_3_jumlah || 0).replace(/[^0-9]/g, ""), 10) || 0;
+      const gajiList = [gaji1, gaji2, gaji3].filter(g => g > 0);
+      
+      if (gajiList.length > 0) {
+        const maxGaji = Math.max(...gajiList);
+        const minGaji = Math.min(...gajiList);
+        const variance = maxGaji > 0 ? ((maxGaji - minGaji) / maxGaji) * 100 : 0;
+        
+        // Variance ≤ 20%: gunakan rata-rata, selain itu gunakan terkecil
+        aktifPenghasilan = variance <= 20 
+          ? Math.round(gajiList.reduce((a, b) => a + b, 0) / gajiList.length)
+          : minGaji;
+        penghasilan = aktifPenghasilan;
+        
+        // Track bulan gaji terkecil untuk placeholder
+        if (gaji3 === minGaji) {
+          aktifGajiBulan = String(data.gaji_bulan_3_nama || "Bulan 3");
+          aktifJumlahGaji = gaji3;
+        } else if (gaji2 === minGaji) {
+          aktifGajiBulan = String(data.gaji_bulan_2_nama || "Bulan 2");
+          aktifJumlahGaji = gaji2;
+        } else {
+          aktifGajiBulan = String(data.gaji_bulan_1_nama || "Bulan 1");
+          aktifJumlahGaji = gaji1;
+        }
+      }
+    } else if (isPurna) {
       const pensiun1 = parseInt(String(data.pensiun_bulan_1_jumlah || 0).replace(/[^0-9]/g, ""), 10) || 0;
       const pensiun2 = parseInt(String(data.pensiun_bulan_2_jumlah || 0).replace(/[^0-9]/g, ""), 10) || 0;
       const pensiun3 = parseInt(String(data.pensiun_bulan_3_jumlah || 0).replace(/[^0-9]/g, ""), 10) || 0;
       penghasilan = pensiun3 || pensiun2 || pensiun1;
     } else {
+      // Prapurna / Default
       const estimasiHakPensiun = parseInt(String(data.estimasi_hak_pensiun || 0).replace(/[^0-9]/g, ""), 10) || 0;
       penghasilan = estimasiHakPensiun;
     }
 
     const dsc90 = Math.round(penghasilan * 0.9);
+    const dsc60 = Math.round(penghasilan * 0.6);
 
     // 2. Calculate SLIK Angsuran
     const totalAngsuranSlik = slikFacilities
@@ -26,6 +65,7 @@ export class FinancialContextBuilder {
       .reduce((sum, f) => sum + (parseInt(String(f.angsuran).replace(/[^0-9]/g, ""), 10) || 0), 0);
 
     const maksimalAngsuran = dsc90 - totalAngsuranSlik;
+    const aktifMaksimalAngsuran = dsc60 - totalAngsuranSlik;
 
     // 3. Parse Usulan
     const plafon = parseInt(String(data.usulan_plafon_kredit || 0).replace(/[^0-9]/g, ""), 10);
@@ -76,6 +116,22 @@ export class FinancialContextBuilder {
       rpc_angsuran_diusulkan: formatRupiah(angsuranKredit),
       rpc_total_angsuran_baru: formatRupiah(totalAngsuranBaru),
       rpc_dsr: `${dsr}`,
+
+      // RPC Fleksi Aktif Fields (DSC 60%)
+      aktif_gaji_pemohon: formatRupiah(aktifPenghasilan),
+      aktif_nomor_rekening_gaji: data.payroll_no_rek || "",
+      aktif_bulan_gaji: aktifGajiBulan,
+      aktif_jumlah_gaji_bulan: formatRupiah(aktifJumlahGaji),
+      aktif_penghasilan_calon_debitur: formatRupiah(aktifPenghasilan),
+      aktif_dsc_60: formatRupiah(dsc60),
+      aktif_total_angsuran_calon_debitur: formatRupiah(totalAngsuranSlik),
+      aktif_maksimal_angsuran: formatRupiah(aktifMaksimalAngsuran),
+      aktif_angsuran_diusulkan: formatRupiah(angsuranKredit),
+      aktif_total_angsuran_all: formatRupiah(totalAngsuranBaru),
+      aktif_dsr: `${dsr}`,
+      aktif_dsr_keterangan: penghasilan <= 20000000 
+        ? "Penghasilan per bulan ≤ Rp. 20 Juta, maksimal DSR = 60%"
+        : "Penghasilan per bulan > Rp. 20 Juta, maksimal DSR = 70%",
 
       // Usulan Fields
       plafon: formatRupiah(plafon),

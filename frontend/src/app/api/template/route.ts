@@ -5,8 +5,8 @@ import { TemplateService } from '@/backend/services/template.service';
 import type { ApiResponse } from '@/types/api';
 
 // Kategori type - matches Prisma enum
-type Kategori = 'PRAPURNA' | 'PURNA';
-const VALID_KATEGORI: Kategori[] = ['PRAPURNA', 'PURNA'];
+type Kategori = 'PRAPURNA' | 'PURNA' | 'AKTIF';
+const VALID_KATEGORI: Kategori[] = ['PRAPURNA', 'PURNA', 'AKTIF'];
 
 // Template type for mapping
 interface Template {
