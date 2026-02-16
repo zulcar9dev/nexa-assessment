@@ -32,8 +32,9 @@ yarn-error.log*
 *.swp
 *.swo
 
-# Portable PostgreSQL (binary tools, not version-controlled)
+# Portable tools (binary, not version-controlled)
 tools/pgsql/
+tools/node-v25.2.1-win-x64/
 
 # Office Lock Files
 ~$*
