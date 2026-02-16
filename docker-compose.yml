@@ -1,0 +1,58 @@
+# =================================================
+# Docker Compose - BNI Kredit Konsumer
+# =================================================
+# Usage:
+#   Development: docker-compose up -d
+#   Production:  docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: bni-kredit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bni_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-bni_kredit_konsumer}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bni_user} -d ${POSTGRES_DB:-bni_kredit_konsumer}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bni-network
+
+  # Next.js Application
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bni-kredit-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bni_user}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-bni_kredit_konsumer}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NODE_ENV: ${NODE_ENV:-production}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - bni-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  bni-network:
+    driver: bridge

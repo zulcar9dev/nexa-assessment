@@ -1,0 +1,85 @@
+// Prisma Schema for Aplikasi Kredit Konsumer BNI
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ USER & AUTH ============
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  employeeId    String?   @unique @map("employee_id") // ID Karyawan
+  password      String
+  name          String
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  debiturs      Debitur[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+// ============ DEBITUR ============
+model Debitur {
+  id              String          @id @default(cuid())
+  namaPemohon     String          @map("nama_pemohon")
+  noKtp           String          @map("no_ktp")
+  kategori        Kategori
+  jenisPengajuan  JenisPengajuan  @default(BARU) @map("jenis_pengajuan")
+  segmentasi      Segmentasi      @default(TASPEN)
+  dataLengkap     Json            @map("data_lengkap") // Menyimpan semua field form
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  createdBy       User            @relation(fields: [userId], references: [id])
+  userId          String          @map("user_id")
+
+  @@index([namaPemohon])
+  @@index([noKtp])
+  @@index([kategori])
+  @@index([userId])
+  @@map("debiturs")
+}
+
+enum Kategori {
+  PRAPURNA
+  PURNA
+  AKTIF
+}
+
+enum JenisPengajuan {
+  BARU
+  TOP_UP
+  TOP_UP_SISA_GAJI
+  TAKEOVER
+}
+
+enum Segmentasi {
+  TASPEN
+  ASABRI
+  BUMD_BUMN
+  SWASTA
+  PEMERINTAHAN
+}
+
+// ============ TEMPLATE ============
+model Template {
+  id        String   @id @default(cuid())
+  kategori  Kategori @unique
+  name      String
+  filename  String
+  path      String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("templates")
+}
