@@ -54,6 +54,16 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+REM ============ AUTO-DETECT DB USER ============
+set "DB_USER=postgres"
+"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    set "DB_USER=bni_user"
+    echo [INFO] Menggunakan user: bni_user
+) else (
+    echo [INFO] User 'bni_user' tidak ditemukan, menggunakan fallback: postgres
+)
+
 REM Create backup dir
 if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%"
 
@@ -63,7 +73,7 @@ for /f "tokens=1-2 delims=: " %%a in ('time /t') do set "TTIME=%%a%%b"
 set "SYNC_FILE=sync_%DDATE%_%TTIME%.sql"
 
 echo [INFO] Membackup database...
-"%PGSQL_PATH%\bin\pg_dump.exe" -h localhost -p 5432 -U bni_user -d bni_kredit_konsumer --format=plain --no-owner --no-acl -f "%BACKUP_DIR%\%SYNC_FILE%"
+"%PGSQL_PATH%\bin\pg_dump.exe" -h localhost -p 5432 -U %DB_USER% -d bni_kredit_konsumer --format=plain --no-owner --no-acl -f "%BACKUP_DIR%\%SYNC_FILE%"
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Backup gagal!
     pause
@@ -102,6 +112,16 @@ if %ERRORLEVEL% NEQ 0 (
     echo [INFO] Atau jalankan run-app.bat di terminal lain.
     pause
     exit /b 1
+)
+
+REM ============ AUTO-DETECT DB USER ============
+set "DB_USER=postgres"
+"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    set "DB_USER=bni_user"
+    echo [INFO] Menggunakan user: bni_user
+) else (
+    echo [INFO] User 'bni_user' tidak ditemukan, menggunakan fallback: postgres
 )
 
 REM List available sync files
@@ -159,7 +179,7 @@ echo [INFO] Menghapus database lama...
 "%PGSQL_PATH%\bin\dropdb.exe" -h localhost -p 5432 -U postgres --if-exists bni_kredit_konsumer 2>nul
 
 echo [INFO] Membuat database baru...
-"%PGSQL_PATH%\bin\createdb.exe" -h localhost -p 5432 -U postgres -O bni_user bni_kredit_konsumer
+"%PGSQL_PATH%\bin\createdb.exe" -h localhost -p 5432 -U postgres -O %DB_USER% bni_kredit_konsumer
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Gagal membuat database!
     pause
@@ -168,7 +188,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Restore
 echo [INFO] Mengimport data...
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U bni_user -d bni_kredit_konsumer -f "%SYNC_FILE%" >nul 2>&1
+"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U %DB_USER% -d bni_kredit_konsumer -f "%SYNC_FILE%" >nul 2>&1
 
 echo.
 echo ================================================
