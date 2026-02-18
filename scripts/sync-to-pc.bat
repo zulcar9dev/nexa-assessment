@@ -16,6 +16,15 @@ set "PGSQL_PATH=%BASE_PATH%\tools\pgsql"
 set "PATH=%PGSQL_PATH%\bin;%PATH%"
 set "BACKUP_DIR=%BASE_PATH%\backups"
 
+REM ============ VALIDATE TOOLS EXIST ============
+if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
+    echo [INFO] Silakan copy folder 'pgsql' dari PC yang sudah memiliki tools.
+    echo [INFO] Letakkan di: %BASE_PATH%\tools\pgsql\
+    pause
+    exit /b 1
+)
+
 echo Pilih operasi:
 echo   1. EXPORT - Backup database dari PC ini (sumber)
 echo   2. IMPORT - Restore database ke PC ini (tujuan)

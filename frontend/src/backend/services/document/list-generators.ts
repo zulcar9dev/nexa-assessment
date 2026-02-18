@@ -239,14 +239,9 @@ export class ListGenerators {
     );
     list.push(`Karakter dan Integritas yang baik dan bertanggung jawab.`);
 
-    // Info Verifikator (Robust Check)
-    const dl = (context.dataLengkap as Record<string, any>) || {};
-    const namaBendahara = String(
-      context.nama_bendahara || dl.nama_bendahara || "-",
-    ).trim();
-    const hpBendahara = String(
-      context.no_hp_bendahara || dl.no_hp_bendahara || "-",
-    ).trim();
+    // Info Verifikator (Direct Context Access)
+    const namaBendahara = String(context.nama_bendahara || "-").trim();
+    const hpBendahara = String(context.no_hp_bendahara || "-").trim();
 
     if (
       namaBendahara &&
@@ -303,10 +298,9 @@ export class ListGenerators {
     );
     list.push(`Karakter dan Integritas yang baik dan bertanggung jawab.`);
 
-    // Info Verifikator (Robust Check)
-    const dl = (context.dataLengkap as Record<string, any>) || {};
-    const namaSdm = String(context.nama_sdm || dl.nama_sdm || "-").trim();
-    const hpSdm = String(context.no_hp_sdm || dl.no_hp_sdm || "-").trim();
+    // Info Verifikator (Direct Context Access)
+    const namaSdm = String(context.nama_sdm || "-").trim();
+    const hpSdm = String(context.no_hp_sdm || "-").trim();
 
     if (namaSdm && namaSdm !== "-" && namaSdm !== "undefined") {
       list.push(
@@ -561,9 +555,16 @@ export class ListGenerators {
       const tglSk = context.tgl_sk_cpns || "-";
       // KSOP Anggrek format: Masa Dinas Pemohon ...
       // BKKBN : Masa Kerja Pemohon ...
-      list.push(
-        `Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak Tahun ${tglMulai} Cfm. ${skLabelPemerintahan} No. ${noSk} tanggal ${tglSk}`,
-      );
+      if (isP3K) {
+        const tglBerakhir = context.tgl_berakhir_pengangkatan || "-";
+        list.push(
+          `Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak Tahun ${tglMulai} Cfm. ${skLabelPemerintahan} No. ${noSk} tanggal ${tglSk} s.d tanggal ${tglBerakhir} (Periode 5 Tahun)`,
+        );
+      } else {
+        list.push(
+          `Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak Tahun ${tglMulai} Cfm. ${skLabelPemerintahan} No. ${noSk} tanggal ${tglSk}`,
+        );
+      }
     }
 
     // 10. Golongan / Pangkat
@@ -611,11 +612,12 @@ export class ListGenerators {
 
     // 12. Info Pensiun (BUP)
     // Default: Only BUMN_BUMD shows BUP, PEMERINTAHAN does NOT show unless explicitly enabled
+    // P3K employees do NOT show BUP (they have a 5-year contract period instead)
     // Check if config explicitly sets useBatasUsiaPensiun
     const useBup =
-      config?.useBatasUsiaPensiun !== undefined
+      !isP3K && (config?.useBatasUsiaPensiun !== undefined
         ? config.useBatasUsiaPensiun
-        : config?.infoPensiun || isBumn; // Only BUMN shows by default, not PEMERINTAHAN
+        : config?.infoPensiun || isBumn); // Only BUMN shows by default, not PEMERINTAHAN
     if (useBup) {
       if (config?.infoPensiun) {
         list.push(config.infoPensiun); // e.g. "Pemohon Pensiun sampai dengan usia 56 tahun"

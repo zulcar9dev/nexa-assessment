@@ -34,7 +34,7 @@ yarn-error.log*
 
 # Portable tools (binary, not version-controlled)
 tools/pgsql/
-tools/node-v25.2.1-win-x64/
+tools/node-*/
 
 # Office Lock Files
 ~$*

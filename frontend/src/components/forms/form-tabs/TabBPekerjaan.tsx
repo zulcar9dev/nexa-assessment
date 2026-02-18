@@ -311,8 +311,8 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         </div>
 
                         {/* SK CPNS / Pengangkatan */}
-                        <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
-                            <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-[#00665e]">
+                        <div className={`col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 ${isP3K ? "md:grid-cols-3" : "md:grid-cols-2"} gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10`}>
+                            <h4 className={`col-span-1 ${isP3K ? "md:col-span-3" : "md:col-span-2"} text-sm font-bold text-[#00665e]`}>
                                 {kategori === "aktif"
                                     ? (isP3K ? "Data SK PENGANGKATAN PPPK" : (formData.segmentasi === "pemerintahan" ? "Data SK CPNS" : "Data SK PENGANGKATAN"))
                                     : (formData.segmentasi === "asabri" ? "Data SK PENGANGKATAN" : "Data SK CPNS")
@@ -356,6 +356,28 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                 />
                             </div>
+                            {/* Tanggal Berakhir Pengangkatan - P3K Only */}
+                            {isP3K && (
+                                <div>
+                                    <label
+                                        htmlFor="tgl_berakhir_pengangkatan"
+                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    >
+                                        Tanggal Berakhir Pengangkatan PPPK
+                                    </label>
+                                    <input
+                                        id="tgl_berakhir_pengangkatan"
+                                        name="tgl_berakhir_pengangkatan"
+                                        type="date"
+                                        value={formData.tgl_berakhir_pengangkatan || ""}
+                                        onChange={(e) => updateField("tgl_berakhir_pengangkatan", e.target.value)}
+                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-[#00665e] focus:ring-[#00665e] sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        Periode masa kerja P3K selama 5 tahun
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         {/* SK Kenaikan Pangkat */}

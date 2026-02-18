@@ -82,6 +82,10 @@ export class AliasMapper {
       No_Hp_Kepegawaian: context.no_hp_sdm,
       Nama_Rekan_Kerja: context.nama_rekan_kerja,
       No_Hp_Rekan_Kerja: context.no_hp_rekan_kerja,
+      // Dynamic label: "SDM/Kepegawaian" for BUMN/BUMD, "Bendahara" otherwise
+      Label_Verifikator: context.label_verifikator,
+      Label_Verifikator_Upper: context.label_verifikator_upper,
+      Yang_Diverifikasi: context.label_verifikator,
 
       // Bank & Payroll
       Nama_Bank: context.nama_bank_pembayaran,

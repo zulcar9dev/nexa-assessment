@@ -28,6 +28,25 @@ if "%NODE_PATH%"=="" (
 )
 set "PATH=%NODE_PATH%;%PATH%"
 
+REM ============ VALIDATE TOOLS EXIST ============
+if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    echo.
+    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
+    echo.
+    echo [INFO] Folder tools\pgsql\ tidak disimpan di Git karena ukuran besar.
+    echo [INFO] Silakan copy folder PostgreSQL portable secara manual:
+    echo.
+    echo        1. Copy folder 'pgsql' dari PC yang sudah memiliki tools
+    echo        2. Letakkan di: %BASE_PATH%\tools\pgsql\
+    echo        3. Pastikan ada file: tools\pgsql\bin\pg_ctl.exe
+    echo.
+    echo [INFO] Atau download PostgreSQL portable dari:
+    echo        https://www.enterprisedb.com/download-postgresql-binaries
+    echo.
+    pause
+    exit /b 1
+)
+
 REM ============ STEP 1: INIT DATA DIRECTORY ============
 if exist "%DATA_DIR%" (
     echo [INFO] Data directory sudah ada: %DATA_DIR%

@@ -23,6 +23,33 @@ if "%NODE_PATH%"=="" (
 )
 
 set "PGSQL_PATH=%BASE_PATH%\tools\pgsql"
+
+REM ============ VALIDATE TOOLS EXIST ============
+if not exist "%NODE_PATH%\node.exe" (
+    echo [ERROR] node.exe tidak ditemukan di: %NODE_PATH%
+    echo [ERROR] Pastikan folder Node.js portable sudah lengkap di dalam folder tools\
+    pause
+    exit /b 1
+)
+
+if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    echo.
+    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
+    echo.
+    echo [INFO] Folder tools\pgsql\ tidak disimpan di Git karena ukuran besar.
+    echo [INFO] Silakan copy folder PostgreSQL portable secara manual:
+    echo.
+    echo        1. Copy folder 'pgsql' dari PC yang sudah memiliki tools
+    echo        2. Letakkan di: %BASE_PATH%\tools\pgsql\
+    echo        3. Pastikan ada file: tools\pgsql\bin\pg_ctl.exe
+    echo.
+    echo [INFO] Atau download PostgreSQL portable dari:
+    echo        https://www.enterprisedb.com/download-postgresql-binaries
+    echo.
+    pause
+    exit /b 1
+)
+
 set "PATH=%NODE_PATH%;%PGSQL_PATH%\bin;%PATH%"
 
 echo [INFO] Menggunakan Node.js dari: %NODE_PATH%
@@ -131,15 +158,17 @@ echo.
 REM ============ RUN DATABASE MIGRATION ============
 echo [INFO] Menjalankan database migration...
 call npx prisma migrate deploy
-if %ERRORLEVEL% NEQ 0 (
-    echo [WARNING] Migration gagal. Mencoba db push sebagai fallback...
-    call npx prisma db push
-    if %ERRORLEVEL% NEQ 0 (
-        echo [ERROR] Database push juga gagal!
-        pause
-        exit /b 1
-    )
-)
+if %ERRORLEVEL% EQU 0 goto :migrate_done
+
+echo [WARNING] Migration gagal. Mencoba db push sebagai fallback...
+call npx prisma db push
+if %ERRORLEVEL% EQU 0 goto :migrate_done
+
+echo [ERROR] Database push juga gagal!
+pause
+exit /b 1
+
+:migrate_done
 echo.
 
 REM ============ CHECK IF DATABASE NEEDS SEEDING ============

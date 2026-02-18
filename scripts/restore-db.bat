@@ -12,6 +12,15 @@ if "%BASE_PATH:~-1%"=="\" set "BASE_PATH=%BASE_PATH:~0,-1%"
 set "PGSQL_PATH=%BASE_PATH%\tools\pgsql"
 set "PATH=%PGSQL_PATH%\bin;%PATH%"
 
+REM ============ VALIDATE TOOLS EXIST ============
+if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
+    echo [INFO] Silakan copy folder 'pgsql' dari PC yang sudah memiliki tools.
+    echo [INFO] Letakkan di: %BASE_PATH%\tools\pgsql\
+    pause
+    exit /b 1
+)
+
 REM Configuration
 set "DB_HOST=localhost"
 set "DB_PORT=5432"

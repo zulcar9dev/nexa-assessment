@@ -94,6 +94,7 @@ export interface DebiturFormData {
   // SK CPNS & Pangkat
   no_sk_cpns?: string;
   tgl_sk_cpns?: string;
+  tgl_berakhir_pengangkatan?: string; // [NEW] Tanggal berakhir pengangkatan P3K (periode 5 tahun)
   no_sk_kenaikan_pangkat?: string;
   tgl_sk_kenaikan_pangkat?: string;
   // [NEW] SK Mutasi (PLN Specific)

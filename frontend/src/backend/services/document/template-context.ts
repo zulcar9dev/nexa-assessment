@@ -121,6 +121,7 @@ export class TemplateContextBuilder {
       penempatan_unit: data.penempatan_unit || "",
       no_sk_cpns: data.no_sk_cpns || "",
       tgl_sk_cpns: formatDateIndonesian(data.tgl_sk_cpns as string),
+      tgl_berakhir_pengangkatan: formatDateIndonesian(data.tgl_berakhir_pengangkatan as string),
       no_sk_kenaikan_pangkat: data.no_sk_kenaikan_pangkat || "",
       tgl_sk_kenaikan_pangkat: formatDateIndonesian(
         data.tgl_sk_kenaikan_pangkat as string,
@@ -242,6 +243,14 @@ export class TemplateContextBuilder {
       tujuan_kredit: getTujuanKreditLabel(data.tujuan_kredit as string),
       kode_program: data.kode_program || "",
     };
+
+    // DEBUG: Trace SDM data (TODO: Remove after verification)
+    console.log('[TEMPLATE-CTX] data.nama_sdm =', JSON.stringify(data.nama_sdm));
+    console.log('[TEMPLATE-CTX] data.no_hp_sdm =', JSON.stringify(data.no_hp_sdm));
+    console.log('[TEMPLATE-CTX] context.nama_sdm =', JSON.stringify(context.nama_sdm));
+    console.log('[TEMPLATE-CTX] context.no_hp_sdm =', JSON.stringify(context.no_hp_sdm));
+    console.log('[TEMPLATE-CTX] segmentasi =', JSON.stringify(debitur.segmentasi));
+    console.log('[TEMPLATE-CTX] kategori =', JSON.stringify(debitur.kategori));
 
     // --- 2. FINANCIAL CONTEXT (RPC, Angsuran) ---
     const financialContext = FinancialContextBuilder.build(
@@ -388,8 +397,20 @@ export class TemplateContextBuilder {
     // Unified List Population
     // Both lists are populated into 'list_verifikasi_bendahara' to allow single template usage
     if (isAktifBumnBumd) {
+      // BUMN/BUMD: Override Bendahara fields with SDM values
+      // Template uses {{Nama_Bendahara}} and {{No_Hp_Bendahara}} in the header,
+      // so we need to populate these with SDM values for BUMN/BUMD segmentation
+      context.nama_bendahara = context.nama_sdm || context.nama_bendahara || "";
+      context.no_hp_bendahara = context.no_hp_sdm || context.no_hp_bendahara || "";
+
       // BUMN/BUMD uses Kepegawaian logic, but mapped to 'list_verifikasi_bendahara' key for template unity
+      console.log('[TEMPLATE-CTX] isAktifBumnBumd = TRUE, calling generateKepegawaianList');
+      console.log('[TEMPLATE-CTX] context.nama_sdm at list gen time =', JSON.stringify(context.nama_sdm));
+      console.log('[TEMPLATE-CTX] context.no_hp_sdm at list gen time =', JSON.stringify(context.no_hp_sdm));
+      console.log('[TEMPLATE-CTX] context.nama_bendahara (overridden) =', JSON.stringify(context.nama_bendahara));
+      console.log('[TEMPLATE-CTX] context.no_hp_bendahara (overridden) =', JSON.stringify(context.no_hp_bendahara));
       const kepegawaianList = ListGenerators.generateKepegawaianList(context);
+      console.log('[TEMPLATE-CTX] kepegawaianList result =', JSON.stringify(kepegawaianList));
       context.list_verifikasi_bendahara = kepegawaianList;
       context.list_verifikasi_kepegawaian = kepegawaianList; // Keep both for backward compat
     } else {

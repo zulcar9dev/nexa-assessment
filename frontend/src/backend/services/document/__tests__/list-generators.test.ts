@@ -138,4 +138,63 @@ describe('ListGenerators', () => {
       expect(text).not.toContain('Batas Usia Pensiun'); // Should NOT have BUP
     });
   });
+
+  describe('generateKepegawaianList', () => {
+    it('should include SDM name and phone when provided', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'Perumda Air Minum Tirta Boalemo',
+        segmentasi: 'BUMN_BUMD',
+        kategori: 'Aktif',
+        nama_sdm: 'Ibu Wisda',
+        no_hp_sdm: '085394088377',
+        gaji_bulan_3: '5.000.000',
+        payroll_bank: 'BNI',
+      };
+
+      const result = ListGenerators.generateKepegawaianList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain('Ibu Wisda');
+      expect(text).toContain('085394088377');
+      expect(text).toContain('SDM/Kepegawaian');
+    });
+
+    it('should fallback gracefully when SDM data is empty string', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'PT. Test BUMN',
+        segmentasi: 'BUMN_BUMD',
+        kategori: 'Aktif',
+        nama_sdm: '',
+        no_hp_sdm: '',
+        gaji_bulan_3: '5.000.000',
+        payroll_bank: 'BNI',
+      };
+
+      const result = ListGenerators.generateKepegawaianList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      // Should fallback to generic text without name
+      expect(text).toContain('Informasi diperoleh dari Bagian SDM/Kepegawaian.');
+      expect(text).not.toContain('Bpk/Ibu');
+    });
+
+    it('should fallback gracefully when SDM data is undefined', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'PT. Test BUMN',
+        segmentasi: 'BUMN_BUMD',
+        kategori: 'Aktif',
+        gaji_bulan_3: '5.000.000',
+        payroll_bank: 'BNI',
+      };
+
+      const result = ListGenerators.generateKepegawaianList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain('Informasi diperoleh dari Bagian SDM/Kepegawaian.');
+      expect(text).not.toContain('Bpk/Ibu');
+    });
+  });
 });
