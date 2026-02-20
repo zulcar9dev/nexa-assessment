@@ -26,33 +26,54 @@ export default React.memo(function TabEUsulan({
 
   // Removed local formatCurrencyDisplay, using utils
 
-  // Calculate Max Duration based on Age and Category
-  const { maxDuration, currentAge, limitYears } = useMemo(() => {
+  // Calculate Max Duration based on Age, Category, and Segmentation
+  const segmentasi = formData.segmentasi;
+  const { maxDuration, currentAge, limitYears, ageLimitLabel } = useMemo(() => {
     const birthDateStr = formData.tgl_lahir_pemohon;
     const age = birthDateStr ? calculateAge(birthDateStr) : 0;
 
-    // Determine limit based on category
+    // Determine limit based on category and segmentation
+    // Prapurna default 20 tahun, KECUALI ASABRI → 15 tahun
     const isPrapurna = kategori === "prapurna";
-    const limitYears = isPrapurna ? 20 : 15;
+    const isPrapurnaAsabri = isPrapurna && segmentasi === "asabri";
+    const limitYears = isPrapurna && !isPrapurnaAsabri ? 20 : 15;
     const limitMonths = limitYears * 12;
 
     let maxMonthsByAge = 0;
 
+    // Batas usia: 74 tahun 10 bulan untuk Purna/Prapurna, 75 tahun untuk Aktif
+    const isAktif = kategori === "aktif";
+    const ageLimitLabel = isAktif ? "75 tahun" : "74 tahun 10 bulan";
+
     if (birthDateStr) {
       const birthDate = new Date(birthDateStr);
-      // Calculate 75th birthday
-      const seventyFifthBirthday = new Date(birthDate);
-      seventyFifthBirthday.setFullYear(birthDate.getFullYear() + 75);
+
+      let ageLimit: Date;
+      if (isAktif) {
+        // Aktif: batas usia 75 tahun
+        ageLimit = new Date(birthDate);
+        ageLimit.setFullYear(birthDate.getFullYear() + 75);
+      } else {
+        // Purna/Prapurna: batas usia 74 tahun 10 bulan
+        ageLimit = new Date(birthDate);
+        ageLimit.setFullYear(birthDate.getFullYear() + 74);
+        ageLimit.setMonth(birthDate.getMonth() + 10);
+      }
 
       const today = new Date();
       const todayStr = today.toISOString().split("T")[0];
-      const maxAgeStatStr = seventyFifthBirthday.toISOString().split("T")[0];
+      const maxAgeStatStr = ageLimit.toISOString().split("T")[0];
 
       // Use months difference
       maxMonthsByAge = calculateMonthsDifference(todayStr, maxAgeStatStr);
+
+      // Jika hari ini > hari batas usia, bulan terakhir belum penuh → kurangi 1
+      if (today.getDate() > ageLimit.getDate()) {
+        maxMonthsByAge--;
+      }
     } else {
       // Fallback if no birthdate (though it should be there)
-      maxMonthsByAge = (75 - age) * 12;
+      maxMonthsByAge = isAktif ? (75 - age) * 12 : (74 - age) * 12 + 10;
     }
 
     // Calculate max allowed
@@ -65,8 +86,9 @@ export default React.memo(function TabEUsulan({
       maxDuration: maxAllowed, // in months
       currentAge: age,
       limitYears: limitYears,
+      ageLimitLabel: ageLimitLabel,
     };
-  }, [formData.tgl_lahir_pemohon, kategori]);
+  }, [formData.tgl_lahir_pemohon, kategori, segmentasi]);
 
   // Validate duration on change
   const handleDurationChange = (value: string) => {
@@ -214,7 +236,8 @@ export default React.memo(function TabEUsulan({
           {parseInt(formData.usulan_jangka_waktu_bulan || "0") >
             maxDuration && (
             <p className="text-xs text-red-500 mt-1">
-              Melebihi batas maksimal {limitYears} tahun atau usia 75 tahun
+              Melebihi batas maksimal {limitYears} tahun atau usia{" "}
+              {ageLimitLabel}
               (Usia saat ini: {currentAge} th)
             </p>
           )}
@@ -375,12 +398,12 @@ export default React.memo(function TabEUsulan({
             <input
               type="text"
               value={formatNumberForDisplay(
-                formData.biaya_administrasi_nominal
+                formData.biaya_administrasi_nominal,
               )}
               onChange={(e) =>
                 handleCurrencyChange(
                   "biaya_administrasi_nominal",
-                  e.target.value
+                  e.target.value,
                 )
               }
               disabled={formData.biaya_administrasi_is_bebas}
@@ -405,8 +428,8 @@ export default React.memo(function TabEUsulan({
             {kategori === "prapurna"
               ? "(Khusus Prapurna)"
               : kategori === "aktif"
-              ? "(Khusus Aktif)"
-              : ""}
+                ? "(Khusus Aktif)"
+                : ""}
           </h3>
         </div>
 
