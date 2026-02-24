@@ -81,12 +81,55 @@ export class DebiturService {
             where.userId = userId;
         }
 
-        // Search by name or NIK
+        // Search by all text/enum fields
         if (q) {
-            where.OR = [
+            const lowerQ = q.toLowerCase();
+
+            // 1. Find matched ENUM values for Kategori
+            const matchedKategori = Object.values(PrismaKategori).filter(k => 
+                k.toLowerCase().includes(lowerQ) ||
+                (k === PrismaKategori.PRAPURNA && "pensiun prapurna".includes(lowerQ)) ||
+                (k === PrismaKategori.PURNA && "pensiun purna".includes(lowerQ)) ||
+                (k === PrismaKategori.AKTIF && "aktif".includes(lowerQ))
+            );
+
+            // 2. Find matched ENUM values for Jenis Pengajuan
+            const matchedJenis = Object.values(PrismaJenisPengajuan).filter(j => 
+                j.toLowerCase().replace(/_/g, ' ').includes(lowerQ)
+            );
+
+            // 3. Find matched ENUM values for Segmentasi
+            const matchedSegmentasi = Object.values(PrismaSegmentasi).filter(s => 
+                s.toLowerCase().replace(/_/g, ' ').includes(lowerQ) ||
+                (s === PrismaSegmentasi.TASPEN && "pns".includes(lowerQ)) ||
+                (s === PrismaSegmentasi.ASABRI && "tni polri".includes(lowerQ)) ||
+                (s === PrismaSegmentasi.PEMERINTAHAN && "pemerintahan".includes(lowerQ)) ||
+                (s === PrismaSegmentasi.SWASTA && "swasta".includes(lowerQ)) ||
+                (s === PrismaSegmentasi.BUMD_BUMN && "bumd bumn".includes(lowerQ))
+            );
+
+            const searchConditions: any[] = [
                 { namaPemohon: { contains: q, mode: 'insensitive' } },
                 { noKtp: { contains: q } },
+                {
+                    dataLengkap: {
+                        path: ['instansi'],
+                        string_contains: q,
+                    }
+                }
             ];
+
+            if (matchedKategori.length > 0) {
+                searchConditions.push({ kategori: { in: matchedKategori } });
+            }
+            if (matchedJenis.length > 0) {
+                searchConditions.push({ jenisPengajuan: { in: matchedJenis } });
+            }
+            if (matchedSegmentasi.length > 0) {
+                searchConditions.push({ segmentasi: { in: matchedSegmentasi } });
+            }
+
+            where.OR = searchConditions;
         }
 
         // Filter by jenis pengajuan
@@ -121,7 +164,7 @@ export class DebiturService {
                     segmentasi: true,
                     createdAt: true,
                     updatedAt: true,
-                    // dataLengkap excluded for optimization
+                    dataLengkap: true, // Included to extract pekerjaan (instansi)
                     createdBy: {
                         select: {
                             id: true,
@@ -134,8 +177,22 @@ export class DebiturService {
             prisma.debitur.count({ where: where as any }),
         ]);
 
+        // Extract pekerjaan (instansi) from dataLengkap and omit dataLengkap
+        const mappedData = data.map(item => {
+            const dataLengkapObj = item.dataLengkap as Record<string, any>;
+            const pekerjaan = dataLengkapObj?.instansi || '-';
+            
+            // Create a new object without dataLengkap
+            const { dataLengkap, ...rest } = item;
+            
+            return {
+                ...rest,
+                pekerjaan
+            };
+        });
+
         return {
-            data,
+            data: mappedData,
             meta: {
                 total,
                 page,

@@ -242,6 +242,7 @@ export default function RiwayatDebiturPage() {
                             <tr className="border-b-2 border-gray-200 dark:border-[#444564]">
                                 <th className="table-header px-4 py-3 text-left">Tanggal</th>
                                 <th className="table-header px-4 py-3 text-left">Nama Pemohon</th>
+                                <th className="table-header px-4 py-3 text-left">Pekerjaan</th>
                                 <th className="table-header px-4 py-3 text-left">Segmentasi</th>
                                 <th className="table-header px-4 py-3 text-left">Jenis Pengajuan</th>
                                 <th className="table-header px-4 py-3 text-left">NIK</th>
@@ -269,6 +270,11 @@ export default function RiwayatDebiturPage() {
                                         <td className="px-4 py-3">
                                             <span className="font-semibold text-gray-800 dark:text-gray-200">
                                                 {item.namaPemohon}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                {item.pekerjaan || "-"}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
