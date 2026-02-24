@@ -108,16 +108,27 @@ export class DebiturService {
                 (s === PrismaSegmentasi.BUMD_BUMN && "bumd bumn".includes(lowerQ))
             );
 
+            // 4. Find matching IDs from JSON field using robust raw query (case-insensitive)
+            let jsonMatchingIds: string[] = [];
+            try {
+                const searchPattern = `%${q}%`;
+                const rawResult = await prisma.$queryRaw<{id: string}[]>`
+                    SELECT id FROM "debiturs" 
+                    WHERE "data_lengkap"->>'instansi' ILIKE ${searchPattern}
+                `;
+                jsonMatchingIds = rawResult.map(r => r.id);
+            } catch(e) {
+                console.error("Error executing raw JSON search query:", e);
+            }
+
             const searchConditions: any[] = [
                 { namaPemohon: { contains: q, mode: 'insensitive' } },
                 { noKtp: { contains: q } },
-                {
-                    dataLengkap: {
-                        path: ['instansi'],
-                        string_contains: q,
-                    }
-                }
             ];
+
+            if (jsonMatchingIds.length > 0) {
+                searchConditions.push({ id: { in: jsonMatchingIds } });
+            }
 
             if (matchedKategori.length > 0) {
                 searchConditions.push({ kategori: { in: matchedKategori } });
