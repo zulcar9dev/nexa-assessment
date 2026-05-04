@@ -3,63 +3,114 @@
 @variant dark (&:where(.dark, .dark *));
 
 /* =========================================
-   BNI THEME - COLOR SYSTEM
+   BNI THEME - COLOR SYSTEM & SHADCN UI
    ========================================= */
-:root {
-  /* Primary Colors - BNI Theme */
-  --color-tosca: #00665e;
-  --color-tosca-dark: #004d47;
-  --color-tosca-light: #e0f2f1;
-  --color-orange: #f15a23;
-  --color-orange-dark: #d1400b;
-  --color-orange-light: rgba(241, 90, 35, 0.15);
+@layer base {
+  :root {
+    /* BNI Custom Colors */
+    --color-tosca: #00665e;
+    --color-tosca-dark: #004d47;
+    --color-tosca-light: #e0f2f1;
+    --color-orange: #f15a23;
+    --color-orange-dark: #d1400b;
+    --color-orange-light: rgba(241, 90, 35, 0.15);
 
-  /* Background & Foreground */
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
+    /* shadcn/ui + BNI variables */
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
 
-  /* Borders & Muted */
-  --border: #e2e8f0;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-  /* Status Colors */
-  --success: #22c55e;
-  --success-light: #e8f5e9;
-  --warning: #f59e0b;
-  --warning-light: #fff3e0;
-  --danger: #ef4444;
-  --danger-light: #ffebee;
-  --info: #3b82f6;
-  --info-light: #e0f2fe;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-  /* Sidebar */
-  --sidebar-bg: #ffffff;
-  --sidebar-border: #e2e8f0;
+    --primary: 175 100% 20%; /* #00665e */
+    --primary-foreground: 210 40% 98%;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --secondary: 16 88% 54%; /* #f15a23 */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 16 88% 54%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 175 100% 20%;
+
+    --radius: 0.5rem;
+
+    /* Status Colors */
+    --success: #22c55e;
+    --success-light: #e8f5e9;
+    --warning: #f59e0b;
+    --warning-light: #fff3e0;
+    --danger: #ef4444;
+    --danger-light: #ffebee;
+    --info: #3b82f6;
+    --info-light: #e0f2fe;
+
+    /* Sidebar */
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e2e8f0;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark {
+    --background: 240 19% 17%; /* #232333 */
+    --foreground: 240 31% 89%; /* #dbdbeb */
+
+    --card: 237 19% 21%; /* #2b2c40 */
+    --card-foreground: 240 31% 89%;
+
+    --popover: 237 19% 21%;
+    --popover-foreground: 240 31% 89%;
+
+    --primary: 175 49% 65%; /* #80cbc4 */
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 15 100% 78%; /* #ffab91 */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 240 19% 24%; /* #323249 */
+    --muted-foreground: 239 30% 72%; /* #a3a4cc */
+
+    --accent: 15 100% 78%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 239 19% 33%; /* #444564 */
+    --input: 239 19% 33%;
+    --ring: 175 49% 65%;
+
+    --sidebar-bg: #2b2c40;
+    --sidebar-border: #444564;
+
+    /* Adjusted colors for dark mode */
+    --color-tosca-light: rgba(0, 102, 94, 0.2);
+    --color-orange-light: rgba(241, 90, 35, 0.2);
+  }
 }
 
-/* Dark Mode Colors */
-.dark {
-  --background: #232333;
-  --foreground: #dbdbeb;
-  --card: #2b2c40;
-  --card-foreground: #dbdbeb;
-  --border: #444564;
-  --muted: #323249;
-  --muted-foreground: #a3a4cc;
-  --sidebar-bg: #2b2c40;
-  --sidebar-border: #444564;
-
-  /* Adjusted colors for dark mode */
-  --color-tosca-light: rgba(0, 102, 94, 0.2);
-  --color-orange-light: rgba(241, 90, 35, 0.2);
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* =========================================
@@ -68,6 +119,24 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-md: var(--radius);
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
