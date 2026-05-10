@@ -72,7 +72,7 @@ if not exist "%PGSQL_PATH%\data" (
 
 REM ============ START POSTGRESQL ============
 echo [INFO] Memeriksa status PostgreSQL...
-"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5432 >nul 2>&1
+"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5433 >nul 2>&1
 if %ERRORLEVEL% EQU 0 goto :pg_running
 
 echo [INFO] PostgreSQL tidak berjalan. Memulai PostgreSQL...
