@@ -78,7 +78,7 @@ echo.
 REM ============ STEP 2: START POSTGRESQL ============
 :start_pg
 echo [INFO] Memeriksa status PostgreSQL...
-"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5432 >nul 2>&1
+"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5433 >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     echo [INFO] PostgreSQL sudah berjalan.
     goto :create_db
@@ -100,12 +100,12 @@ REM ============ STEP 3: CREATE USER & DATABASE ============
 echo [INFO] Memeriksa user database...
 
 REM Check if user exists
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
+"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5433 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     echo [INFO] User 'bni_user' sudah ada.
 ) else (
     echo [INFO] Membuat user 'bni_user'...
-    "%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -c "CREATE USER bni_user WITH PASSWORD 'bni_password' CREATEDB;"
+    "%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5433 -U postgres -c "CREATE USER bni_user WITH PASSWORD 'bni_password' CREATEDB;"
     if %ERRORLEVEL% NEQ 0 (
         echo [WARNING] Gagal membuat user, mencoba lanjutkan...
     ) else (
@@ -114,12 +114,12 @@ if %ERRORLEVEL% EQU 0 (
 )
 
 REM Check if database exists
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='bni_kredit_konsumer'" 2>nul | findstr "1" >nul 2>&1
+"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5433 -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='bni_kredit_konsumer'" 2>nul | findstr "1" >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     echo [INFO] Database 'bni_kredit_konsumer' sudah ada.
 ) else (
     echo [INFO] Membuat database 'bni_kredit_konsumer'...
-    "%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -c "CREATE DATABASE bni_kredit_konsumer OWNER bni_user;"
+    "%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5433 -U postgres -c "CREATE DATABASE bni_kredit_konsumer OWNER bni_user;"
     if %ERRORLEVEL% NEQ 0 (
         echo [ERROR] Gagal membuat database!
         pause
@@ -192,7 +192,7 @@ echo ================================================
 echo.
 echo   Database: bni_kredit_konsumer
 echo   User:     bni_user
-echo   Port:     5432
+echo   Port:     5433
 echo.
 echo   Login Credentials:
 echo   Admin: admin@bni.co.id / admin123
