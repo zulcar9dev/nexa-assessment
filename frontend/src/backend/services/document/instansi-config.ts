@@ -4,7 +4,7 @@ export interface InstansiConfig {
   pattern: string[]; // Pola nama instansi (lowercase)
   segmentasi: SegmentasiType;
   alamatKantorPusat?: string; // Alamat kantor pusat (jika hardcoded)
-  infoKelolaan?: string; // Teks kelolaan HLB/SLN
+  infoKelolaan?: string | string[]; // Teks kelolaan HLB/SLN
   infoPensiun?: string; // Info batas usia pensiun (jika berbeda)
   useBatasUsiaPensiun?: boolean; // Tampilkan batas usia pensiun? (TRUE for BUMN/BUMD & PNS)
   useGolongan?: boolean; // Tampilkan golongan/pangkat? (Default: False for BUMN, True for PNS)
@@ -87,6 +87,15 @@ export const INSTANSI_CONFIGS: InstansiConfig[] = [
     segmentasi: "PEMERINTAHAN",
     infoKelolaan:
       "Cfm. PKS Penyaluran Fasilitas Kredit Konsumer Untuk Pegawai di Lingkungan Sekretariat KPU Kota Gorontalo Nomor BNI : GTL/003/PKS/ 2022 Tanggal 18 Agustus 2022.",
+    useGolongan: true,
+  },
+  {
+    pattern: ["sekolah rakyat terintegrasi 71 boalemo", "srt 71 boalemo"],
+    segmentasi: "PEMERINTAHAN",
+    infoKelolaan: [
+      "Kementerian Sosial merupakan Kelolaan INS 1",
+      "Cfm. Perjanjian Kerjasama Antara PT. Bank Negara Indonesia (Persero) Tbk. Kantor Cabang Gorontalo dengan Sekolah Rakyat Terintegrasi 71 Boalemo Tentang Pembayaran Gaji, serta Penyaluran Fasilitas Kredit Konsumer untuk Pegawai Negeri Sipili dan Pegawai Pemerintah  dengan Perjanjian Kerja  di Lingkungan Sekolah Rakyat Terintegrasi 71 Boalemo Kabupaten Boalemo Nomor : GTL/5.2/BNI.004/2026; Nomor : 421/08/SRT 71 BOALEMO/IV/2025 Tanggal 29 April 2026.",
+    ],
     useGolongan: true,
   },
 ];

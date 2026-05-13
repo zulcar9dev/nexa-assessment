@@ -1,5 +1,5 @@
-import { formatStatusKepegawaian } from "./formatters";
-import { formatRupiah } from "@/lib/utils";
+import { formatStatusKepegawaian, formatDateIndonesian } from "./formatters";
+import { formatRupiah, calculateMonthsDifference } from "@/lib/utils";
 import { getInstansiConfig } from "./instansi-config";
 
 export class ListGenerators {
@@ -536,15 +536,20 @@ export class ListGenerators {
 
     // 8. Info Kelolaan (Hardcoded)
     if (config?.infoKelolaan) {
-      // Special replacement for Paguntaka which needs {instansi} dynamic value
-      let info = config.infoKelolaan;
-      if (info.includes("{instansi}")) {
-        info = info.replace("{instansi}", instansi);
-      } else if (info.startsWith("adalah anak Perusahaan")) {
-        // Paguntaka fallback
-        info = `${instansi} ${info}`;
-      }
-      list.push(info);
+      const infoList = Array.isArray(config.infoKelolaan)
+        ? config.infoKelolaan
+        : [config.infoKelolaan];
+
+      infoList.forEach((infoStr) => {
+        let info = infoStr;
+        if (info.includes("{instansi}")) {
+          info = info.replace("{instansi}", instansi);
+        } else if (info.startsWith("adalah anak Perusahaan")) {
+          // Paguntaka fallback
+          info = `${instansi} ${info}`;
+        }
+        list.push(info);
+      });
     }
 
     // 9. Masa Kerja (Pemerintahan Only as separate point, BUMN merged in point 6)
@@ -556,9 +561,20 @@ export class ListGenerators {
       // KSOP Anggrek format: Masa Dinas Pemohon ...
       // BKKBN : Masa Kerja Pemohon ...
       if (isP3K) {
-        const tglBerakhir = context.tgl_berakhir_pengangkatan || "-";
+        const rawTglMulai = (context.tgl_mulai_kerja as string) || "";
+        const rawTglBerakhir = (context.tgl_berakhir_pengangkatan as string) || "";
+        const rawTglSk = (context.tgl_sk_cpns as string) || "";
+
+        const tglMulaiFormatted = formatDateIndonesian(rawTglMulai) || rawTglMulai || "-";
+        const tglBerakhirFormatted = formatDateIndonesian(rawTglBerakhir) || rawTglBerakhir || "-";
+        const tglSkFormatted = formatDateIndonesian(rawTglSk) || rawTglSk || "-";
+
+        // Kalkulasi periode otomatis
+        const totalMonths = calculateMonthsDifference(rawTglMulai, rawTglBerakhir);
+        const periodeTahun = totalMonths > 0 ? Math.round(totalMonths / 12) : 5;
+
         list.push(
-          `Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak Tahun ${tglMulai} Cfm. ${skLabelPemerintahan} No. ${noSk} tanggal ${tglSk} s.d tanggal ${tglBerakhir} (Periode 5 Tahun)`,
+          `Lama Masa Kerja Pemohon -/+ ${masaKerja} atau sejak Tahun ${tglMulaiFormatted} s.d tanggal ${tglBerakhirFormatted} (Periode ${periodeTahun} Tahun) Cfm. ${skLabelPemerintahan} No. ${noSk} tanggal ${tglSkFormatted}.`
         );
       } else {
         list.push(
@@ -570,7 +586,8 @@ export class ListGenerators {
     // 10. Golongan / Pangkat
     // Configurable per instansi or segmentasi
     // User Decision: BUMN -> NO Golongan, PNS -> YES Golongan
-    const useGolongan = config?.useGolongan ?? isPemerintahan;
+    // Explicit override: PPPK usually do not show Golongan the same way as PNS
+    const useGolongan = (config?.useGolongan ?? isPemerintahan) && !isP3K;
 
     if (useGolongan) {
       const golongan = context.golongan || "-";

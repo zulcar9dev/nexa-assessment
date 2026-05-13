@@ -21,6 +21,7 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
   debiturs      Debitur[]
+  documents     Document[]
 
   @@map("users")
 }
@@ -82,4 +83,57 @@ model Template {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("templates")
+}
+
+// ============ KNOWLEDGE BASE ============
+model Document {
+  id           String          @id @default(cuid())
+  judul        String
+  nomorMemo    String          @map("nomor_memo")
+  kategori     KategoriDokumen
+  targetMarket TargetMarket    @map("target_market")
+  berlakuMulai DateTime        @map("berlaku_mulai")
+  berlakuAkhir DateTime        @map("berlaku_akhir")
+  keywords     String[]
+  filename     String
+  filepath     String
+  filesize     Int
+  version      Int             @default(1)
+  status       StatusDokumen   @default(AKTIF)
+  
+  uploadedBy   User            @relation(fields: [uploadedById], references: [id])
+  uploadedById String          @map("uploaded_by_id")
+  
+  replacedBy   Document?       @relation("DocumentRevisions", fields: [replacedById], references: [id])
+  replacedById String?         @map("replaced_by_id")
+  replaces     Document[]      @relation("DocumentRevisions")
+  
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  @@map("documents")
+}
+
+enum KategoriDokumen {
+  KEBIJAKAN
+  SOP
+  PANDUAN
+  MANUAL
+  LAINNYA
+}
+
+enum TargetMarket {
+  TASPEN
+  ASABRI
+  BUMD_BUMN
+  SWASTA
+  PEMERINTAHAN
+  ALL
+}
+
+enum StatusDokumen {
+  AKTIF
+  SEGERA_BERAKHIR
+  EXPIRED
+  ARCHIVED
 }
