@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { KategoriDokumen, TargetMarket } from "@prisma/client";
 
 // Zod Schema for Debitur Creation
 export const CreateDebiturSchema = z.object({
@@ -41,3 +42,20 @@ export function validateRequest<T>(schema: z.ZodSchema<T>, data: unknown): Valid
 }
 
 export type CreateDebiturPayload = z.infer<typeof CreateDebiturSchema>;
+
+// Zod Schema for Document Creation
+export const CreateDocumentSchema = z.object({
+    judul: z.string().min(1, "Judul dokumen wajib diisi"),
+    nomorMemo: z.string().min(1, "Nomor memo wajib diisi"),
+    kategori: z.nativeEnum(KategoriDokumen, { message: "Kategori tidak valid" }),
+    targetMarket: z.nativeEnum(TargetMarket, { message: "Target market tidak valid" }),
+    berlakuMulai: z.string().min(1, "Tanggal berlaku mulai wajib diisi"),
+    berlakuAkhir: z.string().min(1, "Tanggal berlaku akhir wajib diisi"),
+    keywords: z.union([
+        z.array(z.string()),
+        z.string().transform(val => val ? val.split(',').map(k => k.trim()).filter(Boolean) : [])
+    ]).optional().default([]),
+    replacesId: z.string().optional(),
+});
+
+export const UpdateDocumentSchema = CreateDocumentSchema.partial();

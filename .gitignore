@@ -41,3 +41,11 @@ tools/node-*/
 
 # Database Backups (contain sensitive data)
 backups/
+
+# Local logs and status
+*.log
+status.txt
+
+# Uploads
+uploads/
+frontend/uploads/
