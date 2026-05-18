@@ -152,19 +152,19 @@ export default function PreviewModal() {
                         )
                     }
 
-                </div >
+                </div>
 
                 {/* Footer */}
-                < div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex justify-end" >
+                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex justify-end">
                     <button
                         onClick={closePreviewModal}
                         className="px-6 py-2.5 bg-[#00665e] text-white rounded-lg hover:bg-[#00554e] transition-colors font-bold shadow-lg shadow-[#00665e]/20"
                     >
                         Tutup
                     </button>
-                </div >
-            </div >
-        </div >
+                </div>
+            </div>
+        </div>
     );
 }
 
@@ -200,7 +200,7 @@ function SLIKStatus({ status }: { status: "NIHIL" | string }) {
     );
 }
 
-function SLIKTable({ facilities, totalAngsuran }: { facilities: any[], totalAngsuran: number }) {
+function SLIKTable({ facilities, totalAngsuran }: { facilities: { nama_bank: string; plafon_maks: string; outstanding: string; angsuran: string; kolektibilitas: string }[], totalAngsuran: number }) {
     return (
         <div className="space-y-3">
             <div className="overflow-x-auto">

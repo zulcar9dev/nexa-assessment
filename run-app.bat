@@ -121,6 +121,18 @@ if not exist "%BASE_PATH%\frontend\.env" (
     )
 )
 
+REM ============ ENSURE NEXTAUTH_SECRET EXISTS ============
+findstr /C:"NEXTAUTH_SECRET" "%BASE_PATH%\frontend\.env" >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo [INFO] NEXTAUTH_SECRET belum diset. Generating secret...
+    for /f %%a in ('node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"') do set "SECRET=%%a"
+    echo.>> "%BASE_PATH%\frontend\.env"
+    echo # NextAuth.js Configuration>> "%BASE_PATH%\frontend\.env"
+    echo NEXTAUTH_URL="http://localhost:3000">> "%BASE_PATH%\frontend\.env"
+    echo NEXTAUTH_SECRET="%SECRET%">> "%BASE_PATH%\frontend\.env"
+    echo [INFO] NEXTAUTH_SECRET berhasil di-generate dan ditambahkan ke .env
+)
+
 REM Navigate to frontend directory
 cd /d "%BASE_PATH%\frontend"
 if %ERRORLEVEL% NEQ 0 (

@@ -106,12 +106,13 @@ export default function DebiturDetailPage({
     }
 
     // Get dataLengkap (the full form data stored as JSON)
-    const data = debitur.dataLengkap || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Display-only page rendering 50+ dynamic JSON fields
+    const data = (debitur.dataLengkap || {}) as Record<string, any>;
     const kategori = getKategori(debitur);
     const segmentasi = String(debitur.segmentasi || data.segmentasi || "").toUpperCase();
 
     // Determine if pensiun (PRAPURNA/PURNA use TASPEN/ASABRI)
-    const isPensiun = kategori === "PRAPURNA" || kategori === "PURNA";
+    const _isPensiun = kategori === "PRAPURNA" || kategori === "PURNA";
     const isAktif = kategori === "AKTIF";
 
     return (

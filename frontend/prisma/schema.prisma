@@ -62,6 +62,8 @@ enum JenisPengajuan {
   TOP_UP
   TOP_UP_SISA_GAJI
   TAKEOVER
+  THT
+  FLEKSI_AKTIF
 }
 
 enum Segmentasi {

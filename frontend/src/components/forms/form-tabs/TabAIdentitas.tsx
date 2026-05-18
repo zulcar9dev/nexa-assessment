@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { usePathname } from "next/navigation";
 import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 
@@ -13,10 +12,6 @@ import React from "react";
 export default React.memo(function TabAIdentitas() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
-    const pathname = usePathname();
-
-
-
     // Auto-calculate age from birth date
     const usiaPemohon = useMemo(() => {
         if (!formData.tgl_lahir_pemohon) return null;

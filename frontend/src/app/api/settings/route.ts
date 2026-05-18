@@ -4,7 +4,7 @@ import { authOptions } from '@/backend/lib/auth';
 import { ConfigService } from '@/backend/services/config.service';
 import type { ApiResponse } from '@/types/api';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
             success: true,
             data: settings
         });
-    } catch (error) {
+    } catch {
         return NextResponse.json<ApiResponse>({
             success: false,
             error: { code: 'INTERNAL_ERROR', message: 'Internal Server Error' }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
             success: true,
             data: updated
         });
-    } catch (error) {
+    } catch {
         return NextResponse.json<ApiResponse>({
             success: false,
             error: { code: 'INTERNAL_ERROR', message: 'Internal Server Error' }

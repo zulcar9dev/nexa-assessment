@@ -6,6 +6,15 @@ import { useFormStore } from "@/stores/form-store";
 // Tab order untuk navigasi
 const TAB_ORDER = ["tab-a", "tab-b", "tab-c", "tab-d", "tab-e"];
 
+/**
+ * Helper to get all focusable elements within a container
+ */
+function getFocusableElements(container: Element): NodeListOf<Element> {
+    return container.querySelectorAll(
+        'input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+}
+
 interface UseTabNavigationReturn {
     /**
      * Handler untuk navigasi ke tab berikutnya
@@ -75,18 +84,6 @@ export function useTabNavigation(): UseTabNavigationReturn {
         });
     }, []);
 
-    /**
-     * Mendapatkan semua elemen focusable dalam container
-     */
-    const getFocusableElements = (container: HTMLElement): NodeListOf<Element> => {
-        return container.querySelectorAll(
-            'input:not([disabled]):not([type="hidden"]), ' +
-            'select:not([disabled]), ' +
-            'textarea:not([disabled]), ' +
-            'button:not([disabled]):not([type="button"]):not([tabindex="-1"]), ' +
-            '[tabindex]:not([tabindex="-1"]):not([disabled])'
-        );
-    };
 
     /**
      * Pindah ke tab berikutnya

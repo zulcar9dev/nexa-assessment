@@ -25,9 +25,7 @@ export async function middleware(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET
     });
 
-    // Also check the legacy cookie for backward compatibility
-    const legacyCookie = request.cookies.get("auth-session");
-    const isAuthenticated = !!token || !!legacyCookie;
+    const isAuthenticated = !!token;
 
     // If not authenticated and trying to access protected route, redirect to login
     if (!isAuthenticated && !isPublicRoute) {

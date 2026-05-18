@@ -1,6 +1,6 @@
 
 import { ListGenerators } from "../src/backend/services/document/list-generators";
-import { getInstansiConfig } from "../src/backend/services/document/instansi-config";
+import { getInstansiConfig as _getInstansiConfig } from "../src/backend/services/document/instansi-config";
 
 // Mock Data Generators
 const createBaseContext = (overrides: Record<string, unknown> = {}) => ({

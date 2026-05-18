@@ -6,7 +6,6 @@ import {
   toTitleCase,
   getCfmStatusPerkawinan,
   getStatusKepegawaian,
-  getMasaKerjaText,
   getTujuanKreditLabel,
   calculateAge,
 } from "./formatters";

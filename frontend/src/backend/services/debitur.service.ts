@@ -26,8 +26,6 @@ function mapToPrismaKategori(k: Kategori | string): PrismaKategori {
 
 function mapToPrismaJenis(j: JenisPengajuan | string): PrismaJenisPengajuan {
     const upper = j.toUpperCase().replace(/ /g, '_');
-    // Handle special cases
-    if (upper === 'THT') return PrismaJenisPengajuan.TOP_UP;
     // Direct enum matching
     const validValues = Object.values(PrismaJenisPengajuan) as string[];
     if (validValues.includes(upper)) {
@@ -43,18 +41,6 @@ function mapToPrismaSegmentasi(s: Segmentasi | string): PrismaSegmentasi {
         return upper as PrismaSegmentasi;
     }
     return PrismaSegmentasi.TASPEN; // Fallback
-}
-
-// Prisma-like where input type
-interface DebiturWhereInput {
-    userId?: string;
-    namaPemohon?: { contains: string; mode: string };
-    noKtp?: { contains: string };
-    jenisPengajuan?: PrismaJenisPengajuan;
-    segmentasi?: PrismaSegmentasi;
-    kategori?: PrismaKategori;
-    OR?: Array<{ namaPemohon?: { contains: string; mode: string }; noKtp?: { contains: string } }>;
-    createdAt?: { gte: Date };
 }
 
 interface StatsResult {
@@ -121,7 +107,7 @@ export class DebiturService {
                 console.error("Error executing raw JSON search query:", e);
             }
 
-            const searchConditions: any[] = [
+            const searchConditions: Prisma.DebiturWhereInput[] = [
                 { namaPemohon: { contains: q, mode: 'insensitive' } },
                 { noKtp: { contains: q } },
             ];
@@ -185,16 +171,16 @@ export class DebiturService {
                     }
                 }
             }),
-            prisma.debitur.count({ where: where as any }),
+            prisma.debitur.count({ where }),
         ]);
 
         // Extract pekerjaan (instansi) from dataLengkap and omit dataLengkap
         const mappedData = data.map(item => {
-            const dataLengkapObj = item.dataLengkap as Record<string, any>;
+            const dataLengkapObj = item.dataLengkap as Record<string, unknown>;
             const pekerjaan = dataLengkapObj?.instansi || '-';
             
             // Create a new object without dataLengkap
-            const { dataLengkap, ...rest } = item;
+            const { dataLengkap: _dataLengkap, ...rest } = item;
             
             return {
                 ...rest,
@@ -238,7 +224,7 @@ export class DebiturService {
                 kategori: mapToPrismaKategori(data.kategori),
                 jenisPengajuan: mapToPrismaJenis(data.jenisPengajuan),
                 segmentasi: mapToPrismaSegmentasi(data.segmentasi),
-                dataLengkap: data.dataLengkap as Record<string, any>, // Cast for Json type compatibility
+                dataLengkap: data.dataLengkap as Prisma.InputJsonValue, // Cast for Json type compatibility
                 userId,
             },
         });
@@ -319,14 +305,14 @@ export class DebiturService {
             // Group by Kategori
             prisma.debitur.groupBy({
                 by: ['kategori'],
-                where: where as any,
+                where,
                 _count: true,
             }),
 
             // Group by Segmentasi
             prisma.debitur.groupBy({
                 by: ['segmentasi'],
-                where: where as any,
+                where,
                 _count: true,
             }),
 
@@ -337,7 +323,7 @@ export class DebiturService {
                     createdAt: {
                         gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
                     },
-                } as any,
+                } as Prisma.DebiturWhereInput,
             }),
 
             // Daily stats (limited to last 30 days for performance)
@@ -350,7 +336,7 @@ export class DebiturService {
                     createdAt: {
                         gte: thirtyDaysAgo
                     }
-                } as any,
+                } as Prisma.DebiturWhereInput,
                 select: { createdAt: true },
                 orderBy: { createdAt: 'asc' }
             }),

@@ -25,9 +25,6 @@ export function useIdleTimeout({
     const lastActivityRef = useRef<number>(Date.now());
 
     const handleLogout = useCallback(async () => {
-        // Clear legacy auth cookie
-        document.cookie = "auth-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
         // Call optional onIdle callback
         if (onIdle) {
             onIdle();

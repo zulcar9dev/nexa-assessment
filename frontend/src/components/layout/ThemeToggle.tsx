@@ -2,16 +2,21 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useUIStore } from "@/stores/ui-store";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+// Always returns true on client, false on server (avoids hydration mismatch)
+const emptySubscribe = () => () => {};
+function useMounted() {
+    return useSyncExternalStore(
+        emptySubscribe,
+        () => true,  // client
+        () => false   // server
+    );
+}
 
 export default function ThemeToggle() {
     const { theme, toggleTheme } = useUIStore();
-    const [mounted, setMounted] = useState(false);
-
-    // Avoid hydration mismatch
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const mounted = useMounted();
 
     if (!mounted) {
         return (

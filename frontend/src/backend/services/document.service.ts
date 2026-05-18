@@ -8,10 +8,6 @@ import {
     Packer,
     Paragraph,
     TextRun,
-    Table,
-    TableRow,
-    TableCell,
-    WidthType,
     HeadingLevel,
     AlignmentType,
 } from 'docx';

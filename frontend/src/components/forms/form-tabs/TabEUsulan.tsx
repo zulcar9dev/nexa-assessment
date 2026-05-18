@@ -136,19 +136,17 @@ export default React.memo(function TabEUsulan({
     if (formData.total_blokiran_jml !== total) {
       updateField("total_blokiran_jml", total);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     formData.tgl_pensiun_pemohon,
     formData.blokiran_pindah_gaji_jml,
     formData.blokiran_wajib_jml,
-    // Removed output dependencies to prevent cycles:
-    // formData.blokiran_prapurna_jml,
-    // formData.total_blokiran_jml,
     updateField,
     kategori,
   ]);
 
   // Auto-calculate Total Blokiran, Max Plafond, and Take Home Pay
-  const calculationResult = useMemo(() => {
+  const _calculationResult = useMemo(() => {
     // Blokiran
     let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
     // Logic for aktif already handled above for defaults, but here for safety

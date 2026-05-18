@@ -49,7 +49,7 @@ export class ConfigService {
                 this.cache.set('settings', result, 60 * 60 * 1000);
                 
                 return result;
-            } catch (error) {
+            } catch {
                 // Return default settings if file doesn't exist or is invalid
                 return DEFAULT_SETTINGS;
             }

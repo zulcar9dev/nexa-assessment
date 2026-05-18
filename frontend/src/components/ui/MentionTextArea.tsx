@@ -164,8 +164,7 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
 
         document.body.appendChild(div);
 
-        // Calculate position
-        const spanRect = span.getBoundingClientRect(); // not quite right for span wrapping
+        // Calculate position - using marker approach
         // Better strategy: creating a span for the text before caret is good, 
         // but we need the position of the *end* of that text.
         // Let's use a simpler method often used:
@@ -176,7 +175,7 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
         marker.textContent = '|';
         div.appendChild(marker);
 
-        const divRect = div.getBoundingClientRect();
+        // Position relative to the textarea
 
         // Position relative to the textarea
         // But since we appended div to body (to avoid container restrictions), we need absolute page coords?
@@ -205,6 +204,7 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
         if (showSuggestions) {
             updateDropdownPosition();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showSuggestions, value, cursorPosition]);
 
     // Restore cursor position after value update
@@ -285,19 +285,7 @@ export const MentionTextArea: React.FC<MentionTextAreaProps> = ({
                Let's stick to the Backdrop method but ensure styling matches EXACTLY.
                Common classes (p-3, font-mono, text-sm, leading-normal etc) must match 1:1.
             */}
-            <style jsx>{`
-               /* Specific override for this component when using backdrop */
-               .mention-textarea-input {
-                   color: transparent !important;
-                   background-color: transparent !important;
-                   caret-color: #000;
-               }
-               @media (prefers-color-scheme: dark) {
-                   .mention-textarea-input {
-                       caret-color: #fff;
-                   }
-               }
-            `}</style>
+
 
             {showSuggestions && filteredOptions.length > 0 && (
                 <div

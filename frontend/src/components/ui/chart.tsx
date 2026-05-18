@@ -18,7 +18,6 @@ interface ChartContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function ChartContainer({
-  config,
   children,
   className,
   ...props
@@ -41,20 +40,24 @@ export function ChartContainer({
   )
 }
 
+interface ChartPayloadEntry {
+  name?: string
+  value?: number | string
+}
+
 export function ChartTooltip({
   active,
   payload,
-  label,
 }: {
   active?: boolean
-  payload?: any[]
+  payload?: ChartPayloadEntry[]
   label?: string
 }) {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border bg-background p-2 shadow-sm">
         <div className="grid grid-cols-2 gap-2">
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry: ChartPayloadEntry, index: number) => (
             <div key={index} className="flex flex-col">
               <span className="text-[0.70rem] uppercase text-muted-foreground">
                 {entry.name}

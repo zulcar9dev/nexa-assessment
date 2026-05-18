@@ -8,7 +8,7 @@ import PizZip from "pizzip";
 import { TemplateService } from "./template.service";
 import { TemplateContextBuilder } from "./document/template-context";
 import { DebiturData, KategoriDoc } from "./document/types";
-import { Kategori } from "@prisma/client"; // Assuming Prisma client has this, or we cast string
+import type { Kategori } from "@prisma/client";
 
 // Re-export types for backward compatibility
 export type { KategoriDoc, DebiturData };
@@ -26,7 +26,7 @@ export class DocumentTemplateService {
     
     // Map KategoriDoc (lowercase) to Kategori (uppercase Enum for TemplateService)
     // We cast to any/Kategori to match TemplateService signature
-    const categoryEnum = kategori.toUpperCase() as any;
+    const categoryEnum = kategori.toUpperCase() as Kategori;
 
     // Read template file via TemplateService (Cached)
     const templateBuffer = await TemplateService.readFile(categoryEnum);

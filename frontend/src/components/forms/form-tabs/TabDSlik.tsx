@@ -6,7 +6,7 @@ import { Plus, Trash2, ClipboardCheck, Calendar } from "lucide-react";
 import type { SlikFacility } from "@/types/debitur";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { formatNumberForDisplay, cleanNumberInput } from "@/lib/utils";
 
 // Helper for number display
@@ -20,6 +20,7 @@ interface SlikFacilityRowProps {
     handleNumberInput: (index: number, field: keyof SlikFacility, value: string) => void;
     jenisPengajuan?: string;
 }
+
 
 const SlikFacilityRow = React.memo(function SlikFacilityRow({
     index,
@@ -173,7 +174,7 @@ export default React.memo(function TabDSlik() {
     const { formData, setFormData } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
-    const facilities = formData.slik_facilities || [];
+    const facilities = useMemo(() => formData.slik_facilities || [], [formData.slik_facilities]);
 
     const addFacility = useCallback(() => {
         const updatedFacilities = [

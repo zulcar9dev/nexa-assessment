@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, Save, X } from "lucide-react";
+import { Eye, Save } from "lucide-react";
 
 interface FormActionsProps {
     onPreview?: () => void;

@@ -41,7 +41,7 @@ export interface Debitur {
   jenisPengajuan: JenisPengajuan;
   segmentasi: Segmentasi;
   pekerjaan?: string; // [NEW] Pekerjaan (from dataLengkap.instansi)
-  dataLengkap: Record<string, any>;
+  dataLengkap: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
   userId?: string;

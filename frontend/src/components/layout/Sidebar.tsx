@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import { useUIStore } from "@/stores/ui-store";
 import {
     Home,
     FileText,
@@ -47,14 +48,15 @@ const adminItems = [
 
 export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     const pathname = usePathname();
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const { theme, toggleTheme } = useUIStore();
+    const isDarkMode = theme === "dark";
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const { data: session } = useSession();
 
     // Check if user is admin
-    const isAdmin = (session?.user as { role?: string })?.role?.toLowerCase() === "admin";
+    const isAdmin = session?.user?.role?.toLowerCase() === "admin";
 
-    const startTimer = () => {
+    const startTimer = useCallback(() => {
         // Prevent multiple timers
         if (timerRef.current) clearTimeout(timerRef.current);
 
@@ -64,14 +66,14 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                 onToggle();
             }, 5000);
         }
-    };
+    }, [isCollapsed, onToggle]);
 
-    const stopTimer = () => {
+    const stopTimer = useCallback(() => {
         if (timerRef.current) {
             clearTimeout(timerRef.current);
             timerRef.current = null;
         }
-    };
+    }, []);
 
     // Auto-hide logic: start timer when opened, stop when closed
     useEffect(() => {
@@ -81,33 +83,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
             stopTimer();
         }
         return () => stopTimer();
-    }, [isCollapsed]);
-
-    const toggleDarkMode = () => {
-        const newMode = !isDarkMode;
-        setIsDarkMode(newMode);
-        if (newMode) {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("theme", "light");
-        }
-    };
-
-    // Initialize dark mode from localStorage
-    useEffect(() => {
-        const savedTheme = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-        if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-            setIsDarkMode(true);
-            document.documentElement.classList.add("dark");
-        } else {
-            setIsDarkMode(false);
-            document.documentElement.classList.remove("dark");
-        }
-    }, []);
+    }, [isCollapsed, startTimer, stopTimer]);
 
     return (
         <>
@@ -224,7 +200,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                                 {/* Dark Mode Toggle */}
                                 <li>
                                     <button
-                                        onClick={toggleDarkMode}
+                                        onClick={toggleTheme}
                                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg
                       text-[#00665e] dark:text-[#80cbc4] hover:bg-gray-100 dark:hover:bg-[#323249] hover:text-[#f15a23]
                       transition-all duration-200"

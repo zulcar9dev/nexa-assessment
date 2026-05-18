@@ -90,7 +90,7 @@ export default function FormPrapurnaPage() {
             return;
         }
 
-        const result = await submitForm("prapurna", false);
+        const result = await submitForm("prapurna");
 
         if (result.success) {
             alert("Data berhasil disimpan!");

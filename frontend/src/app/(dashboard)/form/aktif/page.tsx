@@ -96,7 +96,7 @@ export default function FormAktifPage() {
             return;
         }
 
-        const result = await submitForm("aktif", false);
+        const result = await submitForm("aktif");
 
         if (result.success) {
             alert("Data berhasil disimpan!");

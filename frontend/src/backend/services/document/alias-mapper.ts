@@ -1,9 +1,8 @@
-import { formatRupiah, terbilang } from '@/lib/utils';
 import { getMasaKerjaText } from './formatters';
 import { DebiturData } from './types';
 
 export class AliasMapper {
-  static map(context: Record<string, any>, debitur: DebiturData): Record<string, unknown> {
+  static map(context: Record<string, unknown>, debitur: DebiturData): Record<string, unknown> {
     const aliases: Record<string, unknown> = {
       // Identitas
       Nama_Pemohon: context.nama_pemohon,

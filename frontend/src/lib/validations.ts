@@ -70,14 +70,16 @@ export const slikSchema = z.object({
 });
 
 // Tab E - Usulan Validation
-export const usulanSchema = z.object({
+export const usulanSchemaBase = z.object({
     usulan_plafon_kredit: z.string().min(1, "Plafon wajib diisi"),
     usulan_jangka_waktu_bulan: z.string().min(1, "Jangka waktu wajib diisi"),
     usulan_bunga_persen: z.string().min(1, "Bunga wajib diisi"),
     biaya_psjt_percent: z.string().optional(),
     biaya_administrasi_is_bebas: z.boolean().optional(),
     biaya_administrasi_nominal: z.string().optional(),
-}).refine((data) => {
+});
+
+export const usulanSchema = usulanSchemaBase.refine((data) => {
     if (!data.biaya_administrasi_is_bebas && (!data.biaya_administrasi_nominal || data.biaya_administrasi_nominal === "")) {
         return false;
     }
@@ -93,7 +95,7 @@ export const debiturPrapurnaSchema = z.object({
     ...pekerjaanPrapurnaSchema.shape,
     ...penghasilanPrapurnaSchema.shape,
     ...slikSchema.shape,
-    ...usulanSchema.shape,
+    ...usulanSchemaBase.shape,
 });
 
 // Complete Form Schema (Purna)
@@ -102,7 +104,7 @@ export const debiturPurnaSchema = z.object({
     ...pensiunSchema.shape,
     ...penghasilanPurnaSchema.shape,
     ...slikSchema.shape,
-    ...usulanSchema.shape,
+    ...usulanSchemaBase.shape,
 });
 
 // Tab B - Pekerjaan Validation (Aktif) - BARU
@@ -119,7 +121,7 @@ export const debiturAktifSchema = z.object({
     ...pekerjaanAktifSchema.shape,
     ...penghasilanPrapurnaSchema.shape,
     ...slikSchema.shape,
-    ...usulanSchema.shape,
+    ...usulanSchemaBase.shape,
 });
 
 // Type exports

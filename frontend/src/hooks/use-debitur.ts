@@ -3,27 +3,7 @@
 import { useState, useCallback } from "react";
 import type { Debitur } from "@/types/debitur";
 
-// API Response types
-interface ApiResponse<T = unknown> {
-    success: boolean;
-    data?: T;
-    message?: string;
-    error?: {
-        code: string;
-        message: string;
-        details?: Array<{ field: string; message: string }>;
-    };
-}
-
-interface PaginatedResponse<T> {
-    data: T[];
-    meta: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-    };
-}
+import type { ApiResponse, PaginatedResponse } from "@/types/api";
 
 interface UseDebiturOptions {
     initialData?: Debitur[];

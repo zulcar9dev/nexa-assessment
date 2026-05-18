@@ -85,7 +85,7 @@ export interface CreateDebiturRequest {
     kategori: Kategori;
     jenisPengajuan: JenisPengajuan;
     segmentasi: Segmentasi;
-    dataLengkap: Record<string, any>;
+    dataLengkap: Record<string, unknown>;
 }
 
 export type UpdateDebiturRequest = Partial<CreateDebiturRequest>;

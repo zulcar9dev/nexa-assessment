@@ -13,8 +13,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
     const { data: session } = useSession();
 
     const handleLogout = async () => {
-        // Clear legacy auth cookie
-        document.cookie = "auth-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         // Sign out using NextAuth
         await signOut({ callbackUrl: "/login" });
     };
@@ -22,7 +20,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
     // Get user info from session
     const userName = session?.user?.name || "Pengguna";
     const userEmail = session?.user?.email || "";
-    const userRole = (session?.user as { role?: string })?.role || "User";
+    const userRole = session?.user?.role || "User";
 
     // Format role for display
     const formatRole = (role: string) => {

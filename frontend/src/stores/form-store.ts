@@ -2,17 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { DebiturFormData, DSRResult } from "@/types/debitur";
 
-// API Response type
-interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: {
-    code: string;
-    message: string;
-    details?: Array<{ field: string; message: string }>;
-  };
-}
+import type { ApiResponse } from "@/types/api";
 
 interface FormStore {
   // Form data
@@ -42,14 +32,11 @@ interface FormStore {
     errors: Array<{ field: string; message: string }>
   ) => void;
   resetForm: () => void;
-  loadDraft: () => void;
-  saveDraft: () => void;
   clearErrors: () => void;
 
   // API actions
   submitForm: (
-    kategori: "prapurna" | "purna" | "aktif",
-    isPurna: boolean
+    kategori: "prapurna" | "purna" | "aktif"
   ) => Promise<{ success: boolean; id?: string }>;
 }
 
@@ -174,18 +161,10 @@ export const useFormStore = create<FormStore>()(
           validationErrors: [],
         }),
 
-      loadDraft: () => {
-        // Draft is automatically loaded by persist middleware
-        console.log("Draft loaded from localStorage");
-      },
 
-      saveDraft: () => {
-        // Draft is automatically saved by persist middleware
-        console.log("Draft saved to localStorage");
-      },
 
       // API Submit
-      submitForm: async (kategori, isPurna) => {
+      submitForm: async (kategori) => {
         const { formData } = get();
 
         set({

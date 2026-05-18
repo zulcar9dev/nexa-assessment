@@ -93,7 +93,7 @@ export const INSTANSI_CONFIGS: InstansiConfig[] = [
 
 export const getInstansiConfig = (
   instansiName: string = "",
-  segmentasi: string = "",
+  _segmentasi: string = "",
 ): InstansiConfig | undefined => {
   const nameLower = instansiName.toLowerCase();
 

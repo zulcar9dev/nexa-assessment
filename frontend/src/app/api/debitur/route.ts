@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const debitur = await DebiturService.create(validation.data, (session.user as unknown as AuthenticatedUser).id);
+        const debitur = await DebiturService.create({ ...validation.data, dataLengkap: validation.data.dataLengkap || {} }, (session.user as unknown as AuthenticatedUser).id);
 
         return successResponse(debitur, 'Data debitur berhasil disimpan', 201);
     } catch (error) {

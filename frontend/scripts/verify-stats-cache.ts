@@ -10,18 +10,18 @@ async function verifyCache() {
     console.log("Setting up mocks...");
 
     // Mock implementations
-    // @ts-ignore
+    // @ts-expect-error — mock override for testing
     prisma.debitur.count = async () => {
         console.log("  -> DB Call: count");
         await new Promise(r => setTimeout(r, 100)); // Simulate DB latency
         return 100;
     };
-    // @ts-ignore
+    // @ts-expect-error — mock override for testing
     prisma.debitur.groupBy = async () => {
         console.log("  -> DB Call: groupBy");
         return [];
     };
-    // @ts-ignore
+    // @ts-expect-error — mock override for testing
     prisma.debitur.findMany = async () => {
         console.log("  -> DB Call: findMany");
         await new Promise(r => setTimeout(r, 100)); // Simulate DB latency
@@ -55,11 +55,11 @@ async function verifyCache() {
     }
 
     // Cleanup
-    // @ts-ignore
+    // @ts-expect-error — mock override for testing
     prisma.debitur.findMany = originalFindMany;
-    // @ts-ignore
+    // @ts-expect-error — mock override for testing
     prisma.debitur.count = originalCount;
-    // @ts-ignore
+    // @ts-expect-error — mock override for testing
     prisma.debitur.groupBy = originalGroupBy;
 }
 

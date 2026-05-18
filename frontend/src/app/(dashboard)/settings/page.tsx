@@ -82,7 +82,7 @@ export default function SettingsPage() {
                             Teks Mitigasi Risiko SLIK
                         </label>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                            Teks ini akan muncul otomatis di dokumen jika kolektibilitas SLIK selain "1 - Lancar".
+                            Teks ini akan muncul otomatis di dokumen jika kolektibilitas SLIK selain &quot;1 - Lancar&quot;.
                         </p>
                         <textarea
                             id="mitigasiText"

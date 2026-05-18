@@ -1,20 +1,18 @@
 "use client";
 
-import { useState } from "react";
+
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import PreviewModal from "../forms/PreviewModal";
+
+import { useUIStore } from "@/stores/ui-store";
 
 interface MainLayoutProps {
     children: React.ReactNode;
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsSidebarCollapsed(!isSidebarCollapsed);
-    };
+    const { isSidebarCollapsed, toggleSidebar } = useUIStore();
 
     return (
         <div className="flex min-h-screen bg-[var(--background)] text-[var(--foreground)]">

@@ -30,6 +30,14 @@ declare module 'next-auth/jwt' {
     }
 }
 
+// Validate required environment variables
+if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error(
+        'NEXTAUTH_SECRET is not set. Please add it to your .env file. ' +
+        'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'base64\'))"'
+    );
+}
+
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({

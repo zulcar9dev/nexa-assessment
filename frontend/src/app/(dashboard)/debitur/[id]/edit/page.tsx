@@ -72,7 +72,7 @@ export default function EditDebiturPage({
 
                 setIsPurna(isPurnaType);
                 if (isAktifType) {
-                    setCategory("aktif" as any); // Force cast for now or update type if possible
+                    setCategory("aktif"); // Already a valid literal type
                 } else {
                     setCategory(isPurnaType ? "purna" : "prapurna");
                 }
@@ -80,12 +80,12 @@ export default function EditDebiturPage({
                 // Load dataLengkap into form store
                 if (data.dataLengkap && Object.keys(data.dataLengkap as object).length > 0) {
                      setFormData({
-                        ...(data.dataLengkap as any),
+                         ...(data.dataLengkap as Record<string, unknown>),
                         // Ensure critical fields match DB columns
                         nama_pemohon: data.namaPemohon,
                         no_ktp_pemohon: data.noKtp,
-                        segmentasi: String(data.segmentasi).toLowerCase(),
-                        jenis_pengajuan: String(data.jenisPengajuan).toLowerCase(),
+                        segmentasi: String(data.segmentasi).toLowerCase() as "taspen" | "asabri",
+                        jenis_pengajuan: String(data.jenisPengajuan).toLowerCase() as "baru" | "top_up" | "top_up_sisa_gaji" | "takeover",
                      });
                 } else {
                     // Fallback to basic data

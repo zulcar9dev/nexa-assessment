@@ -20,8 +20,8 @@ export class SlikMapper {
         kolektibilitas: facility.kolektibilitas || "1",
       };
 
-      const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
-        return (localContext as any)[key] || match;
+      const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key: string) => {
+        return (localContext as Record<string, string>)[key] || match;
       });
 
       return {
@@ -81,8 +81,8 @@ export class SlikMapper {
           kolektibilitas: facility.kolektibilitas || "1",
         };
         // Simple replace for local context
-        const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key) => {
-          return (localContext as any)[key] || match;
+        const alasanParsed = alasanRaw.replace(/{{([\w_]+)}}/g, (match, key: string) => {
+          return (localContext as Record<string, string>)[key] || match;
         });
 
         result[`slik_bank_${i}_alasan`] = alasanParsed;

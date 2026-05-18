@@ -47,8 +47,6 @@ function LoginContent() {
       }
 
       if (result?.ok) {
-        // Also set cookie for middleware compatibility
-        document.cookie = "auth-session=authenticated; path=/; max-age=86400";
         window.location.href = callbackUrl;
       }
     } catch (err) {
@@ -81,7 +79,6 @@ function LoginContent() {
       }
 
       if (result?.ok) {
-        document.cookie = "auth-session=authenticated; path=/; max-age=86400";
         window.location.href = callbackUrl;
       }
     } catch (err) {

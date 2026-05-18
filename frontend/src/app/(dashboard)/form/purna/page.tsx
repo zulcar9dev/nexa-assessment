@@ -100,7 +100,7 @@ export default function FormPurnaPage() {
             return;
         }
 
-        const result = await submitForm("purna", true);
+        const result = await submitForm("purna");
 
         if (result.success) {
             alert("Data Purna berhasil disimpan!");
