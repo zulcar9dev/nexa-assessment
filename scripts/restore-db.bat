@@ -10,20 +10,25 @@ set "BASE_PATH=%~dp0.."
 if "%BASE_PATH:~-1%"=="\" set "BASE_PATH=%BASE_PATH:~0,-1%"
 
 set "PGSQL_PATH=%BASE_PATH%\tools\pgsql"
-set "PATH=%PGSQL_PATH%\bin;%PATH%"
-
 REM ============ VALIDATE TOOLS EXIST ============
-if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
-    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
-    echo [INFO] Silakan copy folder 'pgsql' dari PC yang sudah memiliki tools.
-    echo [INFO] Letakkan di: %BASE_PATH%\tools\pgsql\
-    pause
-    exit /b 1
+set "PG_CMD_PREFIX="
+if exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    set "PATH=%PGSQL_PATH%\bin;%PATH%"
+    set "PG_CMD_PREFIX=%PGSQL_PATH%\bin\"
+) else (
+    where pg_ctl >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [INFO] PostgreSQL portable tidak ditemukan, menggunakan system PostgreSQL.
+    ) else (
+        echo [ERROR] PostgreSQL tidak ditemukan di: %PGSQL_PATH%\bin\ atau system PATH!
+        pause
+        exit /b 1
+    )
 )
 
 REM Configuration
 set "DB_HOST=localhost"
-set "DB_PORT=5432"
+set "DB_PORT=5433"
 set "DB_NAME=bni_kredit_konsumer"
 set "DB_USER=bni_user"
 set "BACKUP_DIR=%BASE_PATH%\backups"
@@ -75,7 +80,7 @@ if /i not "%CONFIRM%"=="Y" (
 )
 
 REM Check if PostgreSQL is running
-"%PGSQL_PATH%\bin\pg_isready.exe" -h %DB_HOST% -p %DB_PORT% >nul 2>&1
+"%PG_CMD_PREFIX%pg_isready.exe" -h %DB_HOST% -p %DB_PORT% >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] PostgreSQL tidak berjalan!
     echo [INFO] Jalankan run-app.bat terlebih dahulu, lalu buka terminal baru untuk restore.
@@ -85,17 +90,17 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Terminate existing connections
 echo [INFO] Menutup koneksi database yang aktif...
-"%PGSQL_PATH%\bin\psql.exe" -h %DB_HOST% -p %DB_PORT% -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '%DB_NAME%' AND pid <> pg_backend_pid();" >nul 2>&1
+"%PG_CMD_PREFIX%psql.exe" -h %DB_HOST% -p %DB_PORT% -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '%DB_NAME%' AND pid <> pg_backend_pid();" >nul 2>&1
 
 REM Drop and recreate database
 echo [INFO] Menghapus database lama...
-"%PGSQL_PATH%\bin\dropdb.exe" -h %DB_HOST% -p %DB_PORT% -U postgres --if-exists %DB_NAME% 2>nul
+"%PG_CMD_PREFIX%dropdb.exe" -h %DB_HOST% -p %DB_PORT% -U postgres --if-exists %DB_NAME% 2>nul
 if %ERRORLEVEL% NEQ 0 (
     echo [WARNING] Gagal menghapus database, mencoba lanjut...
 )
 
 echo [INFO] Membuat database baru...
-"%PGSQL_PATH%\bin\createdb.exe" -h %DB_HOST% -p %DB_PORT% -U postgres -O %DB_USER% %DB_NAME%
+"%PG_CMD_PREFIX%createdb.exe" -h %DB_HOST% -p %DB_PORT% -U postgres -O %DB_USER% %DB_NAME%
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Gagal membuat database!
     pause
@@ -104,7 +109,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Restore from backup
 echo [INFO] Memulai restore database...
-"%PGSQL_PATH%\bin\psql.exe" -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f "%BACKUP_FILE%" >nul 2>&1
+"%PG_CMD_PREFIX%psql.exe" -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f "%BACKUP_FILE%" >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [WARNING] Restore selesai dengan beberapa warning (biasanya normal).
 ) else (

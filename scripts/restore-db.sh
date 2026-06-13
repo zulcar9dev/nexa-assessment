@@ -14,7 +14,7 @@ set -euo pipefail
 # Configuration
 # ===================
 DB_HOST="${DB_HOST:-localhost}"
-DB_PORT="${DB_PORT:-5432}"
+DB_PORT="${DB_PORT:-5433}"
 DB_NAME="${DB_NAME:-bni_kredit_konsumer}"
 DB_USER="${DB_USER:-bni_user}"
 

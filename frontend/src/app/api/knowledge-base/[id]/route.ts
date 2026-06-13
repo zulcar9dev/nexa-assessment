@@ -74,7 +74,7 @@ export async function PATCH(
             );
         }
 
-        const updated = await KnowledgeBaseService.update(id, validation.data);
+        const updated = await KnowledgeBaseService.update(id, validation.data as any);
         return successResponse(updated, 'Dokumen berhasil diperbarui');
     } catch (error) {
         return handleApiError(error);

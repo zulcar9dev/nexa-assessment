@@ -36,6 +36,9 @@ yarn-error.log*
 tools/pgsql/
 tools/node-*/
 
+# Downloaded tool archives (cached for re-setup)
+tools/downloads/
+
 # Office Lock Files
 ~$*
 

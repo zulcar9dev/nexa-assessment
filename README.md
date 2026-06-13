@@ -27,14 +27,14 @@ Dibangun dengan **Next.js + TypeScript + Prisma**, aplikasi ini dirancang untuk 
 | ----------------------- | --------------------------- |
 | **Framework**           | Next.js 16.1.1 (App Router) |
 | **Language**            | TypeScript 5.x              |
-| **Database**            | PostgreSQL (via Prisma ORM) |
-| **Auth**                | NextAuth.js v4              |
+| **Database**            | PostgreSQL 17.x (via Prisma ORM) |
+| **Auth**                | NextAuth.js v4 (Session 12 Jam) |
 | **Styling**             | TailwindCSS 4.x             |
 | **State Management**    | Zustand 5.x                 |
 | **Document Generation** | docxtemplater + PizZip      |
 | **Validation**          | Zod 4.x                     |
 | **Icons**               | Lucide React                |
-| **Runtime**             | React 19.2.3                |
+| **Runtime**             | React 19.2.3 / Node.js v24.x LTS |
 
 ---
 
@@ -81,7 +81,32 @@ APP_KREDIT_KONSUMER_BNI/
 
 ## ⚙️ Cara Instalasi & Menjalankan Aplikasi
 
-### Opsi 1: Setup PC Baru (Pertama Kali)
+### Opsi 0: Git Clone (Direkomendasikan)
+
+Jika Anda mendapatkan aplikasi ini dari repository Git, cukup jalankan perintah ini di PC baru:
+
+```bash
+# 1. Jalankan setup untuk auto-download tools (Node.js & PostgreSQL) & inisialisasi database
+setup.bat
+
+# 2. Jalankan aplikasi
+run-app.bat
+```
+
+*Catatan: Pastikan terkoneksi internet saat menjalankan `setup.bat` pertama kali. File unduhan tools akan di-cache secara otomatis di `tools/downloads/` agar setup berikutnya bisa dilakukan secara offline.*
+
+### Setup di Linux/macOS
+
+Untuk pengguna Linux/macOS, gunakan script bash berikut:
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+---
+
+### Opsi 1: Setup PC Baru (Pertama Kali - Manual/Legacy)
 
 Untuk menjalankan aplikasi di PC baru yang belum pernah di-setup:
 
@@ -137,7 +162,7 @@ Buat file `.env` di folder `frontend/`:
 
 ```env
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/kredit_konsumer"
+DATABASE_URL="postgresql://bni_user:bni_password@localhost:5433/bni_kredit_konsumer?schema=public"
 
 # NextAuth
 NEXTAUTH_SECRET="your-secret-key"
@@ -235,16 +260,18 @@ scripts\restore-db.bat
 
 | Script          | Keterangan                                      |
 | --------------- | ----------------------------------------------- |
-| `run-app.bat`   | Jalankan aplikasi (portable mode)               |
-| `setup-db.bat`  | Inisialisasi database untuk PC baru             |
+| `setup.bat`     | Auto-download tools & setup database (Windows)  |
+| `setup.sh`      | Auto-download tools & setup database (Linux/macOS) |
+| `run-app.bat`   | Jalankan aplikasi (portable/system mode)         |
+| `setup-db.bat`  | Inisialisasi database saja                      |
 
 ### Database Scripts (`scripts/`)
 
 | Script              | Keterangan                                |
 | ------------------- | ----------------------------------------- |
-| `backup-db.bat`     | Backup database ke file .sql              |
-| `restore-db.bat`    | Restore database dari file backup         |
-| `sync-to-pc.bat`    | Export/Import database antar PC            |
+| `backup-db.bat`     | Backup database ke file .sql (Port 5433)  |
+| `restore-db.bat`    | Restore database dari file backup (Port 5433) |
+| `sync-to-pc.bat`    | Export/Import database antar PC (Port 5433) |
 
 ### NPM Scripts (`frontend/`)
 
@@ -266,22 +293,23 @@ scripts\restore-db.bat
 
 ### PostgreSQL gagal start
 - Cek log di `tools/pgsql/log.txt`
-- Pastikan port 5432 tidak digunakan aplikasi lain
-- Jika data corrupt, hapus folder `tools/pgsql/data/` dan jalankan `setup-db.bat` ulang
+- Pastikan port 5433 tidak digunakan aplikasi lain
+- Jika data corrupt, hapus folder `tools/pgsql/data/` dan jalankan `setup.bat` ulang
 
 ### npm install gagal
-- Pastikan Node.js terdeteksi: jalankan `tools\node-*\node.exe --version`
+- Pastikan Node.js terdeteksi: jalankan `node --version` (system atau portable)
 - Hapus folder `frontend/node_modules` dan coba lagi
 - Jika di laptop kantor, pastikan tidak ada proxy/firewall yang memblokir npm
 
 ### Database kosong setelah restore
 - Pastikan file `.sql` tidak corrupt (buka dengan text editor, cek isinya)
 - Pastikan PostgreSQL berjalan saat menjalankan restore
-- Coba jalankan manual: `tools\pgsql\bin\psql.exe -U bni_user -d bni_kredit_konsumer -f backups\namafile.sql`
+- Coba jalankan manual: panggil command psql dengan port 5433:
+  `psql -h localhost -p 5433 -U bni_user -d bni_kredit_konsumer -f backups\namafile.sql`
 
 ### Aplikasi error "Cannot connect to database"
-- Pastikan PostgreSQL berjalan (`tools\pgsql\bin\pg_isready.exe -h localhost -p 5432`)
-- Cek file `frontend/.env` — pastikan `DATABASE_URL` sesuai
+- Pastikan PostgreSQL berjalan di port 5433 (`pg_isready.exe -h localhost -p 5433`)
+- Cek file `frontend/.env` — pastikan `DATABASE_URL` menggunakan port 5433
 - Pastikan user `bni_user` dan database `bni_kredit_konsumer` sudah dibuat
 
 ---

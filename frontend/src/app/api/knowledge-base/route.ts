@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
         const userId = (session.user as unknown as AuthenticatedUser).id;
 
         const document = await KnowledgeBaseService.create(
-            validation.data,
+            validation.data as any,
             buffer,
             file.name,
             userId

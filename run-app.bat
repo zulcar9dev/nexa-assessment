@@ -15,45 +15,60 @@ set "NODE_PATH="
 for /d %%D in ("%BASE_PATH%\tools\node-*") do (
     set "NODE_PATH=%%D"
 )
-if "%NODE_PATH%"=="" (
-    echo [ERROR] Folder Node.js tidak ditemukan di tools\node-*
-    echo [ERROR] Pastikan folder Node.js portable ada di dalam folder tools\
-    pause
-    exit /b 1
+
+set "NODE_OK=0"
+if not "%NODE_PATH%"=="" (
+    if exist "%NODE_PATH%\node.exe" set "NODE_OK=1"
+)
+
+if "%NODE_OK%"=="0" (
+    where node >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [INFO] Node.js portable tidak ditemukan, menggunakan system Node.js.
+        set "NODE_OK=2"
+    )
 )
 
 set "PGSQL_PATH=%BASE_PATH%\tools\pgsql"
+set "PG_OK=0"
+set "PG_CMD_PREFIX="
+if exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    set "PG_OK=1"
+    set "PG_CMD_PREFIX=%PGSQL_PATH%\bin\"
+) else (
+    where pg_ctl >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [INFO] PostgreSQL portable tidak ditemukan, menggunakan system PostgreSQL.
+        set "PG_OK=2"
+    )
+)
 
-REM ============ VALIDATE TOOLS EXIST ============
-if not exist "%NODE_PATH%\node.exe" (
-    echo [ERROR] node.exe tidak ditemukan di: %NODE_PATH%
-    echo [ERROR] Pastikan folder Node.js portable sudah lengkap di dalam folder tools\
+if "%NODE_OK%"=="0" goto :run_setup
+if "%PG_OK%"=="0" goto :run_setup
+goto :tools_ok
+
+:run_setup
+echo.
+echo [WARNING] Tools pendukung (Node.js atau PostgreSQL) tidak ditemukan!
+set /p RUN_SETUP="Apakah Anda ingin menjalankan setup.bat untuk mengunduh tools? (Y/N): "
+if /i "%RUN_SETUP%"=="Y" (
+    call "%BASE_PATH%\setup.bat"
+    echo.
+    echo [INFO] Setup selesai. Silakan jalankan kembali run-app.bat.
+    pause
+    exit /b 0
+) else (
+    echo [ERROR] Tidak dapat menjalankan aplikasi tanpa Node.js dan PostgreSQL.
     pause
     exit /b 1
 )
 
-if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
-    echo.
-    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
-    echo.
-    echo [INFO] Folder tools\pgsql\ tidak disimpan di Git karena ukuran besar.
-    echo [INFO] Silakan copy folder PostgreSQL portable secara manual:
-    echo.
-    echo        1. Copy folder 'pgsql' dari PC yang sudah memiliki tools
-    echo        2. Letakkan di: %BASE_PATH%\tools\pgsql\
-    echo        3. Pastikan ada file: tools\pgsql\bin\pg_ctl.exe
-    echo.
-    echo [INFO] Atau download PostgreSQL portable dari:
-    echo        https://www.enterprisedb.com/download-postgresql-binaries
-    echo.
-    pause
-    exit /b 1
-)
+:tools_ok
+if "%NODE_OK%"=="1" set "PATH=%NODE_PATH%;%PATH%"
+if "%PG_OK%"=="1" set "PATH=%PGSQL_PATH%\bin;%PATH%"
 
-set "PATH=%NODE_PATH%;%PGSQL_PATH%\bin;%PATH%"
-
-echo [INFO] Menggunakan Node.js dari: %NODE_PATH%
-echo [INFO] Menggunakan PostgreSQL dari: %PGSQL_PATH%
+if "%NODE_OK%"=="1" (echo [INFO] Menggunakan Node.js portable: %NODE_PATH%) else (echo [INFO] Menggunakan system Node.js)
+if "%PG_OK%"=="1" (echo [INFO] Menggunakan PostgreSQL portable: %PGSQL_PATH%) else (echo [INFO] Menggunakan system PostgreSQL)
 echo.
 
 REM ============ CHECK IF FIRST RUN (NO DATA DIR) ============
@@ -72,11 +87,11 @@ if not exist "%PGSQL_PATH%\data" (
 
 REM ============ START POSTGRESQL ============
 echo [INFO] Memeriksa status PostgreSQL...
-"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5433 >nul 2>&1
+"%PG_CMD_PREFIX%pg_isready.exe" -h localhost -p 5433 >nul 2>&1
 if %ERRORLEVEL% EQU 0 goto :pg_running
 
 echo [INFO] PostgreSQL tidak berjalan. Memulai PostgreSQL...
-"%PGSQL_PATH%\bin\pg_ctl.exe" start -D "%PGSQL_PATH%\data" -l "%PGSQL_PATH%\log.txt" -w
+"%PG_CMD_PREFIX%pg_ctl.exe" start -D "%PGSQL_PATH%\data" -l "%PGSQL_PATH%\log.txt" -w -o "-p 5433"
 if %ERRORLEVEL% NEQ 0 goto :pg_error
 echo [INFO] PostgreSQL berhasil dimulai.
 goto :pg_done
@@ -220,7 +235,7 @@ echo ================================================
 set /p STOP_PG="Apakah ingin menghentikan PostgreSQL juga? (Y/N): "
 if /i "%STOP_PG%"=="Y" (
     echo [INFO] Menghentikan PostgreSQL...
-    "%PGSQL_PATH%\bin\pg_ctl.exe" stop -D "%PGSQL_PATH%\data" -m fast
+    "%PG_CMD_PREFIX%pg_ctl.exe" stop -D "%PGSQL_PATH%\data" -m fast
     echo [INFO] PostgreSQL dihentikan.
 )
 

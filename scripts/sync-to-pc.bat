@@ -13,16 +13,22 @@ set "BASE_PATH=%~dp0.."
 if "%BASE_PATH:~-1%"=="\" set "BASE_PATH=%BASE_PATH:~0,-1%"
 
 set "PGSQL_PATH=%BASE_PATH%\tools\pgsql"
-set "PATH=%PGSQL_PATH%\bin;%PATH%"
 set "BACKUP_DIR=%BASE_PATH%\backups"
 
 REM ============ VALIDATE TOOLS EXIST ============
-if not exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
-    echo [ERROR] PostgreSQL binary tidak ditemukan di: %PGSQL_PATH%\bin\
-    echo [INFO] Silakan copy folder 'pgsql' dari PC yang sudah memiliki tools.
-    echo [INFO] Letakkan di: %BASE_PATH%\tools\pgsql\
-    pause
-    exit /b 1
+set "PG_CMD_PREFIX="
+if exist "%PGSQL_PATH%\bin\pg_ctl.exe" (
+    set "PATH=%PGSQL_PATH%\bin;%PATH%"
+    set "PG_CMD_PREFIX=%PGSQL_PATH%\bin\"
+) else (
+    where pg_ctl >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [INFO] PostgreSQL portable tidak ditemukan, menggunakan system PostgreSQL.
+    ) else (
+        echo [ERROR] PostgreSQL tidak ditemukan di: %PGSQL_PATH%\bin\ atau system PATH!
+        pause
+        exit /b 1
+    )
 )
 
 echo Pilih operasi:
@@ -46,7 +52,7 @@ echo ================================================
 echo.
 
 REM Check PostgreSQL
-"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5432 >nul 2>&1
+"%PG_CMD_PREFIX%pg_isready.exe" -h localhost -p 5433 >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] PostgreSQL tidak berjalan!
     echo [INFO] Jalankan run-app.bat terlebih dahulu di terminal lain.
@@ -56,7 +62,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM ============ AUTO-DETECT DB USER ============
 set "DB_USER=postgres"
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
+"%PG_CMD_PREFIX%psql.exe" -h localhost -p 5433 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     set "DB_USER=bni_user"
     echo [INFO] Menggunakan user: bni_user
@@ -73,7 +79,7 @@ for /f "tokens=1-2 delims=: " %%a in ('time /t') do set "TTIME=%%a%%b"
 set "SYNC_FILE=sync_%DDATE%_%TTIME%.sql"
 
 echo [INFO] Membackup database...
-"%PGSQL_PATH%\bin\pg_dump.exe" -h localhost -p 5432 -U %DB_USER% -d bni_kredit_konsumer --format=plain --no-owner --no-acl -f "%BACKUP_DIR%\%SYNC_FILE%"
+"%PG_CMD_PREFIX%pg_dump.exe" -h localhost -p 5433 -U %DB_USER% -d bni_kredit_konsumer --format=plain --no-owner --no-acl -f "%BACKUP_DIR%\%SYNC_FILE%"
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Backup gagal!
     pause
@@ -105,7 +111,7 @@ echo ================================================
 echo.
 
 REM Check PostgreSQL
-"%PGSQL_PATH%\bin\pg_isready.exe" -h localhost -p 5432 >nul 2>&1
+"%PG_CMD_PREFIX%pg_isready.exe" -h localhost -p 5433 >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] PostgreSQL tidak berjalan!
     echo [INFO] Jalankan setup-db.bat terlebih dahulu jika ini PC baru.
@@ -116,7 +122,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM ============ AUTO-DETECT DB USER ============
 set "DB_USER=postgres"
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
+"%PG_CMD_PREFIX%psql.exe" -h localhost -p 5433 -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='bni_user'" 2>nul | findstr "1" >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     set "DB_USER=bni_user"
     echo [INFO] Menggunakan user: bni_user
@@ -172,14 +178,14 @@ if /i not "%CONFIRM%"=="Y" (
 
 REM Terminate connections
 echo [INFO] Menutup koneksi aktif...
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'bni_kredit_konsumer' AND pid <> pg_backend_pid();" >nul 2>&1
+"%PG_CMD_PREFIX%psql.exe" -h localhost -p 5433 -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'bni_kredit_konsumer' AND pid <> pg_backend_pid();" >nul 2>&1
 
 REM Drop and recreate
 echo [INFO] Menghapus database lama...
-"%PGSQL_PATH%\bin\dropdb.exe" -h localhost -p 5432 -U postgres --if-exists bni_kredit_konsumer 2>nul
+"%PG_CMD_PREFIX%dropdb.exe" -h localhost -p 5433 -U postgres --if-exists bni_kredit_konsumer 2>nul
 
 echo [INFO] Membuat database baru...
-"%PGSQL_PATH%\bin\createdb.exe" -h localhost -p 5432 -U postgres -O %DB_USER% bni_kredit_konsumer
+"%PG_CMD_PREFIX%createdb.exe" -h localhost -p 5433 -U postgres -O %DB_USER% bni_kredit_konsumer
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Gagal membuat database!
     pause
@@ -188,7 +194,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Restore
 echo [INFO] Mengimport data...
-"%PGSQL_PATH%\bin\psql.exe" -h localhost -p 5432 -U %DB_USER% -d bni_kredit_konsumer -f "%SYNC_FILE%" >nul 2>&1
+"%PG_CMD_PREFIX%psql.exe" -h localhost -p 5433 -U %DB_USER% -d bni_kredit_konsumer -f "%SYNC_FILE%" >nul 2>&1
 
 echo.
 echo ================================================

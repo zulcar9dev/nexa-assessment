@@ -46,9 +46,9 @@ Aplikasi Kredit Konsumer BNI adalah aplikasi web internal untuk memproses pengaj
 │  └──────────┘  └──────────┘  └───────────────┘ │
 └────────────────────┬────────────────────────────┘
                      │
-┌────────────────────▼────────────────────────────┐
+┌─────────────────────────────────────────────────┐
 │         PostgreSQL Database (Portable)           │
-│         Port: 5432                               │
+│         Port: 5433                               │
 │         Database: bni_kredit_konsumer            │
 └─────────────────────────────────────────────────┘
 ```
@@ -71,71 +71,51 @@ Aplikasi Kredit Konsumer BNI adalah aplikasi web internal untuk memproses pengaj
 
 ## 🆕 Setup PC Baru (Pertama Kali)
 
-### Langkah 1: Salin Folder Project
+### Opsi Utama: Setup Otomatis dari Git Clone (Direkomendasikan)
 
-Salin seluruh folder `app_kredit_konsumer_bni-main` ke PC baru. Bisa menggunakan:
-- Flashdisk / External drive
-- Cloud storage (Google Drive, OneDrive, dll)
-- Transfer via jaringan lokal
+Jika Anda mendapatkan aplikasi ini dari Git, folder `tools/pgsql/` dan `tools/node-*` tidak akan ikut tersimpan karena ukurannya yang besar. Untuk men-setup lingkungan:
+
+1. **Jalankan script setup utama**:
+   ```text
+   Klik 2x pada: setup.bat
+   ```
+   Script ini akan otomatis mengunduh **Node.js v24.16.0 LTS** dan **PostgreSQL v17.10**, mengekstraknya ke folder `tools/`, serta menginisialisasi database dari awal (termasuk instalasi dependencies via internet).
+   *Catatan: Pastikan Anda terhubung ke internet saat pertama kali menjalankan setup.*
+
+2. **Jalankan aplikasi**:
+   ```text
+   Klik 2x pada: run-app.bat
+   ```
+
+3. **Buka di Browser**:
+   Akses **`http://localhost:3000`** di browser Anda.
+
+### Opsi 2: Setup dari Salinan Folder Lengkap (Offline)
+
+Jika memindahkan aplikasi secara offline via Flashdisk, Anda dapat menyalin seluruh folder project (pastikan file ZIP/installer pendukung di folder `tools/downloads/` ikut disalin agar tidak perlu mengunduh ulang):
 
 ```
-📁 app_kredit_konsumer_bni-main/
+📁 app_kredit_konsumer_bni/
 ├── 📁 frontend/          ← Kode aplikasi
-├── 📁 tools/             ← Node.js & PostgreSQL portable
-├── 📁 scripts/           ← Scripts utility
-├── 📄 run-app.bat        ← Launcher utama
-├── 📄 setup-db.bat       ← Setup database
+├── 📁 tools/
+│   └── 📁 downloads/     ← Cache file ZIP tools (opsional)
+├── 📁 scripts/           ← Script pembantu
+├── 📄 setup.bat          ← Setup utama (auto-download + db)
+├── 📄 run-app.bat        ← Launcher utama aplikasi
+├── 📄 setup-db.bat       ← Inisialisasi database saja
 └── 📄 README.md
 ```
 
-> ⚠️ **Penting:** Pastikan folder `tools/` ikut ter-copy karena berisi Node.js dan PostgreSQL portable yang diperlukan.
+Jalankan `setup.bat` untuk memverifikasi tools dan inisialisasi database lokal, lalu jalankan `run-app.bat`.
 
-### Langkah 2: Jalankan Aplikasi
+### Akun Login Default
 
-```
-Klik 2x pada: run-app.bat
-```
-
-Pada percobaan pertama, script akan **otomatis**:
-
-1. ✅ Mendeteksi Node.js dari folder `tools/`
-2. ✅ Mendeteksi bahwa ini PC baru (tidak ada `tools/pgsql/data/`)
-3. ✅ Menjalankan `setup-db.bat` yang akan:
-   - Inisialisasi PostgreSQL data directory
-   - Membuat user database (`bni_user`)
-   - Membuat database (`bni_kredit_konsumer`)
-   - Menyalin file `.env.example` → `.env`
-   - Install dependencies (`npm install`) ← *memakan waktu beberapa menit*
-   - Menjalankan database migration
-   - Mengisi data awal (seed)
-4. ✅ Memulai aplikasi di `http://localhost:3000`
-
-### Langkah 3: Buka di Browser
-
-Setelah muncul pesan:
-```
-[INFO] Aplikasi akan berjalan di http://localhost:3000
-```
-
-Buka browser dan akses: **http://localhost:3000**
-
-### Langkah 4: Login
-
-Gunakan salah satu credential default:
+Gunakan kredensial berikut untuk masuk pertama kali:
 
 | Role | Email | Password |
 |------|-------|----------|
 | **Admin** | `admin@bni.co.id` | `admin123` |
 | **User** | `user@bni.co.id` | `user123` |
-
-### Alternatif: Setup Manual
-
-Jika ingin menjalankan setup secara terpisah:
-
-```
-1. Klik 2x pada: setup-db.bat     ← Setup database saja
-2. Klik 2x pada: run-app.bat      ← Jalankan aplikasi
-```
 
 ---
 
@@ -366,11 +346,11 @@ Jika perlu mengupgrade versi Node.js:
 2. Pilih versi **Windows Binary (.zip)** 64-bit
 3. Extract ke folder `tools/`:
    ```
-   tools/node-v26.0.0-win-x64/    ← folder baru
-   ```
+    tools/node-v26.0.0-win-x64/    ← folder baru
+    ```
 4. (Opsional) Hapus folder Node.js lama:
    ```
-   tools/node-v25.2.1-win-x64/    ← bisa dihapus
+   tools/node-v24.16.0-win-x64/   ← bisa dihapus
    ```
 5. Jalankan `run-app.bat` — Node.js baru akan otomatis terdeteksi
 
@@ -386,15 +366,15 @@ Jika perlu mengupgrade versi Node.js:
 
 **Solusi:**
 1. Cek log di `tools\pgsql\log.txt`
-2. Pastikan port 5432 tidak digunakan aplikasi lain:
+2. Pastikan port 5433 tidak digunakan aplikasi lain:
    ```
-   netstat -ano | findstr :5432
+   netstat -ano | findstr :5433
    ```
-3. Jika ada proses yang menggunakan port 5432, hentikan proses tersebut
+3. Jika ada proses yang menggunakan port 5433, hentikan proses tersebut
 4. Jika data corrupt:
    - Backup data penting terlebih dahulu
    - Hapus folder `tools\pgsql\data\`
-   - Jalankan `setup-db.bat` ulang
+   - Jalankan `setup.bat` ulang
 
 ### 2. npm install Gagal
 
@@ -404,8 +384,8 @@ Jika perlu mengupgrade versi Node.js:
 1. Pastikan ada koneksi internet (untuk download dependencies pertama kali)
 2. Jika di jaringan kantor dengan proxy:
    ```
-   tools\node-v25.2.1-win-x64\npm.cmd config set proxy http://proxy-server:port
-   tools\node-v25.2.1-win-x64\npm.cmd config set https-proxy http://proxy-server:port
+   tools\node-v24.16.0-win-x64\npm.cmd config set proxy http://proxy-server:port
+   tools\node-v24.16.0-win-x64\npm.cmd config set https-proxy http://proxy-server:port
    ```
 3. Coba hapus folder `frontend\node_modules` dan jalankan ulang
 4. Jika disk penuh, kosongkan ruang dan coba lagi
@@ -415,17 +395,17 @@ Jika perlu mengupgrade versi Node.js:
 **Gejala:** Aplikasi error saat dibuka di browser
 
 **Solusi:**
-1. Pastikan PostgreSQL berjalan:
+1. Pastikan PostgreSQL berjalan di port 5433:
    ```
-   tools\pgsql\bin\pg_isready.exe -h localhost -p 5432
+   pg_isready -h localhost -p 5433
    ```
-2. Cek file `frontend\.env` — pastikan `DATABASE_URL` benar:
+2. Cek file `frontend\.env` — pastikan `DATABASE_URL` benar (menggunakan port 5433):
    ```
-   DATABASE_URL="postgresql://bni_user:bni_password@localhost:5432/bni_kredit_konsumer"
+   DATABASE_URL="postgresql://bni_user:bni_password@localhost:5433/bni_kredit_konsumer?schema=public"
    ```
 3. Pastikan database sudah dibuat:
    ```
-   tools\pgsql\bin\psql.exe -h localhost -p 5432 -U postgres -l
+   psql -h localhost -p 5433 -U postgres -l
    ```
    Cari `bni_kredit_konsumer` di daftar
 
@@ -438,13 +418,13 @@ Jika perlu mengupgrade versi Node.js:
 2. Jika error terkait database, jalankan migration ulang:
    ```
    cd frontend
-   ..\tools\node-v25.2.1-win-x64\npx.cmd prisma migrate deploy
+   npx prisma migrate deploy
    ```
 3. Jika error terkait dependencies, install ulang:
    ```
    cd frontend
    del /s /q node_modules
-   ..\tools\node-v25.2.1-win-x64\npm.cmd install
+   npm install
    ```
 
 ### 5. Port 3000 Sudah Digunakan
@@ -468,9 +448,9 @@ Jika perlu mengupgrade versi Node.js:
 
 **Solusi:**
 1. Pastikan file `.sql` tidak corrupt — buka dengan Notepad, cek isinya ada SQL statements
-2. Coba restore manual:
+2. Coba restore manual (port 5433):
    ```
-   tools\pgsql\bin\psql.exe -h localhost -p 5432 -U bni_user -d bni_kredit_konsumer -f backups\namafile.sql
+   psql -h localhost -p 5433 -U bni_user -d bni_kredit_konsumer -f backups\namafile.sql
    ```
 3. Perhatikan pesan error yang muncul
 
@@ -495,14 +475,14 @@ NEXTAUTH_URL="http://IP-KOMPUTER-ANDA:3000"
 Dan jalankan dengan:
 ```
 cd frontend
-..\tools\node-v25.2.1-win-x64\npx.cmd next dev -H 0.0.0.0
+npx next dev -H 0.0.0.0
 ```
 
 ### Q: Berapa besar folder project?
-**A:** Sekitar 300-500 MB (termasuk tools portable dan node_modules).
+**A:** Sekitar 300-500 MB setelah ter-setup (termasuk tools portable dan node_modules). Namun sebelum setup, ukuran repository sangat kecil (~2 MB) karena binary tools diabaikan oleh Git.
 
 ### Q: Apakah perlu koneksi internet?
-**A:** Hanya untuk **pertama kali** (npm install). Setelah itu, aplikasi berjalan **sepenuhnya offline**.
+**A:** Koneksi internet hanya dibutuhkan saat pertama kali menjalankan `setup.bat` (atau `setup.sh`) untuk mengunduh tools pendukung (Node.js & PostgreSQL) dan menginstal dependencies NPM. File unduhan tools akan di-cache di `tools/downloads/` sehingga setup berikutnya atau setup di PC lain yang menyertakan folder cache tersebut bisa dilakukan secara offline. Setelah setup selesai, aplikasi berjalan sepenuhnya offline.
 
 ---
 
