@@ -103,21 +103,21 @@ async function main() {
         {
             id: 'template-type_c-id',
             kategori: 'AKTIF' as 'AKTIF',
-            name: 'Template Aktif',
+            name: 'Template Type B',
             filename: 'template_type_c.docx',
             path: 'templates/template_type_c.docx',
         },
         {
             id: 'template-type_a-id',
             kategori: 'PRAPURNA' as 'PRAPURNA',
-            name: 'Template Pratype_b',
+            name: 'Template Type A',
             filename: 'template_type_a.docx',
             path: 'templates/template_type_a.docx',
         },
         {
             id: 'template-type_b-id',
             kategori: 'PURNA' as 'PURNA',
-            name: 'Template Purna',
+            name: 'Template Type C',
             filename: 'template_type_b.docx',
             path: 'templates/template_type_b.docx',
         },
@@ -185,3 +185,4 @@ main()
         console.error('❌ Seed error:', e);
         process.exit(1);
     });
+
