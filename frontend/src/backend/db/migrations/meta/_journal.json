@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1781401513362,
+      "tag": "0000_warm_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783047183844,
+      "tag": "0001_windy_excalibur",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784954181736,
+      "tag": "0002_rename_debitur_to_client",
+      "breakpoints": true
+    }
+  ]
+}

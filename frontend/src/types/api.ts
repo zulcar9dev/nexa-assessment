@@ -1,0 +1,104 @@
+// API Response Types
+export interface ApiResponse<T = unknown> {
+    success: boolean;
+    data?: T;
+    message?: string;
+    error?: ApiError;
+}
+
+export interface ApiError {
+    code: ErrorCode;
+    message: string;
+    details?: Array<{
+        field: string;
+        message: string;
+    }>;
+}
+
+export type ErrorCode =
+    | 'VALIDATION_ERROR'
+    | 'UNAUTHORIZED'
+    | 'FORBIDDEN'
+    | 'NOT_FOUND'
+    | 'DUPLICATE_ENTRY'
+    | 'DSR_EXCEEDED'
+    | 'INTERNAL_ERROR';
+
+// Pagination
+export interface PaginationMeta {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}
+
+export interface PaginatedResponse<T> {
+    data: T[];
+    meta: PaginationMeta;
+}
+
+// Calculate PMT
+export interface PMTRequest {
+    principal: number;      // Plafon kredit
+    annualRate: number;     // Bunga per tahun (%)
+    months: number;         // Tenor (bulan)
+}
+
+export interface PMTResponse {
+    angsuran: number;
+    totalBayar: number;
+    totalBunga: number;
+}
+
+// Calculate DSR
+export interface DSRRequest {
+    penghasilan: number;
+    angsuranBaru: number;
+    angsuranEksisting: number[];
+}
+
+export interface DSRResponse {
+    dsr: number;            // Persentase DSR
+    dsc90: number;          // 90% dari penghasilan
+    totalAngsuran: number;
+    maksimalAngsuran: number;
+    isValid: boolean;       // false jika DSR > 90%
+    message?: string;
+}
+
+// Client Query Params
+export interface DebiturQueryParams {
+    q?: string;             // Search nama/NIK
+    jenis?: JenisPengajuan | string;
+    segmentasi?: Segmentasi | string;
+    kategori?: Kategori | string;
+    status?: string;        // Filter status (DRAFT/SUBMITTED)
+    page?: number;
+    limit?: number;
+}
+
+// Client Create/Update Request
+import { Kategori, JenisPengajuan, Segmentasi } from './clients';
+
+// Client Create/Update Request
+export interface CreateDebiturRequest {
+    applicantName: string;
+    idNumber: string;
+    kategori: Kategori;
+    jenisPengajuan: JenisPengajuan;
+    segmentasi: Segmentasi;
+    dataLengkap: Record<string, unknown>;
+    status?: 'DRAFT' | 'SUBMITTED';
+}
+
+export type UpdateDebiturRequest = Partial<CreateDebiturRequest>;
+
+// Template
+export interface Template {
+    id: string;
+    kategori: string;
+    name: string;
+    filename: string;
+    path: string;
+    updatedAt: Date;
+}

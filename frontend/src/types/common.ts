@@ -1,0 +1,37 @@
+export enum Kategori {
+  PRAPURNA = "PRAPURNA",
+  PURNA = "PURNA",
+  AKTIF = "AKTIF"
+}
+
+export enum JenisPengajuan {
+  BARU = "BARU",
+  TOP_UP = "TOP_UP",
+  TOP_UP_SISA_GAJI = "TOP_UP_SISA_GAJI",
+  TAKEOVER = "TAKEOVER",
+  THT = "THT",
+  FLEKSI_AKTIF = "FLEKSI_AKTIF",
+  PENSIUNAN_JANDA_BARU = "PENSIUNAN_JANDA_BARU",
+  PENSIUNAN_JANDA_TOP_UP = "PENSIUNAN_JANDA_TOP_UP",
+  PENSIUNAN_JANDA_TAKEOVER = "PENSIUNAN_JANDA_TAKEOVER",
+  PENSIUNAN_DUDA_BARU = "PENSIUNAN_DUDA_BARU",
+  PENSIUNAN_DUDA_TOP_UP = "PENSIUNAN_DUDA_TOP_UP",
+  PENSIUNAN_DUDA_TAKEOVER = "PENSIUNAN_DUDA_TAKEOVER"
+}
+
+export enum Segmentasi {
+  TASPEN = "TASPEN",
+  ASABRI = "ASABRI",
+  BUMD_BUMN = "BUMD_BUMN",
+  PEMERINTAHAN = "PEMERINTAHAN",
+  SWASTA = "SWASTA"
+}
+
+export enum Role {
+  USER = "USER",
+  ADMIN = "ADMIN"
+}
+
+export const VALID_KATEGORI = Object.values(Kategori);
+export const VALID_JENIS_PENGAJUAN = Object.values(JenisPengajuan);
+export const VALID_SEGMENTASI = Object.values(Segmentasi);

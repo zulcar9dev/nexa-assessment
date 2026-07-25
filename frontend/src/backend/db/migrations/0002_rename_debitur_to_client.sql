@@ -1,0 +1,1 @@
+ALTER TABLE "debiturs" RENAME TO "clients";
