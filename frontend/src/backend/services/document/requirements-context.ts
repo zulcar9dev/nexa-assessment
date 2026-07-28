@@ -108,6 +108,14 @@ export class RequirementsContextBuilder {
     // Default lists (before overrides)
     context.list_syarat_penandatanganan = syaratList.map(item => ({ text: item }));
 
+    if (syaratPencairanText.trim()) {
+      context.list_syarat_pencairan = [{ text: syaratPencairanText }];
+      context.list_syarat_pencairan_kredit = context.list_syarat_pencairan;
+    } else {
+      context.list_syarat_pencairan = [];
+      context.list_syarat_pencairan_kredit = [];
+    }
+
     return context;
   }
 }

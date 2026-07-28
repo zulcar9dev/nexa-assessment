@@ -15,6 +15,48 @@ import { FinancialContextBuilder } from "./financial-context";
 import { RequirementsContextBuilder } from "./requirements-context";
 import { AliasMapper } from "./alias-mapper";
 
+/**
+ * Module-level helper to parse placeholders like {{placeholder_key}}
+ */
+function parsePlaceholders(
+  text: string,
+  ctx: Record<string, unknown>,
+): string {
+  if (!text) return "";
+  return text.replace(/{{([\w_]+)}}/g, (match, key) => {
+    const value = ctx[key];
+    if (value !== undefined && value !== null) return String(value);
+    return "";
+  });
+}
+
+/**
+ * Parse manual syarat text into clean list items.
+ * Handles:
+ * - Literal \n strings (from DB) AND real newline characters
+ * - Filtering /* comment lines
+ * - Stripping leading dash/bullet prefix
+ * - Resolving {{placeholder}} variables
+ */
+function parseManualSyaratText(
+  rawText: string,
+  context: Record<string, unknown>,
+): { text: string }[] {
+  // Normalize: convert literal \n strings to real newlines
+  const normalized = rawText.replace(/\\n/g, "\n");
+
+  return normalized
+    .split("\n")
+    .filter((line) => !line.trim().startsWith("/*"))
+    // Filter header lines (already hardcoded in Word template)
+    .filter((line) => !/^syarat\s+(penandatanganan|pencairan)\s*:/i.test(line.trim()))
+    .filter((line) => !/^pencairan\s+kredit\s+akan\s+dilakukan/i.test(line.trim()))
+    .map((line) => line.trim().replace(/^[-•]\s*/, ""))
+    .filter((line) => line.length > 0)
+    .map((line) => parsePlaceholders(line, context))
+    .map((text) => ({ text }));
+}
+
 export class TemplateContextBuilder {
   /**
    * Prepare template context from client data
@@ -409,53 +451,27 @@ export class TemplateContextBuilder {
     context.list_fasilitas_kredit = SlikMapper.mapSlikToList(slikFacilities);
 
     // --- 7. MANUAL OVERRIDES (Using Helper) ---
-    const parsePlaceholders = (
-      text: string,
-      ctx: Record<string, unknown>,
-    ): string => {
-      if (!text) return "";
-      return text.replace(/{{([\w_]+)}}/g, (match, key) => {
-        const value = ctx[key];
-        if (value !== undefined && value !== null) return String(value);
-        return "";
-      });
-    };
-
     // Syarat Penandatanganan Override
     const manualSyaratPenandatanganan =
       (data.syarat_penandatanganan_text as string) || "";
     if (manualSyaratPenandatanganan.trim().length > 0) {
-      const cleanText = manualSyaratPenandatanganan
-        .split("\n")
-        .filter((line) => !line.trim().startsWith("/*"))
-        .join("\n");
-      const parsedText = parsePlaceholders(cleanText, context);
-      context.syarat_penandatanganan = parsedText;
-      context.Syarat_Penandatanganan = parsedText;
-      context.list_syarat_penandatanganan = parsedText
-        .split("\n")
-        .map((item) => item.trim())
-        .filter(Boolean)
-        .map((text) => ({ text }));
+      const items = parseManualSyaratText(manualSyaratPenandatanganan, context);
+      const flatText = items.map((item) => item.text).join("\n");
+      context.syarat_penandatanganan = flatText;
+      context.Syarat_Penandatanganan = flatText;
+      context.list_syarat_penandatanganan = items;
     }
 
     // Syarat Pencairan Override
     const manualSyaratPencairan = (data.syarat_pencairan_text as string) || "";
     if (manualSyaratPencairan.trim().length > 0) {
-      const cleanText = manualSyaratPencairan
-        .split("\n")
-        .filter((line) => !line.trim().startsWith("/*"))
-        .join("\n");
-      const parsedText = parsePlaceholders(cleanText, context);
-      context.syarat_pencairan_kredit = parsedText;
-      context.Syarat_Pencairan_Kredit = parsedText;
-      context.Syarat_Pencairan = parsedText;
-      context.list_syarat_pencairan = parsedText
-        .split("\n")
-        .map((item) => item.trim())
-        .filter(Boolean)
-        .map((text) => ({ text }));
-      context.list_syarat_pencairan_kredit = context.list_syarat_pencairan;
+      const items = parseManualSyaratText(manualSyaratPencairan, context);
+      const flatText = items.map((item) => item.text).join("\n");
+      context.syarat_pencairan_kredit = flatText;
+      context.Syarat_Pencairan_Kredit = flatText;
+      context.Syarat_Pencairan = flatText;
+      context.list_syarat_pencairan = items;
+      context.list_syarat_pencairan_kredit = items;
       delete context.list_syarat_pencairan_tambahan; // Override additional requirements if manual text present? Matches original logic
     }
 
@@ -463,8 +479,9 @@ export class TemplateContextBuilder {
     const syaratTambahan = (data.syarat_penandatanganan_tambahan ||
       "") as string;
     if (syaratTambahan) {
-      context.syarat_penandatanganan_tambahan = syaratTambahan;
-      context.list_syarat_tambahan = syaratTambahan
+      const normalizedTambahan = syaratTambahan.replace(/\\n/g, "\n");
+      context.syarat_penandatanganan_tambahan = normalizedTambahan;
+      context.list_syarat_tambahan = normalizedTambahan
         .split("\n")
         .map((t) => ({ text: t.trim() }))
         .filter((t) => t.text);
@@ -472,7 +489,7 @@ export class TemplateContextBuilder {
     const syaratPencairanTambahan = (data.syarat_pencairan_tambahan ||
       "") as string;
     if (syaratPencairanTambahan) {
-      context.syarat_pencairan_tambahan = syaratPencairanTambahan;
+      context.syarat_pencairan_tambahan = syaratPencairanTambahan.replace(/\\n/g, "\n");
       context.list_syarat_pencairan_tambahan = [];
     }
 
