@@ -13,6 +13,8 @@ import {
 } from 'docx';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { formatJenisPengajuan } from './document/formatters';
+
 
 // Indonesian month names
 const BULAN_INDONESIA = [
@@ -207,7 +209,7 @@ export class DocumentService {
                         heading: HeadingLevel.HEADING_2,
                     }),
                     this.createDataRow('Segmentasi', data.segmentasi),
-                    this.createDataRow('Jenis Pengajuan', data.jenisPengajuan.replace('_', ' ')),
+                    this.createDataRow('Jenis Pengajuan', formatJenisPengajuan(data.jenisPengajuan)),
                     this.createDataRow('Instansi', dataLengkap.instansi as string || '-'),
                     this.createDataRow('Golongan', dataLengkap.golongan as string || '-'),
                     new Paragraph({ text: '' }),

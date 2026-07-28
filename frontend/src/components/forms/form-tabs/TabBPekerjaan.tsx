@@ -66,7 +66,8 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
     // Effect: Calculate remaining service time when Date of Retirement changes
     useEffect(() => {
         if (formData.tgl_pensiun_pemohon) {
-            const remaining = calculateRemainingTime(formData.tgl_pensiun_pemohon);
+            // Pass roundUpDays = true for Pra Purna so any remaining days round up to 1 full month
+            const remaining = calculateRemainingTime(formData.tgl_pensiun_pemohon, true);
             const formatted = formatRemainingTime(remaining);
 
             // Only update if different to avoid infinite loops (though zustand handles this well)

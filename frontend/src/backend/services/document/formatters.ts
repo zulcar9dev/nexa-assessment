@@ -92,6 +92,44 @@ export function getTujuanKreditLabel(value: string | undefined): string {
 }
 
 /**
+ * Format jenis pengajuan / assessment type for generated document
+ */
+export function formatJenisPengajuan(value: string | undefined): string {
+  if (!value) return "";
+  let val = value.trim();
+
+  const rules: Array<{ pattern: RegExp; replacement: string }> = [
+    { pattern: /assessment\s+type\s+a\s*\([^)]*\)/gi, replacement: "BFP Pra Purna" },
+    { pattern: /type\s+a\s+assessment/gi, replacement: "BFP Pra Purna" },
+    { pattern: /assessment\s+type\s+a/gi, replacement: "BFP Pra Purna" },
+
+    { pattern: /assessment\s+type\s+b\s*\([^)]*\)/gi, replacement: "BFP Purna" },
+    { pattern: /type\s+b\s+assessment/gi, replacement: "BFP Purna" },
+    { pattern: /assessment\s+type\s+b/gi, replacement: "BFP Purna" },
+
+    { pattern: /assessment\s+type\s+c\s*\([^)]*\)/gi, replacement: "BNI Fleksi Aktif" },
+    { pattern: /type\s+c\s+assessment/gi, replacement: "BNI Fleksi Aktif" },
+    { pattern: /assessment\s+type\s+c/gi, replacement: "BNI Fleksi Aktif" },
+  ];
+
+  let matched = false;
+  for (const rule of rules) {
+    if (rule.pattern.test(val)) {
+      val = val.replace(rule.pattern, rule.replacement);
+      matched = true;
+    }
+  }
+
+  if (matched) {
+    val = val.replace(/\btop\s*up\b/gi, "Top Up").replace(/\bbaru\b/gi, "Baru");
+    return val.trim();
+  }
+
+  return toTitleCase(val);
+}
+
+
+/**
  * Get confirmation text based on marriage status
  */
 export function getCfmStatusPerkawinan(

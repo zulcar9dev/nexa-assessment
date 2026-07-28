@@ -8,7 +8,9 @@ import {
   getStatusKepegawaian,
   getTujuanKreditLabel,
   calculateAge,
+  formatJenisPengajuan,
 } from "./formatters";
+
 import { SlikMapper } from "./slik-mapper";
 import { ListGenerators } from "./list-generators";
 import { FinancialContextBuilder } from "./financial-context";
@@ -139,7 +141,7 @@ export class TemplateContextBuilder {
       segmentasi: (client.segmentasi || data.segmentasi || "")
         .toString()
         .toUpperCase(),
-      jenis_pengajuan: toTitleCase(
+      jenis_pengajuan: formatJenisPengajuan(
         (client.jenisPengajuan || data.jenis_pengajuan || "").toString(),
       ),
       kategori: client.kategori.replace(/_/g, " "),

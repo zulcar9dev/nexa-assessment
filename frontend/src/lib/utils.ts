@@ -126,7 +126,10 @@ export function calculateMaxCapacity(
  * Calculate remaining time from today to end date
  * Returns object with years, months, weeks, days
  */
-export function calculateRemainingTime(endDateStr: string): {
+export function calculateRemainingTime(
+    endDateStr: string,
+    roundUpDays: boolean = false
+): {
     years: number;
     months: number;
     weeks: number;
@@ -164,6 +167,16 @@ export function calculateRemainingTime(endDateStr: string): {
     if (months < 0) {
         years--;
         months += 12;
+    }
+
+    // Round up remaining days to 1 full month if requested (e.g. for Pra Purna)
+    if (roundUpDays && days > 0) {
+        months++;
+        days = 0;
+        if (months >= 12) {
+            years++;
+            months -= 12;
+        }
     }
 
     // Convert remaining days to weeks
