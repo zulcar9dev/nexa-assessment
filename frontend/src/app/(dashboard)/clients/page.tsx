@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye, Loader2, AlertCircle } from "lucide-react";
 import { useClient } from "@/hooks/use-client";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const kategoriLabels: Record<string, string> = {
     PRAPURNA: "Assessment Type A (Pre-Period)",
@@ -66,6 +67,7 @@ const jenisLabels: Record<string, string> = {
 
 export default function ClientHistoryPage() {
     const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearch = useDebounce(searchQuery, 400);
     const [jenisFilter, setJenisFilter] = useState("");
     const [kategoriFilter, setKategoriFilter] = useState("");
     const [segmenFilter, setSegmenFilter] = useState("");
@@ -84,15 +86,16 @@ export default function ClientHistoryPage() {
     } = useClient();
 
     // Fetch data on mount and when filters change
-    const loadData = useCallback(() => {
+    const loadData = useCallback((targetPage?: number) => {
         fetchDebitur({
-            q: searchQuery || undefined,
+            q: debouncedSearch || undefined,
             jenis: jenisFilter || undefined,
             kategori: kategoriFilter || undefined,
             segmentasi: segmenFilter || undefined,
             status: statusFilter || undefined,
+            page: targetPage || 1,
         });
-    }, [fetchDebitur, searchQuery, jenisFilter, kategoriFilter, segmenFilter, statusFilter]);
+    }, [fetchDebitur, debouncedSearch, jenisFilter, kategoriFilter, segmenFilter, statusFilter]);
 
     useEffect(() => {
         loadData();
@@ -444,7 +447,7 @@ export default function ClientHistoryPage() {
                         <div className="flex items-center gap-2">
                             <button
                                 disabled={pagination.page <= 1}
-                                onClick={() => fetchDebitur({ page: pagination.page - 1 })}
+                                onClick={() => loadData(pagination.page - 1)}
                                 className={`px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
                   text-sm ${pagination.page <= 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
                             >
@@ -455,7 +458,7 @@ export default function ClientHistoryPage() {
                             </span>
                             <button
                                 disabled={pagination.page >= pagination.totalPages}
-                                onClick={() => fetchDebitur({ page: pagination.page + 1 })}
+                                onClick={() => loadData(pagination.page + 1)}
                                 className={`px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
                   text-sm ${pagination.page >= pagination.totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
                             >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import type { Client } from "@/types/clients";
 
 import type { ApiResponse, PaginatedResponse } from "@/types/api";
@@ -40,6 +40,7 @@ export function useClient(options: UseClientOptions = {}) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [validationErrors, setValidationErrors] = useState<Array<{ field: string; message: string }>>([]);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     /**
      * Clear errors
@@ -53,6 +54,12 @@ export function useClient(options: UseClientOptions = {}) {
      * Fetch all client with optional filters
      */
     const fetchDebitur = useCallback(async (filters?: DebiturFilter) => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+
         setIsLoading(true);
         clearErrors();
 
@@ -66,7 +73,9 @@ export function useClient(options: UseClientOptions = {}) {
             if (filters?.page) params.set("page", filters.page.toString());
             if (filters?.limit) params.set("limit", filters.limit.toString());
 
-            const response = await fetch(`/api/clients?${params.toString()}`);
+            const response = await fetch(`/api/clients?${params.toString()}`, {
+                signal: controller.signal,
+            });
             const result: ApiResponse<PaginatedResponse<Client>> = await response.json();
 
             if (!result.success) {
@@ -80,11 +89,16 @@ export function useClient(options: UseClientOptions = {}) {
 
             return result.data;
         } catch (err) {
+            if (err instanceof DOMException && err.name === "AbortError") {
+                return null;
+            }
             const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
             return null;
         } finally {
-            setIsLoading(false);
+            if (abortControllerRef.current === controller) {
+                setIsLoading(false);
+            }
         }
     }, [clearErrors]);
 

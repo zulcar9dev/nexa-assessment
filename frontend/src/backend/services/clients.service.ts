@@ -65,45 +65,77 @@ export class DebiturService {
             conditions.push(eq(client.status, status as 'DRAFT' | 'SUBMITTED'));
         }
 
-        // Search by text/enum fields
-        if (q) {
-            const searchPattern = `%${q}%`;
-            const orConditions = [
-                ilike(client.applicantName, searchPattern),
-                ilike(client.idNumber, searchPattern),
-                sql`${client.dataLengkap}->>'instansi' ILIKE ${searchPattern}`
-            ];
+        // Search by text/enum fields (supporting multi-token search across all fields)
+        if (q && q.trim().length > 0) {
+            const tokens = q.trim().split(/\s+/).filter(Boolean);
+            const tokenConditions = [];
 
-            // 1. matchedKategori
-            const matchedKategori = ['PRAPURNA', 'PURNA', 'AKTIF'].filter(k => 
-                k.toLowerCase().includes(q.toLowerCase())
-            ) as Array<'PRAPURNA' | 'PURNA' | 'AKTIF'>;
-            if (matchedKategori.length > 0) {
-                orConditions.push(inArray(client.kategori, matchedKategori));
+            for (const token of tokens) {
+                const tokenLower = token.toLowerCase();
+                const escapedToken = token.replace(/[%_\\]/g, '\\$&');
+                const searchPattern = `%${escapedToken}%`;
+
+                const orConditions = [
+                    ilike(client.applicantName, searchPattern),
+                    ilike(client.idNumber, searchPattern),
+                    ilike(user.name, searchPattern),
+                    sql`${client.dataLengkap}::text ILIKE ${searchPattern}`
+                ];
+
+                // 1. matchedKategori
+                const matchedKategori: Array<'PRAPURNA' | 'PURNA' | 'AKTIF'> = [];
+                if ('prapurna'.includes(tokenLower) || 'type_a'.includes(tokenLower) || 'type a'.includes(tokenLower) || tokenLower.includes('prapurna') || tokenLower.includes('pre')) {
+                    matchedKategori.push('PRAPURNA');
+                }
+                if ('purna'.includes(tokenLower) || 'type_b'.includes(tokenLower) || 'type b'.includes(tokenLower) || tokenLower.includes('purna') || tokenLower.includes('full')) {
+                    matchedKategori.push('PURNA');
+                }
+                if ('aktif'.includes(tokenLower) || 'type_c'.includes(tokenLower) || 'type c'.includes(tokenLower) || tokenLower.includes('aktif') || tokenLower.includes('active')) {
+                    matchedKategori.push('AKTIF');
+                }
+                if (matchedKategori.length > 0) {
+                    orConditions.push(inArray(client.kategori, matchedKategori));
+                }
+
+                // 2. matchedJenis
+                const allJenisKeys: Array<'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER' | 'THT' | 'FLEKSI_AKTIF' | 'PENSIUNAN_JANDA_BARU' | 'PENSIUNAN_JANDA_TOP_UP' | 'PENSIUNAN_JANDA_TAKEOVER' | 'PENSIUNAN_DUDA_BARU' | 'PENSIUNAN_DUDA_TOP_UP' | 'PENSIUNAN_DUDA_TAKEOVER'> = [
+                    'BARU', 'TOP_UP', 'TOP_UP_SISA_GAJI', 'TAKEOVER', 'THT', 'FLEKSI_AKTIF',
+                    'PENSIUNAN_JANDA_BARU', 'PENSIUNAN_JANDA_TOP_UP', 'PENSIUNAN_JANDA_TAKEOVER',
+                    'PENSIUNAN_DUDA_BARU', 'PENSIUNAN_DUDA_TOP_UP', 'PENSIUNAN_DUDA_TAKEOVER'
+                ];
+                const matchedJenis = allJenisKeys.filter(j => {
+                    const readable = j.toLowerCase().replace(/_/g, ' ');
+                    return readable.includes(tokenLower) || tokenLower.includes(readable);
+                });
+                if (matchedJenis.length > 0) {
+                    orConditions.push(inArray(client.jenisPengajuan, matchedJenis));
+                }
+
+                // 3. matchedSegmentasi
+                const matchedSegmentasi: Array<'TASPEN' | 'ASABRI' | 'BUMD_BUMN' | 'SWASTA' | 'PEMERINTAHAN'> = [];
+                if (tokenLower.includes('taspen') || 'taspen'.includes(tokenLower) || tokenLower.includes('pns') || tokenLower.includes('asn')) {
+                    matchedSegmentasi.push('TASPEN');
+                }
+                if (tokenLower.includes('asabri') || 'asabri'.includes(tokenLower) || tokenLower.includes('tni') || tokenLower.includes('polri')) {
+                    matchedSegmentasi.push('ASABRI');
+                }
+                if (tokenLower.includes('bumd') || tokenLower.includes('bumn')) {
+                    matchedSegmentasi.push('BUMD_BUMN');
+                }
+                if (tokenLower.includes('swasta') || 'swasta'.includes(tokenLower)) {
+                    matchedSegmentasi.push('SWASTA');
+                }
+                if (tokenLower.includes('pemerintah') || 'pemerintahan'.includes(tokenLower) || tokenLower.includes('pemda') || tokenLower.includes('pemkab')) {
+                    matchedSegmentasi.push('PEMERINTAHAN');
+                }
+                if (matchedSegmentasi.length > 0) {
+                    orConditions.push(inArray(client.segmentasi, matchedSegmentasi));
+                }
+
+                tokenConditions.push(or(...orConditions)!);
             }
 
-            // 2. matchedJenis
-            const matchedJenis = ['BARU', 'TOP_UP', 'TOP_UP_SISA_GAJI', 'TAKEOVER', 'THT', 'FLEKSI_AKTIF', 'PENSIUNAN_JANDA_BARU', 'PENSIUNAN_JANDA_TOP_UP', 'PENSIUNAN_JANDA_TAKEOVER', 'PENSIUNAN_DUDA_BARU', 'PENSIUNAN_DUDA_TOP_UP', 'PENSIUNAN_DUDA_TAKEOVER'].filter(j => 
-                j.toLowerCase().replace(/_/g, ' ').includes(q.toLowerCase())
-            ) as Array<'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER' | 'THT' | 'FLEKSI_AKTIF' | 'PENSIUNAN_JANDA_BARU' | 'PENSIUNAN_JANDA_TOP_UP' | 'PENSIUNAN_JANDA_TAKEOVER' | 'PENSIUNAN_DUDA_BARU' | 'PENSIUNAN_DUDA_TOP_UP' | 'PENSIUNAN_DUDA_TAKEOVER'>;
-            if (matchedJenis.length > 0) {
-                orConditions.push(inArray(client.jenisPengajuan, matchedJenis));
-            }
-
-            // 3. matchedSegmentasi
-            const matchedSegmentasi = ['TASPEN', 'ASABRI', 'BUMD_BUMN', 'SWASTA', 'PEMERINTAHAN'].filter(s => 
-                s.toLowerCase().replace(/_/g, ' ').includes(q.toLowerCase()) ||
-                (s === 'TASPEN' && "pns".includes(q.toLowerCase())) ||
-                (s === 'ASABRI' && "tni polri".includes(q.toLowerCase())) ||
-                (s === 'PEMERINTAHAN' && "pemerintahan".includes(q.toLowerCase())) ||
-                (s === 'SWASTA' && "swasta".includes(q.toLowerCase())) ||
-                (s === 'BUMD_BUMN' && "bumd bumn".includes(q.toLowerCase()))
-            ) as Array<'TASPEN' | 'ASABRI' | 'BUMD_BUMN' | 'SWASTA' | 'PEMERINTAHAN'>;
-            if (matchedSegmentasi.length > 0) {
-                orConditions.push(inArray(client.segmentasi, matchedSegmentasi));
-            }
-
-            conditions.push(or(...orConditions)!);
+            conditions.push(and(...tokenConditions)!);
         }
 
         // Filter by jenis pengajuan
@@ -149,6 +181,7 @@ export class DebiturService {
             .offset(skip),
             db.select({ count: count() })
                 .from(client)
+                .leftJoin(user, eq(client.userId, user.id))
                 .where(and(...conditions))
         ]);
 
