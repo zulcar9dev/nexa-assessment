@@ -8,6 +8,11 @@ import PizZip from "pizzip";
 import { TemplateService } from "./template.service";
 import { TemplateContextBuilder } from "./document/template-context";
 import { ClientData, KategoriDoc } from "./document/types";
+import {
+  restoreBankingTermsInXml,
+  restoreBankingTermsInContext,
+} from "./document/terminology";
+
 type Kategori = 'PRAPURNA' | 'PURNA' | 'AKTIF';
 
 // Re-export types for backward compatibility
@@ -39,25 +44,34 @@ export class DocumentTemplateService {
     const zip = new PizZip(templateBuffer);
 
     // Prepare data context using the new Builder module
-    const context = await TemplateContextBuilder.prepareTemplateContext(client);
+    const rawContext = await TemplateContextBuilder.prepareTemplateContext(client);
+    
+    // Dynamically restore banking terms in context variables
+    const context = restoreBankingTermsInContext(rawContext);
 
-    // Pre-process XML: Replace hardcoded "Konfirmasi Gaji Pemohon" in Word templates with {{tujuan_call}} placeholder
-    // so that templates without {{tujuan_call}} placeholder dynamically adapt to Tunjangan / Uang Makan / Penghasilan.
-    const docXmlFile = zip.file("word/document.xml");
-    if (docXmlFile) {
-      let docXml = docXmlFile.asText();
-      if (
-        docXml.includes("Konfirmasi Gaji Pemohon") ||
-        docXml.includes("Konfirmas Gaji Pemohon") ||
-        /Konfirmas[i]?(\s*<[^>]+>\s*|\s+)Gaji(\s*<[^>]+>\s*|\s+)Pemohon/i.test(docXml)
-      ) {
-        docXml = docXml.replace(
-          /Konfirmas[i]?(\s*<[^>]+>\s*|\s+)Gaji(\s*<[^>]+>\s*|\s+)Pemohon/gi,
-          "{{tujuan_call}}"
-        );
-        zip.file("word/document.xml", docXml);
+    // Pre-process XMLs inside the .docx zip archive:
+    // 1. Replace hardcoded "Konfirmasi Gaji Pemohon" in Word templates with {{tujuan_call}} placeholder
+    // 2. Dynamically restore banking terms in all Word XML files (document, headers, footers)
+    const xmlFiles = zip.file(/^word\/.*\.xml$/);
+    xmlFiles.forEach((file) => {
+      let xmlContent = file.asText();
+
+      if (file.name === "word/document.xml") {
+        if (
+          xmlContent.includes("Konfirmasi Gaji Pemohon") ||
+          xmlContent.includes("Konfirmas Gaji Pemohon") ||
+          /Konfirmas[i]?(\s*<[^>]+>\s*|\s+)Gaji(\s*<[^>]+>\s*|\s+)Pemohon/i.test(xmlContent)
+        ) {
+          xmlContent = xmlContent.replace(
+            /Konfirmas[i]?(\s*<[^>]+>\s*|\s+)Gaji(\s*<[^>]+>\s*|\s+)Pemohon/gi,
+            "{{tujuan_call}}"
+          );
+        }
       }
-    }
+
+      const restoredXml = restoreBankingTermsInXml(xmlContent);
+      zip.file(file.name, restoredXml);
+    });
 
     // Create docxtemplater instance with Jinja2-style delimiters
     const doc = new Docxtemplater(zip, {

@@ -438,7 +438,7 @@ describe('ListGenerators', () => {
       expect(text).toContain('Status/ Pangkat Golongan Pemohon saat ini adalah IX');
       expect(text).toContain('Jabatan Pemohon saat ini adalah Penata Layanan Operasional');
       expect(text).toContain('Maksud mengajukan Assessment Facility Fleksi sebesar Rp. 55.000.000');
-      expect(text).toContain('Tujuan pengunaan kredit untuk Pembelian Kendaraan.');
+      expect(text).toContain('Tujuan pengunaan assessment untuk Pembelian Kendaraan.');
     });
 
     it('should generate for Standard Pemerintahan with PPPK status', () => {

@@ -14,6 +14,7 @@ import {
 import { promises as fs } from 'fs';
 import path from 'path';
 import { formatJenisPengajuan } from './document/formatters';
+import { restoreBankingTermsInContext, restoreBankingTerms } from './document/terminology';
 
 
 // Indonesian month names
@@ -173,7 +174,8 @@ export class DocumentService {
         segmentasi: string;
         dataLengkap: Record<string, unknown>;
     }): Promise<Buffer> {
-        const context = this.prepareTemplateContext(data);
+        const rawContext = this.prepareTemplateContext(data);
+        const context = restoreBankingTermsInContext(rawContext);
         const dataLengkap = data.dataLengkap as Record<string, unknown>;
 
         const doc = new Document({
@@ -181,7 +183,7 @@ export class DocumentService {
                 properties: {},
                 children: [
                     new Paragraph({
-                        text: 'FORMULIR PENGAJUAN NEXA ASSESSMENT',
+                        text: 'FORMULIR PENGAJUAN BNI FLEKSI',
                         heading: HeadingLevel.HEADING_1,
                         alignment: AlignmentType.CENTER,
                     }),
