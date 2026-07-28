@@ -211,6 +211,14 @@ export default function ClientHistoryPage() {
                             <option value="TOP_UP">Top Up</option>
                             <option value="TOP_UP_SISA_GAJI">Top Up Sisa Gaji</option>
                             <option value="TAKEOVER">Take Over</option>
+                            <option value="FLEKSI_AKTIF">Active Assessment (Fleksi)</option>
+                            <option value="THT">THT</option>
+                            <option value="PENSIUNAN_JANDA_BARU">Pensiunan Janda - Baru</option>
+                            <option value="PENSIUNAN_JANDA_TOP_UP">Pensiunan Janda - Top Up</option>
+                            <option value="PENSIUNAN_JANDA_TAKEOVER">Pensiunan Janda - Take Over</option>
+                            <option value="PENSIUNAN_DUDA_BARU">Pensiunan Duda - Baru</option>
+                            <option value="PENSIUNAN_DUDA_TOP_UP">Pensiunan Duda - Top Up</option>
+                            <option value="PENSIUNAN_DUDA_TAKEOVER">Pensiunan Duda - Take Over</option>
                         </select>
 
                         {/* Segmen Filter */}

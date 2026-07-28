@@ -11,10 +11,14 @@ import type { DebiturQueryParams, CreateDebiturRequest, UpdateDebiturRequest } f
 
 // Mapping Helpers to conform input to Drizzle Schema Enums
 function mapToDrizzleKategori(k: string): 'PRAPURNA' | 'PURNA' | 'AKTIF' {
+    const upper = k.toUpperCase();
+    if (['PRAPURNA', 'PURNA', 'AKTIF'].includes(upper)) {
+        return upper as 'PRAPURNA' | 'PURNA' | 'AKTIF';
+    }
     const lower = k.toLowerCase();
-    if (lower.includes('type_c')) return 'AKTIF';
-    if (lower.includes('type_a')) return 'PRAPURNA';
-    if (lower.includes('type_b')) return 'PURNA';
+    if (lower.includes('type_c') || lower.includes('aktif') || lower.includes('active')) return 'AKTIF';
+    if (lower.includes('type_b') || lower.includes('purna') || lower.includes('full')) return 'PURNA';
+    if (lower.includes('type_a') || lower.includes('prapurna') || lower.includes('pre')) return 'PRAPURNA';
     return 'PRAPURNA'; // Fallback
 }
 
