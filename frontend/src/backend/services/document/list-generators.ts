@@ -24,8 +24,9 @@ export class ListGenerators {
   ): Record<string, string>[] {
     const list: string[] = [];
     const kategoriLower = String(context.kategori || "").toLowerCase();
-    const isPrapurna = kategoriLower.includes("prapurna");
-    const isAktif = kategoriLower.includes("aktif");
+    const isPrapurna = kategoriLower.includes("prapurna") || kategoriLower.includes("type_a");
+    const isPurna = (kategoriLower.includes("purna") && !kategoriLower.includes("prapurna")) || kategoriLower.includes("type_b");
+    const isAktif = kategoriLower.includes("aktif") || kategoriLower.includes("type_c");
 
     // Unified Logic for Aktif Category with Config Lookup
     if (isAktif) {
@@ -181,7 +182,9 @@ export class ListGenerators {
     const plafon = context.plafon || "0";
     const tenor = context.tenor || "0";
     let produkName = "Type A Assessment";
-    if (isPrapurna) {
+    if (isPurna) {
+      produkName = "Type B Assessment";
+    } else if (isPrapurna) {
       produkName = "Type A Assessment";
     } else if (isAktif) {
       // Default name for Aktif, can be adjusted if needed per segmentation

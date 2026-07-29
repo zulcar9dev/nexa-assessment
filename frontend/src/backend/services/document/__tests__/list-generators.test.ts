@@ -549,6 +549,38 @@ describe('ListGenerators', () => {
       expect(text).toContain('21 Maret 2040');
       expect(text).not.toContain('Kota Gorontalo');
     });
+
+    it('should use "Type B Assessment" for Purna kategori (BFP Purna)', () => {
+      const context = {
+        ...baseContext,
+        kategori: 'type_b_baru',
+        jenis_pengajuan: 'Baru',
+        plafon: '100.000.000',
+        tenor: '60',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain('Type B Assessment');
+      expect(text).not.toContain('Type A Assessment');
+    });
+
+    it('should use "Type A Assessment" for Prapurna kategori (BFP Pra Purna)', () => {
+      const context = {
+        ...baseContext,
+        kategori: 'type_a_baru',
+        jenis_pengajuan: 'Baru',
+        plafon: '100.000.000',
+        tenor: '60',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain('Type A Assessment');
+      expect(text).not.toContain('Type B Assessment');
+    });
   });
 
   describe('generateKepegawaianList', () => {
