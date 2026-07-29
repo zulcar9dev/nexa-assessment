@@ -437,7 +437,7 @@ describe('ListGenerators', () => {
       expect(text).toContain('Lama Pemohon berdinas ± 00 Tahun 1 Bulan 25 Hari sejak 01-10-2025 s.d tanggal 30-09-2030 (Periode 5 Tahun). Cfm. SK Nomor 6/KEPMEN-KP/KP.320/IX/2025 tanggal 16-09-2025.');
       expect(text).toContain('Status/ Pangkat Golongan Pemohon saat ini adalah IX');
       expect(text).toContain('Jabatan Pemohon saat ini adalah Penata Layanan Operasional');
-      expect(text).toContain('Maksud mengajukan Assessment Facility Fleksi sebesar Rp. 55.000.000');
+      expect(text).toContain('Maksud mengajukan fasilitas assessment Type C Assessment sebesar Rp. 55.000.000');
       expect(text).toContain('Tujuan pengunaan assessment untuk Pembelian Kendaraan.');
     });
 
@@ -580,6 +580,22 @@ describe('ListGenerators', () => {
 
       expect(text).toContain('Type A Assessment');
       expect(text).not.toContain('Type B Assessment');
+    });
+
+    it('should use "Type C Assessment" for Aktif kategori (BNI Fleksi Aktif)', () => {
+      const context = {
+        ...baseContext,
+        kategori: 'type_c_baru',
+        jenis_pengajuan: 'Baru',
+        plafon: '100.000.000',
+        tenor: '60',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain('Type C Assessment');
+      expect(text).not.toContain('Type A Assessment');
     });
   });
 

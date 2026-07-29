@@ -188,7 +188,7 @@ export class ListGenerators {
       produkName = "Type A Assessment";
     } else if (isAktif) {
       // Default name for Aktif, can be adjusted if needed per segmentation
-      produkName = "Assessment Facility Fleksi";
+      produkName = "Type C Assessment";
     }
 
     list.push(
@@ -561,7 +561,7 @@ export class ListGenerators {
       const plafon = context.plafon || context.usulan_plafon_kredit || "0";
       const tenor = context.tenor || context.usulan_jangka_waktu_bulan || "0";
       list.push(
-        `Maksud mengajukan Assessment Facility Fleksi sebesar Rp. ${plafon} Jangka Waktu ${tenor} Bulan.`
+        `Maksud mengajukan fasilitas assessment Type C Assessment sebesar Rp. ${plafon} Jangka Waktu ${tenor} Bulan.`
       );
 
       // 12. Tujuan
@@ -859,8 +859,22 @@ export class ListGenerators {
     const plafon = context.plafon || context.usulan_plafon_kredit || "0";
     const tenor = context.tenor || context.usulan_jangka_waktu_bulan || "0";
     const jenis = context.jenis_pengajuan || "";
+
+    const kategoriLower = String(context.kategori || "").toLowerCase();
+    const isPrapurna = kategoriLower.includes("prapurna") || kategoriLower.includes("type_a");
+    const isPurna = (kategoriLower.includes("purna") && !isPrapurna) || kategoriLower.includes("type_b");
+    const isAktif = kategoriLower.includes("aktif") || kategoriLower.includes("type_c");
+    let produkName = "Type A Assessment";
+    if (isPurna) {
+      produkName = "Type B Assessment";
+    } else if (isPrapurna) {
+      produkName = "Type A Assessment";
+    } else if (isAktif) {
+      produkName = "Type C Assessment";
+    }
+
     list.push(
-      `Maksud mengajukan Assessment Facility Fleksi ${jenis} sebesar Rp. ${plafon} Jangka Waktu ${tenor} Bulan.`,
+      `Maksud mengajukan fasilitas assessment ${produkName} ${jenis} sebesar Rp. ${plafon} Jangka Waktu ${tenor} Bulan.`,
     );
 
     // 14. Tujuan
