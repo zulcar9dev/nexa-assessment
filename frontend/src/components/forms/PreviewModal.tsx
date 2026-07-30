@@ -6,8 +6,6 @@ import { formatRupiah } from "@/lib/utils";
 import {
     Dialog,
     DialogContent,
-    DialogHeader,
-    DialogTitle,
 } from "@/components/ui/dialog";
 
 /**
@@ -18,17 +16,17 @@ export default function PreviewModal() {
     const { formData, dsrResult } = useFormStore();
 
     return (
-        <Dialog open={isPreviewModalOpen} onOpenChange={(open) => !open && closePreviewModal()}>
-            <DialogContent className="max-w-4xl h-[90vh] sm:h-auto max-h-[90vh] flex flex-col overflow-hidden p-0 bg-white dark:bg-[#1a2c2a] border-gray-200 dark:border-gray-700">
+        <Dialog open={isPreviewModalOpen} onOpenChange={closePreviewModal}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-white/95 dark:bg-surface-dark/95 backdrop-blur-xl border border-outline-variant/30 shadow-2xl rounded-2xl">
                 {/* Header */}
-                <DialogHeader className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex flex-row items-center justify-between space-y-0">
-                    <DialogTitle className="text-xl font-bold text-primary-brand dark:text-[#a5b4fc]">
-                        Preview Data Pengajuan
-                    </DialogTitle>
-                </DialogHeader>
+                <div className="bg-surface-light dark:bg-surface-dark p-6 border-b border-outline-variant/30 sticky top-0 z-10 flex justify-between items-center">
+                    <div>
+                        <h2 className="font-headline-md text-headline-md text-on-surface">Validasi & Tinjau Data</h2>
+                        <p className="text-on-surface-variant mt-1 font-body-base">Pastikan semua rincian payroll sudah sesuai sebelum dikirim untuk proses selanjutnya.</p>
+                    </div>
+                </div>
 
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-gray-50 dark:bg-[#152322]">
+                <div className="p-6 space-y-6">
 
                     {/* Identitas */}
                     <PreviewSection title="Data Identitas">
@@ -153,23 +151,33 @@ export default function PreviewModal() {
                     {/* DSR Result */}
                     {
                         dsrResult && (
-                            <div className="bg-[#f0f9f8] dark:bg-[#0f2322] p-4 rounded-lg shadow-sm border border-[#cdeae7] dark:border-[#1a2c2a]">
-                                <h3 className="text-lg font-bold text-primary-brand dark:text-[#a5b4fc] mb-4 pb-2 border-b border-[#cdeae7] dark:border-[#2d4a48] flex items-center gap-2">
-                                    <span className="w-1 h-5 bg-primary-brand rounded-full"></span>
-                                    Capacity Analysis
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                                    <PreviewItem label="Total Penghasilan (Net)" value={`Rp ${formatRupiah(dsrResult.penghasilan)}`} />
-                                    <PreviewItem label="Maksimal Payment (90%)" value={`Rp ${formatRupiah(dsrResult.maksimalAngsuran)}`} />
-                                    <PreviewItem label="Total Payment Baru" value={`Rp ${formatRupiah(dsrResult.totalAngsuranBaru)}`} />
-                                    <PreviewItem
-                                        label="Ratio DSR"
-                                        value={`${dsrResult.dsr.toFixed(2)}%`}
-                                        className={dsrResult.isValid ? "text-green-600 dark:text-green-400 font-bold text-lg" : "text-red-500 dark:text-red-400 font-bold text-lg"}
-                                    />
+                            <div className="bg-primary text-white rounded-2xl shadow-xl p-6 relative overflow-hidden group">
+                                <div className="absolute -right-4 -top-4 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+                                <p className="text-white/70 text-label-caps mb-2 uppercase tracking-widest">Capacity Analysis</p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm mt-4 relative z-10">
+                                    <div className="space-y-1">
+                                        <p className="text-white/70 text-label-sm">Total Penghasilan (Net)</p>
+                                        <p className="font-body-base font-semibold">Rp {formatRupiah(dsrResult.penghasilan)}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-white/70 text-label-sm">Maksimal Payment (90%)</p>
+                                        <p className="font-body-base font-semibold">Rp {formatRupiah(dsrResult.maksimalAngsuran)}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-white/70 text-label-sm">Total Payment Baru</p>
+                                        <p className="font-body-base font-semibold">Rp {formatRupiah(dsrResult.totalAngsuranBaru)}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-white/70 text-label-sm">Ratio DSR</p>
+                                        <p className="text-headline-md font-bold">{dsrResult.dsr.toFixed(2)}%</p>
+                                    </div>
                                 </div>
-                                <div className={`mt-4 p-3 rounded-lg text-center font-bold text-sm ${dsrResult.isValid ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
-                                    {dsrResult.isValid ? "DSR MASUK / LAYAK" : "DSR TIDAK MASUK / TIDAK LAYAK"}
+                                <div className={`mt-6 pt-4 border-t border-white/20 flex justify-between items-center text-body-base relative z-10`}>
+                                    <span className="opacity-70">Status kelayakan:</span>
+                                    <span className={`px-3 py-1 rounded-full text-label-sm font-bold ${dsrResult.isValid ? 'bg-success/20 text-white' : 'bg-danger/20 text-white'}`}>
+                                        {dsrResult.isValid ? "DSR MASUK / LAYAK" : "DSR TIDAK MASUK / TIDAK LAYAK"}
+                                    </span>
                                 </div>
                             </div>
                         )
@@ -178,10 +186,10 @@ export default function PreviewModal() {
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2c2a] flex justify-end">
+                <div className="p-6 border-t border-outline-variant/30 bg-surface-light dark:bg-surface-dark flex justify-end">
                     <button
                         onClick={closePreviewModal}
-                        className="px-6 py-2.5 bg-primary-brand text-white rounded-lg hover:bg-[#00554e] transition-colors font-bold shadow-lg shadow-[#4f46e5]/20 cursor-pointer"
+                        className="px-6 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-container transition-colors font-title-sm text-title-sm shadow-sm cursor-pointer"
                     >
                         Tutup
                     </button>
@@ -195,11 +203,13 @@ export default function PreviewModal() {
 
 function PreviewSection({ title, children }: { title: string, children: React.ReactNode }) {
     return (
-        <section className="bg-white dark:bg-[#1a2c2a] p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-            <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 pb-2 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
-                <span className="w-1 h-5 bg-primary-brand rounded-full"></span>
-                {title}
-            </h3>
+        <section className="bg-surface-container-low dark:bg-surface-container/20 p-6 rounded-xl border border-outline-variant/20">
+            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-outline-variant/20">
+                <span className="material-symbols-outlined text-primary text-[20px]">info</span>
+                <h3 className="font-title-sm text-title-sm text-on-surface">
+                    {title}
+                </h3>
+            </div>
             {children}
         </section>
     );
@@ -207,9 +217,9 @@ function PreviewSection({ title, children }: { title: string, children: React.Re
 
 function PreviewItem({ label, value, fullWidth = false, className = "" }: { label: string, value: string | undefined | number, fullWidth?: boolean, className?: string }) {
     return (
-        <div className={`${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">{label}</p>
-            <p className={`font-semibold text-[#0c1d1b] dark:text-gray-200 ${className}`}>{value || "-"}</p>
+        <div className={`${fullWidth ? "col-span-1 md:col-span-2" : ""} space-y-1`}>
+            <p className="text-label-sm text-on-surface-variant uppercase tracking-wider">{label}</p>
+            <p className={`font-body-base font-semibold text-on-surface ${className}`}>{value || "-"}</p>
         </div>
     );
 }

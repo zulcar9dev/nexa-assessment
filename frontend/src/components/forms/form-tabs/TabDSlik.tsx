@@ -36,7 +36,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
             <div className="col-span-1 lg:col-span-2">
                 <label className="block lg:hidden text-xs font-medium text-gray-500 mb-1">Nama Bank</label>
                 <div className="flex gap-2 items-center">
-                    <span className="flex-none flex items-center justify-center w-6 h-6 rounded-full bg-primary-brand/10 text-primary-brand text-xs font-bold border border-primary-brand/20">
+                    <span className="flex-none flex items-center justify-center w-6 h-6 rounded-full bg-primary-brand/10 text-primary text-xs font-bold border border-primary-brand/20">
                         {index + 1}
                     </span>
                     <input
@@ -44,7 +44,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                         value={facility.nama_bank}
                         onChange={(e) => updateFacility(index, "nama_bank", e.target.value)}
                         placeholder="Nama Bank"
-                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                     />
                 </div>
             </div>
@@ -57,7 +57,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                     value={facility.jenis_kredit || ""}
                     onChange={(e) => updateFacility(index, "jenis_kredit", e.target.value)}
                     placeholder="Konsumtif"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                 />
             </div>
 
@@ -69,7 +69,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                     value={formatNumberForDisplay(facility.plafon_maks)}
                     onChange={(e) => handleNumberInput(index, "plafon_maks", e.target.value)}
                     placeholder="0"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
                 />
             </div>
 
@@ -81,7 +81,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                     value={formatNumberForDisplay(facility.outstanding)}
                     onChange={(e) => handleNumberInput(index, "outstanding", e.target.value)}
                     placeholder="0"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
                 />
             </div>
 
@@ -93,7 +93,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                     value={formatNumberForDisplay(facility.angsuran)}
                     onChange={(e) => handleNumberInput(index, "angsuran", e.target.value)}
                     placeholder="0"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300 text-right"
                 />
             </div>
 
@@ -103,7 +103,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                 <select
                     value={facility.kolektibilitas || ""}
                     onChange={(e) => updateFacility(index, "kolektibilitas", e.target.value)}
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                 >
                     <option value="">-</option>
                     <option value="1">1</option>
@@ -123,7 +123,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                     options={DOCUMENT_PLACEHOLDERS}
                     placeholder="Keterangan"
                     rows={1}
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                 />
             </div>
 
@@ -155,7 +155,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                                 value={facility.nomor_rekening_pinjaman || ""}
                                 onChange={(e) => updateFacility(index, "nomor_rekening_pinjaman", e.target.value)}
                                 placeholder="Nomor Rekening"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                             />
                         </div>
                         {isTopUpSisaGaji && (
@@ -166,7 +166,7 @@ const SlikFacilityRow = React.memo(function SlikFacilityRow({
                                     value={facility.nomor_pk || ""}
                                     onChange={(e) => updateFacility(index, "nomor_pk", e.target.value)}
                                     placeholder="Nomor PK"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                                 />
                             </div>
                         )}
@@ -233,9 +233,9 @@ export default React.memo(function TabDSlik() {
     }, [facilities, setFormData]);
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-d">
-            <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                <ClipboardCheck className="w-6 h-6 text-primary-brand" />
+        <div className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8" data-tab-content="tab-d">
+            <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                <ClipboardCheck className="w-6 h-6 text-primary" />
                 Data Eksternal
             </h3>
 
@@ -249,7 +249,7 @@ export default React.memo(function TabDSlik() {
                         type="date"
                         value={formData.tgl_slik ?? ""}
                         onChange={(e) => setFormData({ tgl_slik: e.target.value })}
-                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 pl-10 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
+                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 pl-10 bg-white dark:bg-[#1a2c2a] dark:text-gray-300"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Calendar className="h-4 w-4 text-gray-500" />
@@ -309,7 +309,7 @@ export default React.memo(function TabDSlik() {
                             handleTabToPrev(e);
                         }
                     }}
-                    className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-primary-brand/30 rounded-lg text-primary-brand font-medium hover:bg-primary-brand/5 hover:border-primary-brand transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-primary-brand/30 rounded-lg text-primary font-medium hover:bg-primary-brand/5 hover:border-primary-brand transition-all"
                 >
                     <Plus className="w-5 h-5" />
                     Tambah Assessment Facility
@@ -318,3 +318,5 @@ export default React.memo(function TabDSlik() {
         </div>
     );
 });
+
+

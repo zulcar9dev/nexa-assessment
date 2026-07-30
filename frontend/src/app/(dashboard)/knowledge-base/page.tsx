@@ -76,31 +76,31 @@ export default function KnowledgeBasePage() {
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
             {/* Header Card */}
-            <div className="card">
+            <div className="bg-surface-light dark:bg-surface rounded-xl shadow-sm border border-outline-variant/20">
                 {/* Title Section */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border-b border-gray-200 dark:border-[#444564]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border-b border-outline-variant/20">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-brand to-brand-dark rounded-lg flex items-center justify-center">
-                            <FileSearch className="w-5 h-5 text-white" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                            <FileSearch className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-brand dark:text-[#a5b4fc]">
+                            <h2 className="text-title-lg font-bold text-on-surface font-heading">
                                 Knowledge Base
                             </h2>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-label-sm text-on-surface-variant">
                                 Pencarian cepat dokumen memo & surat edaran
                             </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
                         {/* View Toggle */}
-                        <div className="flex rounded-lg border border-gray-200 dark:border-[#444564] overflow-hidden">
+                        <div className="flex rounded-xl border border-outline-variant/30 overflow-hidden">
                             <button
                                 onClick={() => setViewMode("grid")}
                                 className={`p-2 transition-colors ${
                                     viewMode === "grid"
-                                        ? "bg-brand text-white"
-                                        : "bg-white dark:bg-[#323249] text-gray-500 hover:bg-gray-50 dark:hover:bg-[#444564]"
+                                        ? "bg-primary text-on-primary"
+                                        : "bg-surface-light dark:bg-surface text-on-surface-variant hover:bg-surface-container"
                                 }`}
                                 title="Grid View"
                             >
@@ -110,8 +110,8 @@ export default function KnowledgeBasePage() {
                                 onClick={() => setViewMode("table")}
                                 className={`p-2 transition-colors ${
                                     viewMode === "table"
-                                        ? "bg-brand text-white"
-                                        : "bg-white dark:bg-[#323249] text-gray-500 hover:bg-gray-50 dark:hover:bg-[#444564]"
+                                        ? "bg-primary text-on-primary"
+                                        : "bg-surface-light dark:bg-surface text-on-surface-variant hover:bg-surface-container"
                                 }`}
                                 title="Table View"
                             >
@@ -121,9 +121,9 @@ export default function KnowledgeBasePage() {
                         <Link
                             href="/knowledge-base/upload"
                             className="inline-flex items-center gap-2 px-4 py-2.5
-                                bg-brand hover:bg-brand-dark !text-white hover:!text-white
-                                rounded-lg font-medium text-sm
-                                transition-all duration-200 shadow-sm hover:shadow-md"
+                                bg-primary hover:bg-primary-container text-on-primary
+                                rounded-xl font-medium text-sm
+                                transition-all duration-200 shadow-sm"
                         >
                             <Plus className="w-4 h-4" />
                             Upload
@@ -147,7 +147,7 @@ export default function KnowledgeBasePage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
                         {/* Search Input */}
                         <div className="lg:col-span-2 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50" />
                             <input
                                 type="text"
                                 placeholder="Cari judul, kata kunci, nomor memo..."
@@ -155,10 +155,10 @@ export default function KnowledgeBasePage() {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && loadData()}
                                 className="w-full pl-10 pr-4 py-2.5
-                                    bg-white dark:bg-[#323249]
-                                    border border-gray-200 dark:border-[#444564]
-                                    rounded-lg text-sm
-                                    focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                                    bg-surface-light dark:bg-surface-container
+                                    border border-outline-variant/30
+                                    rounded-xl text-sm text-on-surface
+                                    focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
                                     transition-all duration-200"
                             />
                         </div>
@@ -168,10 +168,10 @@ export default function KnowledgeBasePage() {
                             value={kategoriFilter}
                             onChange={(e) => setKategoriFilter(e.target.value)}
                             className="w-full px-4 py-2.5
-                                bg-white dark:bg-[#323249]
-                                border border-gray-200 dark:border-[#444564]
-                                rounded-lg text-sm
-                                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                                bg-surface-light dark:bg-surface-container
+                                border border-outline-variant/30
+                                rounded-xl text-sm text-on-surface
+                                focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
                                 transition-all duration-200"
                         >
                             <option value="">-- Kategori --</option>
@@ -185,10 +185,10 @@ export default function KnowledgeBasePage() {
                             value={targetFilter}
                             onChange={(e) => setTargetFilter(e.target.value)}
                             className="w-full px-4 py-2.5
-                                bg-white dark:bg-[#323249]
-                                border border-gray-200 dark:border-[#444564]
-                                rounded-lg text-sm
-                                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                                bg-surface-light dark:bg-surface-container
+                                border border-outline-variant/30
+                                rounded-xl text-sm text-on-surface
+                                focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
                                 transition-all duration-200"
                         >
                             <option value="">-- Target --</option>
@@ -204,10 +204,10 @@ export default function KnowledgeBasePage() {
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="w-full px-4 py-2.5
-                                bg-white dark:bg-[#323249]
-                                border border-gray-200 dark:border-[#444564]
-                                rounded-lg text-sm
-                                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                                bg-surface-light dark:bg-surface-container
+                                border border-outline-variant/30
+                                rounded-xl text-sm text-on-surface
+                                focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
                                 transition-all duration-200"
                         >
                             <option value="">-- Status --</option>
@@ -223,10 +223,10 @@ export default function KnowledgeBasePage() {
                                 <button
                                     onClick={resetFilters}
                                     className="px-3 py-2.5
-                                        border border-gray-200 dark:border-[#444564]
-                                        bg-white dark:bg-[#323249]
-                                        rounded-lg text-gray-600 dark:text-gray-400
-                                        hover:bg-gray-50 dark:hover:bg-[#444564]
+                                        border border-outline-variant/30
+                                        bg-surface-light dark:bg-surface-container
+                                        rounded-xl text-on-surface-variant
+                                        hover:bg-surface-container/50
                                         transition-all duration-200"
                                     title="Reset Filter"
                                 >
@@ -239,23 +239,23 @@ export default function KnowledgeBasePage() {
                     {/* Date Range */}
                     <div className="flex flex-wrap gap-3 mt-3">
                         <div className="flex items-center gap-2">
-                            <label className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">Dari:</label>
+                            <label className="text-xs text-on-surface-variant whitespace-nowrap">Dari:</label>
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="px-3 py-2 bg-white dark:bg-[#323249] border border-gray-200 dark:border-[#444564] rounded-lg text-sm
-                                    focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all duration-200"
+                                className="px-3 py-2 bg-surface-light dark:bg-surface-container border border-outline-variant/30 rounded-xl text-sm text-on-surface
+                                    focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                             />
                         </div>
                         <div className="flex items-center gap-2">
-                            <label className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">Sampai:</label>
+                            <label className="text-xs text-on-surface-variant whitespace-nowrap">Sampai:</label>
                             <input
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="px-3 py-2 bg-white dark:bg-[#323249] border border-gray-200 dark:border-[#444564] rounded-lg text-sm
-                                    focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all duration-200"
+                                className="px-3 py-2 bg-surface-light dark:bg-surface-container border border-outline-variant/30 rounded-xl text-sm text-on-surface
+                                    focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                             />
                         </div>
                     </div>
@@ -266,7 +266,7 @@ export default function KnowledgeBasePage() {
             {isLoading ? (
                 <div className="card p-12 text-center">
                     <Loader2 className="w-8 h-8 animate-spin text-brand mx-auto mb-3" />
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Memuat dokumen...</p>
+                    <p className="text-sm text-on-surface-variant">Memuat dokumen...</p>
                 </div>
             ) : documents.length > 0 ? (
                 <>
@@ -291,28 +291,28 @@ export default function KnowledgeBasePage() {
                     )}
 
                     {/* Pagination */}
-                    <div className="card">
+                    <div className="bg-surface-light dark:bg-surface rounded-xl shadow-sm border border-outline-variant/20">
                         <div className="flex items-center justify-between px-4 py-3">
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <p className="text-label-sm text-on-surface-variant">
                                 Menampilkan {documents.length} dari {pagination.total} dokumen
                             </p>
                             <div className="flex items-center gap-2">
                                 <button
                                     disabled={pagination.page <= 1}
                                     onClick={() => fetchDocuments({ page: pagination.page - 1 })}
-                                    className={`px-3 py-1.5 rounded-lg border border-gray-200 dark:border-[#444564]
-                                        text-sm ${pagination.page <= 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-600 hover:bg-gray-100 dark:hover:bg-[#323249]"}`}
+                                    className={`px-3 py-1.5 rounded-xl border border-outline-variant/30
+                                        text-sm ${pagination.page <= 1 ? "text-on-surface-variant/50 cursor-not-allowed" : "text-on-surface hover:bg-surface-container"}`}
                                 >
                                     ← Prev
                                 </button>
-                                <span className="px-3 py-1 text-sm text-gray-600 dark:text-gray-400">
+                                <span className="px-3 py-1 text-label-sm text-on-surface">
                                     {pagination.page} / {pagination.totalPages || 1}
                                 </span>
                                 <button
                                     disabled={pagination.page >= pagination.totalPages}
                                     onClick={() => fetchDocuments({ page: pagination.page + 1 })}
-                                    className={`px-3 py-1.5 rounded-lg border border-gray-200 dark:border-[#444564]
-                                        text-sm ${pagination.page >= pagination.totalPages ? "text-gray-400 cursor-not-allowed" : "text-gray-600 hover:bg-gray-100 dark:hover:bg-[#323249]"}`}
+                                    className={`px-3 py-1.5 rounded-xl border border-outline-variant/30
+                                        text-sm ${pagination.page >= pagination.totalPages ? "text-on-surface-variant/50 cursor-not-allowed" : "text-on-surface hover:bg-surface-container"}`}
                                 >
                                     Next →
                                 </button>
@@ -321,14 +321,14 @@ export default function KnowledgeBasePage() {
                     </div>
                 </>
             ) : (
-                <div className="card p-12 text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-[#323249] rounded-full flex items-center justify-center">
-                        <FileSearch className="w-8 h-8 text-gray-400" />
+                <div className="bg-surface-light dark:bg-surface rounded-xl shadow-sm border border-outline-variant/20 p-12 text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-surface-container rounded-full flex items-center justify-center">
+                        <FileSearch className="w-8 h-8 text-on-surface-variant/50" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
+                    <h3 className="text-lg font-semibold text-on-surface font-heading mb-2">
                         Belum ada dokumen
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <p className="text-sm text-on-surface-variant mb-4">
                         {hasFilters
                             ? "Tidak ada dokumen yang sesuai dengan filter pencarian."
                             : "Mulai dengan mengunggah dokumen PDF pertama Anda."}
@@ -337,8 +337,8 @@ export default function KnowledgeBasePage() {
                         <Link
                             href="/knowledge-base/upload"
                             className="inline-flex items-center gap-2 px-5 py-2.5
-                                bg-brand hover:bg-brand-dark !text-white hover:!text-white
-                                rounded-lg font-medium text-sm transition-all duration-200"
+                                bg-primary hover:bg-primary-container text-on-primary
+                                rounded-xl font-medium text-sm transition-all duration-200"
                         >
                             <Plus className="w-4 h-4" />
                             Upload Dokumen

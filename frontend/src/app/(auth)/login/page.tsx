@@ -93,57 +93,57 @@ function LoginContent() {
               "url('https://images.unsplash.com/photo-1486325212027-8081e485255e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
           }}
         />
-        {/* Gradient Overlay - Stronger for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-brand/50 via-brand/50 to-brand-dark/50" />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/60 to-primary-container/90" />
 
         {/* Content */}
         <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
           {/* Logo */}
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-brand font-bold text-2xl">N</span>
+            <div className="w-12 h-12 bg-surface-light rounded-xl flex items-center justify-center shadow-sm">
+              <span className="text-primary font-bold text-2xl font-heading">N</span>
             </div>
-            <h2 className="text-2xl font-bold leading-tight tracking-tight drop-shadow-md text-white">
+            <h2 className="text-2xl font-bold leading-tight tracking-tight text-on-primary font-heading">
               Nexa Data Assessment
             </h2>
           </div>
 
           {/* Welcome Message */}
           <div className="max-w-lg">
-            <h1 className="text-4xl xl:text-5xl font-black leading-tight tracking-tight mb-6 drop-shadow-lg text-white">
+            <h1 className="text-display-lg font-black leading-tight tracking-tight mb-6 text-on-primary font-heading">
               Nexa Assessment System
             </h1>
-            <p className="text-lg xl:text-xl font-medium text-white leading-relaxed drop-shadow-md">
+            <p className="text-body-lg text-on-primary/90 leading-relaxed">
               Portal Internal untuk Tim Nexa. Kelola assessment data,
               analisis performa, dan manajemen dokumen dengan efisien.
             </p>
           </div>
 
-          <div className="text-sm text-white/90 font-medium drop-shadow-sm">
+          <div className="text-label-sm text-on-primary/80 font-medium">
             <p>Sistem Internal v{process.env.APP_VERSION}</p>
           </div>
         </div>
       </div>
 
       {/* Right Side: Login Form */}
-      <div className="flex flex-1 flex-col justify-center bg-white dark:bg-[#1e293b] px-4 py-6 sm:px-6 lg:flex-none lg:px-20 xl:px-24 overflow-y-auto">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
+      <div className="flex flex-1 flex-col justify-center bg-surface-light dark:bg-background px-4 py-6 sm:px-6 lg:flex-none lg:px-20 xl:px-24 overflow-y-auto">
+        <div className="mx-auto w-full max-w-sm lg:w-96 glass-panel p-8 rounded-2xl shadow-sm border border-outline-variant/10 sm:p-10 lg:p-0 lg:border-none lg:shadow-none lg:bg-transparent lg:dark:bg-transparent">
           {/* Mobile Logo */}
-          <div className="flex lg:hidden items-center gap-3 mb-8 text-brand">
-            <div className="w-10 h-10 bg-brand rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">N</span>
+          <div className="flex lg:hidden items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm">
+              <span className="text-on-primary font-bold text-lg font-heading">N</span>
             </div>
-            <span className="font-bold text-lg text-gray-900 dark:text-white">
+            <span className="font-bold text-title-lg text-on-surface font-heading">
               Nexa Data Assessment
             </span>
           </div>
 
           {/* Heading */}
           <div className="flex flex-col gap-1 mb-6">
-            <h2 className="text-3xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
+            <h2 className="text-headline-md font-bold leading-tight tracking-tight text-on-surface font-heading">
               Masuk
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-base">
+            <p className="text-on-surface-variant text-body-base">
               Selamat datang kembali! Silakan masukkan data Anda.
             </p>
           </div>
@@ -180,11 +180,11 @@ function LoginContent() {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-semibold leading-6 text-gray-800 dark:text-gray-200 mb-2"
+                className="block text-label-sm font-semibold text-on-surface mb-2"
               >
                 Email atau ID Karyawan
               </label>
-              <div className="relative rounded-lg shadow-sm">
+              <div className="relative shadow-sm rounded-xl">
                 <input
                   id="username"
                   name="username"
@@ -195,16 +195,16 @@ function LoginContent() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="block w-full rounded-lg border-0 py-3.5 pl-4 pr-10 
-                    text-gray-900 dark:text-white
-                    ring-1 ring-inset ring-gray-300 dark:ring-gray-600
-                    placeholder:text-gray-400 dark:placeholder:text-gray-500
-                    focus:ring-2 focus:ring-inset focus:ring-brand
+                  className="block w-full rounded-xl border-0 py-3.5 pl-4 pr-10 
+                    text-on-surface
+                    ring-1 ring-inset ring-outline-variant/30
+                    placeholder:text-on-surface-variant/50
+                    focus:ring-2 focus:ring-inset focus:ring-primary/50 focus:border-primary
                     sm:text-sm sm:leading-6 
-                    bg-white dark:bg-gray-800"
+                    bg-surface-light dark:bg-surface-container"
                 />
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                  <User className="w-5 h-5 text-gray-400" />
+                  <User className="w-5 h-5 text-on-surface-variant/50" />
                 </div>
               </div>
             </div>
@@ -213,11 +213,11 @@ function LoginContent() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold leading-6 text-gray-800 dark:text-gray-200 mb-2"
+                className="block text-label-sm font-semibold text-on-surface mb-2"
               >
                 Kata Sandi
               </label>
-              <div className="relative rounded-lg shadow-sm">
+              <div className="relative shadow-sm rounded-xl">
                 <input
                   id="password"
                   name="password"
@@ -228,13 +228,13 @@ function LoginContent() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="block w-full rounded-lg border-0 py-3.5 pl-4 pr-10 
-                    text-gray-900 dark:text-white
-                    ring-1 ring-inset ring-gray-300 dark:ring-gray-600
-                    placeholder:text-gray-400 dark:placeholder:text-gray-500
-                    focus:ring-2 focus:ring-inset focus:ring-brand
+                  className="block w-full rounded-xl border-0 py-3.5 pl-4 pr-10 
+                    text-on-surface
+                    ring-1 ring-inset ring-outline-variant/30
+                    placeholder:text-on-surface-variant/50
+                    focus:ring-2 focus:ring-inset focus:ring-primary/50 focus:border-primary
                     sm:text-sm sm:leading-6 
-                    bg-white dark:bg-gray-800"
+                    bg-surface-light dark:bg-surface-container"
                 />
                 <button
                   type="button"
@@ -243,9 +243,9 @@ function LoginContent() {
                   className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer group"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5 text-gray-400 group-hover:text-brand transition-colors" />
+                    <EyeOff className="w-5 h-5 text-on-surface-variant/70 group-hover:text-primary transition-colors" />
                   ) : (
-                    <Eye className="w-5 h-5 text-gray-400 group-hover:text-brand transition-colors" />
+                    <Eye className="w-5 h-5 text-on-surface-variant/70 group-hover:text-primary transition-colors" />
                   )}
                 </button>
               </div>
@@ -262,21 +262,21 @@ function LoginContent() {
                   onChange={(e) =>
                     setFormData({ ...formData, rememberMe: e.target.checked })
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand 
-                    bg-gray-100 dark:bg-gray-800 dark:border-gray-600"
+                  className="h-4 w-4 rounded border-outline-variant/30 text-primary focus:ring-primary 
+                    bg-surface-light dark:bg-surface-container"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+                  className="ml-2 block text-label-sm text-on-surface-variant"
                 >
                   Ingat saya
                 </label>
               </div>
-              <div className="text-sm leading-6">
+              <div className="text-label-sm leading-6">
                 <a
                   href="#"
                   onClick={(e) => e.preventDefault()}
-                  className="font-semibold text-brand hover:text-brand-dark transition-colors"
+                  className="font-semibold text-primary hover:text-primary-container transition-colors"
                 >
                   Lupa kata sandi?
                 </a>
@@ -288,10 +288,10 @@ function LoginContent() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full justify-center rounded-lg bg-brand px-3 py-3.5 
-                  text-sm font-semibold leading-6 text-white shadow-sm 
-                  hover:bg-brand-dark 
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand 
+                className="flex w-full justify-center rounded-xl bg-primary px-3 py-3.5 
+                  text-sm font-semibold leading-6 text-on-primary shadow-sm 
+                  hover:bg-primary-container 
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 
                   transition-all duration-200
                   disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -330,7 +330,7 @@ function LoginContent() {
                   <div className="w-full border-t border-gray-300 dark:border-gray-600" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white dark:bg-[#1e293b] px-2 text-gray-500 dark:text-gray-400">
+                  <span className="bg-white dark:bg-[#1e293b] px-2 text-on-surface-variant">
                     Demo Login
                   </span>
                 </div>
@@ -341,7 +341,7 @@ function LoginContent() {
                   type="button"
                   onClick={() => handleDemoLogin("admin")}
                   disabled={isLoading}
-                  className="flex justify-center items-center rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 transition-colors disabled:opacity-50"
+                  className="flex justify-center items-center rounded-lg px-3 py-2.5 text-sm font-medium text-on-surface-variant bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 transition-colors disabled:opacity-50"
                 >
                   Admin Demo
                 </button>
@@ -349,7 +349,7 @@ function LoginContent() {
                   type="button"
                   onClick={() => handleDemoLogin("user")}
                   disabled={isLoading}
-                  className="flex justify-center items-center rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 transition-colors disabled:opacity-50"
+                  className="flex justify-center items-center rounded-lg px-3 py-2.5 text-sm font-medium text-on-surface-variant bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 transition-colors disabled:opacity-50"
                 >
                   User Demo
                 </button>
@@ -370,7 +370,7 @@ function LoginContent() {
           </div>
 
           {/* Footer */}
-          <p className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-4 text-center text-xs text-on-surface-variant">
             © {new Date().getFullYear()} Nexa Analytics Corp.
           </p>
         </div>
@@ -383,12 +383,12 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e293b]">
+        <div className="min-h-screen flex items-center justify-center bg-canvas-light dark:bg-background">
           <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center shadow-lg animate-pulse">
-              <span className="text-white font-bold text-2xl">N</span>
+            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-sm animate-pulse">
+              <span className="text-on-primary font-bold text-2xl font-heading">N</span>
             </div>
-            <p className="text-brand font-medium text-sm animate-pulse">
+            <p className="text-primary font-medium text-sm animate-pulse">
               Memuat...
             </p>
           </div>

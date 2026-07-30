@@ -157,12 +157,12 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
     }, [formData.segmentasi, formData.nama_bendahara, formData.no_hp_bendahara, formData.nama_sdm, formData.no_hp_sdm, updateField]);
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-b">
+        <div className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8" data-tab-content="tab-b">
             <form className="space-y-8">
                 {/* Section: Data Pekerjaan */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <Briefcase className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <Briefcase className="w-6 h-6 text-primary" />
                         Data Pekerjaan
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -170,7 +170,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         <div>
                             <label
                                 htmlFor="segmentasi"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Segmentasi
                             </label>
@@ -181,7 +181,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 value={formData.segmentasi || ""}
                                 onChange={(e) => updateField("segmentasi", e.target.value)}
                                 onKeyDown={handleTabToPrev}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Segmentasi</option>
                                 {kategori === "type_c" ? (
@@ -203,7 +203,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         <div>
                             <label
                                 htmlFor="jenis_pengajuan"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Jenis Pengajuan
                             </label>
@@ -212,7 +212,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 name="jenis_pengajuan"
                                 value={formData.jenis_pengajuan || ""}
                                 onChange={(e) => updateField("jenis_pengajuan", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Jenis</option>
                                 <option value="baru">Baru</option>
@@ -231,7 +231,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         <div className="col-span-1 md:col-span-2">
                             <label
                                 htmlFor="instansi"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Nama Instansi/Perusahaan
                             </label>
@@ -242,7 +242,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 value={formData.instansi || ""}
                                 onChange={(e) => updateField("instansi", e.target.value)}
                                 placeholder="e.g. Pemerintah Kota Gorontalo"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -253,7 +253,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div className="col-span-1">
                                 <label
                                     htmlFor="ung_kategori_pegawai"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Kategori Pegawai UNG
                                 </label>
@@ -271,7 +271,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                             updateField("ung_remunerasi_diakui_bulanan", 0);
                                         }
                                     }}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-semibold text-primary-brand dark:text-[#a5b4fc]"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light font-semibold text-primary dark:text-[#a5b4fc]"
                                 >
                                     <option value="">Pilih Kategori</option>
                                     <option value="dosen">Dosen / Pengajar</option>
@@ -285,7 +285,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div className="col-span-1 md:col-span-2 lg:col-span-3">
                                 <label
                                     htmlFor="status_kepegawaian_manual"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Status Kepegawaian
                                 </label>
@@ -302,9 +302,9 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                                 ? "e.g. Pegawai PKWT"
                                                 : "e.g. Karyawan Tetap"
                                     }
-                                    className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 ${!formData.status_kepegawaian_manual?.trim()
+                                    className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-surface-light ${!formData.status_kepegawaian_manual?.trim()
                                             ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                                            : "border-[#cdeae7] focus:border-primary-brand focus:ring-primary-brand"
+                                            : "border-[#cdeae7] focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
                                         }`}
                                 />
                                 {!formData.status_kepegawaian_manual?.trim() && (
@@ -325,7 +325,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         <div>
                             <label
                                 htmlFor="jabatan"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Jabatan
                             </label>
@@ -336,7 +336,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 value={formData.jabatan || ""}
                                 onChange={(e) => updateField("jabatan", e.target.value)}
                                 placeholder="e.g. Kepala Bagian"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -349,7 +349,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div>
                                 <label
                                     htmlFor="golongan"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Golongan/Pangkat
                                 </label>
@@ -360,7 +360,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     value={formData.golongan || ""}
                                     onChange={(e) => updateField("golongan", e.target.value)}
                                     placeholder="e.g. IV/a"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         )}
@@ -371,7 +371,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div>
                                 <label
                                     htmlFor="nip"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     NIP/NRP
                                 </label>
@@ -382,7 +382,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     value={formData.nip || ""}
                                     onChange={(e) => updateField("nip", e.target.value)}
                                     placeholder="19xxxxxxxxxxxxxxxxx"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light font-mono"
                                 />
                             </div>
                         )}
@@ -391,7 +391,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         <div>
                             <label
                                 htmlFor="tgl_mulai_kerja"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Tanggal Mulai Kerja
                             </label>
@@ -401,11 +401,11 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 type="date"
                                 value={formData.tgl_mulai_kerja || ""}
                                 onChange={(e) => updateField("tgl_mulai_kerja", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                             {/* Calculation Result Display */}
                             {formData.tgl_mulai_kerja && (
-                                <p className="mt-1.5 text-xs font-medium text-primary-brand dark:text-[#a5b4fc]">
+                                <p className="mt-1.5 text-xs font-medium text-primary dark:text-[#a5b4fc]">
                                     Masa Kerja: {formData.masa_kerja || "Menghitung..."}
                                 </p>
                             )}
@@ -413,7 +413,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
 
                         {/* SK CPNS / Pengangkatan */}
                         <div className={`col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 ${showTglBerakhir ? "md:grid-cols-3" : "md:grid-cols-2"} gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10`}>
-                            <h4 className={`col-span-1 ${showTglBerakhir ? "md:col-span-3" : "md:col-span-2"} text-sm font-bold text-primary-brand`}>
+                            <h4 className={`col-span-1 ${showTglBerakhir ? "md:col-span-3" : "md:col-span-2"} text-sm font-bold text-primary`}>
                                 {kategori === "type_c"
                                     ? (isP3K ? "Data SK PENGANGKATAN PPPK" : (formData.segmentasi === "pemerintahan" ? "Data SK CPNS" : "Data SK PENGANGKATAN"))
                                     : (formData.segmentasi === "asabri" ? "Data SK PENGANGKATAN" : "Data SK CPNS")
@@ -422,7 +422,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div>
                                 <label
                                     htmlFor="no_sk_cpns"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     {kategori === "type_c"
                                         ? (isP3K ? "Nomor SK Pengangkatan PPPK" : (formData.segmentasi === "pemerintahan" ? "Nomor SK CPNS" : "Nomor SK PENGANGKATAN"))
@@ -435,13 +435,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     type="text"
                                     value={formData.no_sk_cpns || ""}
                                     onChange={(e) => updateField("no_sk_cpns", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                 />
                             </div>
                             <div>
                                 <label
                                     htmlFor="tgl_sk_cpns"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     {kategori === "type_c"
                                         ? (isP3K ? "Tanggal SK Pengangkatan PPPK" : (formData.segmentasi === "pemerintahan" ? "Tanggal SK CPNS" : "Tanggal SK PENGANGKATAN"))
@@ -454,7 +454,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     type="date"
                                     value={formData.tgl_sk_cpns || ""}
                                     onChange={(e) => updateField("tgl_sk_cpns", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                 />
                             </div>
                             {/* Tanggal Berakhir Pengangkatan - P3K / Komisioner */}
@@ -462,7 +462,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 <div>
                                     <label
                                         htmlFor="tgl_berakhir_pengangkatan"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         {isP3K ? "Tanggal Berakhir Pengangkatan PPPK" : "Tanggal Berakhir Masa Jabatan"}
                                     </label>
@@ -472,9 +472,9 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="date"
                                         value={formData.tgl_berakhir_pengangkatan || ""}
                                         onChange={(e) => updateField("tgl_berakhir_pengangkatan", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                     />
-                                    <p className="mt-1 text-xs font-medium text-primary-brand dark:text-[#a5b4fc]">
+                                    <p className="mt-1 text-xs font-medium text-primary dark:text-[#a5b4fc]">
                                          {contractPeriodText ? `Dihitung: Periode ${contractPeriodText}` : (isP3K ? "Periode masa kerja P3K selama 5 tahun" : "Periode masa jabatan Komisioner selama 5 tahun")}
                                      </p>
                                 </div>
@@ -485,11 +485,11 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         {/* SK Kenaikan Pangkat - Hidden for BUMN/BUMD and Swasta */}
                         {!shouldHideRankFields && (
                             <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
-                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary-brand">Data SK Kenaikan Pangkat Terakhir</h4>
+                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary">Data SK Kenaikan Pangkat Terakhir</h4>
                                 <div>
                                     <label
                                         htmlFor="no_sk_kenaikan_pangkat"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Nomor SK Kenaikan Pangkat
                                     </label>
@@ -499,13 +499,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="text"
                                         value={formData.no_sk_kenaikan_pangkat || ""}
                                         onChange={(e) => updateField("no_sk_kenaikan_pangkat", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                     />
                                 </div>
                                 <div>
                                     <label
                                         htmlFor="tgl_sk_kenaikan_pangkat"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Tanggal SK Kenaikan Pangkat
                                     </label>
@@ -515,7 +515,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="date"
                                         value={formData.tgl_sk_kenaikan_pangkat || ""}
                                         onChange={(e) => updateField("tgl_sk_kenaikan_pangkat", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                     />
                                 </div>
                             </div>
@@ -524,11 +524,11 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         {/* SK Mutasi - Specific for PLN */}
                         {kategori === "type_c" && formData.instansi?.toLowerCase().includes("pln") && (
                             <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
-                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary-brand">Data SK Mutasi (Khusus PLN)</h4>
+                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary">Data SK Mutasi (Khusus PLN)</h4>
                                 <div>
                                     <label
                                         htmlFor="no_sk_mutasi"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Nomor SK Mutasi
                                     </label>
@@ -538,13 +538,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="text"
                                         value={formData.no_sk_mutasi || ""}
                                         onChange={(e) => updateField("no_sk_mutasi", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                     />
                                 </div>
                                 <div>
                                     <label
                                         htmlFor="tgl_sk_mutasi"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Tanggal SK Mutasi
                                     </label>
@@ -554,7 +554,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="date"
                                         value={formData.tgl_sk_mutasi || ""}
                                         onChange={(e) => updateField("tgl_sk_mutasi", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                     />
                                 </div>
                             </div>
@@ -565,7 +565,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div>
                                 <label
                                     htmlFor="tgl_pensiun_pemohon"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Tanggal Pensiun (TMT)
                                 </label>
@@ -575,11 +575,11 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     type="date"
                                     value={formData.tgl_pensiun_pemohon || ""}
                                     onChange={(e) => updateField("tgl_pensiun_pemohon", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                                 {/* Calculation Result Display */}
                                 {formData.tgl_pensiun_pemohon && (
-                                    <p className="mt-1.5 text-xs font-medium text-primary-brand dark:text-[#a5b4fc]">
+                                    <p className="mt-1.5 text-xs font-medium text-primary dark:text-[#a5b4fc]">
                                         Sisa Masa Kerja: {formData.sisa_masa_kerja || "Menghitung..."}
                                     </p>
                                 )}
@@ -590,7 +590,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         <div className="col-span-1 md:col-span-2 lg:col-span-3">
                             <label
                                 htmlFor="alamat_kantor"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Alamat Kantor/Instansi
                             </label>
@@ -601,7 +601,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 options={DOCUMENT_PLACEHOLDERS}
                                 rows={2}
                                 placeholder="Ketik alamat kantor... (Gunakan @ untuk insert data)"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -610,7 +610,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             <div className="col-span-1 md:col-span-2 lg:col-span-3">
                                 <label
                                     htmlFor="penempatan_unit"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Unit Penempatan
                                 </label>
@@ -621,7 +621,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     value={formData.penempatan_unit || ""}
                                     onChange={(e) => updateField("penempatan_unit", e.target.value)}
                                     onKeyDown={handleTabToNext}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light placeholder:text-gray-400 dark:placeholder:text-gray-600"
                                     placeholder="Contoh: ULP Limboto"
                                     />
                             </div>
@@ -630,7 +630,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         {/* Pekerjaan Sebelumnya (Dynamic PLN Nusa Daya/Paguntaka/PBT) */}
                         {(isPaguntaka || isPBT) && kategori === "type_c" && (
                             <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
-                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary-brand">
+                                <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary">
                                     Data Pekerjaan Sebelumnya (Riwayat Vendor / Alih Status)
                                 </h4>
                                 {isPBT && (
@@ -641,7 +641,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                 <div>
                                     <label
                                         htmlFor="prev_status_kepegawaian"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Status Kepegawaian Sebelumnya
                                     </label>
@@ -651,14 +651,14 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="text"
                                         value={formData.prev_status_kepegawaian || ""}
                                         onChange={(e) => updateField("prev_status_kepegawaian", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                         placeholder="Contoh: Karyawan Kontrak"
                                     />
                                 </div>
                                 <div>
                                     <label
                                         htmlFor="prev_instansi"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Nama Perusahaan Sebelumnya
                                     </label>
@@ -668,14 +668,14 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="text"
                                         value={formData.prev_instansi || ""}
                                         onChange={(e) => updateField("prev_instansi", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                         placeholder="Contoh: PT Puncak Emas Tani Sejahtera"
                                     />
                                 </div>
                                 <div>
                                     <label
                                         htmlFor="prev_masa_kerja"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Lama Bekerja Sebelumnya
                                     </label>
@@ -685,14 +685,14 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="text"
                                         value={formData.prev_masa_kerja || ""}
                                         readOnly
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/30 cursor-not-allowed"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/30 cursor-not-allowed"
                                         placeholder="Otomatis dihitung..."
                                     />
                                 </div>
                                 <div>
                                     <label
                                         htmlFor="prev_tgl_mulai_kerja"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Mulai Kerja Sebelumnya (Sejak)
                                     </label>
@@ -702,7 +702,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         type="date"
                                         value={formData.prev_tgl_mulai_kerja || ""}
                                         onChange={(e) => updateField("prev_tgl_mulai_kerja", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                     />
                                 </div>
 
@@ -711,7 +711,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         <div>
                                             <label
                                                 htmlFor="prev_no_sk"
-                                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                             >
                                                 Nomor SPK Sebelumnya
                                             </label>
@@ -721,14 +721,14 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                                 type="text"
                                                 value={formData.prev_no_sk || ""}
                                                 onChange={(e) => updateField("prev_no_sk", e.target.value)}
-                                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                                 placeholder="Contoh: 010/PETS-PEA/I/2024"
                                             />
                                         </div>
                                         <div>
                                             <label
                                                 htmlFor="prev_tgl_sk"
-                                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                             >
                                                 Tanggal SPK Sebelumnya
                                             </label>
@@ -738,13 +738,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                                 type="date"
                                                 value={formData.prev_tgl_sk || ""}
                                                 onChange={(e) => updateField("prev_tgl_sk", e.target.value)}
-                                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                             />
                                         </div>
                                         <div>
                                             <label
                                                 htmlFor="no_surat_pengalihan"
-                                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                             >
                                                 Nomor Surat Pengalihan Pekerja
                                             </label>
@@ -754,14 +754,14 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                                 type="text"
                                                 value={formData.no_surat_pengalihan || ""}
                                                 onChange={(e) => updateField("no_surat_pengalihan", e.target.value)}
-                                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                                 placeholder="Contoh: 012/PETS-HR/I/2026"
                                             />
                                         </div>
                                         <div>
                                             <label
                                                 htmlFor="tgl_surat_pengalihan"
-                                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                             >
                                                 Tanggal Surat Pengalihan Pekerja
                                             </label>
@@ -771,7 +771,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                                 type="date"
                                                 value={formData.tgl_surat_pengalihan || ""}
                                                 onChange={(e) => updateField("tgl_surat_pengalihan", e.target.value)}
-                                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
+                                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-white dark:bg-[#0f2322]/50"
                                             />
                                         </div>
                                     </>
@@ -783,8 +783,8 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
 
                 {/* Section: Data Verifikasi */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <UserCheck className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <UserCheck className="w-6 h-6 text-primary" />
                         Data Verifikasi
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -792,12 +792,12 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         {kategori === "type_c" && formData.segmentasi === "bumd_bumn" ? (
                             // Data SDM/Kepegawaian (BUMN/BUMD Only)
                             <div className="col-span-1 md:col-span-2 space-y-4">
-                                <h4 className="font-semibold text-primary-brand dark:text-[#a5b4fc]">Data SDM/Kepegawaian</h4>
+                                <h4 className="font-semibold text-primary dark:text-[#a5b4fc]">Data SDM/Kepegawaian</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label
                                             htmlFor="nama_sdm"
-                                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                            className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                         >
                                             Nama SDM/Kepegawaian
                                         </label>
@@ -808,13 +808,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                             value={formData.nama_sdm || ""}
                                             onChange={(e) => updateField("nama_sdm", e.target.value)}
                                             placeholder="Contoh: Ahmad Hidayat"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                         />
                                     </div>
                                     <div>
                                         <label
                                             htmlFor="no_hp_sdm"
-                                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                            className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                         >
                                             No. HP SDM/Kepegawaian
                                         </label>
@@ -825,7 +825,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                             value={formData.no_hp_sdm || ""}
                                             onChange={(e) => updateField("no_hp_sdm", e.target.value)}
                                             placeholder="08xxxxxxxxxx"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                         />
                                     </div>
                                 </div>
@@ -833,12 +833,12 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                         ) : (
                             // Data Bendahara (Default for Pemerintahan, Swasta, etc.)
                             <div className="col-span-1 md:col-span-2 space-y-4">
-                                <h4 className="font-semibold text-primary-brand dark:text-[#a5b4fc]">Data Bendahara</h4>
+                                <h4 className="font-semibold text-primary dark:text-[#a5b4fc]">Data Bendahara</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label
                                             htmlFor="nama_bendahara"
-                                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                            className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                         >
                                             Nama Bendahara
                                         </label>
@@ -849,13 +849,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                             value={formData.nama_bendahara || ""}
                                             onChange={(e) => updateField("nama_bendahara", e.target.value)}
                                             placeholder="Contoh: Budi Santoso"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                         />
                                     </div>
                                     <div>
                                         <label
                                             htmlFor="no_hp_bendahara"
-                                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                            className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                         >
                                             No. HP Bendahara
                                         </label>
@@ -866,7 +866,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                             value={formData.no_hp_bendahara || ""}
                                             onChange={(e) => updateField("no_hp_bendahara", e.target.value)}
                                             placeholder="08xxxxxxxxxx"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                         />
                                     </div>
                                 </div>
@@ -875,12 +875,12 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
 
                         {/* Data Rekan Kerja */}
                         <div className="col-span-1 md:col-span-2 space-y-4">
-                            <h4 className="font-semibold text-primary-brand dark:text-[#a5b4fc]">Data Rekan Kerja</h4>
+                            <h4 className="font-semibold text-primary dark:text-[#a5b4fc]">Data Rekan Kerja</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label
                                         htmlFor="nama_rekan_kerja"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Nama Rekan Kerja
                                     </label>
@@ -891,13 +891,13 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         value={formData.nama_rekan_kerja || ""}
                                         onChange={(e) => updateField("nama_rekan_kerja", e.target.value)}
                                         placeholder="Contoh: Siti Aminah"
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                     />
                                 </div>
                                 <div>
                                     <label
                                         htmlFor="no_hp_rekan_kerja"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         No. HP Rekan Kerja
                                     </label>
@@ -909,7 +909,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                         onChange={(e) => updateField("no_hp_rekan_kerja", e.target.value)}
                                         placeholder="08xxxxxxxxxx"
                                         onKeyDown={handleTabToNext}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                     />
                                 </div>
                             </div>
@@ -920,3 +920,5 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
         </div>
     );
 });
+
+

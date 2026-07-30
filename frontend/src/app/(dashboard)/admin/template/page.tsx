@@ -10,6 +10,15 @@ import {
   AlertCircle,
   Loader2,
   ShieldX,
+  ChevronRight,
+  Plus,
+  Library,
+  BadgeCheck,
+  FileEdit,
+  Grid2X2,
+  Eye,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 
 const templateCategories = [
@@ -119,134 +128,241 @@ export default function AdminTemplatePage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="card p-6">
-        <h1 className="text-2xl font-bold text-primary-brand dark:text-[#a5b4fc] mb-2">
-          Kelola Template
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Upload file template .docx baru untuk mengganti template yang sudah
-          ada.
-        </p>
+    <div className="max-w-[1440px] w-full mx-auto space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+        <div>
+          <nav className="flex items-center gap-xs text-label-sm text-on-surface-variant mb-xs">
+            <span>Admin</span>
+            <ChevronRight className="w-[14px] h-[14px]" />
+            <span className="text-primary font-semibold">Templates</span>
+          </nav>
+          <h3 className="font-headline-md text-headline-md text-on-surface">
+            Kelola Template
+          </h3>
+          <p className="text-on-surface-variant">
+            Upload file template .docx baru untuk mengganti template yang sudah ada.
+          </p>
+        </div>
+        <button className="inline-flex items-center justify-center gap-sm bg-primary text-on-primary px-xl py-md rounded-lg font-title-sm shadow-lg hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98]">
+          <Plus className="w-5 h-5 font-bold" />
+          Buat Template Baru
+        </button>
+      </div>
+
+      {/* Dashboard Filters & Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-xl">
+        <div className="bg-surface-light p-lg rounded-xl border border-outline-variant/30 shadow-sm flex items-center gap-md">
+          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+            <Library className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-label-sm text-on-surface-variant uppercase tracking-wider">
+              Total Template
+            </p>
+            <p className="font-headline-md text-on-surface">24</p>
+          </div>
+        </div>
+        <div className="bg-surface-light p-lg rounded-xl border border-outline-variant/30 shadow-sm flex items-center gap-md">
+          <div className="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center text-success">
+            <BadgeCheck className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-label-sm text-on-surface-variant uppercase tracking-wider">
+              Aktif
+            </p>
+            <p className="font-headline-md text-on-surface">18</p>
+          </div>
+        </div>
+        <div className="bg-surface-light p-lg rounded-xl border border-outline-variant/30 shadow-sm flex items-center gap-md">
+          <div className="w-12 h-12 bg-warning/10 rounded-full flex items-center justify-center text-warning">
+            <FileEdit className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-label-sm text-on-surface-variant uppercase tracking-wider">
+              Draft
+            </p>
+            <p className="font-headline-md text-on-surface">6</p>
+          </div>
+        </div>
+        <div className="bg-surface-light p-lg rounded-xl border border-outline-variant/30 shadow-sm flex items-center gap-md">
+          <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center text-secondary">
+            <Grid2X2 className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-label-sm text-on-surface-variant uppercase tracking-wider">
+              Kategori
+            </p>
+            <p className="font-headline-md text-on-surface">5</p>
+          </div>
+        </div>
       </div>
 
       {/* Status Messages */}
       {uploadStatus === "success" && (
-        <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg animate-in fade-in duration-300">
-          <Check className="w-5 h-5 text-green-600" />
-          <span className="text-green-700 dark:text-green-400">
+        <div className="flex items-center gap-3 p-4 bg-success/10 border border-success/20 rounded-lg animate-in fade-in duration-300">
+          <Check className="w-5 h-5 text-success" />
+          <span className="text-success font-medium">
             Template berhasil diperbarui!
           </span>
         </div>
       )}
 
       {uploadStatus === "error" && (
-        <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg animate-in fade-in duration-300">
-          <AlertCircle className="w-5 h-5 text-red-600" />
-          <span className="text-red-700 dark:text-red-400">
+        <div className="flex items-center gap-3 p-4 bg-danger/10 border border-danger/20 rounded-lg animate-in fade-in duration-300">
+          <AlertCircle className="w-5 h-5 text-danger" />
+          <span className="text-danger font-medium">
             Format file tidak diizinkan. Harap upload file .docx
           </span>
         </div>
       )}
 
-      {/* Template Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Search and Filter Bar */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-md mb-lg">
+        <div className="flex flex-wrap items-center gap-sm">
+          <button className="px-md py-sm bg-primary/10 text-primary border border-primary/20 rounded-full text-label-sm font-semibold">
+            Semua
+          </button>
+          <button className="px-md py-sm bg-surface-light text-on-surface-variant border border-outline-variant/30 rounded-full text-label-sm font-semibold hover:bg-surface-container transition-colors">
+            Payroll
+          </button>
+          <button className="px-md py-sm bg-surface-light text-on-surface-variant border border-outline-variant/30 rounded-full text-label-sm font-semibold hover:bg-surface-container transition-colors">
+            Human Resources
+          </button>
+          <button className="px-md py-sm bg-surface-light text-on-surface-variant border border-outline-variant/30 rounded-full text-label-sm font-semibold hover:bg-surface-container transition-colors">
+            IT Audit
+          </button>
+          <button className="px-md py-sm bg-surface-light text-on-surface-variant border border-outline-variant/30 rounded-full text-label-sm font-semibold hover:bg-surface-container transition-colors">
+            Compliance
+          </button>
+        </div>
+        <div className="flex items-center gap-sm">
+          <span className="text-label-sm text-on-surface-variant">Urutkan:</span>
+          <select className="bg-surface-light border border-outline-variant/30 rounded-lg text-label-sm focus:ring-primary focus:border-primary">
+            <option>Terbaru</option>
+            <option>Nama (A-Z)</option>
+            <option>Status</option>
+          </select>
+          <div className="flex items-center bg-surface-container border border-outline-variant/30 rounded-lg p-1">
+            <button className="p-1 text-primary bg-surface-light rounded shadow-sm">
+              <LayoutGrid className="w-5 h-5" />
+            </button>
+            <button className="p-1 text-on-surface-variant hover:text-primary transition-colors">
+              <List className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Templates Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
         {templateCategories.map((template) => (
           <div
             key={template.key}
-            className="card card-hover overflow-hidden group"
+            className="card-hover bg-surface-light rounded-xl overflow-hidden border border-outline-variant/30 shadow-sm group"
           >
             {/* Header */}
-            <div className="h-2 bg-gradient-to-r from-primary-brand to-primary-brand-dark" />
+            <div className="h-2 w-full bg-gradient-to-r from-primary to-secondary-container" />
 
-            <div className="p-6">
+            <div className="p-lg">
               {/* Icon & Title */}
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-[#eef2ff] dark:bg-primary-brand/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-6 h-6 text-primary-brand dark:text-[#a5b4fc]" />
+              <div className="flex justify-between items-start mb-md">
+                <div className="p-sm bg-primary/10 rounded-lg text-primary">
+                  <FileText className="w-6 h-6" />
                 </div>
-                <div>
-                  <h3 className="card-title font-bold mb-1">{template.nama}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Template untuk dokumen kredit
-                  </p>
-                </div>
+                <span className="px-3 py-1 bg-success/10 text-success text-[10px] font-bold uppercase rounded-full border border-success/20 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
+                  Aktif
+                </span>
               </div>
+
+              <h4 className="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors">
+                {template.nama}
+              </h4>
+              <p className="text-label-sm text-on-surface-variant mb-lg">
+                Template untuk dokumen kredit
+              </p>
 
               {/* File Info */}
-              <div className="bg-gray-50 dark:bg-[#323249] rounded-lg p-4 mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    File saat ini:
+              <div className="flex flex-col py-md border-y border-outline-variant/20 mb-lg gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-on-surface-variant">File saat ini:</span>
+                  <span className="text-sm font-mono text-on-surface font-semibold flex items-center gap-1">
+                    <FileText className="w-4 h-4 text-primary" /> {template.filename}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary-brand dark:text-[#a5b4fc]" />
-                  <span className="text-sm font-mono text-gray-700 dark:text-gray-300">
-                    {template.filename}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-on-surface-variant">Terakhir diupdate:</span>
+                  <span className="text-sm font-bold text-on-surface">
+                    {formatDate(template.updatedAt)}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mt-2">
-                  Terakhir diupdate: {formatDate(template.updatedAt)}
-                </p>
               </div>
 
-              {/* Upload Button */}
-              <label className="block">
-                <input
-                  type="file"
-                  accept=".docx"
-                  className="hidden"
-                  onChange={(e) => handleFileUpload(e, template.key)}
-                />
-                <div
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-sm">
+                <button className="flex items-center justify-center gap-xs border border-outline-variant/30 text-on-surface-variant px-md py-sm rounded-lg text-label-sm font-semibold hover:bg-surface-container transition-colors">
+                  <Eye className="w-[18px] h-[18px]" />
+                  Preview
+                </button>
+                <label
                   className={`
-                    flex items-center justify-center gap-2 px-4 py-3
-                    border-2 border-dashed rounded-lg cursor-pointer
-                    transition-all duration-200
+                    cursor-pointer flex items-center justify-center gap-xs px-md py-sm rounded-lg text-label-sm font-semibold transition-colors
                     ${
-                      selectedCategory === template.key &&
-                      uploadStatus === "success"
-                        ? "border-green-500 bg-green-50 dark:bg-green-900/20"
-                        : "border-gray-300 dark:border-[#444564] hover:border-primary-brand hover:bg-[#eef2ff] dark:hover:bg-primary-brand/10"
+                      selectedCategory === template.key && uploadStatus === "success"
+                        ? "bg-success/10 text-success"
+                        : "bg-primary/10 text-primary hover:bg-primary/20"
                     }
                   `}
                 >
-                  {selectedCategory === template.key &&
-                  uploadStatus === "success" ? (
+                  <input
+                    type="file"
+                    accept=".docx"
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e, template.key)}
+                  />
+                  {selectedCategory === template.key && uploadStatus === "success" ? (
                     <>
-                      <Check className="w-5 h-5 text-green-600" />
-                      <span className="text-green-600 font-medium">
-                        Berhasil!
-                      </span>
+                      <Check className="w-[18px] h-[18px]" />
+                      Berhasil!
                     </>
                   ) : (
                     <>
-                      <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                      <span className="text-gray-600 dark:text-gray-400">
-                        Upload Template Baru
-                      </span>
+                      <Upload className="w-[18px] h-[18px]" />
+                      Upload Baru
                     </>
                   )}
-                </div>
-              </label>
+                </label>
+              </div>
             </div>
           </div>
         ))}
+
+        {/* Create New Placeholder */}
+        <button className="flex flex-col items-center justify-center gap-md bg-surface-container-low border-2 border-dashed border-outline-variant/50 rounded-xl p-lg group hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 min-h-[300px]">
+          <div className="w-16 h-16 bg-surface-light rounded-full shadow-md flex items-center justify-center text-primary/50 group-hover:text-primary group-hover:scale-110 transition-transform">
+            <Plus className="w-10 h-10" />
+          </div>
+          <div className="text-center">
+            <p className="font-title-sm text-on-surface">Buat Template Baru</p>
+            <p className="text-label-sm text-on-surface-variant">
+              Gunakan framework custom anda sendiri
+            </p>
+          </div>
+        </button>
       </div>
 
       {/* Info Card */}
-      <div className="card p-6 bg-[#fff3e0] dark:bg-secondary-brand/10 border-[#0f172a]/30">
+      <div className="bg-warning/10 border border-warning/20 p-6 rounded-xl mt-6">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 bg-secondary-brand/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <AlertCircle className="w-5 h-5 text-secondary-brand" />
+          <div className="w-10 h-10 bg-warning/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <AlertCircle className="w-5 h-5 text-warning" />
           </div>
           <div>
-            <h4 className="font-semibold text-secondary-brand mb-1">
+            <h4 className="font-semibold text-warning mb-1">
               Format Template
             </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-warning/80">
               Template Word menggunakan sintaks Jinja2, contoh:{" "}
               {"{{ nama_pemohon }}"}, {"{{ usulan_plafon_kredit }}"}. Jangan
               mengubah nama variabel di dalam .docx kecuali Anda juga

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye, Loader2, AlertCircle } from "lucide-react";
+import { Search, Plus, Download, Edit, Trash2, RefreshCw, Eye, Loader2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { useClient } from "@/hooks/use-client";
 import { useDebounce } from "@/hooks/use-debounce";
 
@@ -16,28 +16,28 @@ const kategoriLabels: Record<string, string> = {
 };
 
 const jenisBadgeColors: Record<string, string> = {
-    BARU: "badge-primary",
-    TOP_UP: "badge-warning",
-    TOP_UP_SISA_GAJI: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300",
-    TAKEOVER: "badge-danger",
-    FLEKSI_AKTIF: "badge-success",
-    baru: "badge-primary",
-    top_up: "badge-warning",
-    top_up_sisa_gaji: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300",
-    takeover: "badge-danger",
-    fleksi_type_c: "badge-success",
-    PENSIUNAN_JANDA_BARU: "badge-primary",
-    PENSIUNAN_JANDA_TOP_UP: "badge-warning",
-    PENSIUNAN_JANDA_TAKEOVER: "badge-danger",
-    pensiunan_janda_baru: "badge-primary",
-    pensiunan_janda_top_up: "badge-warning",
-    pensiunan_janda_takeover: "badge-danger",
-    PENSIUNAN_DUDA_BARU: "badge-primary",
-    PENSIUNAN_DUDA_TOP_UP: "badge-warning",
-    PENSIUNAN_DUDA_TAKEOVER: "badge-danger",
-    pensiunan_duda_baru: "badge-primary",
-    pensiunan_duda_top_up: "badge-warning",
-    pensiunan_duda_takeover: "badge-danger",
+    BARU: "bg-[var(--primary)]/10 text-[var(--primary)]",
+    TOP_UP: "bg-[var(--warning)]/10 text-[var(--warning)]",
+    TOP_UP_SISA_GAJI: "bg-[var(--outline-variant)]/20 text-[var(--on-surface-variant)]",
+    TAKEOVER: "bg-[var(--danger)]/10 text-[var(--danger)]",
+    FLEKSI_AKTIF: "bg-[var(--success)]/10 text-[var(--success)]",
+    baru: "bg-[var(--primary)]/10 text-[var(--primary)]",
+    top_up: "bg-[var(--warning)]/10 text-[var(--warning)]",
+    top_up_sisa_gaji: "bg-[var(--outline-variant)]/20 text-[var(--on-surface-variant)]",
+    takeover: "bg-[var(--danger)]/10 text-[var(--danger)]",
+    fleksi_type_c: "bg-[var(--success)]/10 text-[var(--success)]",
+    PENSIUNAN_JANDA_BARU: "bg-[var(--primary)]/10 text-[var(--primary)]",
+    PENSIUNAN_JANDA_TOP_UP: "bg-[var(--warning)]/10 text-[var(--warning)]",
+    PENSIUNAN_JANDA_TAKEOVER: "bg-[var(--danger)]/10 text-[var(--danger)]",
+    pensiunan_janda_baru: "bg-[var(--primary)]/10 text-[var(--primary)]",
+    pensiunan_janda_top_up: "bg-[var(--warning)]/10 text-[var(--warning)]",
+    pensiunan_janda_takeover: "bg-[var(--danger)]/10 text-[var(--danger)]",
+    PENSIUNAN_DUDA_BARU: "bg-[var(--primary)]/10 text-[var(--primary)]",
+    PENSIUNAN_DUDA_TOP_UP: "bg-[var(--warning)]/10 text-[var(--warning)]",
+    PENSIUNAN_DUDA_TAKEOVER: "bg-[var(--danger)]/10 text-[var(--danger)]",
+    pensiunan_duda_baru: "bg-[var(--primary)]/10 text-[var(--primary)]",
+    pensiunan_duda_top_up: "bg-[var(--warning)]/10 text-[var(--warning)]",
+    pensiunan_duda_takeover: "bg-[var(--danger)]/10 text-[var(--danger)]",
 };
 
 const jenisLabels: Record<string, string> = {
@@ -133,13 +133,44 @@ export default function ClientHistoryPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="card">
-                {/* Top Section */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border-b border-gray-200 dark:border-[#444564]">
-                    <h2 className="text-xl font-bold text-brand dark:text-[#a5b4fc]">
+            <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h2 className="font-heading text-headline-lg text-[var(--on-surface)]">
                         Riwayat Input Client
                     </h2>
+                    <p className="text-body-lg text-[var(--on-surface-variant)] mt-1">
+                        Track and manage assessment results across your entire organization.
+                    </p>
                 </div>
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div className="md:col-span-1 bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] p-6 rounded-xl shadow-sm border border-[var(--outline-variant)]/10 relative overflow-hidden group">
+                    <div className="relative z-10">
+                        <p className="text-sm font-medium text-[var(--on-surface-variant)] uppercase tracking-wider mb-2">Processed</p>
+                        <h3 className="text-display-lg font-bold text-[var(--primary)]">1,284</h3>
+                    </div>
+                </div>
+                <div className="md:col-span-1 bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] p-6 rounded-xl shadow-sm border border-[var(--outline-variant)]/10 relative overflow-hidden group">
+                    <div className="relative z-10">
+                        <p className="text-sm font-medium text-[var(--on-surface-variant)] uppercase tracking-wider mb-2">Pending Approval</p>
+                        <h3 className="text-display-lg font-bold text-[var(--warning)]">42</h3>
+                    </div>
+                </div>
+                <div className="md:col-span-2 bg-[var(--primary-container)] p-6 rounded-xl shadow-lg relative overflow-hidden group">
+                    <div className="relative z-10 flex h-full items-center">
+                        <div className="flex-1">
+                            <p className="text-sm font-medium text-[var(--on-primary-container)] uppercase tracking-wider mb-2">Avg. Assessment Score</p>
+                            <h3 className="text-display-lg font-bold text-[var(--on-primary)]">88.4<span className="text-xl ml-1">%</span></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] rounded-xl shadow-sm border border-[var(--outline-variant)]/20 relative overflow-hidden">
+                {/* Gradient Top Line */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--primary-container)] to-[var(--secondary-container)] z-10" />
 
                 {/* Error Alert */}
                 {error && (
@@ -158,22 +189,22 @@ export default function ClientHistoryPage() {
                 )}
 
                 {/* Filter Section */}
-                <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+                <div className="p-6 border-b border-[var(--outline-variant)]/20">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
                         {/* Search Input */}
                         <div className="lg:col-span-2 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--outline)]" />
                             <input
                                 type="text"
                                 placeholder="Cari Nama / NIK..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && loadData()}
-                                className="w-full pl-10 pr-4 py-2.5 
-                  bg-white dark:bg-[#323249] 
-                  border border-gray-200 dark:border-[#444564]
-                  rounded-lg text-sm
-                  focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                                className="w-full pl-12 pr-4 py-2.5 
+                  bg-[var(--surface-container-low)] dark:bg-[var(--surface-dark)] 
+                  border border-[var(--outline-variant)]
+                  rounded-xl text-sm
+                  focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)]
                   transition-all duration-200"
                             />
                         </div>
@@ -183,10 +214,10 @@ export default function ClientHistoryPage() {
                             value={kategoriFilter}
                             onChange={(e) => setKategoriFilter(e.target.value)}
                             className="w-full px-4 py-2.5 
-                bg-white dark:bg-[#323249] 
-                border border-gray-200 dark:border-[#444564]
+                bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] 
+                border border-[var(--outline-variant)]
                 rounded-lg text-sm
-                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)]
                 transition-all duration-200"
                         >
                             <option value="">-- Semua Kategori --</option>
@@ -200,10 +231,10 @@ export default function ClientHistoryPage() {
                             value={jenisFilter}
                             onChange={(e) => setJenisFilter(e.target.value)}
                             className="w-full px-4 py-2.5 
-                bg-white dark:bg-[#323249] 
-                border border-gray-200 dark:border-[#444564]
+                bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] 
+                border border-[var(--outline-variant)]
                 rounded-lg text-sm
-                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)]
                 transition-all duration-200"
                         >
                             <option value="">-- Semua Jenis --</option>
@@ -226,10 +257,10 @@ export default function ClientHistoryPage() {
                             value={segmenFilter}
                             onChange={(e) => setSegmenFilter(e.target.value)}
                             className="w-full px-4 py-2.5 
-                bg-white dark:bg-[#323249] 
-                border border-gray-200 dark:border-[#444564]
+                bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] 
+                border border-[var(--outline-variant)]
                 rounded-lg text-sm
-                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)]
                 transition-all duration-200"
                         >
                             <option value="">-- Semua Segmen --</option>
@@ -245,10 +276,10 @@ export default function ClientHistoryPage() {
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="w-full px-4 py-2.5 
-                bg-white dark:bg-[#323249] 
-                border border-gray-200 dark:border-[#444564]
+                bg-[var(--surface-light)] dark:bg-[var(--surface-dark)] 
+                border border-[var(--outline-variant)]
                 rounded-lg text-sm
-                focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+                focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)]
                 transition-all duration-200"
                         >
                             <option value="">-- Semua Status --</option>
@@ -261,9 +292,9 @@ export default function ClientHistoryPage() {
                             <Link
                                 href="/"
                                 className="inline-flex items-center justify-center gap-2 px-6 py-2.5
-                  bg-brand hover:bg-brand-dark !text-white hover:!text-white
-                  rounded-lg font-medium text-sm
-                  transition-all duration-200 shadow-sm hover:shadow-md"
+                  bg-[var(--primary)] hover:bg-[var(--primary-container)] text-[var(--on-primary)]
+                  rounded-xl font-semibold text-sm
+                  transition-all duration-200 shadow-sm"
                             >
                                 <Plus className="w-4 h-4" />
                                 Input Baru
@@ -273,11 +304,11 @@ export default function ClientHistoryPage() {
                                 <button
                                     onClick={resetFilters}
                                     className="px-4 py-2.5 
-                    border border-gray-200 dark:border-[#444564]
-                    bg-white dark:bg-[#323249]
-                    rounded-lg text-gray-600 dark:text-gray-400
-                    hover:bg-gray-50 dark:hover:bg-[#444564]
-                    transition-all duration-200"
+                    border border-[var(--outline-variant)]
+                    bg-transparent
+                    rounded-xl text-[var(--on-surface-variant)]
+                    hover:bg-[var(--surface-container-low)]
+                    transition-all duration-200 font-medium"
                                     title="Reset Filters"
                                 >
                                     <RefreshCw className="w-4 h-4 mr-2 inline" />
@@ -287,23 +318,21 @@ export default function ClientHistoryPage() {
                         </div>
                     </div>
                 </div>
-            </div>
 
             {/* Table */}
-            <div className="card overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b-2 border-gray-200 dark:border-[#444564]">
-                                <th className="table-header px-4 py-3 text-left">Tanggal</th>
-                                <th className="table-header px-4 py-3 text-left">Nama Pemohon</th>
-                                <th className="table-header px-4 py-3 text-left">Pekerjaan</th>
-                                <th className="table-header px-4 py-3 text-left">Segmentasi</th>
-                                <th className="table-header px-4 py-3 text-left">Jenis Pengajuan</th>
-                                <th className="table-header px-4 py-3 text-left">NIK</th>
-                                <th className="table-header px-4 py-3 text-left">Produk</th>
-                                <th className="table-header px-4 py-3 text-left">Status</th>
-                                <th className="table-header px-4 py-3 text-center">Aksi</th>
+                            <tr className="bg-[var(--surface-container-low)]/50">
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Tanggal</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Nama Pemohon</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Pekerjaan</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Segmentasi</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Jenis Pengajuan</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">NIK</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Produk</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20">Status</th>
+                                <th className="px-6 py-4 text-label-caps text-[var(--on-surface-variant)] border-b border-[var(--outline-variant)]/20 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -320,58 +349,76 @@ export default function ClientHistoryPage() {
                                 debiturList.map((item) => (
                                     <tr
                                         key={item.id}
-                                        className="border-b border-gray-100 dark:border-[#444564] hover:bg-gray-50 dark:hover:bg-[#323249] transition-colors"
+                                        className="hover:bg-[var(--surface-container-low)]/30 transition-colors group border-b border-[var(--outline-variant)]/10"
                                     >
-                                        <td className="px-4 py-3 text-sm">{formatDate(item.createdAt)}</td>
-                                        <td className="px-4 py-3">
-                                            <div className="font-medium text-slate-900">{item.applicantName}</div>
+                                        <td className="px-6 py-4 text-sm font-medium text-[var(--on-surface-variant)]">{formatDate(item.createdAt)}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-[var(--secondary-container)]/20 text-[var(--secondary)] flex items-center justify-center font-bold">
+                                                    {item.applicantName ? item.applicantName.substring(0, 2).toUpperCase() : 'NA'}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-[var(--on-surface)]">{item.applicantName}</p>
+                                                    <p className="text-xs text-[var(--on-surface-variant)]">ID: {item.idNumber.substring(0, 8)}***</p>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                        <td className="px-6 py-4">
+                                            <span className="text-sm font-medium text-[var(--on-surface-variant)]">
                                                 {item.pekerjaan || "-"}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3">
+                                        <td className="px-6 py-4">
                                             <span
-                                                className={`badge ${String(item.segmentasi).toUpperCase() === "ASABRI"
-                                                    ? "badge-success"
-                                                    : "badge-info"
+                                                className={`px-3 py-1 text-[11px] font-bold uppercase rounded-full ${String(item.segmentasi).toUpperCase() === "ASABRI"
+                                                    ? "bg-[var(--success)]/10 text-[var(--success)]"
+                                                    : "bg-[var(--info)]/10 text-[var(--info)]"
                                                     }`}
                                             >
                                                 {String(item.segmentasi).toUpperCase()}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <span className={`badge ${jenisBadgeColors[item.jenisPengajuan] || "badge-primary"}`}>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-3 py-1 text-[11px] font-bold uppercase rounded-full ${jenisBadgeColors[item.jenisPengajuan] || "bg-[var(--primary)]/10 text-[var(--primary)]"}`}>
                                                 {jenisLabels[item.jenisPengajuan] || item.jenisPengajuan}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-400">
+                                        <td className="px-6 py-4 text-sm font-mono text-[var(--on-surface-variant)]">
                                             {item.idNumber}
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                        <td className="px-6 py-4">
+                                            <span className="text-sm font-medium text-[var(--on-surface-variant)]">
                                                 {kategoriLabels[item.kategori] || item.kategori}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <span className={`badge ${
+                                        <td className="px-6 py-4">
+                                            <span className={`px-3 py-1 text-[11px] font-bold uppercase rounded-full inline-flex items-center gap-1.5 ${
                                                 item.status === 'DRAFT'
-                                                    ? 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-850'
-                                                    : 'badge-success'
+                                                    ? 'bg-[var(--warning)]/10 text-[var(--warning)]'
+                                                    : 'bg-[var(--success)]/10 text-[var(--success)]'
                                             }`}>
-                                                {item.status === 'DRAFT' ? 'Draft' : 'Submitted'}
+                                                {item.status === 'DRAFT' ? (
+                                                    <>
+                                                        <span className="w-1.5 h-1.5 bg-[var(--warning)] rounded-full"></span>
+                                                        Draft
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span className="w-1.5 h-1.5 bg-[var(--success)] rounded-full animate-pulse"></span>
+                                                        Submitted
+                                                    </>
+                                                )}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3">
+                                        <td className="px-6 py-4">
                                             <div className="flex items-center justify-center gap-2">
                                                 {/* Download */}
                                                 <button
                                                     onClick={() => handleDownload(item.id, item.applicantName)}
-                                                    className="p-2 rounded-lg
-                            border border-green-500 text-green-500
-                            hover:bg-green-500 hover:text-white
-                            transition-all duration-200"
+                                                    className="p-2 rounded-xl
+                                                        border border-[var(--outline-variant)] text-[var(--on-surface-variant)]
+                                                        hover:bg-[var(--success)]/10 hover:text-[var(--success)] hover:border-[var(--success)]/50
+                                                        transition-all duration-200"
                                                     title="Download Docx"
                                                 >
                                                     <Download className="w-4 h-4" />
@@ -379,10 +426,10 @@ export default function ClientHistoryPage() {
                                                 {/* Detail */}
                                                 <Link
                                                     href={`/clients/${item.id}`}
-                                                    className="p-2 rounded-lg
-                            border border-blue-500 text-blue-500
-                            hover:bg-blue-500 hover:text-white
-                            transition-all duration-200"
+                                                    className="p-2 rounded-xl
+                                                        border border-[var(--outline-variant)] text-[var(--on-surface-variant)]
+                                                        hover:bg-[var(--info)]/10 hover:text-[var(--info)] hover:border-[var(--info)]/50
+                                                        transition-all duration-200"
                                                     title="Lihat Detail"
                                                 >
                                                     <Eye className="w-4 h-4" />
@@ -390,10 +437,10 @@ export default function ClientHistoryPage() {
                                                 {/* Edit */}
                                                 <Link
                                                     href={`/clients/${item.id}/edit`}
-                                                    className="p-2 rounded-lg
-                            border border-amber-500 text-amber-500
-                            hover:bg-amber-500 hover:text-white
-                            transition-all duration-200"
+                                                    className="p-2 rounded-xl
+                                                        border border-[var(--outline-variant)] text-[var(--on-surface-variant)]
+                                                        hover:bg-[var(--warning)]/10 hover:text-[var(--warning)] hover:border-[var(--warning)]/50
+                                                        transition-all duration-200"
                                                     title="Edit"
                                                 >
                                                     <Edit className="w-4 h-4" />
@@ -403,14 +450,14 @@ export default function ClientHistoryPage() {
                                                     <div className="flex items-center gap-1">
                                                         <button
                                                             onClick={() => handleDelete(item.id)}
-                                                            className="p-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-200"
+                                                            className="p-2 rounded-xl bg-[var(--danger)] text-white shadow-sm hover:shadow-md transition-all duration-200"
                                                             title="Konfirmasi Hapus"
                                                         >
                                                             ✓
                                                         </button>
                                                         <button
                                                             onClick={() => setDeleteConfirm(null)}
-                                                            className="p-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 transition-all duration-200"
+                                                            className="p-2 rounded-xl bg-[var(--outline)] text-white shadow-sm hover:shadow-md transition-all duration-200"
                                                             title="Batal"
                                                         >
                                                             ×
@@ -419,10 +466,10 @@ export default function ClientHistoryPage() {
                                                 ) : (
                                                     <button
                                                         onClick={() => setDeleteConfirm(item.id)}
-                                                        className="p-2 rounded-lg
-                              border border-red-500 text-red-500
-                              hover:bg-red-500 hover:text-white
-                              transition-all duration-200"
+                                                        className="p-2 rounded-xl
+                                                            border border-[var(--outline-variant)] text-[var(--on-surface-variant)]
+                                                            hover:bg-[var(--danger)]/10 hover:text-[var(--danger)] hover:border-[var(--danger)]/50
+                                                            transition-all duration-200"
                                                         title="Hapus"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -436,7 +483,7 @@ export default function ClientHistoryPage() {
                                 <tr>
                                     <td
                                         colSpan={9}
-                                        className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
+                                        className="px-6 py-8 text-center text-[var(--on-surface-variant)]"
                                     >
                                         Belum ada data ditemukan.
                                     </td>
@@ -448,29 +495,33 @@ export default function ClientHistoryPage() {
 
                 {/* Pagination */}
                 {debiturList.length > 0 && (
-                    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-[#444564]">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Menampilkan {debiturList.length} dari {pagination.total} data
+                    <div className="p-6 bg-[var(--surface-bright)] flex flex-col md:flex-row gap-6 items-center justify-between border-t border-[var(--outline-variant)]/20">
+                        <p className="text-sm text-[var(--on-surface-variant)] font-medium">
+                            Menampilkan <span className="text-[var(--on-surface)] font-bold">{debiturList.length}</span> dari {pagination.total} data
                         </p>
                         <div className="flex items-center gap-2">
                             <button
                                 disabled={pagination.page <= 1}
                                 onClick={() => loadData(pagination.page - 1)}
-                                className={`px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
-                  text-sm ${pagination.page <= 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
+                                className={`w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--outline-variant)] 
+                  ${pagination.page <= 1 ? 'text-[var(--outline)] opacity-50 cursor-not-allowed' : 'text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-low)] transition-colors'}`}
                             >
-                                ← Prev
+                                <ChevronLeft className="w-5 h-5" />
                             </button>
-                            <span className="px-3 py-1 text-sm text-gray-600 dark:text-gray-400">
-                                Page {pagination.page} of {pagination.totalPages || 1}
+                            <span className="w-10 h-10 flex items-center justify-center rounded-lg bg-[var(--primary)] text-[var(--on-primary)] font-bold shadow-md">
+                                {pagination.page}
+                            </span>
+                            <span className="px-2 text-[var(--outline-variant)]">of</span>
+                            <span className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--outline-variant)] text-[var(--on-surface-variant)] font-medium">
+                                {pagination.totalPages || 1}
                             </span>
                             <button
                                 disabled={pagination.page >= pagination.totalPages}
                                 onClick={() => loadData(pagination.page + 1)}
-                                className={`px-3 py-1 rounded border border-gray-200 dark:border-[#444564] 
-                  text-sm ${pagination.page >= pagination.totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
+                                className={`w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--outline-variant)] 
+                  ${pagination.page >= pagination.totalPages ? 'text-[var(--outline)] opacity-50 cursor-not-allowed' : 'text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-low)] transition-colors'}`}
                             >
-                                Next →
+                                <ChevronRight className="w-5 h-5" />
                             </button>
                         </div>
                     </div>

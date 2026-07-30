@@ -61,19 +61,19 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
     // Removed local formatCurrencyDisplay, using utils
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-c">
+        <div className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8" data-tab-content="tab-c">
             <form className="space-y-8">
                 {/* Section: Data Gaji */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <Banknote className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <Banknote className="w-6 h-6 text-primary" />
                         Data Gaji/Penghasilan (3 Bulan Terakhir)
                     </h3>
 
                     <div className="mb-6">
                         <label
                             htmlFor="nama_bank_pembayaran"
-                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                         >
                             Sumber Pembayaran Gaji/Penghasilan
                         </label>
@@ -86,14 +86,14 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                             onChange={(e) => updateField("nama_bank_pembayaran", e.target.value)}
                             onKeyDown={handleTabToPrev}
                             placeholder="e.g. Institusi A, Institusi B"
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                         />
                     </div>
 
                     <div className="mb-6">
                         <label
                             htmlFor="payroll_no_rek"
-                            className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                            className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                         >
                             No. Rekening Payroll
                         </label>
@@ -104,7 +104,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                             value={formData.payroll_no_rek || ""}
                             onChange={(e) => updateField("payroll_no_rek", e.target.value)}
                             placeholder="e.g. 01502060066122"
-                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light font-mono"
                         />
                     </div>
 
@@ -114,7 +114,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                             <div className="flex flex-col gap-2">
                                 <label
                                     htmlFor="gaji_bulan_1_jumlah"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant"
                                 >
                                     Gaji Bulan 1
                                 </label>
@@ -123,7 +123,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                     value={formData.gaji_bulan_1_nama || ""}
                                     onChange={(e) => updateField("gaji_bulan_1_nama", e.target.value)}
                                     placeholder="Nama Bulan"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-surface-light mb-1"
                                 />
                                 <div className="flex gap-2 items-center">
                                     <div className="relative flex-1">
@@ -137,7 +137,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             value={formatNumberForDisplay(formData.gaji_bulan_1_jumlah)}
                                             onChange={(e) => handleCurrencyChange("gaji_bulan_1_jumlah", e.target.value)}
                                             placeholder="0"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right"
                                         />
                                     </div>
                                     <div className="flex items-center h-full pt-1">
@@ -145,7 +145,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             type="checkbox"
                                             checked={formData.gaji_bulan_1_checked !== false}
                                             onChange={(e) => updateField("gaji_bulan_1_checked", e.target.checked)}
-                                            className="w-5 h-5 text-primary-brand border-gray-300 rounded focus:ring-primary-brand"
+                                            className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary-brand"
                                             title="Hitung dalam RPC"
                                         />
                                     </div>
@@ -158,7 +158,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                             <div className="flex flex-col gap-2">
                                 <label
                                     htmlFor="gaji_bulan_2_jumlah"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant"
                                 >
                                     Gaji Bulan 2
                                 </label>
@@ -167,7 +167,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                     value={formData.gaji_bulan_2_nama || ""}
                                     onChange={(e) => updateField("gaji_bulan_2_nama", e.target.value)}
                                     placeholder="Nama Bulan"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-surface-light mb-1"
                                 />
                                 <div className="flex gap-2 items-center">
                                     <div className="relative flex-1">
@@ -181,7 +181,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             value={formatNumberForDisplay(formData.gaji_bulan_2_jumlah)}
                                             onChange={(e) => handleCurrencyChange("gaji_bulan_2_jumlah", e.target.value)}
                                             placeholder="0"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right"
                                         />
                                     </div>
                                     <div className="flex items-center h-full pt-1">
@@ -189,7 +189,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             type="checkbox"
                                             checked={formData.gaji_bulan_2_checked !== false}
                                             onChange={(e) => updateField("gaji_bulan_2_checked", e.target.checked)}
-                                            className="w-5 h-5 text-primary-brand border-gray-300 rounded focus:ring-primary-brand"
+                                            className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary-brand"
                                             title="Hitung dalam RPC"
                                         />
                                     </div>
@@ -202,7 +202,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                             <div className="flex flex-col gap-2">
                                 <label
                                     htmlFor="gaji_bulan_3_jumlah"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant"
                                 >
                                     Gaji Bulan 3
                                 </label>
@@ -211,7 +211,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                     value={formData.gaji_bulan_3_nama || ""}
                                     onChange={(e) => updateField("gaji_bulan_3_nama", e.target.value)}
                                     placeholder="Nama Bulan"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-surface-light mb-1"
                                 />
                                 <div className="flex gap-2 items-center">
                                     <div className="relative flex-1">
@@ -225,7 +225,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             value={formatNumberForDisplay(formData.gaji_bulan_3_jumlah)}
                                             onChange={(e) => handleCurrencyChange("gaji_bulan_3_jumlah", e.target.value)}
                                             placeholder="0"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right"
                                         />
                                     </div>
                                     <div className="flex items-center h-full pt-1">
@@ -233,7 +233,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             type="checkbox"
                                             checked={formData.gaji_bulan_3_checked !== false}
                                             onChange={(e) => updateField("gaji_bulan_3_checked", e.target.checked)}
-                                            className="w-5 h-5 text-primary-brand border-gray-300 rounded focus:ring-primary-brand"
+                                            className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary-brand"
                                             title="Hitung dalam RPC"
                                         />
                                     </div>
@@ -246,8 +246,8 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                     {formData.ung_kategori_pegawai === "non_dosen" && (
                         <div className="mb-8 p-6 bg-[#f0f9f8] dark:bg-[#0f2322] border border-[#cdeae7] dark:border-opacity-20 rounded-xl space-y-4">
                             <div className="flex items-center gap-2 border-b border-[#cdeae7] dark:border-gray-700 pb-3">
-                                <Landmark className="w-5 h-5 text-primary-brand dark:text-[#a5b4fc]" />
-                                <h4 className="text-md font-bold text-primary-brand dark:text-[#a5b4fc]">
+                                <Landmark className="w-5 h-5 text-primary dark:text-[#a5b4fc]" />
+                                <h4 className="text-md font-bold text-primary dark:text-[#a5b4fc]">
                                     Widget Tunjangan/Remunerasi Khusus UNG (PNS Non-Dosen)
                                 </h4>
                             </div>
@@ -271,7 +271,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             value={formatNumberForDisplay(formData.ung_remunerasi_30_bulanan)}
                                             onChange={(e) => handleCurrencyChange("ung_remunerasi_30_bulanan", e.target.value)}
                                             placeholder="contoh: 912.000"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-white dark:bg-[#0f2322]/50 text-right font-bold text-primary-brand"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-white dark:bg-[#0f2322]/50 text-right font-bold text-primary"
                                         />
                                     </div>
                                 </div>
@@ -294,7 +294,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                             value={formatNumberForDisplay(formData.ung_remunerasi_70_semesteran)}
                                             onChange={(e) => handleCurrencyChange("ung_remunerasi_70_semesteran", e.target.value)}
                                             placeholder="contoh: 12.768.000"
-                                            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-white dark:bg-[#0f2322]/50 text-right font-bold text-primary-brand"
+                                            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-white dark:bg-[#0f2322]/50 text-right font-bold text-primary"
                                         />
                                     </div>
                                 </div>
@@ -311,7 +311,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                     </span>
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-lg font-black text-primary-brand dark:text-[#a5b4fc]">
+                                    <span className="text-lg font-black text-primary dark:text-[#a5b4fc]">
                                         Rp {
                                             formatNumberForDisplay(
                                                 String(
@@ -330,13 +330,13 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                     <div>
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="text-md font-semibold text-[#0c1d1b] dark:text-white flex items-center gap-2">
-                                <Plus className="w-5 h-5 text-primary-brand" />
+                                <Plus className="w-5 h-5 text-primary" />
                                 Penghasilan Tambahan (Opsional)
                             </h4>
                             <button
                                 type="button"
                                 onClick={addAdditionalIncome}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#e6f4f3] text-primary-brand rounded-lg text-sm font-medium hover:bg-[#d0ebe9] transition-colors"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#e6f4f3] text-primary rounded-lg text-sm font-medium hover:bg-[#d0ebe9] transition-colors"
                             >
                                 <Plus className="w-4 h-4" />
                                 Tambah Penghasilan
@@ -378,7 +378,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                     value={income.bulan_1_nama || ""}
                                                     onChange={(e) => updateAdditionalIncome(index, "bulan_1_nama", e.target.value)}
                                                     placeholder="Nama Bulan"
-                                                    className="block w-full rounded-md border-gray-200 text-xs py-1 px-2 bg-white dark:bg-[#0f2322]/50 focus:border-primary-brand focus:ring-primary-brand"
+                                                    className="block w-full rounded-md border-gray-200 text-xs py-1 px-2 bg-white dark:bg-[#0f2322]/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
                                                 />
                                             </div>
                                             <div className="flex gap-2 items-center">
@@ -388,7 +388,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                         type="text"
                                                         value={formatNumberForDisplay(income.bulan_1)}
                                                         onChange={(e) => updateAdditionalIncome(index, "bulan_1", e.target.value)}
-                                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 pl-9 pr-3 text-right bg-white dark:bg-[#0f2322]/50"
+                                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 pl-9 pr-3 text-right bg-white dark:bg-[#0f2322]/50"
                                                     />
                                                 </div>
                                                 <div className="flex items-center h-full">
@@ -396,7 +396,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                         type="checkbox"
                                                         checked={income.bulan_1_checked !== false}
                                                         onChange={(e) => updateAdditionalIncome(index, "bulan_1_checked", e.target.checked)}
-                                                        className="w-4 h-4 text-primary-brand border-gray-300 rounded focus:ring-primary-brand"
+                                                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary-brand"
                                                         title="Hitung dalam RPC"
                                                     />
                                                 </div>
@@ -412,7 +412,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                     value={income.bulan_2_nama || ""}
                                                     onChange={(e) => updateAdditionalIncome(index, "bulan_2_nama", e.target.value)}
                                                     placeholder="Nama Bulan"
-                                                    className="block w-full rounded-md border-gray-200 text-xs py-1 px-2 bg-white dark:bg-[#0f2322]/50 focus:border-primary-brand focus:ring-primary-brand"
+                                                    className="block w-full rounded-md border-gray-200 text-xs py-1 px-2 bg-white dark:bg-[#0f2322]/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
                                                 />
                                             </div>
                                             <div className="flex gap-2 items-center">
@@ -422,7 +422,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                         type="text"
                                                         value={formatNumberForDisplay(income.bulan_2)}
                                                         onChange={(e) => updateAdditionalIncome(index, "bulan_2", e.target.value)}
-                                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 pl-9 pr-3 text-right bg-white dark:bg-[#0f2322]/50"
+                                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 pl-9 pr-3 text-right bg-white dark:bg-[#0f2322]/50"
                                                     />
                                                 </div>
                                                 <div className="flex items-center h-full">
@@ -430,7 +430,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                         type="checkbox"
                                                         checked={income.bulan_2_checked !== false}
                                                         onChange={(e) => updateAdditionalIncome(index, "bulan_2_checked", e.target.checked)}
-                                                        className="w-4 h-4 text-primary-brand border-gray-300 rounded focus:ring-primary-brand"
+                                                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary-brand"
                                                         title="Hitung dalam RPC"
                                                     />
                                                 </div>
@@ -446,7 +446,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                     value={income.bulan_3_nama || ""}
                                                     onChange={(e) => updateAdditionalIncome(index, "bulan_3_nama", e.target.value)}
                                                     placeholder="Nama Bulan"
-                                                    className="block w-full rounded-md border-gray-200 text-xs py-1 px-2 bg-white dark:bg-[#0f2322]/50 focus:border-primary-brand focus:ring-primary-brand"
+                                                    className="block w-full rounded-md border-gray-200 text-xs py-1 px-2 bg-white dark:bg-[#0f2322]/50 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
                                                 />
                                             </div>
                                             <div className="flex gap-2 items-center">
@@ -456,7 +456,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                         type="text"
                                                         value={formatNumberForDisplay(income.bulan_3)}
                                                         onChange={(e) => updateAdditionalIncome(index, "bulan_3", e.target.value)}
-                                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 pl-9 pr-3 text-right bg-white dark:bg-[#0f2322]/50"
+                                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 pl-9 pr-3 text-right bg-white dark:bg-[#0f2322]/50"
                                                     />
                                                 </div>
                                                 <div className="flex items-center h-full">
@@ -464,7 +464,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                                         type="checkbox"
                                                         checked={income.bulan_3_checked !== false}
                                                         onChange={(e) => updateAdditionalIncome(index, "bulan_3_checked", e.target.checked)}
-                                                        className="w-4 h-4 text-primary-brand border-gray-300 rounded focus:ring-primary-brand"
+                                                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary-brand"
                                                         title="Hitung dalam RPC"
                                                     />
                                                 </div>
@@ -490,15 +490,15 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                 {/* Section: Estimasi Hak Pensiun - Hidden for Aktif */}
                 {kategori !== "type_c" && (
                     <div>
-                        <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                            <Landmark className="w-6 h-6 text-primary-brand" />
+                        <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <Landmark className="w-6 h-6 text-primary" />
                             Estimasi Hak Pensiun
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label
                                     htmlFor="estimasi_hak_pensiun"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Estimasi Hak Pensiun Bulanan
                                 </label>
@@ -513,7 +513,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                         value={formatNumberForDisplay(formData.estimasi_hak_pensiun)}
                                         onChange={(e) => handleCurrencyChange("estimasi_hak_pensiun", e.target.value)}
                                         placeholder="0"
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right font-bold"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right font-bold"
                                     />
                                 </div>
                                 <p className="mt-1 text-xs text-[#45a199]">
@@ -524,7 +524,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                             <div>
                                 <label
                                     htmlFor="estimasi_tht"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Estimasi Tunjangan Hari Tua (THT)
                                 </label>
@@ -540,7 +540,7 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
                                         onChange={(e) => handleCurrencyChange("estimasi_tht", e.target.value)}
                                         onKeyDown={handleTabToNext}
                                         placeholder="0"
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right font-bold"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right font-bold"
                                     />
                                 </div>
                             </div>
@@ -559,3 +559,5 @@ export default React.memo(function TabCPenghasilan({ kategori }: { kategori?: st
         </div>
     );
 });
+
+

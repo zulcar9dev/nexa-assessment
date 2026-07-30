@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clients History | Nexa Assessment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Verbatim -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#4d44e3",
+                    "primary": "#3525cd",
+                    "surface-container-high": "#e2e7ff",
+                    "secondary-container": "#57dffe",
+                    "outline-variant": "#c7c4d8",
+                    "on-background": "#131b2e",
+                    "inverse-on-surface": "#eef0ff",
+                    "inverse-surface": "#283044",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d2d9f4",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#e1e0ff",
+                    "surface-variant": "#dae2fd",
+                    "info": "#3b82f6",
+                    "surface-container": "#eaedff",
+                    "inverse-primary": "#c3c0ff",
+                    "on-secondary-container": "#006172",
+                    "outline": "#777587",
+                    "surface-container-lowest": "#ffffff",
+                    "warning": "#f59e0b",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "primary-fixed": "#e2dfff",
+                    "secondary": "#00687a",
+                    "on-surface": "#131b2e",
+                    "danger": "#ef4444",
+                    "tertiary-fixed-dim": "#c0c1ff",
+                    "surface-container-highest": "#dae2fd",
+                    "primary-container": "#4f46e5",
+                    "surface-container-low": "#f2f3ff",
+                    "on-primary-container": "#dad7ff",
+                    "tertiary": "#3130c0",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-tertiary-container": "#d9d8ff",
+                    "success": "#10b981",
+                    "on-tertiary-fixed-variant": "#2f2ebe",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "background": "#faf8ff",
+                    "surface-light": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "on-secondary-fixed": "#001f26",
+                    "surface": "#faf8ff",
+                    "on-surface-variant": "#464555",
+                    "on-primary-fixed": "#0f0069",
+                    "on-tertiary-fixed": "#07006c",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "canvas-dark": "#232333",
+                    "tertiary-container": "#4b4dd8",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#acedff",
+                    "canvas-light": "#f8fafc",
+                    "surface-dark": "#2b2c40"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "40px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "margin-mobile": "16px",
+                    "2xl": "48px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "gutter": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-base": ["Inter"],
+                    "title-lg": ["Plus Jakarta Sans"],
+                    "label-caps": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "title-sm": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                    "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #faf8ff;
+            color: #131b2e;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c7c4d8;
+            border-radius: 10px;
+        }
+        .assessment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #57dffe);
+            border-radius: 8px 8px 0 0;
+        }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.12);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Desktop) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-light border-r border-outline-variant/30 flex flex-col z-50 hidden md:flex">
+<div class="px-lg py-xl flex items-center gap-md">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<h1 class="font-title-sm text-title-sm font-bold text-primary">Nexa Enterprise</h1>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold">Innovation &amp; Trust</p>
+</div>
+</div>
+<nav class="flex-1 px-md space-y-base">
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-body-base text-body-base">Dashboard</span>
+</a>
+<a class="flex items-center gap-md bg-primary/10 text-primary border-l-4 border-primary px-lg py-md rounded-r-lg group" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-body-base text-body-base font-semibold">Assessments</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">leaderboard</span>
+<span class="font-body-base text-body-base">Analytics</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">group</span>
+<span class="font-body-base text-body-base">Team</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">settings</span>
+<span class="font-body-base text-body-base">Settings</span>
+</a>
+</nav>
+<div class="p-lg mt-auto border-t border-outline-variant/20">
+<button class="w-full bg-primary text-on-primary py-md px-lg rounded-xl font-semibold flex items-center justify-center gap-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+                New Assessment
+            </button>
+<div class="mt-xl space-y-sm">
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-sm text-sm hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-md text-danger px-lg py-sm text-sm hover:bg-error-container/30 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="sticky top-0 w-full z-40 bg-surface-light/90 backdrop-blur-md shadow-sm flex justify-between items-center px-lg py-md">
+<div class="flex items-center gap-md">
+<button class="md:hidden p-sm text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex items-center gap-xs">
+<span class="text-on-surface-variant font-medium">Clients</span>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+<span class="text-primary font-bold">History</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="hidden lg:flex items-center bg-surface-container-low px-md py-sm rounded-full w-80">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline" placeholder="Global search..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm text-on-surface-variant hover:bg-surface-container transition-colors rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full border-2 border-surface-light"></span>
+</button>
+<button class="p-sm text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-sm hidden sm:block"></div>
+<div class="flex items-center gap-md">
+<div class="text-right hidden sm:block">
+<p class="font-title-sm text-sm font-bold text-on-surface leading-none">Aria S. Manggala</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Administrator</p>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+<img class="w-full h-full rounded-full object-cover" data-alt="A professional headshot of a modern corporate administrator in a bright, clean studio setting. Soft lighting highlights their confident expression, reflecting the premium, high-end SaaS aesthetic of the Nexa platform. The background is a minimalist, slightly blurred office environment with cool indigo and neutral white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_AJWV0fV68glQtN_SLNouH2AgHZj-1-Sgo5fTqYnNBJunb_GvGPZrk-rSH-eblGk_po8oi0I7ewsKX3mMs9YtmKFRJ35uDsMMMmhVKhaQapF-EZHGbxQbHNcnlJ8Zn3RpWGdxT1xsVb79PyFxxb6P8VbcjhsU-8LU2NtlpPxYI4Gh2i7CHqvyhjSevhww5W3syeR-Z1BXxqmE7Sk-VvVIrNEvCG4RkEMd2oLq5RqpodZmphwFvIzj"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 p-lg md:p-xl max-w-[1440px] mx-auto w-full">
+<!-- Page Header Section -->
+<div class="mb-xl flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Clients History</h2>
+<p class="text-body-lg text-on-surface-variant mt-xs">Track and manage assessment results across your entire organization.</p>
+</div>
+<div class="flex gap-md">
+<button class="flex items-center gap-sm bg-surface-light border border-outline-variant px-lg py-md rounded-xl font-semibold text-on-surface hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="material-symbols-outlined">download</span>
+                        Export Report
+                    </button>
+</div>
+</div>
+<!-- Stats Overview (Asymmetric Layout) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg mb-xl">
+<div class="md:col-span-1 bg-surface-light p-lg rounded-xl shadow-sm border border-outline-variant/20 relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider mb-sm">Processed</p>
+<h3 class="text-display-lg font-display-lg text-primary">1,284</h3>
+<div class="mt-md flex items-center gap-xs text-success font-bold text-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>12% growth</span>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-9xl text-primary/5 group-hover:scale-110 transition-transform duration-500">done_all</span>
+</div>
+<div class="md:col-span-1 bg-surface-light p-lg rounded-xl shadow-sm border border-outline-variant/20 relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider mb-sm">Pending Approval</p>
+<h3 class="text-display-lg font-display-lg text-warning">42</h3>
+<div class="mt-md flex items-center gap-xs text-on-surface-variant font-bold text-sm">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Action required</span>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-9xl text-warning/5 group-hover:scale-110 transition-transform duration-500">pending_actions</span>
+</div>
+<div class="md:col-span-2 bg-primary-container p-lg rounded-xl shadow-lg relative overflow-hidden group">
+<div class="relative z-10 flex h-full items-center">
+<div class="flex-1">
+<p class="text-sm font-medium text-on-primary-container uppercase tracking-wider mb-sm">Avg. Assessment Score</p>
+<h3 class="text-display-lg font-display-lg text-on-primary">88.4<span class="text-xl ml-xs">%</span></h3>
+</div>
+<div class="w-32 h-20 bg-white/10 rounded-lg flex items-center justify-center backdrop-blur-sm border border-white/20">
+<span class="material-symbols-outlined text-on-primary text-4xl">insights</span>
+</div>
+</div>
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(255,255,255,0.2)_0%,_transparent_60%)]"></div>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden assessment-card relative">
+<!-- Filters & Search Bar -->
+<div class="p-lg border-b border-outline-variant/20 flex flex-col lg:flex-row gap-lg items-center">
+<div class="relative w-full lg:w-96">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-md bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-body-base" placeholder="Search by name or ID..." type="text"/>
+</div>
+<div class="flex flex-wrap items-center gap-md w-full lg:w-auto lg:ml-auto">
+<div class="flex items-center gap-sm">
+<span class="text-label-sm text-on-surface-variant uppercase font-bold">Type:</span>
+<select class="bg-surface-light border border-outline-variant rounded-lg py-sm px-md text-sm focus:ring-primary focus:border-primary">
+<option>All Types</option>
+<option>Payroll</option>
+<option>Transition</option>
+<option>Performance</option>
+<option>Risk Assessment</option>
+</select>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-label-sm text-on-surface-variant uppercase font-bold">Status:</span>
+<select class="bg-surface-light border border-outline-variant rounded-lg py-sm px-md text-sm focus:ring-primary focus:border-primary">
+<option>All Status</option>
+<option>Completed</option>
+<option>Pending</option>
+</select>
+</div>
+<button class="p-md bg-surface-container-low text-on-surface-variant rounded-xl hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Responsive Table -->
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-lg py-md text-label-caps text-on-surface-variant border-b border-outline-variant/20">Client / Employee</th>
+<th class="px-lg py-md text-label-caps text-on-surface-variant border-b border-outline-variant/20">Assessment Type</th>
+<th class="px-lg py-md text-label-caps text-on-surface-variant border-b border-outline-variant/20">Date Completed</th>
+<th class="px-lg py-md text-label-caps text-on-surface-variant border-b border-outline-variant/20">Status</th>
+<th class="px-lg py-md text-label-caps text-on-surface-variant border-b border-outline-variant/20 text-center">Score</th>
+<th class="px-lg py-md text-label-caps text-on-surface-variant border-b border-outline-variant/20">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 text-secondary flex items-center justify-center font-bold">
+                                            JS
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Jovanni S. Pratama</p>
+<p class="text-xs text-on-surface-variant">ID: NX-8829-0</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-sm font-medium">Payroll Assessment</span>
+</div>
+</td>
+<td class="px-lg py-md text-sm text-on-surface-variant font-medium">Oct 24, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-sm px-md py-sm bg-success/10 text-success text-[11px] font-bold uppercase rounded-full leading-none">
+<span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span>
+                                        Selesai
+                                    </span>
+</td>
+<td class="px-lg py-md">
+<div class="flex flex-col items-center">
+<span class="text-sm font-extrabold text-primary">94.5%</span>
+<div class="w-16 h-1 bg-surface-container mt-xs rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[94.5%]"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<button class="p-sm text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed/40 text-tertiary flex items-center justify-center font-bold">
+                                            LM
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Lidya M. Wijaya</p>
+<p class="text-xs text-on-surface-variant">ID: NX-8829-1</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-sm font-medium">Transition Study</span>
+</div>
+</td>
+<td class="px-lg py-md text-sm text-on-surface-variant font-medium">Oct 23, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-sm px-md py-sm bg-warning/10 text-warning text-[11px] font-bold uppercase rounded-full leading-none">
+<span class="w-1.5 h-1.5 bg-warning rounded-full"></span>
+                                        Menunggu Approval
+                                    </span>
+</td>
+<td class="px-lg py-md">
+<div class="flex flex-col items-center">
+<span class="text-sm font-extrabold text-warning">--</span>
+</div>
+</td>
+<td class="px-lg py-md">
+<button class="p-sm text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed/40 text-primary flex items-center justify-center font-bold">
+                                            BK
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Bambang Kusuma</p>
+<p class="text-xs text-on-surface-variant">ID: NX-8830-4</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-sm font-medium">Payroll Assessment</span>
+</div>
+</td>
+<td class="px-lg py-md text-sm text-on-surface-variant font-medium">Oct 22, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-sm px-md py-sm bg-success/10 text-success text-[11px] font-bold uppercase rounded-full leading-none">
+<span class="w-1.5 h-1.5 bg-success rounded-full"></span>
+                                        Selesai
+                                    </span>
+</td>
+<td class="px-lg py-md">
+<div class="flex flex-col items-center">
+<span class="text-sm font-extrabold text-primary">82.1%</span>
+<div class="w-16 h-1 bg-surface-container mt-xs rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[82.1%]"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<button class="p-sm text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed-dim/20 text-on-secondary-container flex items-center justify-center font-bold">
+                                            RE
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Ratih Endang</p>
+<p class="text-xs text-on-surface-variant">ID: NX-8831-2</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-info"></span>
+<span class="text-sm font-medium">Compliance Check</span>
+</div>
+</td>
+<td class="px-lg py-md text-sm text-on-surface-variant font-medium">Oct 22, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-sm px-md py-sm bg-success/10 text-success text-[11px] font-bold uppercase rounded-full leading-none">
+<span class="w-1.5 h-1.5 bg-success rounded-full"></span>
+                                        Selesai
+                                    </span>
+</td>
+<td class="px-lg py-md">
+<div class="flex flex-col items-center">
+<span class="text-sm font-extrabold text-primary">76.8%</span>
+<div class="w-16 h-1 bg-surface-container mt-xs rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[76.8%]"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<button class="p-sm text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-outline-variant/30 text-on-surface-variant flex items-center justify-center font-bold">
+                                            DR
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Deni Ramadhan</p>
+<p class="text-xs text-on-surface-variant">ID: NX-8832-5</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-sm font-medium">Payroll Assessment</span>
+</div>
+</td>
+<td class="px-lg py-md text-sm text-on-surface-variant font-medium">Oct 21, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-sm px-md py-sm bg-success/10 text-success text-[11px] font-bold uppercase rounded-full leading-none">
+<span class="w-1.5 h-1.5 bg-success rounded-full"></span>
+                                        Selesai
+                                    </span>
+</td>
+<td class="px-lg py-md">
+<div class="flex flex-col items-center">
+<span class="text-sm font-extrabold text-primary">89.0%</span>
+<div class="w-16 h-1 bg-surface-container mt-xs rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[89%]"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<button class="p-sm text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-lg bg-surface-bright flex flex-col md:flex-row gap-lg items-center justify-between border-t border-outline-variant/20">
+<p class="text-sm text-on-surface-variant font-medium">Showing <span class="text-on-surface font-bold">1 - 5</span> of 1,284 entries</p>
+<div class="flex items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold shadow-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium">3</button>
+<span class="px-sm text-outline-variant">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium">257</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Recently Accessed Section (Bento Style) -->
+<div class="mt-2xl">
+<h4 class="font-title-lg text-title-lg text-on-surface mb-lg">Recently Viewed Assets</h4>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-white p-lg rounded-xl shadow-sm border border-outline-variant/30 hover-lift relative overflow-hidden group">
+<div class="flex items-center gap-md mb-md">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Annual Audit 2023</h5>
+<p class="text-xs text-on-surface-variant">Modified 2h ago</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-md">Complete analysis of the payroll transition phase for the Southeast Asia division.</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] text-white">AS</div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-secondary flex items-center justify-center text-[10px] text-white">LW</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors cursor-pointer">open_in_new</span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl shadow-sm border border-outline-variant/30 hover-lift relative overflow-hidden group">
+<div class="flex items-center gap-md mb-md">
+<div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">folder_shared</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Compliance Kit</h5>
+<p class="text-xs text-on-surface-variant">Shared by Admin</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-md">Essential documentation and guidelines for the upcoming internal risk assessments.</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-warning flex items-center justify-center text-[10px] text-white">BK</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-secondary transition-colors cursor-pointer">download</span>
+</div>
+</div>
+<div class="bg-white p-lg rounded-xl shadow-sm border border-outline-variant/30 hover-lift relative overflow-hidden group">
+<div class="flex items-center gap-md mb-md">
+<div class="w-12 h-12 bg-tertiary/10 rounded-lg flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Policy Update V2.1</h5>
+<p class="text-xs text-on-surface-variant">Active Document</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-md">Updated security protocols for handling client sensitive data during assessment.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 bg-success rounded-full"></span>
+<span class="text-[11px] font-bold text-success uppercase">Verified</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-tertiary transition-colors cursor-pointer">visibility</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mobile FAB -->
+<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center z-50">
+<span class="material-symbols-outlined">add</span>
+</button>
+<!-- Footer -->
+<footer class="mt-auto px-lg py-lg border-t border-outline-variant/10 text-center">
+<p class="text-xs text-outline font-medium">© 2023 Nexa Assessment Enterprise. All rights reserved.</p>
+</footer>
+</main>
+<script>
+        // Simple Micro-interactions
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('click', () => {
+                // Potential action for row click
+                console.log('Row clicked');
+            });
+        });
+
+        // Search Input Glow Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        if(searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+            });
+        }
+    </script>
+</body></html>

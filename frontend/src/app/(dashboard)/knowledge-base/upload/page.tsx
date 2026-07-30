@@ -64,22 +64,22 @@ export default function UploadDokumenPage() {
 
     const inputClasses = (field: string) =>
         `w-full px-4 py-2.5
-        bg-white dark:bg-[#323249]
-        border ${validationErrors[field] ? "border-red-400" : "border-gray-200 dark:border-[#444564]"}
-        rounded-lg text-sm
-        focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand
+        bg-surface-light dark:bg-surface-container
+        border ${validationErrors[field] ? "border-danger" : "border-outline-variant/30"}
+        rounded-xl text-sm text-on-surface
+        focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
         transition-all duration-200`;
 
     if (success) {
         return (
             <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-300">
-                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-4">
-                    <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+                <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mb-4">
+                    <CheckCircle className="w-8 h-8 text-success" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                <h2 className="text-xl font-bold text-on-surface mb-2 font-heading">
                     Dokumen Berhasil Diunggah!
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-on-surface-variant">
                     Mengalihkan ke halaman Knowledge Base...
                 </p>
             </div>
@@ -93,15 +93,15 @@ export default function UploadDokumenPage() {
                 <div className="flex items-center gap-3">
                     <Link
                         href="/knowledge-base"
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#323249] transition-colors"
+                        className="p-2 rounded-xl hover:bg-surface-container transition-colors"
                     >
-                        <ArrowLeft className="w-5 h-5 text-gray-500" />
+                        <ArrowLeft className="w-5 h-5 text-on-surface-variant" />
                     </Link>
                     <div>
-                        <h1 className="text-xl font-bold text-brand dark:text-[#a5b4fc]">
+                        <h1 className="text-title-lg font-bold text-on-surface font-heading">
                             Upload Dokumen Baru
                         </h1>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-label-sm text-on-surface-variant">
                             Unggah memo atau surat edaran dalam format PDF
                         </p>
                     </div>
@@ -109,22 +109,22 @@ export default function UploadDokumenPage() {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="card p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="bg-surface-light dark:bg-surface rounded-xl shadow-sm border border-outline-variant/20 p-6 space-y-5">
                 {/* File Upload */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        File PDF <span className="text-red-500">*</span>
+                    <label className="block text-label-sm font-medium text-on-surface mb-2">
+                        File PDF <span className="text-danger">*</span>
                     </label>
                     <FileDropzone file={file} onFileSelect={setFile} />
                     {validationErrors.file && (
-                        <p className="mt-1 text-xs text-red-500">{validationErrors.file}</p>
+                        <p className="mt-1 text-xs text-danger">{validationErrors.file}</p>
                     )}
                 </div>
 
                 {/* Judul */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Judul Dokumen <span className="text-red-500">*</span>
+                    <label className="block text-label-sm font-medium text-on-surface mb-2">
+                        Judul Dokumen <span className="text-danger">*</span>
                     </label>
                     <input
                         type="text"
@@ -134,14 +134,14 @@ export default function UploadDokumenPage() {
                         className={inputClasses("judul")}
                     />
                     {validationErrors.judul && (
-                        <p className="mt-1 text-xs text-red-500">{validationErrors.judul}</p>
+                        <p className="mt-1 text-xs text-danger">{validationErrors.judul}</p>
                     )}
                 </div>
 
                 {/* Nomor Memo */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Nomor Memo <span className="text-red-500">*</span>
+                    <label className="block text-label-sm font-medium text-on-surface mb-2">
+                        Nomor Memo <span className="text-danger">*</span>
                     </label>
                     <input
                         type="text"
@@ -151,15 +151,15 @@ export default function UploadDokumenPage() {
                         className={inputClasses("nomorMemo")}
                     />
                     {validationErrors.nomorMemo && (
-                        <p className="mt-1 text-xs text-red-500">{validationErrors.nomorMemo}</p>
+                        <p className="mt-1 text-xs text-danger">{validationErrors.nomorMemo}</p>
                     )}
                 </div>
 
                 {/* Kategori & Target */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Kategori Produk <span className="text-red-500">*</span>
+                        <label className="block text-label-sm font-medium text-on-surface mb-2">
+                            Kategori Produk <span className="text-danger">*</span>
                         </label>
                         <select
                             value={kategori}
@@ -172,12 +172,12 @@ export default function UploadDokumenPage() {
                             <option value="KREDIT_PENSIUN">Product Pension</option>
                         </select>
                         {validationErrors.kategori && (
-                            <p className="mt-1 text-xs text-red-500">{validationErrors.kategori}</p>
+                            <p className="mt-1 text-xs text-danger">{validationErrors.kategori}</p>
                         )}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Target Market <span className="text-red-500">*</span>
+                        <label className="block text-label-sm font-medium text-on-surface mb-2">
+                            Target Market <span className="text-danger">*</span>
                         </label>
                         <select
                             value={targetMarket}
@@ -192,7 +192,7 @@ export default function UploadDokumenPage() {
                             <option value="WIRASWASTA">Wiraswasta</option>
                         </select>
                         {validationErrors.targetMarket && (
-                            <p className="mt-1 text-xs text-red-500">{validationErrors.targetMarket}</p>
+                            <p className="mt-1 text-xs text-danger">{validationErrors.targetMarket}</p>
                         )}
                     </div>
                 </div>
@@ -200,8 +200,8 @@ export default function UploadDokumenPage() {
                 {/* Tanggal Berlaku */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Tanggal Mulai <span className="text-red-500">*</span>
+                        <label className="block text-label-sm font-medium text-on-surface mb-2">
+                            Tanggal Mulai <span className="text-danger">*</span>
                         </label>
                         <input
                             type="date"
@@ -210,12 +210,12 @@ export default function UploadDokumenPage() {
                             className={inputClasses("berlakuMulai")}
                         />
                         {validationErrors.berlakuMulai && (
-                            <p className="mt-1 text-xs text-red-500">{validationErrors.berlakuMulai}</p>
+                            <p className="mt-1 text-xs text-danger">{validationErrors.berlakuMulai}</p>
                         )}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Tanggal Berakhir <span className="text-red-500">*</span>
+                        <label className="block text-label-sm font-medium text-on-surface mb-2">
+                            Tanggal Berakhir <span className="text-danger">*</span>
                         </label>
                         <input
                             type="date"
@@ -224,14 +224,14 @@ export default function UploadDokumenPage() {
                             className={inputClasses("berlakuAkhir")}
                         />
                         {validationErrors.berlakuAkhir && (
-                            <p className="mt-1 text-xs text-red-500">{validationErrors.berlakuAkhir}</p>
+                            <p className="mt-1 text-xs text-danger">{validationErrors.berlakuAkhir}</p>
                         )}
                     </div>
                 </div>
 
                 {/* Keywords */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-label-sm font-medium text-on-surface mb-2">
                         Keywords / Kata Kunci
                     </label>
                     <TagInput tags={keywords} onChange={setKeywords} />
@@ -242,8 +242,8 @@ export default function UploadDokumenPage() {
 
                 {/* Version Linking (Optional) */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Menggantikan Dokumen Lama <span className="text-gray-400">(Opsional)</span>
+                    <label className="block text-label-sm font-medium text-on-surface mb-2">
+                        Menggantikan Dokumen Lama <span className="text-on-surface-variant/50">(Opsional)</span>
                     </label>
                     <input
                         type="text"
@@ -252,7 +252,7 @@ export default function UploadDokumenPage() {
                         placeholder="ID dokumen yang digantikan (kosongkan jika baru)"
                         className={inputClasses("replacesId")}
                     />
-                    <p className="mt-1 text-xs text-gray-400">
+                    <p className="mt-1 text-xs text-on-surface-variant/70">
                         Dokumen lama akan otomatis berstatus &quot;Archived&quot;
                     </p>
                 </div>
@@ -265,12 +265,12 @@ export default function UploadDokumenPage() {
                 )}
 
                 {/* Actions */}
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-[#444564]">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant/20">
                     <Link
                         href="/knowledge-base"
-                        className="px-5 py-2.5 rounded-lg border border-gray-200 dark:border-[#444564]
-                            text-sm font-medium text-gray-600 dark:text-gray-400
-                            hover:bg-gray-50 dark:hover:bg-[#323249] transition-all"
+                        className="px-5 py-2.5 rounded-xl border border-outline-variant/30
+                            text-sm font-medium text-on-surface-variant
+                            hover:bg-surface-container transition-all"
                     >
                         Batal
                     </Link>
@@ -278,9 +278,9 @@ export default function UploadDokumenPage() {
                         type="submit"
                         disabled={isLoading}
                         className="inline-flex items-center gap-2 px-5 py-2.5
-                            bg-brand hover:bg-brand-dark !text-white
-                            rounded-lg font-medium text-sm
-                            transition-all duration-200 shadow-sm hover:shadow-md
+                            bg-primary hover:bg-primary-container text-on-primary
+                            rounded-xl font-medium text-sm
+                            transition-all duration-200 shadow-sm
                             disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isLoading ? (

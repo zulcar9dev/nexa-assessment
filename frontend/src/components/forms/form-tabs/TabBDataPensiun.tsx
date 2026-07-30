@@ -11,12 +11,12 @@ export default React.memo(function TabBDataPensiun() {
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-b">
+        <div className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8" data-tab-content="tab-b">
             <form className="space-y-8">
                 {/* Section: Data Pensiun */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <Briefcase className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <Briefcase className="w-6 h-6 text-primary" />
                         Data Pensiun
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -24,7 +24,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div>
                             <label
                                 htmlFor="pensiunan"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Pensiunan
                             </label>
@@ -35,14 +35,14 @@ export default React.memo(function TabBDataPensiun() {
                                 value={formData.pensiunan || ""}
                                 onChange={(e) => updateField("pensiunan", e.target.value)}
                                 placeholder="e.g. PNS / TNI / POLRI"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
                         {/* Segmentasi */}
                         <div>
                             <label
                                 htmlFor="segmentasi"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Segmentasi
                             </label>
@@ -53,7 +53,7 @@ export default React.memo(function TabBDataPensiun() {
                                 value={formData.segmentasi || ""}
                                 onChange={(e) => updateField("segmentasi", e.target.value)}
                                 onKeyDown={handleTabToPrev}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Segmentasi</option>
                                 <option value="taspen">TASPEN</option>
@@ -66,7 +66,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div>
                             <label
                                 htmlFor="jenis_pengajuan"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Jenis Pengajuan
                             </label>
@@ -75,7 +75,7 @@ export default React.memo(function TabBDataPensiun() {
                                 name="jenis_pengajuan"
                                 value={formData.jenis_pengajuan || ""}
                                 onChange={(e) => updateField("jenis_pengajuan", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Jenis</option>
                                 <option value="baru">Baru</option>
@@ -97,7 +97,7 @@ export default React.memo(function TabBDataPensiun() {
                             <div>
                                 <label
                                     htmlFor="nama_almarhum_pasangan"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Nama Almarhum/Almarhumah Pasangan
                                 </label>
@@ -108,7 +108,7 @@ export default React.memo(function TabBDataPensiun() {
                                     value={formData.nama_almarhum_pasangan || ""}
                                     onChange={(e) => updateField("nama_almarhum_pasangan", e.target.value)}
                                     placeholder="Nama Almarhum/Almarhumah"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         )}
@@ -117,7 +117,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div>
                             <label
                                 htmlFor="no_sk_pensiun"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 No. SK Pensiun
                             </label>
@@ -128,7 +128,7 @@ export default React.memo(function TabBDataPensiun() {
                                 value={formData.no_sk_pensiun || ""}
                                 onChange={(e) => updateField("no_sk_pensiun", e.target.value)}
                                 placeholder="Nomor SK Pensiun"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -136,7 +136,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div>
                             <label
                                 htmlFor="tgl_sk_pensiun"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Tanggal SK Pensiun
                             </label>
@@ -146,7 +146,7 @@ export default React.memo(function TabBDataPensiun() {
                                 type="date"
                                 value={formData.tgl_sk_pensiun || ""}
                                 onChange={(e) => updateField("tgl_sk_pensiun", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -154,7 +154,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div>
                             <label
                                 htmlFor="tgl_pensiun_tmt"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 TMT Pensiun
                             </label>
@@ -164,7 +164,7 @@ export default React.memo(function TabBDataPensiun() {
                                 type="date"
                                 value={formData.tgl_pensiun_tmt || ""}
                                 onChange={(e) => updateField("tgl_pensiun_tmt", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -172,7 +172,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div className="col-span-1 md:col-span-2">
                             <label
                                 htmlFor="instansi"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Instansi Terakhir
                             </label>
@@ -183,7 +183,7 @@ export default React.memo(function TabBDataPensiun() {
                                 value={formData.instansi || ""}
                                 onChange={(e) => updateField("instansi", e.target.value)}
                                 placeholder="Instansi terakhir bekerja"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -191,7 +191,7 @@ export default React.memo(function TabBDataPensiun() {
                         <div>
                             <label
                                 htmlFor="nopen"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Nomor Pensiun (NOPEN)
                             </label>
@@ -202,7 +202,7 @@ export default React.memo(function TabBDataPensiun() {
                                 value={formData.nopen || ""}
                                 onChange={(e) => updateField("nopen", e.target.value)}
                                 placeholder="Nomor Pensiun"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light font-mono"
                             />
                         </div>
 
@@ -212,7 +212,7 @@ export default React.memo(function TabBDataPensiun() {
                             <div>
                                 <label
                                     htmlFor="golongan"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Golongan / Pangkat Terakhir
                                 </label>
@@ -225,7 +225,7 @@ export default React.memo(function TabBDataPensiun() {
                                     onChange={(e) => updateField("golongan", e.target.value)}
                                     onKeyDown={handleTabToNext}
                                     placeholder="Contoh: IV/a"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         )}
@@ -235,3 +235,5 @@ export default React.memo(function TabBDataPensiun() {
         </div>
     );
 });
+
+

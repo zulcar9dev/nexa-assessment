@@ -218,17 +218,17 @@ export default React.memo(function TabEUsulan({
 
   return (
     <div
-      className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8"
+      className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8"
       data-tab-content="tab-e"
     >
-      <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-        <CreditCard className="w-6 h-6 text-primary-brand" />
+      <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+        <CreditCard className="w-6 h-6 text-primary" />
         Proposal Assessment
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Budget Allocation */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Budget Allocation
           </label>
           <div className="relative">
@@ -244,7 +244,7 @@ export default React.memo(function TabEUsulan({
               }
               onKeyDown={handleTabToPrev}
               placeholder="0"
-              className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+              className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light dark:text-white text-right"
             />
           </div>
         </div>
@@ -252,7 +252,7 @@ export default React.memo(function TabEUsulan({
         {/* Jangka Waktu */}
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300">
+            <label className="block text-label-sm font-label-sm text-on-surface-variant">
               Jangka Waktu (Bulan)
             </label>
             <span className="text-xs text-accent-600 dark:text-accent-400 font-medium">
@@ -266,10 +266,10 @@ export default React.memo(function TabEUsulan({
             placeholder="120"
             min="12"
             max={maxDuration}
-            className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+            className={`block w-full rounded-lg shadow-sm sm:text-sm py-2.5 px-3 bg-surface-light dark:text-white text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
               parseInt(formData.usulan_jangka_waktu_bulan || "0") > maxDuration
                 ? "border-red-500 ring-red-500 focus:border-red-500 focus:ring-red-500"
-                : "border-[#cdeae7] focus:border-primary-brand focus:ring-primary-brand"
+                : "border-[#cdeae7] focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
             }`}
           />
           {parseInt(formData.usulan_jangka_waktu_bulan || "0") >
@@ -286,7 +286,7 @@ export default React.memo(function TabEUsulan({
 
         {/* Rate */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Rate (% p.a.)
           </label>
           <input
@@ -294,19 +294,19 @@ export default React.memo(function TabEUsulan({
             value={formData.usulan_bunga_persen || ""}
             onChange={(e) => updateField("usulan_bunga_persen", e.target.value)}
             placeholder="11"
-            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light dark:text-white text-right"
           />
         </div>
 
         {/* Tujuan Assessment */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Tujuan Penggunaan Assessment
           </label>
           <select
             value={formData.tujuan_kredit || ""}
             onChange={(e) => updateField("tujuan_kredit", e.target.value)}
-            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light dark:text-white"
           >
             <option value="">Pilih Tujuan</option>
             <option value="modal_usaha">Modal Usaha</option>
@@ -321,7 +321,7 @@ export default React.memo(function TabEUsulan({
 
         {/* Kode Program */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Kode Program
           </label>
           <input
@@ -329,13 +329,13 @@ export default React.memo(function TabEUsulan({
             value={formData.kode_program || ""}
             onChange={(e) => updateField("kode_program", e.target.value)}
             placeholder="Contoh: KK001"
-            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light dark:text-white"
           />
         </div>
 
         {/* Service Fee */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Service Fee (%)
           </label>
           <div className="relative">
@@ -344,7 +344,7 @@ export default React.memo(function TabEUsulan({
               value={formData.biaya_provisi || ""}
               onChange={(e) => updateField("biaya_provisi", e.target.value)}
               placeholder="1"
-              className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+              className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-3 pr-8 bg-surface-light dark:text-white text-right"
             />
             <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
               %
@@ -355,7 +355,7 @@ export default React.memo(function TabEUsulan({
         {/* Management Fee - Hidden for Aktif */}
         {kategori !== "type_c" && (
           <div>
-            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+            <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
               Management Fee (%)
             </label>
             <div className="relative">
@@ -366,7 +366,7 @@ export default React.memo(function TabEUsulan({
                   updateField("biaya_tatalaksana", e.target.value)
                 }
                 placeholder="2"
-                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-3 pr-8 bg-surface-light dark:text-white text-right"
               />
               <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
                 %
@@ -377,7 +377,7 @@ export default React.memo(function TabEUsulan({
 
         {/* Insurance Fee */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Insurance Fee (%)
           </label>
           <div className="relative">
@@ -388,7 +388,7 @@ export default React.memo(function TabEUsulan({
                 updateField("biaya_psjt_percent", e.target.value)
               }
               placeholder="0"
-              className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-3 pr-8 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+              className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-3 pr-8 bg-surface-light dark:text-white text-right"
             />
             <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
               %
@@ -399,7 +399,7 @@ export default React.memo(function TabEUsulan({
         {/* Biaya Administrasi */}
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300">
+            <label className="block text-label-sm font-label-sm text-on-surface-variant">
               Biaya Administrasi
             </label>
             <div className="flex items-center gap-2">
@@ -415,7 +415,7 @@ export default React.memo(function TabEUsulan({
                     updateField("biaya_administrasi_nominal", "");
                   }
                 }}
-                className="w-3.5 h-3.5 text-primary-brand bg-gray-100 border-gray-300 rounded focus:ring-primary-brand dark:focus:ring-primary-brand dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                className="w-3.5 h-3.5 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary-brand dark:focus:ring-primary-brand dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <label
                 htmlFor="bebas_biaya_admin"
@@ -449,10 +449,10 @@ export default React.memo(function TabEUsulan({
               }
               disabled={formData.biaya_administrasi_is_bebas}
               placeholder="0"
-              className={`block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 text-right ${
+              className={`block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 text-right ${
                 formData.biaya_administrasi_is_bebas
                   ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
-                  : "bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white"
+                  : "bg-surface-light dark:text-white"
               }`}
             />
           </div>
@@ -463,8 +463,8 @@ export default React.memo(function TabEUsulan({
         {/* 1. Header & Section Container */}
         <div className="md:col-span-2 lg:col-span-3">
           <hr className="my-2 border-[#cdeae7] dark:border-opacity-10" />
-          <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2 mt-4">
-            <Calculator className="w-6 h-6 text-primary-brand" />
+          <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2 mt-4">
+            <Calculator className="w-6 h-6 text-primary" />
             Data Blokiran{" "}
             {kategori === "type_a"
               ? "(Khusus TypeA)"
@@ -477,7 +477,7 @@ export default React.memo(function TabEUsulan({
         {/* 2. Blokiran TypeA (Hanya untuk TypeA & Purna) */}
         {kategori !== "type_c" && (
           <div>
-            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+            <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
               Blokiran TypeA
             </label>
             <p className="text-xs text-gray-500 mb-2">
@@ -488,7 +488,7 @@ export default React.memo(function TabEUsulan({
                 type="number"
                 value={formData.blokiran_type_a_jml || ""}
                 readOnly
-                className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-gray-100 text-gray-500 sm:text-sm py-2.5 pr-12 pl-3 text-right"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-gray-100 text-gray-500 sm:text-sm py-2.5 pr-12 pl-3 text-right"
               />
               <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
                 Kali
@@ -500,7 +500,7 @@ export default React.memo(function TabEUsulan({
         {/* 3. Blokiran Pindah Gaji (Hanya untuk TypeA & Purna) */}
         {kategori !== "type_c" && (
           <div>
-            <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+            <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
               Blokiran Pindah Gaji
             </label>
             <p className="text-xs text-gray-500 mb-2">
@@ -515,7 +515,7 @@ export default React.memo(function TabEUsulan({
                   updateField("blokiran_pindah_gaji_jml", val);
                 }}
                 placeholder="0"
-                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pr-12 pl-3 bg-surface-light dark:text-white text-right"
               />
               <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
                 Kali
@@ -526,7 +526,7 @@ export default React.memo(function TabEUsulan({
 
         {/* 4. Blokiran Wajib (Tampil untuk SEMUA kategori termasuk AKTIF) */}
         <div>
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Blokiran Wajib
           </label>
           <p className="text-xs text-gray-500 mb-2">
@@ -541,7 +541,7 @@ export default React.memo(function TabEUsulan({
                 updateField("blokiran_wajib_jml", val);
               }}
               placeholder="0"
-              className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pr-12 pl-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white text-right"
+              className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pr-12 pl-3 bg-surface-light dark:text-white text-right"
             />
             <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
               Kali
@@ -556,7 +556,7 @@ export default React.memo(function TabEUsulan({
               <label className="block text-sm font-bold text-[#0c1d1b] dark:text-gray-200">
                 Total Blokiran
               </label>
-              <p className="text-sm text-primary-brand italic">
+              <p className="text-sm text-primary italic">
                 Terbilang:{" "}
                 {formData.total_blokiran_jml
                   ? terbilang(formData.total_blokiran_jml)
@@ -568,7 +568,7 @@ export default React.memo(function TabEUsulan({
                 type="number"
                 value={formData.total_blokiran_jml || 0}
                 readOnly
-                className="block w-full rounded-lg border-[#cdeae7] shadow-sm bg-white font-bold text-primary-brand sm:text-lg py-2.5 pr-12 pl-3 text-right"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-white font-bold text-primary sm:text-lg py-2.5 pr-12 pl-3 text-right"
               />
               <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
                 Kali
@@ -579,7 +579,7 @@ export default React.memo(function TabEUsulan({
 
         {/* Syarat Penandatanganan */}
         <div className="md:col-span-2 lg:col-span-3">
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Syarat Penandatanganan (Manual)
           </label>
           <p className="text-xs text-gray-500 mb-2">
@@ -594,13 +594,13 @@ export default React.memo(function TabEUsulan({
             onChange={(val) => updateField("syarat_penandatanganan_text", val)}
             options={DOCUMENT_PLACEHOLDERS}
             placeholder="Ketik syarat penandatanganan di sini... (Gunakan @ untuk insert data)"
-            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white font-mono text-sm"
+            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light dark:text-white font-mono text-sm"
           />
         </div>
 
         {/* Syarat Pencairan */}
         <div className="md:col-span-2 lg:col-span-3">
-          <label className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1">
+          <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
             Syarat Pencairan (Manual)
           </label>
           <p className="text-xs text-gray-500 mb-2">
@@ -614,10 +614,12 @@ export default React.memo(function TabEUsulan({
             onChange={(val) => updateField("syarat_pencairan_text", val)}
             options={DOCUMENT_PLACEHOLDERS}
             placeholder="Ketik syarat pencairan di sini... (Gunakan @ untuk insert data)"
-            className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 dark:text-white font-mono text-sm"
+            className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light dark:text-white font-mono text-sm"
           />
         </div>
       </div>
     </div>
   );
 });
+
+

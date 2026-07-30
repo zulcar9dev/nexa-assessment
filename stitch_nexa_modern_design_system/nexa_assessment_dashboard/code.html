@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexa Assessment | Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e2e7ff",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f2f3ff",
+                    "on-primary-fixed": "#0f0069",
+                    "error-container": "#ffdad6",
+                    "canvas-light": "#f8fafc",
+                    "on-tertiary-fixed-variant": "#2f2ebe",
+                    "surface-container-highest": "#dae2fd",
+                    "on-secondary-container": "#006172",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "tertiary-fixed": "#e1e0ff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#07006c",
+                    "primary": "#3525cd",
+                    "on-tertiary-container": "#d9d8ff",
+                    "secondary-fixed": "#acedff",
+                    "tertiary-fixed-dim": "#c0c1ff",
+                    "on-error-container": "#93000a",
+                    "success": "#10b981",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "surface-dark": "#2b2c40",
+                    "warning": "#f59e0b",
+                    "inverse-on-surface": "#eef0ff",
+                    "background": "#faf8ff",
+                    "inverse-surface": "#283044",
+                    "on-surface-variant": "#464555",
+                    "surface-tint": "#4d44e3",
+                    "surface-bright": "#faf8ff",
+                    "primary-fixed": "#e2dfff",
+                    "surface-dim": "#d2d9f4",
+                    "tertiary-container": "#4b4dd8",
+                    "on-primary-container": "#dad7ff",
+                    "info": "#3b82f6",
+                    "primary-container": "#4f46e5",
+                    "danger": "#ef4444",
+                    "surface-container": "#eaedff",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#dae2fd",
+                    "on-background": "#131b2e",
+                    "on-secondary-fixed": "#001f26",
+                    "inverse-primary": "#c3c0ff",
+                    "secondary": "#00687a",
+                    "tertiary": "#3130c0",
+                    "outline": "#777587",
+                    "surface-light": "#ffffff",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-surface": "#131b2e",
+                    "outline-variant": "#c7c4d8",
+                    "surface": "#faf8ff",
+                    "canvas-dark": "#232333",
+                    "secondary-container": "#57dffe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "2xl": "48px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "base": "4px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "margin-desktop": "40px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "title-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-base": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "title-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "title-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-base": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .assessment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.12);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-canvas-light font-body-base text-on-surface">
+<!-- Sidebar (As specified in JSON) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-light dark:bg-surface-dark border-r border-outline-variant/30 flex flex-col z-50 hidden md:flex">
+<!-- Header -->
+<div class="p-lg flex items-center gap-md">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">token</span>
+</div>
+<div>
+<h2 class="font-title-sm text-title-sm font-bold text-primary">Nexa Enterprise</h2>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Innovation &amp; Trust</p>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex-1 mt-md">
+<a class="flex items-center gap-md bg-primary/10 text-primary border-l-4 border-primary px-lg py-md transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-base text-body-base">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-body-base text-body-base">Assessments</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-body-base text-body-base">Analytics</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-base text-body-base">Team</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant px-lg py-md hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-base text-body-base">Settings</span>
+</a>
+</nav>
+<!-- CTA in Sidebar -->
+<div class="px-lg py-xl">
+<button class="w-full bg-primary text-on-primary py-md rounded-xl font-title-sm shadow-md hover:bg-primary-container transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                New Assessment
+            </button>
+</div>
+<!-- Footer Links -->
+<div class="border-t border-outline-variant/20 p-md">
+<a class="flex items-center gap-md text-on-surface-variant px-md py-sm hover:bg-surface-container-low rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="text-label-sm font-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-md text-error px-md py-sm hover:bg-error-container/30 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-label-sm font-label-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Top Bar (As specified in JSON) -->
+<header class="sticky top-0 w-full z-40 bg-surface-light/90 backdrop-blur-md shadow-sm px-lg py-sm flex justify-between items-center md:pl-72">
+<div class="flex items-center gap-md">
+<button class="md:hidden p-sm rounded-lg hover:bg-surface-container-low">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-lg text-display-lg font-extrabold text-primary hidden lg:block">Nexa Assessment</h1>
+<h1 class="font-title-lg text-title-lg font-extrabold text-primary lg:hidden">Nexa</h1>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-base focus:ring-2 focus:ring-primary/20 w-64" placeholder="Search data..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-base"></div>
+<div class="flex items-center gap-sm cursor-pointer hover:opacity-80 transition-opacity">
+<div class="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female business analyst in her early 30s with a warm and confident expression. She is wearing a soft gray blazer in a bright, modern studio setting with soft indigo backlighting. The aesthetic is clean, corporate, and high-quality, matching a premium SaaS brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACkfMq3dUy6xEciPcY_C6lTYHIxeTJI3ZNvbXHd7etgLoW_luJz18KrCk4MOKhgdtEq0Bty5dJFiTIQwQwUbtVeGdmrz_6OQ8iU6GJ1ozusgd3RsTND4rMmAzTvKKKgLiMQ7-9euKiDPh6l8vWT92jdFntR7FoM6vE5xbzwtSdDA1_xRG10KuTvuid4SDaOjZz_RgsTkL6Iau8JTjMVXfmuKsjK6oZrXkxXYg1CN1XcDJw1cYj_cHY"/>
+</div>
+<span class="font-title-sm text-title-sm hidden sm:inline">Sarah Jenkins</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="md:ml-64 p-lg max-w-[1440px] mx-auto min-h-screen">
+<!-- Welcome Header -->
+<section class="mb-xl">
+<div class="relative overflow-hidden p-xl rounded-3xl bg-gradient-to-br from-primary to-tertiary-container text-on-primary shadow-lg">
+
+<div class="relative z-10">
+<h2 class="font-headline-lg text-headline-lg mb-sm">Halo, Selamat Datang! 👋</h2>
+<p class="font-body-lg text-body-lg text-on-primary-container max-w-xl">
+                        Anda memiliki 3 assessment yang sedang berjalan. Tingkatkan efisiensi pengelolaan tenaga kerja Anda dengan data yang akurat.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Stats Overview (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+<div class="p-lg bg-surface-light rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-lg">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">assignment_turned_in</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase">Selesai</p>
+<p class="text-headline-md font-headline-md">12</p>
+</div>
+</div>
+<div class="p-lg bg-surface-light rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-lg">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[32px]">pending_actions</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase">Berjalan</p>
+<p class="text-headline-md font-headline-md">3</p>
+</div>
+</div>
+<div class="p-lg bg-surface-light rounded-xl shadow-sm border border-outline-variant/10 flex items-center gap-lg">
+<div class="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
+<span class="material-symbols-outlined text-[32px]">analytics</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase">Rata-rata Skor</p>
+<p class="text-headline-md font-headline-md">88.4%</p>
+</div>
+</div>
+</section>
+<!-- Assessment Section -->
+<section class="mb-xl">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-title-lg text-title-lg">Tipe Assessment Tersedia</h3>
+<button class="text-primary font-title-sm flex items-center gap-xs hover:underline">
+                    Lihat Semua <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-xl">
+<!-- Card 1: Active -->
+<div class="assessment-card group bg-surface-light rounded-xl overflow-hidden shadow-sm border border-outline-variant/10 transition-all duration-300">
+<div class="h-32 bg-gradient-to-r from-primary to-primary-container p-lg flex justify-between items-start">
+<div class="p-md bg-white/20 backdrop-blur-md rounded-xl">
+<span class="material-symbols-outlined text-on-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<span class="px-sm py-1 bg-success/20 text-success text-[10px] font-bold uppercase rounded-full border border-success/30 backdrop-blur-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></span> Active
+                        </span>
+</div>
+<div class="p-lg">
+<p class="text-label-sm text-on-surface-variant mb-1">Assessment Type C</p>
+<h4 class="font-title-sm text-title-sm mb-md">Payroll Nexa</h4>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between text-body-base">
+<span class="text-on-surface-variant">Progress</span>
+<span class="font-bold">75%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-3/4 rounded-full"></div>
+</div>
+</div>
+<button class="w-full py-md bg-primary text-on-primary rounded-xl font-title-sm hover:bg-primary-container transition-colors shadow-sm group-hover:shadow-md">
+                            Mulai Assessment
+                        </button>
+</div>
+</div>
+<!-- Card 2: Pre-Period -->
+<div class="assessment-card group bg-surface-light rounded-xl overflow-hidden shadow-sm border border-outline-variant/10 transition-all duration-300">
+<div class="h-32 bg-gradient-to-r from-secondary to-secondary-container p-lg flex justify-between items-start">
+<div class="p-md bg-white/20 backdrop-blur-md rounded-xl">
+<span class="material-symbols-outlined text-on-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">transfer_within_a_station</span>
+</div>
+<span class="px-sm py-1 bg-warning/20 text-warning text-[10px] font-bold uppercase rounded-full border border-warning/30 backdrop-blur-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-warning rounded-full"></span> Pre-Period
+                        </span>
+</div>
+<div class="p-lg">
+<p class="text-label-sm text-on-surface-variant mb-1">Assessment Type A</p>
+<h4 class="font-title-sm text-title-sm mb-md">Transition Worker</h4>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between text-body-base">
+<span class="text-on-surface-variant">Estimasi Waktu</span>
+<span class="font-medium">45 Menit</span>
+</div>
+<div class="flex items-center gap-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">info</span> Tersedia mulai besok
+                            </div>
+</div>
+<button class="w-full py-md border-2 border-secondary text-secondary rounded-xl font-title-sm hover:bg-secondary/10 transition-all">
+                            Lihat Detail
+                        </button>
+</div>
+</div>
+<!-- Card 3: Full-Period -->
+<div class="assessment-card group bg-surface-light rounded-xl overflow-hidden shadow-sm border border-outline-variant/10 transition-all duration-300">
+<div class="h-32 bg-gradient-to-r from-tertiary to-tertiary-container p-lg flex justify-between items-start">
+<div class="p-md bg-white/20 backdrop-blur-md rounded-xl">
+<span class="material-symbols-outlined text-on-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">elderly</span>
+</div>
+<span class="px-sm py-1 bg-info/20 text-info text-[10px] font-bold uppercase rounded-full border border-info/30 backdrop-blur-sm">
+                            Full-Period
+                        </span>
+</div>
+<div class="p-lg">
+<p class="text-label-sm text-on-surface-variant mb-1">Assessment Type B</p>
+<h4 class="font-title-sm text-title-sm mb-md">Retiree Program</h4>
+<div class="space-y-sm mb-lg">
+<div class="flex justify-between text-body-base">
+<span class="text-on-surface-variant">Kapasitas</span>
+<span class="font-medium">120/150</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[80%] rounded-full"></div>
+</div>
+</div>
+<button class="w-full py-md bg-primary text-on-primary rounded-xl font-title-sm hover:bg-primary-container transition-colors shadow-sm">
+                            Mulai Assessment
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Grid: Recent Activity & Calendar -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+<!-- Recent Activity -->
+<div class="lg:col-span-2 bg-surface-light rounded-xl shadow-sm border border-outline-variant/10 p-lg">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-title-sm text-title-sm">Aktivitas Terakhir</h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="space-y-lg">
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success shrink-0">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="flex-1 border-b border-outline-variant/10 pb-md">
+<div class="flex justify-between items-start mb-1">
+<p class="font-title-sm text-[14px]">Menyelesaikan 'Onboarding 2024'</p>
+<span class="text-label-sm text-on-surface-variant">2 jam yang lalu</span>
+</div>
+<p class="text-body-base text-on-surface-variant text-[13px]">User ID #88192 berhasil memvalidasi seluruh dokumen payroll.</p>
+</div>
+</div>
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-info/10 flex items-center justify-center text-info shrink-0">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div class="flex-1 border-b border-outline-variant/10 pb-md">
+<div class="flex justify-between items-start mb-1">
+<p class="font-title-sm text-[14px]">Tim Baru Ditambahkan</p>
+<span class="text-label-sm text-on-surface-variant">5 jam yang lalu</span>
+</div>
+<p class="text-body-base text-on-surface-variant text-[13px]">Divisi Keuangan menambahkan 5 anggota baru untuk evaluasi kuartal.</p>
+</div>
+</div>
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning shrink-0">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<p class="font-title-sm text-[14px]">Deadline Mendekat</p>
+<span class="text-label-sm text-on-surface-variant">8 jam yang lalu</span>
+</div>
+<p class="text-body-base text-on-surface-variant text-[13px]">Assessment 'Retiree' akan berakhir dalam 48 jam ke depan.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Promotion Card -->
+<div class="bg-primary-container rounded-xl p-lg text-on-primary flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 scale-150 transition-transform duration-500 group-hover:scale-[1.8]">
+<span class="material-symbols-outlined text-[120px]">workspace_premium</span>
+</div>
+<div class="relative z-10">
+<h4 class="font-title-lg text-title-lg mb-sm">Upgrade ke Enterprise+</h4>
+<p class="text-body-base opacity-90 mb-md">Dapatkan fitur analitik prediktif berbasis AI dan integrasi API tanpa batas.</p>
+<ul class="space-y-2 mb-lg text-[13px]">
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-[16px]">verified</span> Real-time Monitoring</li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-[16px]">verified</span> Custom Branding</li>
+<li class="flex items-center gap-sm"><span class="material-symbols-outlined text-[16px]">verified</span> 24/7 Priority Support</li>
+</ul>
+</div>
+<button class="relative z-10 w-full py-md bg-white text-primary rounded-xl font-title-sm hover:bg-surface-container-low transition-colors">
+                    Pelajari Selengkapnya
+                </button>
+</div>
+</section>
+</main>
+<!-- Mobile Navigation Shell (As per Responsive Pivot rule) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-light border-t border-outline-variant/10 px-lg py-sm flex justify-around items-center z-50">
+<a class="flex flex-col items-center gap-xs text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-xs text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="text-[10px]">Assess</span>
+</a>
+<div class="-mt-8">
+<button class="w-12 h-12 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-xs text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="text-[10px]">Analytics</span>
+</a>
+<a class="flex flex-col items-center gap-xs text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px]">Settings</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interactions for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+                btn.style.opacity = '0.9';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+                btn.style.opacity = '1';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+                btn.style.opacity = '1';
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        if(searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+            });
+        }
+    </script>
+</body></html>

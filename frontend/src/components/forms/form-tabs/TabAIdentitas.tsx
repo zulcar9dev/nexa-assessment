@@ -41,12 +41,12 @@ export default React.memo(function TabAIdentitas() {
     }, [formData.status_perkawinan]);
 
     return (
-        <div className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8" data-tab-content="tab-a">
+        <div className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8" data-tab-content="tab-a">
             <form className="space-y-8">
                 {/* Section 1: Data Diri */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <User className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <User className="w-6 h-6 text-primary" />
                         Data Diri Pemohon
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -54,7 +54,7 @@ export default React.memo(function TabAIdentitas() {
                         <div className="col-span-1 md:col-span-2">
                             <label
                                 htmlFor="nama_pemohon"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Nama Lengkap (Sesuai KTP)
                             </label>
@@ -66,7 +66,7 @@ export default React.memo(function TabAIdentitas() {
                                 onChange={(e) => updateField("nama_pemohon", e.target.value)}
                                 onKeyDown={handleTabToPrev}
                                 placeholder="e.g. Budi Santoso"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -74,7 +74,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="no_ktp_pemohon"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Nomor Induk Kependudukan (NIK)
                             </label>
@@ -86,7 +86,7 @@ export default React.memo(function TabAIdentitas() {
                                 onChange={(e) => updateField("no_ktp_pemohon", e.target.value)}
                                 placeholder="3201xxxxxxxxxxxx"
                                 maxLength={16}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light font-mono"
                             />
                         </div>
 
@@ -94,7 +94,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="tgl_lahir_pemohon"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Tanggal Lahir
                             </label>
@@ -105,7 +105,7 @@ export default React.memo(function TabAIdentitas() {
                                     type="date"
                                     value={formData.tgl_lahir_pemohon || ""}
                                     onChange={(e) => updateField("tgl_lahir_pemohon", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         </div>
@@ -114,7 +114,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="usia_pemohon"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Usia Pemohon
                             </label>
@@ -126,7 +126,7 @@ export default React.memo(function TabAIdentitas() {
                                     value={usiaPemohon !== null ? `${usiaPemohon} Tahun` : ""}
                                     readOnly
                                     placeholder="Otomatis dari tanggal lahir"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm sm:text-sm py-2.5 px-3 bg-gray-100 dark:bg-[#0f2322]/30 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm sm:text-sm py-2.5 px-3 bg-gray-100 dark:bg-[#0f2322]/30 text-gray-600 dark:text-gray-400 cursor-not-allowed"
                                 />
                             </div>
                         </div>
@@ -135,7 +135,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="tgl_terbit_ktp"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 <Calendar className="w-4 h-4 inline mr-1" />
                                 Tanggal Terbit KTP
@@ -147,7 +147,7 @@ export default React.memo(function TabAIdentitas() {
                                     type="date"
                                     value={formData.tgl_terbit_ktp || ""}
                                     onChange={(e) => updateField("tgl_terbit_ktp", e.target.value)}
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         </div>
@@ -155,7 +155,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="status_perkawinan"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Status Perkawinan
                             </label>
@@ -168,7 +168,7 @@ export default React.memo(function TabAIdentitas() {
                                     updateField("no_dokumen_status_perkawinan", "");
                                     updateField("tgl_dokumen_status_perkawinan", "");
                                 }}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Status</option>
                                 <option value="menikah">Menikah</option>
@@ -184,7 +184,7 @@ export default React.memo(function TabAIdentitas() {
                                 <div>
                                     <label
                                         htmlFor="no_dokumen_status_perkawinan"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Nomor {dokumenLabel}
                                     </label>
@@ -195,7 +195,7 @@ export default React.memo(function TabAIdentitas() {
                                         value={formData.no_dokumen_status_perkawinan || ""}
                                         onChange={(e) => updateField("no_dokumen_status_perkawinan", e.target.value)}
                                         placeholder={`e.g. Nomor ${dokumenLabel}`}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                     />
                                 </div>
 
@@ -203,7 +203,7 @@ export default React.memo(function TabAIdentitas() {
                                 <div>
                                     <label
                                         htmlFor="tgl_dokumen_status_perkawinan"
-                                        className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                        className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                     >
                                         Tanggal {dokumenLabel}
                                     </label>
@@ -213,7 +213,7 @@ export default React.memo(function TabAIdentitas() {
                                         type="date"
                                         value={formData.tgl_dokumen_status_perkawinan || ""}
                                         onChange={(e) => updateField("tgl_dokumen_status_perkawinan", e.target.value)}
-                                        className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                        className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                     />
                                 </div>
                             </>
@@ -227,8 +227,8 @@ export default React.memo(function TabAIdentitas() {
 
                 {/* Section 2: Kontak & Alamat */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <MapPin className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <MapPin className="w-6 h-6 text-primary" />
                         Alamat &amp; Kontak
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
@@ -236,7 +236,7 @@ export default React.memo(function TabAIdentitas() {
                         <div className="col-span-1 md:col-span-2 lg:col-span-4">
                             <label
                                 htmlFor="alamat_ktp"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Alamat Sesuai KTP
                             </label>
@@ -246,7 +246,7 @@ export default React.memo(function TabAIdentitas() {
                                 options={DOCUMENT_PLACEHOLDERS}
                                 rows={3}
                                 placeholder="Ketik alamat KTP... (Gunakan @ untuk insert data)"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -254,7 +254,7 @@ export default React.memo(function TabAIdentitas() {
                         <div className="lg:col-span-2">
                             <label
                                 htmlFor="status_rumah"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Status Tempat Tinggal
                             </label>
@@ -263,7 +263,7 @@ export default React.memo(function TabAIdentitas() {
                                 name="status_rumah"
                                 value={formData.status_rumah || ""}
                                 onChange={(e) => updateField("status_rumah", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Status</option>
                                 <option value="milik_sendiri">Milik Sendiri</option>
@@ -277,7 +277,7 @@ export default React.memo(function TabAIdentitas() {
                         <div className="lg:col-span-2">
                             <label
                                 htmlFor="lama_tinggal"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Lama Tinggal
                             </label>
@@ -288,7 +288,7 @@ export default React.memo(function TabAIdentitas() {
                                 value={formData.lama_tinggal || ""}
                                 onChange={(e) => updateField("lama_tinggal", e.target.value)}
                                 placeholder="e.g. 10 Tahun 5 Bulan"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -307,9 +307,9 @@ export default React.memo(function TabAIdentitas() {
                                             updateField("alamat_tempat_tinggal", "");
                                         }
                                     }}
-                                    className="w-5 h-5 rounded border-[#cdeae7] text-primary-brand focus:ring-primary-brand focus:ring-offset-0 cursor-pointer transition-all duration-200"
+                                    className="w-5 h-5 rounded border-[#cdeae7] text-primary focus:ring-primary-brand focus:ring-offset-0 cursor-pointer transition-all duration-200"
                                 />
-                                <span className="text-sm font-medium text-[#0c1d1b] dark:text-gray-300 group-hover:text-primary-brand dark:group-hover:text-[#a5b4fc] transition-colors duration-200">
+                                <span className="text-label-sm font-label-sm text-on-surface-variant group-hover:text-primary dark:group-hover:text-[#a5b4fc] transition-colors duration-200">
                                     Alamat Tempat Tinggal berbeda dengan Alamat KTP
                                 </span>
                             </label>
@@ -320,7 +320,7 @@ export default React.memo(function TabAIdentitas() {
                             <div className="col-span-1 md:col-span-2 lg:col-span-4 animate-in fade-in duration-300">
                                 <label
                                     htmlFor="alamat_tempat_tinggal"
-                                    className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                    className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                                 >
                                     Alamat Tempat Tinggal
                                 </label>
@@ -330,7 +330,7 @@ export default React.memo(function TabAIdentitas() {
                                     options={DOCUMENT_PLACEHOLDERS}
                                     rows={3}
                                     placeholder="Ketik alamat tempat tinggal... (Gunakan @ untuk insert data)"
-                                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         )}
@@ -339,7 +339,7 @@ export default React.memo(function TabAIdentitas() {
                         <div className="lg:col-span-2">
                             <label
                                 htmlFor="no_telepon"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 No. Handphone
                             </label>
@@ -354,7 +354,7 @@ export default React.memo(function TabAIdentitas() {
                                     value={formData.no_telepon || ""}
                                     onChange={(e) => updateField("no_telepon", e.target.value)}
                                     placeholder="812 3456 7890"
-                                    className="block w-full rounded-lg border-[#cdeae7] pl-12 focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 pl-12 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         </div>
@@ -365,8 +365,8 @@ export default React.memo(function TabAIdentitas() {
 
                 {/* Section 3: Kerabat */}
                 <div>
-                    <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-                        <User className="w-6 h-6 text-primary-brand" />
+                    <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <User className="w-6 h-6 text-primary" />
                         Data Kerabat (Verifikasi)
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -374,7 +374,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="nama_kerabat"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Nama Kerabat
                             </label>
@@ -385,7 +385,7 @@ export default React.memo(function TabAIdentitas() {
                                 value={formData.nama_kerabat || ""}
                                 onChange={(e) => updateField("nama_kerabat", e.target.value)}
                                 placeholder="e.g. Ahmad Susanto"
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             />
                         </div>
 
@@ -393,7 +393,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="hubungan_kerabat"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 Hubungan
                             </label>
@@ -402,7 +402,7 @@ export default React.memo(function TabAIdentitas() {
                                 name="hubungan_kerabat"
                                 value={formData.hubungan_kerabat || ""}
                                 onChange={(e) => updateField("hubungan_kerabat", e.target.value)}
-                                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                             >
                                 <option value="">Pilih Hubungan</option>
                                 <option value="anak_kandung">Anak Kandung</option>
@@ -418,7 +418,7 @@ export default React.memo(function TabAIdentitas() {
                         <div>
                             <label
                                 htmlFor="no_telepon_kerabat"
-                                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
                             >
                                 No. Telepon Kerabat
                             </label>
@@ -434,7 +434,7 @@ export default React.memo(function TabAIdentitas() {
                                     onChange={(e) => updateField("no_telepon_kerabat", e.target.value)}
                                     onKeyDown={handleTabToNext}
                                     placeholder="812 3456 7890"
-                                    className="block w-full rounded-lg border-[#cdeae7] pl-12 focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                                    className="block w-full rounded-xl border border-outline-variant/50 pl-12 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                                 />
                             </div>
                         </div>
@@ -444,3 +444,5 @@ export default React.memo(function TabAIdentitas() {
         </div>
     );
 });
+
+

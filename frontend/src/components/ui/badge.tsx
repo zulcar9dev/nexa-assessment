@@ -4,23 +4,23 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          "border-primary/20 bg-primary/10 text-primary",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-secondary/20 bg-secondary/10 text-secondary",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
-        // Legacy Nexa Variants
-        primary: "border-transparent bg-[#eef2ff] dark:bg-brand/20 text-brand dark:text-[#a5b4fc]",
-        success: "border-transparent bg-[#e8f5e9] dark:bg-[#22c55e]/20 text-[#15803d] dark:text-[#22c55e]",
-        warning: "border-transparent bg-[#fff3e0] dark:bg-[#f59e0b]/20 text-[#b45309] dark:text-[#f59e0b]",
-        danger: "border-transparent bg-[#ffebee] dark:bg-[#ef4444]/20 text-[#b91c1c] dark:text-[#ef4444]",
-        info: "border-transparent bg-[#e0f2fe] dark:bg-[#3b82f6]/20 text-[#1d4ed8] dark:text-[#3b82f6]",
+          "border-destructive/20 bg-destructive/10 text-destructive",
+        outline: "text-foreground border-[var(--outline-variant)]",
+        // Status Variants (Nexa Design System v2)
+        primary: "border-primary/15 bg-primary/10 text-primary",
+        success: "border-success/20 bg-success/15 text-success",
+        warning: "border-warning/20 bg-warning/15 text-[#b45309] dark:text-warning",
+        danger: "border-danger/20 bg-danger/15 text-[#b91c1c] dark:text-danger",
+        info: "border-info/20 bg-info/15 text-[#1d4ed8] dark:text-info",
       },
     },
     defaultVariants: {

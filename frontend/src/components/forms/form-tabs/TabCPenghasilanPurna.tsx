@@ -20,14 +20,14 @@ export default React.memo(function TabCPenghasilanPurna() {
 
   return (
     <div
-      className="bg-white dark:bg-[#1a2c2a] rounded-xl shadow-sm border border-[#cdeae7] dark:border-opacity-10 p-6 md:p-8"
+      className="bg-surface-light rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden p-6 md:p-8"
       data-tab-content="tab-c"
     >
       <form className="space-y-8">
         {/* Section: Sumber Pembayaran */}
         <div className="card p-6">
           <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
-            <Banknote className="w-6 h-6 text-primary-brand" />
+            <Banknote className="w-6 h-6 text-primary" />
             Sumber Pembayaran Pensiun
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,7 +50,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                   }
                   onKeyDown={handleTabToPrev}
                   placeholder="e.g. Institusi A"
-                  className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                  className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light"
                 />
               </div>
             </div>
@@ -59,7 +59,7 @@ export default React.memo(function TabCPenghasilanPurna() {
             <div>
               <label
                 htmlFor="payroll_no_rek"
-                className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300 mb-1"
+                className="block text-label-sm font-label-sm text-on-surface-variant mb-1"
               >
                 No. Rekening Payroll
               </label>
@@ -70,7 +70,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                 value={formData.payroll_no_rek || ""}
                 onChange={(e) => updateField("payroll_no_rek", e.target.value)}
                 placeholder="e.g. 01502060066122"
-                className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 font-mono"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 px-3 bg-surface-light font-mono"
               />
             </div>
           </div>
@@ -80,8 +80,8 @@ export default React.memo(function TabCPenghasilanPurna() {
 
         {/* Section: Metode Perhitungan Penghasilan */}
         <div>
-          <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-            <Banknote className="w-6 h-6 text-primary-brand" />
+          <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Banknote className="w-6 h-6 text-primary" />
             Metode Perhitungan Penghasilan
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -102,7 +102,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                 onChange={() =>
                   updateField("type_b_penghasilan_mode", "minimum")
                 }
-                className="w-4 h-4 text-primary-brand focus:ring-primary-brand"
+                className="w-4 h-4 text-primary focus:ring-primary-brand"
               />
               <div>
                 <span className="font-medium text-[#0c1d1b] dark:text-white">
@@ -128,7 +128,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                 onChange={() =>
                   updateField("type_b_penghasilan_mode", "langsung")
                 }
-                className="w-4 h-4 text-primary-brand focus:ring-primary-brand"
+                className="w-4 h-4 text-primary focus:ring-primary-brand"
               />
               <div>
                 <span className="font-medium text-[#0c1d1b] dark:text-white">
@@ -146,8 +146,8 @@ export default React.memo(function TabCPenghasilanPurna() {
 
         {/* Section: Data Gaji Pensiun */}
         <div>
-          <h3 className="text-lg font-bold text-[#0c1d1b] dark:text-white mb-4 flex items-center gap-2">
-            <Banknote className="w-6 h-6 text-primary-brand" />
+          <h3 className="text-label-caps font-bold text-on-surface uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Banknote className="w-6 h-6 text-primary" />
             Data Penghasilan Pensiun
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -156,7 +156,7 @@ export default React.memo(function TabCPenghasilanPurna() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pensiun_bulan_1_jumlah"
-                  className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                  className="block text-label-sm font-label-sm text-on-surface-variant"
                 >
                   Pensiun Bulan 1
                 </label>
@@ -167,7 +167,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                     updateField("pensiun_bulan_1_nama", e.target.value)
                   }
                   placeholder="Nama Bulan"
-                  className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
+                  className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-surface-light mb-1"
                 />
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
@@ -187,7 +187,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                       )
                     }
                     placeholder="0"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right"
                   />
                 </div>
               </div>
@@ -198,7 +198,7 @@ export default React.memo(function TabCPenghasilanPurna() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pensiun_bulan_2_jumlah"
-                  className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                  className="block text-label-sm font-label-sm text-on-surface-variant"
                 >
                   Pensiun Bulan 2
                 </label>
@@ -209,7 +209,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                     updateField("pensiun_bulan_2_nama", e.target.value)
                   }
                   placeholder="Nama Bulan"
-                  className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
+                  className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-surface-light mb-1"
                 />
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
@@ -229,7 +229,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                       )
                     }
                     placeholder="0"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right"
                   />
                 </div>
               </div>
@@ -240,7 +240,7 @@ export default React.memo(function TabCPenghasilanPurna() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pensiun_bulan_3_jumlah"
-                  className="block text-sm font-medium text-[#0c1d1b] dark:text-gray-300"
+                  className="block text-label-sm font-label-sm text-on-surface-variant"
                 >
                   Pensiun Bulan 3
                 </label>
@@ -251,7 +251,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                     updateField("pensiun_bulan_3_nama", e.target.value)
                   }
                   placeholder="Nama Bulan"
-                  className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2 px-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 mb-1"
+                  className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2 px-3 bg-surface-light mb-1"
                 />
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 text-sm">
@@ -271,7 +271,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                       )
                     }
                     placeholder="0"
-                    className="block w-full rounded-lg border-[#cdeae7] shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 bg-[#f5f8f8] dark:bg-[#0f2322]/50 text-right"
+                    className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 bg-surface-light text-right"
                   />
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default React.memo(function TabCPenghasilanPurna() {
                 htmlFor="pensiun_bulan_jumlah"
                 className={`block text-sm font-medium mb-1 ${
                   formData.type_b_penghasilan_mode === "langsung"
-                    ? "text-primary-brand dark:text-[#00a89d]"
+                    ? "text-primary dark:text-[#00a89d]"
                     : "text-[#0c1d1b] dark:text-gray-300"
                 }`}
               >
@@ -309,10 +309,10 @@ export default React.memo(function TabCPenghasilanPurna() {
                   }
                   onKeyDown={handleTabToNext}
                   placeholder="0"
-                  className={`block w-full rounded-lg shadow-sm focus:border-primary-brand focus:ring-primary-brand sm:text-sm py-2.5 pl-10 pr-3 text-right font-bold ${
+                  className={`block w-full rounded-lg shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 text-right font-bold ${
                     formData.type_b_penghasilan_mode === "langsung"
                       ? "border-primary-brand bg-primary-brand/5 dark:bg-primary-brand/20"
-                      : "border-[#cdeae7] bg-[#f5f8f8] dark:bg-[#0f2322]/50"
+                      : "border-[#cdeae7] bg-surface-light"
                   }`}
                 />
               </div>
@@ -342,3 +342,5 @@ export default React.memo(function TabCPenghasilanPurna() {
     </div>
   );
 });
+
+

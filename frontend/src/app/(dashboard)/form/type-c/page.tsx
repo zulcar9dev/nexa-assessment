@@ -168,27 +168,31 @@ export default function FormAktifPage() {
     return (
         <div className="space-y-6 pb-24">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <div>
-                        <h1 className="text-2xl font-bold text-brand dark:text-[#a5b4fc]">
-                            Input Data Aktif
-                        </h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Assessment Type C (Active)
-                        </p>
-                    </div>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="font-headline-lg text-headline-lg text-on-background">
+                        Assessment Type C: Payroll Nexa
+                    </h1>
+                    <p className="font-body-base text-body-base text-on-surface-variant">
+                        Lengkapi detail penggajian untuk validasi sistem otomasi Nexa Enterprise.
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="px-4 py-2 bg-warning/10 text-warning rounded-full text-label-sm font-label-sm flex items-center gap-2">
+                        <span className="w-2 h-2 bg-warning rounded-full animate-pulse"></span>
+                        Sedang Berjalan
+                    </span>
                 </div>
             </div>
 
             {/* Error Display */}
             {(submitError || validationErrors.length > 0) && (
-                <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+                <div className="rounded-lg bg-danger/10 p-4 border border-danger/20">
                     {submitError && (
-                        <p className="text-sm text-red-800 dark:text-red-300 font-medium">{submitError}</p>
+                        <p className="text-sm text-danger font-medium">{submitError}</p>
                     )}
                     {validationErrors.length > 0 && (
-                        <ul className="mt-2 list-disc list-inside text-sm text-red-700 dark:text-red-400">
+                        <ul className="mt-2 list-disc list-inside text-sm text-danger/80">
                             {validationErrors.map((err, idx) => (
                                 <li key={idx}>{err.field}: {err.message}</li>
                             ))}
@@ -230,3 +234,4 @@ export default function FormAktifPage() {
         </div>
     );
 }
+
