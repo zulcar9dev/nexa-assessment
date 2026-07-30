@@ -104,7 +104,6 @@ export const DOCUMENT_PLACEHOLDERS = [
     { label: "Penghasilan Calon Client Aktif", value: "{{aktif_penghasilan_calon_debitur}}" },
     { label: "DSC Fleksi Aktif (Dinamis)", value: "{{aktif_dsc}}" },
     { label: "DSC Persen (%)", value: "{{aktif_dsc_percent}}" },
-    { label: "DSC 60% (Legacy)", value: "{{aktif_dsc_60}}" },
     { label: "Total Angsuran Calon Client Aktif", value: "{{aktif_total_angsuran_calon_debitur}}" },
     { label: "Maksimal Angsuran Aktif", value: "{{aktif_maksimal_angsuran}}" },
     { label: "Angsuran Kredit Diusulkan Aktif", value: "{{aktif_angsuran_diusulkan}}" },

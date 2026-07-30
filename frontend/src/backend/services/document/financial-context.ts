@@ -309,7 +309,6 @@ export class FinancialContextBuilder {
       aktif_jumlah_gaji_bulan: formatRupiah(aktifJumlahGaji),
       aktif_penghasilan_calon_debitur: formatRupiah(aktifPenghasilan),
       aktif_dsc: formatRupiah(aktifDsc),
-      aktif_dsc_60: formatRupiah(aktifDsc), // Backward compatibility
       aktif_dsc_percent: `${Math.round(aktifDscPercent * 100)}%`,
       aktif_total_angsuran_calon_debitur: formatRupiah(totalAngsuranSlik),
       aktif_maksimal_angsuran: formatRupiah(aktifMaksimalAngsuran),
@@ -352,10 +351,10 @@ export class FinancialContextBuilder {
       biaya_psjt_percent: `${pctPsjt}%`,
 
       biaya_administrasi_is_bebas: data.biaya_administrasi_is_bebas,
-      biaya_administrasi_nominal: formatRupiah(biayaAdminNominal),
+      biaya_administrasi_nominal: data.biaya_administrasi_nominal ? formatRupiah(biayaAdminNominal) : (data.biaya_administrasi_is_bebas ? "0" : "Belum Diisi"),
       biaya_administrasi_text: data.biaya_administrasi_is_bebas
         ? "Bebas Biaya Administrasi"
-        : `Biaya Administrasi sebesar Rp. ${formatRupiah(biayaAdminNominal)},-`,
+        : data.biaya_administrasi_nominal ? `Biaya Administrasi sebesar Rp. ${formatRupiah(biayaAdminNominal)},-` : "(Belum Diisi)",
     };
   }
 }

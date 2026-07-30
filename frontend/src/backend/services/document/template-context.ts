@@ -59,6 +59,19 @@ function parseManualSyaratText(
     .map((text) => ({ text }));
 }
 
+function formatPhone(phone?: string): string {
+  if (!phone) return "";
+  let cleaned = phone.replace(/[^0-9+]/g, "");
+  if (cleaned.startsWith("0")) {
+    return "+62" + cleaned.substring(1);
+  } else if (cleaned.startsWith("62")) {
+    return "+" + cleaned;
+  } else if (!cleaned.startsWith("+62")) {
+    return "+62" + cleaned;
+  }
+  return cleaned;
+}
+
 export class TemplateContextBuilder {
   /**
    * Prepare template context from client data
@@ -88,7 +101,7 @@ export class TemplateContextBuilder {
       // Identitas
       nama_pemohon: client.applicantName || data.nama_pemohon || "",
       no_ktp: client.idNumber || data.no_ktp_pemohon || "",
-      no_telepon: data.no_telepon || "",
+      no_telepon: formatPhone(data.no_telepon as string),
       tgl_lahir: formatDateIndonesian(data.tgl_lahir_pemohon as string),
       alamat: data.alamat_ktp || data.alamat_tempat_tinggal || "",
       alamat_ktp: data.alamat_ktp || "",
@@ -146,7 +159,7 @@ export class TemplateContextBuilder {
       ),
       kategori: client.kategori.replace(/_/g, " "),
       instansi: data.instansi || "",
-      status_kepegawaian_manual: data.status_kepegawaian_manual || "",
+      status_kepegawaian_manual: data.status_kepegawaian_manual || "Belum Diisi",
       jabatan: data.jabatan || "",
       golongan: data.golongan || "",
       nip: data.nip || "",
@@ -290,6 +303,7 @@ export class TemplateContextBuilder {
       uang_makan: formatRupiah(data.uang_makan as string), // Legacy single value
 
       estimasi_hak_pensiun: formatRupiah(data.estimasi_hak_pensiun as string),
+      hak_pensiun: formatRupiah((data.estimasi_hak_pensiun as string) || (data.pensiun_bulan_jumlah as string) || "0"),
       estimasi_tht: formatRupiah(data.estimasi_tht as string),
 
       pensiun_bulan_1_nama: data.pensiun_bulan_1_nama || "Januari",
@@ -328,7 +342,7 @@ export class TemplateContextBuilder {
       // Kerabat
       nama_kerabat: data.nama_kerabat || "",
       hubungan_kerabat: toTitleCase(data.hubungan_kerabat as string),
-      no_telepon_kerabat: data.no_telepon_kerabat || "",
+      no_telepon_kerabat: formatPhone(data.no_telepon_kerabat as string),
 
       // Purpose & Program
       tujuan_kredit: getTujuanKreditLabel(data.tujuan_kredit as string),
@@ -488,13 +502,6 @@ export class TemplateContextBuilder {
         .map((t) => ({ text: t.trim() }))
         .filter((t) => t.text);
     }
-    const syaratPencairanTambahan = (data.syarat_pencairan_tambahan ||
-      "") as string;
-    if (syaratPencairanTambahan) {
-      context.syarat_pencairan_tambahan = syaratPencairanTambahan.replace(/\\n/g, "\n");
-      context.list_syarat_pencairan_tambahan = [];
-    }
-
     // --- 8. LIST GENERATORS ---
     context.kategori = client.kategori; // Ensure kategori is set for generators
 
