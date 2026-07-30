@@ -161,6 +161,7 @@ export interface DebiturFormData {
 
   // Blokiran (TypeA) - Numeric count (kali)
   blokiran_type_a_jml?: number;
+  blokiran_prapurna_jml?: number;
   blokiran_pindah_gaji_jml?: number;
   blokiran_wajib_jml?: number;
   total_blokiran_jml?: number; // Auto-calculated

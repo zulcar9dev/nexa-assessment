@@ -170,8 +170,9 @@ export default React.memo(function TabEUsulan({
     const total = type_aMonths + pindahGaji + wajib;
 
     // Update if different to avoid loops
-    if (formData.blokiran_type_a_jml !== type_aMonths) {
-      updateField("blokiran_type_a_jml", type_aMonths);
+    const currentPrapurna = formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml;
+    if (currentPrapurna !== type_aMonths) {
+      updateField("blokiran_prapurna_jml", type_aMonths);
     }
 
     if (formData.total_blokiran_jml !== total) {
@@ -196,13 +197,14 @@ export default React.memo(function TabEUsulan({
     const blokirWajib = formData.blokiran_wajib_jml || 0;
 
     // We need to read directly from formData
-    const totalBlokiran =
-      (formData.blokiran_type_a_jml || 0) + pindahGaji + blokirWajib;
+    const currentPrapurna = formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml ?? 0;
+    const totalBlokiran = currentPrapurna + pindahGaji + blokirWajib;
 
     return {
       totalBlokiran,
     };
   }, [
+    formData.blokiran_prapurna_jml,
     formData.blokiran_type_a_jml,
     formData.blokiran_pindah_gaji_jml,
     formData.blokiran_wajib_jml,
@@ -486,7 +488,7 @@ export default React.memo(function TabEUsulan({
             <div className="relative">
               <input
                 type="number"
-                value={formData.blokiran_type_a_jml || ""}
+                value={(formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml) || ""}
                 readOnly
                 className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-surface-container-low text-on-surface-variant sm:text-sm py-2.5 pr-12 pl-3 text-right"
               />

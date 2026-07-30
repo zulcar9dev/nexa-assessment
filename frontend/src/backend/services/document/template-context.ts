@@ -209,9 +209,9 @@ export class TemplateContextBuilder {
       sisa_masa_kerja: data.sisa_masa_kerja || "",
 
       // Blokiran
-      blokiran_prapurna: Number(data.blokiran_prapurna_jml || 0),
+      blokiran_prapurna: Number(data.blokiran_prapurna_jml ?? data.blokiran_type_a_jml ?? 0),
       blokiran_prapurna_terbilang: terbilang(
-        Number(data.blokiran_prapurna_jml || 0),
+        Number(data.blokiran_prapurna_jml ?? data.blokiran_type_a_jml ?? 0),
       ),
       blokiran_pindah_gaji: Number(data.blokiran_pindah_gaji_jml || 0),
       blokiran_pindah_gaji_terbilang: terbilang(
