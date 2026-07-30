@@ -415,7 +415,7 @@ export default React.memo(function TabEUsulan({
                     updateField("biaya_administrasi_nominal", "");
                   }
                 }}
-                className="w-3.5 h-3.5 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary-brand dark:focus:ring-primary-brand dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                className="w-3.5 h-3.5 text-primary bg-surface-container-low border-outline-variant/50 rounded focus:ring-primary/10 focus:ring-2"
               />
               <label
                 htmlFor="bebas_biaya_admin"
@@ -451,8 +451,8 @@ export default React.memo(function TabEUsulan({
               placeholder="0"
               className={`block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pl-10 pr-3 text-right ${
                 formData.biaya_administrasi_is_bebas
-                  ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
-                  : "bg-surface-light dark:text-white"
+                  ? "bg-surface-container-low text-on-surface-variant"
+                  : "bg-surface-light text-on-surface"
               }`}
             />
           </div>
@@ -488,7 +488,7 @@ export default React.memo(function TabEUsulan({
                 type="number"
                 value={formData.blokiran_type_a_jml || ""}
                 readOnly
-                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-gray-100 text-gray-500 sm:text-sm py-2.5 pr-12 pl-3 text-right"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-surface-container-low text-on-surface-variant sm:text-sm py-2.5 pr-12 pl-3 text-right"
               />
               <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
                 Kali
@@ -568,9 +568,9 @@ export default React.memo(function TabEUsulan({
                 type="number"
                 value={formData.total_blokiran_jml || 0}
                 readOnly
-                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-white font-bold text-primary sm:text-lg py-2.5 pr-12 pl-3 text-right"
+                className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-surface-light font-bold text-primary sm:text-lg py-2.5 pr-12 pl-3 text-right"
               />
-              <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
+              <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-on-surface-variant text-sm pointer-events-none">
                 Kali
               </span>
             </div>
