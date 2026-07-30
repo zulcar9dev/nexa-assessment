@@ -237,9 +237,9 @@ export class FinancialContextBuilder {
     const plafon = parseInt(
       String(data.usulan_plafon_kredit || 0).replace(/[^0-9]/g, ""),
       10,
-    );
-    const tenor = parseInt(String(data.usulan_jangka_waktu_bulan || 0), 10);
-    const bunga = parseFloat(String(data.usulan_bunga_persen || 0));
+    ) || 0;
+    const tenor = parseInt(String(data.usulan_jangka_waktu_bulan || 0).replace(/[^0-9]/g, ""), 10) || 0;
+    const bunga = parseFloat(String(data.usulan_bunga_persen || 0)) || 0;
 
     // 4. Calculate Angsuran Kredit (Annuity)
     const monthlyRate = bunga / 12 / 100;

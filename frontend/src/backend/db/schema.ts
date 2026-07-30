@@ -88,6 +88,14 @@ export const client = pgTable(
     jenisPengajuan: text("jenis_pengajuan").$type<'BARU' | 'TOP_UP' | 'TOP_UP_SISA_GAJI' | 'TAKEOVER' | 'THT' | 'FLEKSI_AKTIF' | 'PENSIUNAN_JANDA_BARU' | 'PENSIUNAN_JANDA_TOP_UP' | 'PENSIUNAN_JANDA_TAKEOVER' | 'PENSIUNAN_DUDA_BARU' | 'PENSIUNAN_DUDA_TOP_UP' | 'PENSIUNAN_DUDA_TAKEOVER'>().default('BARU').notNull(),
     segmentasi: text("segmentasi").$type<'TASPEN' | 'ASABRI' | 'BUMD_BUMN' | 'SWASTA' | 'PEMERINTAHAN'>().default('TASPEN').notNull(),
     dataLengkap: jsonb("data_lengkap").notNull(),
+    recommendations: jsonb("recommendations"),
+    retirementPlan: text("retirement_plan"),
+    pensionBenefits: text("pension_benefits"),
+    healthConditions: text("health_conditions"),
+    medications: text("medications"),
+    exerciseFrequency: text("exercise_frequency"),
+    socialActivities: text("social_activities"),
+    communityInvolvement: text("community_involvement"),
     status: text("status").$type<'DRAFT' | 'SUBMITTED'>().default('SUBMITTED').notNull(),
     deletedAt: timestamp("deleted_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -119,6 +127,7 @@ export const template = pgTable(
     name: text("name").notNull(),
     filename: text("filename").notNull(),
     path: text("path").notNull(),
+    fileData: text("file_data"),
     updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => new Date())

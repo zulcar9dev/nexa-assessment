@@ -4,7 +4,7 @@ import { useFormStore } from "@/stores/form-store";
 import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { CreditCard, Calculator } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
-import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import { DOCUMENT_PLACEHOLDERS } from "@/lib/placeholders";
 import {
   calculateMonthsDifference,
   terbilang,

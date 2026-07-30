@@ -57,13 +57,11 @@ export class DocumentTemplateService {
       let xmlContent = file.asText();
 
       if (file.name === "word/document.xml") {
-        if (
-          xmlContent.includes("Konfirmasi Gaji Pemohon") ||
-          xmlContent.includes("Konfirmas Gaji Pemohon") ||
-          /Konfirmas[i]?(\s*<[^>]+>\s*|\s+)Gaji(\s*<[^>]+>\s*|\s+)Pemohon/i.test(xmlContent)
-        ) {
+        // Use a safer regex to avoid ReDoS when matching text split across XML tags
+        const searchPattern = /Konfirmas[i]?\s*(?:<[^>]+>\s*)*Gaji\s*(?:<[^>]+>\s*)*Pemohon/gi;
+        if (searchPattern.test(xmlContent)) {
           xmlContent = xmlContent.replace(
-            /Konfirmas[i]?(\s*<[^>]+>\s*|\s+)Gaji(\s*<[^>]+>\s*|\s+)Pemohon/gi,
+            searchPattern,
             "{{tujuan_call}}"
           );
         }

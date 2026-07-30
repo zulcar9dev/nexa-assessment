@@ -96,7 +96,7 @@ export default function AdminTemplatePage() {
     );
   }
 
-  const handleFileUpload = (
+  const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     kategori: string
   ) => {
@@ -109,13 +109,42 @@ export default function AdminTemplatePage() {
         return;
       }
 
-      // Simulate upload success
-      setSelectedCategory(kategori);
-      setUploadStatus("success");
-      setTimeout(() => {
-        setUploadStatus("idle");
-        setSelectedCategory("");
-      }, 3000);
+      setUploadStatus("idle");
+      // Create FormData
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      // Determine Kategori enum based on the key
+      let kategoriEnum = "PRAPURNA";
+      if (kategori.includes("type_c") || kategori.includes("aktif")) {
+          kategoriEnum = "AKTIF";
+      } else if (kategori.includes("type_b") || kategori.includes("purna")) {
+          kategoriEnum = "PURNA";
+      }
+      formData.append("kategori", kategoriEnum);
+
+      try {
+        const response = await fetch("/api/template", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (response.ok) {
+            setSelectedCategory(kategori);
+            setUploadStatus("success");
+            setTimeout(() => {
+                setUploadStatus("idle");
+                setSelectedCategory("");
+            }, 3000);
+        } else {
+            setUploadStatus("error");
+            setTimeout(() => setUploadStatus("idle"), 3000);
+        }
+      } catch (err) {
+        console.error("Upload error:", err);
+        setUploadStatus("error");
+        setTimeout(() => setUploadStatus("idle"), 3000);
+      }
     }
   };
 

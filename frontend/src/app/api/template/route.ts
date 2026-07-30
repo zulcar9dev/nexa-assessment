@@ -138,6 +138,18 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
+        // Check magic bytes for ZIP/DOCX (PK\x03\x04)
+        if (buffer.length < 4 || buffer[0] !== 0x50 || buffer[1] !== 0x4B || buffer[2] !== 0x03 || buffer[3] !== 0x04) {
+            return NextResponse.json<ApiResponse>({
+                success: false,
+                error: {
+                    code: 'VALIDATION_ERROR',
+                    message: 'File bukan dokumen Word (.docx) yang valid',
+                    details: [{ field: 'file', message: 'Isi file tidak sesuai dengan format .docx (ZIP)' }],
+                },
+            }, { status: 400 });
+        }
+
         // Save file
         await TemplateService.saveFile(
             kategori as Kategori,

@@ -54,6 +54,7 @@ export class TemplateService {
     static async upsert(
         kategori: Kategori,
         filename: string,
+        fileData?: string | null,
         name?: string
     ) {
         const templatePath = path.join(this.TEMPLATE_DIR, filename);
@@ -67,6 +68,7 @@ export class TemplateService {
                 name: displayName,
                 filename,
                 path: templatePath,
+                fileData: fileData || null,
             })
             .onConflictDoUpdate({
                 target: template.kategori,
@@ -74,6 +76,7 @@ export class TemplateService {
                     filename,
                     path: templatePath,
                     name: displayName,
+                    fileData: fileData || null,
                     updatedAt: new Date()
                 }
             })
@@ -110,11 +113,14 @@ export class TemplateService {
         const filename = `template_${safeKategori}${ext}`;
         const filepath = path.join(this.TEMPLATE_DIR, filename);
 
-        // Write file
+        // Write file (still keeping local copy for redundancy/debug)
         await fs.writeFile(filepath, file);
 
+        // Convert Buffer to Base64
+        const fileDataBase64 = file.toString('base64');
+
         // Update database record
-        await this.upsert(kategori, filename);
+        await this.upsert(kategori, filename, fileDataBase64);
 
         // Update cache
         this.cache.set(kategori, file);
@@ -129,12 +135,8 @@ export class TemplateService {
         const templateRecord = await this.getByKategori(kategori);
         if (!templateRecord) return null;
 
-        try {
-            await fs.access(templateRecord.path);
-            return templateRecord.path;
-        } catch {
-            return null;
-        }
+        // Note: we now prioritize DB content over local path
+        return templateRecord.path;
     }
 
     /**
@@ -145,25 +147,44 @@ export class TemplateService {
         const cached = this.cache.get(kategori);
         if (cached) return cached;
 
-        const filepath = await this.getFilePath(kategori);
-        if (!filepath) return null;
+        const templateRecord = await this.getByKategori(kategori);
+        if (!templateRecord) return null;
 
-        try {
-            const data = await fs.readFile(filepath);
-            // Store in cache
+        let data: Buffer | null = null;
+
+        if (templateRecord.fileData) {
+            // Read from DB Base64
+            data = Buffer.from(templateRecord.fileData, 'base64');
+        } else {
+            // Fallback to local file if DB has no data
+            try {
+                data = await fs.readFile(templateRecord.path);
+            } catch {
+                return null;
+            }
+        }
+
+        if (data) {
             this.cache.set(kategori, data);
             return data;
-        } catch {
-            return null;
         }
+        return null;
     }
 
     /**
      * Check if template file exists
      */
     static async fileExists(kategori: Kategori): Promise<boolean> {
-        const filepath = await this.getFilePath(kategori);
-        return filepath !== null;
+        const templateRecord = await this.getByKategori(kategori);
+        if (!templateRecord) return false;
+        if (templateRecord.fileData) return true;
+        
+        try {
+            await fs.access(templateRecord.path);
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     /**
@@ -181,9 +202,9 @@ export class TemplateService {
         for (const defaultTemplate of defaultTemplates) {
             const filepath = path.join(this.TEMPLATE_DIR, defaultTemplate.filename);
             try {
-                await fs.access(filepath);
-                // File exists, create/update database record
-                await this.upsert(defaultTemplate.kategori, defaultTemplate.filename);
+                const fileData = await fs.readFile(filepath);
+                // File exists, create/update database record with base64 data
+                await this.upsert(defaultTemplate.kategori, defaultTemplate.filename, fileData.toString('base64'));
             } catch {
                 // File doesn't exist, skip
                 console.log(`Template file not found: ${defaultTemplate.filename}`);

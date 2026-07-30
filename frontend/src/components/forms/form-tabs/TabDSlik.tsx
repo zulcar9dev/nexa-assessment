@@ -5,7 +5,7 @@ import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { Plus, Trash2, ClipboardCheck, Calendar } from "lucide-react";
 import type { SlikFacility } from "@/types/clients";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
-import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import { DOCUMENT_PLACEHOLDERS } from "@/lib/placeholders";
 import React, { useCallback, useMemo } from "react";
 import { formatNumberForDisplay, cleanNumberInput } from "@/lib/utils";
 

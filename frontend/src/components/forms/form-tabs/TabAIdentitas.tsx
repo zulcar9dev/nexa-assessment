@@ -6,7 +6,7 @@ import { useTabNavigation } from "@/hooks/useTabNavigation";
 
 import { User, MapPin, Calendar } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
-import { DOCUMENT_PLACEHOLDERS } from "@/constants/placeholders";
+import { DOCUMENT_PLACEHOLDERS } from "@/lib/placeholders";
 import React from "react";
 
 export default React.memo(function TabAIdentitas() {

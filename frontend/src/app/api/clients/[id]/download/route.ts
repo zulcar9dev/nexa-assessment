@@ -116,13 +116,18 @@ export async function GET(
                 );
                 console.log('[DOWNLOAD] Template generation successful');
             } catch (templateError) {
-                console.error('[DOWNLOAD] Template generation failed, falling back to simple:', templateError);
-                // Fallback to simple document if template generation fails
-                docBuffer = await DocumentService.generateSimpleDocx(debiturData);
+                console.error('[DOWNLOAD] Template generation failed:', templateError);
+                return NextResponse.json<ApiResponse>({
+                    success: false,
+                    error: {
+                        code: 'INTERNAL_ERROR',
+                        message: `Gagal memproses template: ${templateError instanceof Error ? templateError.message : 'Unknown error'}. Silakan perbaiki sintaks template Anda.`,
+                    },
+                }, { status: 500 });
             }
         } else {
-            console.log('[DOWNLOAD] Template not found, using simple generation');
-            // Generate simple document without template
+            console.log('[DOWNLOAD] Template not found, using simple generation (default fallback)');
+            // Generate simple document without template only if template doesn't exist
             docBuffer = await DocumentService.generateSimpleDocx(debiturData);
         }
 
