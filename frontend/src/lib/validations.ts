@@ -7,6 +7,7 @@ import {
   toLocalDateStr,
 } from "./utils";
 import { AGE_LIMITS, TENOR_CAPS } from "./constants";
+import { BLOKIRAN_MAX_MONTHS, type BlokiranKategori } from "./blokiran";
 
 // ==========================================
 // Field Label Map — untuk pesan error yang informatif
@@ -311,6 +312,80 @@ export const usulanSchemaBase = z.object({
 export const usulanSchema = usulanSchemaBase.refine(adminCostRefinement, adminCostRefinementParams);
 
 // ==========================================
+// Blokiran Validation (Semua Kategori)
+// ==========================================
+// Nilai otomatis (prapurna/total) dihitung ulang oleh sistem saat save & generate
+// dokumen, sehingga validasi fokus pada input manual & batas wajar.
+function validateBlokiranRules(
+    data: {
+        blokiran_prapurna_jml?: number;
+        blokiran_type_a_jml?: number;
+        blokiran_pindah_gaji_jml?: number;
+        blokiran_wajib_jml?: number;
+        total_blokiran_jml?: number;
+    },
+    kategori: BlokiranKategori,
+    ctx: z.RefinementCtx,
+): void {
+    const isInvalidCount = (v?: number) =>
+        v !== undefined &&
+        v !== null &&
+        (!Number.isInteger(v) || v < 0 || v > BLOKIRAN_MAX_MONTHS);
+
+    const prapurna = data.blokiran_prapurna_jml ?? data.blokiran_type_a_jml;
+    if (isInvalidCount(prapurna)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Blokiran TypeA harus angka 0 - ${BLOKIRAN_MAX_MONTHS}`,
+            path: ["blokiran_prapurna_jml"],
+        });
+    }
+
+    if (isInvalidCount(data.blokiran_pindah_gaji_jml)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Blokiran Pindah Gaji harus angka 0 - ${BLOKIRAN_MAX_MONTHS}`,
+            path: ["blokiran_pindah_gaji_jml"],
+        });
+    }
+
+    if (isInvalidCount(data.blokiran_wajib_jml)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Blokiran Wajib harus angka 0 - ${BLOKIRAN_MAX_MONTHS}`,
+            path: ["blokiran_wajib_jml"],
+        });
+    }
+
+    if (isInvalidCount(data.total_blokiran_jml)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Total Blokiran harus angka 0 - ${BLOKIRAN_MAX_MONTHS}`,
+            path: ["total_blokiran_jml"],
+        });
+    }
+
+    if (kategori === "type_b" && prapurna !== undefined && prapurna !== 0) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Blokiran TypeA tidak berlaku untuk kategori Purna",
+            path: ["blokiran_prapurna_jml"],
+        });
+    }
+}
+
+// ==========================================
+// Blokiran Fields (ikut divalidasi di superRefine)
+// ==========================================
+const blokiranSchemaShape = {
+    blokiran_prapurna_jml: z.number().optional(),
+    blokiran_type_a_jml: z.number().optional(),
+    blokiran_pindah_gaji_jml: z.number().optional(),
+    blokiran_wajib_jml: z.number().optional(),
+    total_blokiran_jml: z.number().optional(),
+};
+
+// ==========================================
 // Complete Form Schemas
 // ==========================================
 
@@ -321,9 +396,11 @@ export const clientTypeASchema = z.object({
     ...penghasilanTypeASchema.shape,
     ...slikSchema.shape,
     ...usulanSchemaBase.shape,
+    ...blokiranSchemaShape,
 }).refine(alamatRefinement, alamatRefinementParams).refine(adminCostRefinement, adminCostRefinementParams)
 .superRefine((data, ctx) => {
     validateAgeAndTenorRules({ ...data, kategori: "type_a" }, ctx);
+    validateBlokiranRules(data, "type_a", ctx);
 });
 
 // Complete Form Schema (Purna)
@@ -333,6 +410,7 @@ export const clientPurnaSchema = z.object({
     ...penghasilanPurnaSchema.shape,
     ...slikSchema.shape,
     ...usulanSchemaBase.shape,
+    ...blokiranSchemaShape,
 })
 .refine(alamatRefinement, alamatRefinementParams)
 .refine(adminCostRefinement, adminCostRefinementParams)
@@ -375,6 +453,9 @@ export const clientPurnaSchema = z.object({
 
     // 2. Age and Tenor business rules (semua kategori, termasuk Janda/Duda)
     validateAgeAndTenorRules({ ...data, kategori: "type_b" }, ctx);
+
+    // 3. Blokiran rules (TypeA tidak berlaku untuk Purna)
+    validateBlokiranRules(data, "type_b", ctx);
 });
 
 // Tab B - Pekerjaan Validation (Aktif)
@@ -398,9 +479,11 @@ export const clientAktifSchema = z.object({
     ...penghasilanAktifSchema.shape,
     ...slikSchema.shape,
     ...usulanSchemaBase.shape,
+    ...blokiranSchemaShape,
 }).refine(alamatRefinement, alamatRefinementParams).refine(adminCostRefinement, adminCostRefinementParams)
 .superRefine((data, ctx) => {
     validateAgeAndTenorRules({ ...data, kategori: "type_c" }, ctx);
+    validateBlokiranRules(data, "type_c", ctx);
 });
 
 // Type exports
@@ -439,7 +522,7 @@ export function getTabForField(field: string): string {
     ];
     const tabEFields = [
         "usulan_plafon_kredit", "usulan_jangka_waktu_bulan", "usulan_bunga_persen",
-        "biaya_administrasi_nominal", "biaya_administrasi_is_bebas"
+        "biaya_administrasi_nominal", "biaya_administrasi_is_bebas", "blokiran_"
     ];
 
     if (tabAFields.some(f => field.startsWith(f))) return "tab-a";

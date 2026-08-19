@@ -7,6 +7,7 @@ import { db } from '@/backend/db';
 import { client, user } from '@/backend/db/schema';
 import { and, eq, isNull, or, ilike, sql, desc, count, gte, inArray } from 'drizzle-orm';
 import type { DebiturQueryParams, CreateDebiturRequest, UpdateDebiturRequest } from '@/types/api';
+import { normalizeBlokiran, type BlokiranKategori } from '@/lib/blokiran';
 
 
 // Mapping Helpers to conform input to Drizzle Schema Enums
@@ -38,6 +39,14 @@ function mapToDrizzleSegmentasi(s: string): 'TASPEN' | 'ASABRI' | 'BUMD_BUMN' | 
         return upper as 'TASPEN' | 'ASABRI' | 'BUMD_BUMN' | 'SWASTA' | 'PEMERINTAHAN';
     }
     return 'TASPEN'; // Fallback
+}
+
+// Helper untuk normalisasi blokiran berdasarkan kategori yang disimpan di DB
+function toBlokiranKategori(k: string): BlokiranKategori {
+    const lower = k.toLowerCase();
+    if (lower.includes('type_c') || lower.includes('aktif')) return 'type_c';
+    if (lower.includes('type_b') || lower.includes('purna')) return 'type_b';
+    return 'type_a';
 }
 
 interface StatsResult {
@@ -284,7 +293,10 @@ export class DebiturService {
             kategori: mapToDrizzleKategori(data.kategori),
             jenisPengajuan: jenis,
             segmentasi: mapToDrizzleSegmentasi(data.segmentasi),
-            dataLengkap: data.dataLengkap || {},
+            dataLengkap: normalizeBlokiran(
+                data.dataLengkap || {},
+                toBlokiranKategori(data.kategori),
+            ),
             userId,
             status,
         }).returning();
@@ -302,7 +314,15 @@ export class DebiturService {
         if (data.kategori !== undefined) updateData.kategori = mapToDrizzleKategori(data.kategori);
         if (data.jenisPengajuan !== undefined) updateData.jenisPengajuan = mapToDrizzleJenis(data.jenisPengajuan);
         if (data.segmentasi !== undefined) updateData.segmentasi = mapToDrizzleSegmentasi(data.segmentasi);
-        if (data.dataLengkap !== undefined) updateData.dataLengkap = data.dataLengkap;
+        if (data.dataLengkap !== undefined) {
+            // Edit page tidak mengirim kategori; ambil dari record yang sudah ada
+            const existing = await this.getById(id);
+            const kategori = existing?.kategori || data.kategori || 'PRAPURNA';
+            updateData.dataLengkap = normalizeBlokiran(
+                data.dataLengkap,
+                toBlokiranKategori(kategori),
+            );
+        }
         if (data.status !== undefined) updateData.status = data.status;
 
         const [updated] = await db.update(client)

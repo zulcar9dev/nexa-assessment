@@ -477,6 +477,43 @@ export function calculateMonthsDifference(startDateStr: string, endDateStr: stri
 }
 
 /**
+ * Calculate full months between two dates, rounded UP if there are leftover days.
+ * e.g. 19 Aug 2026 -> 30 Aug 2026 = 0 full months + 11 days = 1 month
+ * e.g. 19 Aug 2026 -> 19 Oct 2026 = 2 full months = 2
+ * Returns 0 if start date > end date or dates are invalid.
+ */
+export function calculateMonthsDifferenceRoundedUp(
+    startDateStr: string,
+    endDateStr: string,
+): number {
+    if (!startDateStr || !endDateStr) return 0;
+
+    const start = parseDateLocal(startDateStr);
+    const end = parseDateLocal(endDateStr);
+
+    if (!start || !end) return 0;
+
+    if (start > end) return 0;
+
+    let totalMonths =
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth());
+
+    // Kurangi 1 jika bulan terakhir belum genap (dengan penyesuaian akhir bulan)
+    while (addMonthsToDate(start, totalMonths) > end) {
+        totalMonths--;
+    }
+
+    // Bulan berjalan: sisa hari > 0 dihitung sebagai 1 bulan penuh
+    const exactEnd = addMonthsToDate(start, totalMonths);
+    if (totalMonths >= 0 && exactEnd < end) {
+        totalMonths++;
+    }
+
+    return Math.max(0, totalMonths);
+}
+
+/**
  * Calculate age based on birth date string (whole years)
  */
 export function calculateAge(birthDateStr: string): number {

@@ -1,5 +1,10 @@
 import { ConfigService } from "../config.service";
 import { terbilang, formatRupiah } from "@/lib/utils";
+import {
+  computeBlokiran,
+  isPindahGajiApplicable,
+  type BlokiranKategori,
+} from "@/lib/blokiran";
 import { ClientData, SlikFacility } from "./types";
 import {
   formatDateIndonesian,
@@ -83,6 +88,28 @@ export class TemplateContextBuilder {
     const data = client.dataLengkap;
     const today = new Date();
     const slikFacilities = (data.slik_facilities as SlikFacility[]) || [];
+
+    // Blokiran — dihitung ulang saat generate dokumen agar selalu akurat
+    // (data tersimpan bisa basi jika dokumen dibuat berbulan setelah form diisi)
+    const kategoriLowerBlokiran = String(client.kategori).toLowerCase();
+    const blokiranKategori: BlokiranKategori =
+      kategoriLowerBlokiran.includes("type_c") ||
+      kategoriLowerBlokiran.includes("aktif")
+        ? "type_c"
+        : kategoriLowerBlokiran.includes("type_a") ||
+            kategoriLowerBlokiran.includes("prapurna")
+          ? "type_a"
+          : "type_b";
+
+    const blokiran = computeBlokiran(data, blokiranKategori);
+    const jenisPindahGaji =
+      client.jenisPengajuan || String(data.jenis_pengajuan || "");
+    const pindahGaji = isPindahGajiApplicable(
+      blokiranKategori,
+      jenisPindahGaji,
+    )
+      ? Number(data.blokiran_pindah_gaji_jml || 0)
+      : 0;
 
     // --- 1. BASE CONTEXT (Identity, Job, etc.) ---
     const context: Record<string, unknown> = {
@@ -221,19 +248,17 @@ export class TemplateContextBuilder {
       ),
       sisa_masa_kerja: data.sisa_masa_kerja || "",
 
-      // Blokiran
-      blokiran_prapurna: Number(data.blokiran_prapurna_jml ?? data.blokiran_type_a_jml ?? 0),
+      // Blokiran (nilai dihitung ulang di atas)
+      blokiran_prapurna: blokiran.blokiran_prapurna_jml,
       blokiran_prapurna_terbilang: terbilang(
-        Number(data.blokiran_prapurna_jml ?? data.blokiran_type_a_jml ?? 0),
+        blokiran.blokiran_prapurna_jml,
       ),
-      blokiran_pindah_gaji: Number(data.blokiran_pindah_gaji_jml || 0),
-      blokiran_pindah_gaji_terbilang: terbilang(
-        Number(data.blokiran_pindah_gaji_jml || 0),
-      ),
+      blokiran_pindah_gaji: pindahGaji,
+      blokiran_pindah_gaji_terbilang: terbilang(pindahGaji),
       blokiran_wajib: Number(data.blokiran_wajib_jml || 0),
       blokiran_wajib_terbilang: terbilang(Number(data.blokiran_wajib_jml || 0)),
-      total_blokiran: Number(data.total_blokiran_jml || 0),
-      total_blokiran_terbilang: terbilang(Number(data.total_blokiran_jml || 0)),
+      total_blokiran: blokiran.total_blokiran_jml,
+      total_blokiran_terbilang: terbilang(blokiran.total_blokiran_jml),
 
       // Data Verifikasi
       nama_bendahara: data.nama_bendahara || "",

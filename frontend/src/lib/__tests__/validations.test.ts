@@ -303,4 +303,93 @@ describe("validations.ts - Nexa Fleksi validation schemas", () => {
             }
         });
     });
+
+    describe("Blokiran Validation (Semua Kategori)", () => {
+        const baseTypeA = {
+            ...validBaseIdentitas,
+            ...validBaseSlikUsulan,
+            segmentasi: "taspen" as const,
+            jenis_pengajuan: "baru" as const,
+            instansi: "Dinas Pendidikan",
+            golongan: "III/a",
+            tgl_pensiun_pemohon: "2030-01-01",
+            estimasi_hak_pensiun: "5000000",
+            usulan_jangka_waktu_bulan: "60",
+            blokiran_prapurna_jml: 41,
+            blokiran_pindah_gaji_jml: 3,
+            blokiran_wajib_jml: 2,
+            total_blokiran_jml: 46,
+        };
+
+        it("TypeA: blokiran valid lulus", () => {
+            expect(clientTypeASchema.safeParse(baseTypeA).success).toBe(true);
+        });
+
+        it("TypeA: blokiran pindah gaji negatif ditolak", () => {
+            const data = { ...baseTypeA, blokiran_pindah_gaji_jml: -5 };
+            const result = clientTypeASchema.safeParse(data);
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                expect(result.error.issues.some(i => i.path.includes("blokiran_pindah_gaji_jml"))).toBe(true);
+            }
+        });
+
+        it("TypeA: blokiran wajib melebihi batas wajar ditolak", () => {
+            const data = { ...baseTypeA, blokiran_wajib_jml: 601 };
+            const result = clientTypeASchema.safeParse(data);
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                expect(result.error.issues.some(i => i.path.includes("blokiran_wajib_jml"))).toBe(true);
+            }
+        });
+
+        it("TypeA: nilai blokiran tidak bulat ditolak", () => {
+            const data = { ...baseTypeA, blokiran_pindah_gaji_jml: 2.5 };
+            const result = clientTypeASchema.safeParse(data);
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                expect(result.error.issues.some(i => i.path.includes("blokiran_pindah_gaji_jml"))).toBe(true);
+            }
+        });
+
+        it("Purna: blokiran prapurna > 0 ditolak (tidak berlaku untuk Purna)", () => {
+            const basePurna = {
+                ...validBaseIdentitas,
+                ...validBaseSlikUsulan,
+                segmentasi: "taspen" as const,
+                jenis_pengajuan: "baru" as const,
+                no_sk_pensiun: "SK-12345",
+                tgl_sk_pensiun: "2024-01-01",
+                tgl_pensiun_tmt: "2024-02-01",
+                pensiun_bulan_jumlah: "5000000",
+                usulan_jangka_waktu_bulan: "60",
+                blokiran_prapurna_jml: 10,
+                blokiran_pindah_gaji_jml: 2,
+                blokiran_wajib_jml: 1,
+                total_blokiran_jml: 13,
+            };
+            const result = clientPurnaSchema.safeParse(basePurna);
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                expect(result.error.issues.some(i => i.path.includes("blokiran_prapurna_jml"))).toBe(true);
+            }
+        });
+
+        it("Purna: tanpa blokiran prapurna lulus", () => {
+            const basePurna = {
+                ...validBaseIdentitas,
+                ...validBaseSlikUsulan,
+                segmentasi: "taspen" as const,
+                jenis_pengajuan: "baru" as const,
+                no_sk_pensiun: "SK-12345",
+                tgl_sk_pensiun: "2024-01-01",
+                tgl_pensiun_tmt: "2024-02-01",
+                pensiun_bulan_jumlah: "5000000",
+                usulan_jangka_waktu_bulan: "60",
+                blokiran_pindah_gaji_jml: 2,
+                blokiran_wajib_jml: 1,
+            };
+            expect(clientPurnaSchema.safeParse(basePurna).success).toBe(true);
+        });
+    });
 });

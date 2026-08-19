@@ -3,6 +3,7 @@ import {
   calculateRoundedAgeMonths,
   calculateMaxTenorByAgeMonths,
   calculateMonthsDifference,
+  calculateMonthsDifferenceRoundedUp,
   formatAgeMonths,
   formatAgeBreakdown,
   toLocalDateStr,
@@ -86,6 +87,37 @@ describe("utils.ts - Perhitungan Usia & Jangka Waktu", () => {
 
         it("start > end -> 0", () => {
             expect(calculateMonthsDifference("2027-02-28", "2026-08-19")).toBe(0);
+        });
+    });
+
+    describe("calculateMonthsDifferenceRoundedUp", () => {
+        it("sisa hari > 0 dihitung 1 bulan (19 Aug -> 30 Aug = 1)", () => {
+            expect(calculateMonthsDifferenceRoundedUp("2026-08-19", "2026-08-30")).toBe(1);
+        });
+
+        it("bulan penuh tanpa sisa hari (19 Aug -> 19 Oct = 2)", () => {
+            expect(calculateMonthsDifferenceRoundedUp("2026-08-19", "2026-10-19")).toBe(2);
+        });
+
+        it("sama dengan kasus floor jika tanggal genap (19 Aug 2026 -> 19 Aug 2027 = 12)", () => {
+            expect(calculateMonthsDifferenceRoundedUp("2026-08-19", "2027-08-19")).toBe(12);
+        });
+
+        it("tanggal sama -> 0", () => {
+            expect(calculateMonthsDifferenceRoundedUp("2026-08-19", "2026-08-19")).toBe(0);
+        });
+
+        it("pensiun sudah lewat -> 0", () => {
+            expect(calculateMonthsDifferenceRoundedUp("2026-08-19", "2026-01-01")).toBe(0);
+        });
+
+        it("kasus akhir bulan: 31 Jan -> 28 Feb = 1 bulan penuh (sisa hari 0)", () => {
+            expect(calculateMonthsDifferenceRoundedUp("2026-01-31", "2026-02-28")).toBe(1);
+        });
+
+        it("tanggal tidak valid -> 0", () => {
+            expect(calculateMonthsDifferenceRoundedUp("", "2044-01-09")).toBe(0);
+            expect(calculateMonthsDifferenceRoundedUp("2026-08-19", "")).toBe(0);
         });
     });
 

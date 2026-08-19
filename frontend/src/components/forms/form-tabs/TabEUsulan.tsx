@@ -16,6 +16,11 @@ import {
   cleanNumberInput,
 } from "@/lib/utils";
 import { AGE_LIMITS, TENOR_CAPS } from "@/lib/constants";
+import {
+  computeBlokiran,
+  isPindahGajiApplicable,
+  BLOKIRAN_MAX_MONTHS,
+} from "@/lib/blokiran";
 import React, { useEffect, useMemo } from "react";
 
 interface TabEUsulanProps {
@@ -126,69 +131,42 @@ export default React.memo(function TabEUsulan({
   };
 
   // Auto-calculate Blokiran Fields
+  const blokiran = useMemo(
+    () => computeBlokiran(formData as Record<string, unknown>, kategori),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      formData.tgl_pensiun_pemohon,
+      formData.blokiran_pindah_gaji_jml,
+      formData.blokiran_wajib_jml,
+      formData.jenis_pengajuan,
+      kategori,
+    ],
+  );
+
+  // Sinkronkan nilai hasil hitung ke store (agar draft tersimpan tetap segar)
   useEffect(() => {
-    const today = toLocalDateStr();
-    const tglPensiun = formData.tgl_pensiun_pemohon; // from Tab B
-
-    // 1. Calculate Blokiran TypeA (Months to Pension) - ONLY for TypeA
-    let type_aMonths = 0;
-    if (kategori === "type_a" && tglPensiun) {
-      type_aMonths = calculateMonthsDifference(today, tglPensiun);
+    const currentPrapurna =
+      formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml;
+    if (currentPrapurna !== blokiran.blokiran_prapurna_jml) {
+      updateField("blokiran_prapurna_jml", blokiran.blokiran_prapurna_jml);
     }
-
-    // 2. Get Manual Inputs
-    // Blokiran Pindah Gaji should not be counted for type_c (and hidden in UI)
-    let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
-    if (kategori === "type_c") {
-      pindahGaji = 0;
-    }
-
-    const wajib = formData.blokiran_wajib_jml || 0;
-
-    // 3. Calculate Total
-    const total = type_aMonths + pindahGaji + wajib;
-
-    // Update if different to avoid loops
-    const currentPrapurna = formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml;
-    if (currentPrapurna !== type_aMonths) {
-      updateField("blokiran_prapurna_jml", type_aMonths);
-    }
-
-    if (formData.total_blokiran_jml !== total) {
-      updateField("total_blokiran_jml", total);
+    if (formData.total_blokiran_jml !== blokiran.total_blokiran_jml) {
+      updateField("total_blokiran_jml", blokiran.total_blokiran_jml);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    formData.tgl_pensiun_pemohon,
-    formData.blokiran_pindah_gaji_jml,
-    formData.blokiran_wajib_jml,
-    updateField,
+  }, [blokiran.blokiran_prapurna_jml, blokiran.total_blokiran_jml]);
+
+  const pindahGajiApplicable = isPindahGajiApplicable(
     kategori,
-  ]);
+    formData.jenis_pengajuan,
+  );
 
-  // Auto-calculate Total Blokiran, Max Plafond, and Take Home Pay
-  const _calculationResult = useMemo(() => {
-    // Blokiran
-    let pindahGaji = formData.blokiran_pindah_gaji_jml || 0;
-    // Logic for type_c already handled above for defaults, but here for safety
-    if (kategori === "type_c") pindahGaji = 0;
-
-    const blokirWajib = formData.blokiran_wajib_jml || 0;
-
-    // We need to read directly from formData
-    const currentPrapurna = formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml ?? 0;
-    const totalBlokiran = currentPrapurna + pindahGaji + blokirWajib;
-
-    return {
-      totalBlokiran,
-    };
-  }, [
-    formData.blokiran_prapurna_jml,
-    formData.blokiran_type_a_jml,
-    formData.blokiran_pindah_gaji_jml,
-    formData.blokiran_wajib_jml,
-    kategori,
-  ]);
+  // Clamp input blokiran manual (min 0, maks BLOKIRAN_MAX_MONTHS)
+  const handleBlokiranCountChange = (field: string, value: string) => {
+    const val = parseInt(value) || 0;
+    const clamped = Math.min(Math.max(0, val), BLOKIRAN_MAX_MONTHS);
+    updateField(field, clamped);
+  };
 
   const handleCurrencyChange = (field: string, value: string) => {
     const numericValue = cleanNumberInput(value);
@@ -452,23 +430,24 @@ export default React.memo(function TabEUsulan({
               ? "(Khusus TypeA)"
               : kategori === "type_c"
                 ? "(Khusus Aktif)"
-                : ""}
+                : "(Khusus Purna)"}
           </h3>
         </div>
 
-        {/* 2. Blokiran TypeA (Hanya untuk TypeA & Purna) */}
-        {kategori !== "type_c" && (
+        {/* 2. Blokiran TypeA (Hanya untuk TypeA) */}
+        {kategori === "type_a" && (
           <div>
             <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
               Blokiran TypeA
             </label>
             <p className="text-xs text-gray-500 mb-2">
-              Otomatis: Selisih bulan (Tgl Pensiun - Hari Ini)
+              Otomatis: Selisih bulan (Tgl Pensiun - Hari Ini), sisa hari
+              dihitung 1 bulan
             </p>
             <div className="relative">
               <input
                 type="number"
-                value={(formData.blokiran_prapurna_jml ?? formData.blokiran_type_a_jml) || ""}
+                value={blokiran.blokiran_prapurna_jml || ""}
                 readOnly
                 className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-surface-container-low text-on-surface-variant sm:text-sm py-2.5 pr-12 pl-3 text-right"
               />
@@ -479,8 +458,8 @@ export default React.memo(function TabEUsulan({
           </div>
         )}
 
-        {/* 3. Blokiran Pindah Gaji (Hanya untuk TypeA & Purna) */}
-        {kategori !== "type_c" && (
+        {/* 3. Blokiran Pindah Gaji (TypeA selalu; Purna hanya Baru/Take Over) */}
+        {pindahGajiApplicable && (
           <div>
             <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1">
               Blokiran Pindah Gaji
@@ -492,11 +471,15 @@ export default React.memo(function TabEUsulan({
               <input
                 type="number"
                 value={formData.blokiran_pindah_gaji_jml || ""}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value) || 0;
-                  updateField("blokiran_pindah_gaji_jml", val);
-                }}
+                onChange={(e) =>
+                  handleBlokiranCountChange(
+                    "blokiran_pindah_gaji_jml",
+                    e.target.value,
+                  )
+                }
                 placeholder="0"
+                min="0"
+                max={BLOKIRAN_MAX_MONTHS}
                 className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pr-12 pl-3 bg-surface-light dark:text-white text-right"
               />
               <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
@@ -518,11 +501,12 @@ export default React.memo(function TabEUsulan({
             <input
               type="number"
               value={formData.blokiran_wajib_jml || ""}
-              onChange={(e) => {
-                const val = parseInt(e.target.value) || 0;
-                updateField("blokiran_wajib_jml", val);
-              }}
+              onChange={(e) =>
+                handleBlokiranCountChange("blokiran_wajib_jml", e.target.value)
+              }
               placeholder="0"
+              min="0"
+              max={BLOKIRAN_MAX_MONTHS}
               className="block w-full rounded-xl border border-outline-variant/50 shadow-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all sm:text-sm py-2.5 pr-12 pl-3 bg-surface-light dark:text-white text-right"
             />
             <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 text-sm pointer-events-none">
@@ -540,15 +524,15 @@ export default React.memo(function TabEUsulan({
               </label>
               <p className="text-sm text-primary italic">
                 Terbilang:{" "}
-                {formData.total_blokiran_jml
-                  ? terbilang(formData.total_blokiran_jml)
+                {blokiran.total_blokiran_jml
+                  ? terbilang(blokiran.total_blokiran_jml)
                   : "Nol"}
               </p>
             </div>
             <div className="relative w-full md:w-1/3">
               <input
                 type="number"
-                value={formData.total_blokiran_jml || 0}
+                value={blokiran.total_blokiran_jml || 0}
                 readOnly
                 className="block w-full rounded-xl border border-outline-variant/50 shadow-sm bg-surface-light font-bold text-primary sm:text-lg py-2.5 pr-12 pl-3 text-right"
               />

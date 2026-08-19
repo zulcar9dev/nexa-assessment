@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BLOKIRAN_MAX_MONTHS } from "@/lib/blokiran";
 
 // Zod Schema for Client Creation
 export const CreateDebiturSchema = z.object({
@@ -49,6 +50,26 @@ export const CreateDebiturSchema = z.object({
                     message: "Alamat tempat tinggal wajib diisi jika berbeda dengan KTP",
                     path: ["dataLengkap", "alamat_tempat_tinggal"]
                 });
+            }
+        }
+
+        // Validate blokiran fields (integer, non-negative, within reasonable bounds)
+        const blokiranFields: Array<[string, unknown]> = [
+            ["blokiran_prapurna_jml", data.dataLengkap?.blokiran_prapurna_jml ?? data.dataLengkap?.blokiran_type_a_jml],
+            ["blokiran_pindah_gaji_jml", data.dataLengkap?.blokiran_pindah_gaji_jml],
+            ["blokiran_wajib_jml", data.dataLengkap?.blokiran_wajib_jml],
+            ["total_blokiran_jml", data.dataLengkap?.total_blokiran_jml],
+        ];
+        for (const [field, value] of blokiranFields) {
+            if (value !== undefined && value !== null) {
+                const num = Number(value);
+                if (!Number.isInteger(num) || num < 0 || num > BLOKIRAN_MAX_MONTHS) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: `${field} harus angka bulat 0 - ${BLOKIRAN_MAX_MONTHS}`,
+                        path: ["dataLengkap", field]
+                    });
+                }
             }
         }
     }
