@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
         const userId = (session.user as unknown as AuthenticatedUser).id;
 
         const document = await KnowledgeBaseService.create(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             validation.data as any,
             buffer,
             file.name,

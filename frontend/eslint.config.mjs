@@ -15,6 +15,12 @@ const eslintConfig = defineConfig([
     // Utility scripts (CommonJS)
     "download-shadcn.js",
     "scripts/**/*.js",
+    // Local dev/ops utility scripts (not part of the app)
+    "convert_backup.js",
+    "execute_restore.js",
+    "migrate.js",
+    "test-income-dynamic.ts",
+    "deploy-standalone/**",
   ]),
   {
     rules: {

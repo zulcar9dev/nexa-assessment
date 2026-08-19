@@ -82,6 +82,7 @@ export async function PATCH(
             );
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updated = await KnowledgeBaseService.update(id, validation.data as any);
         return successResponse(updated, 'Dokumen berhasil diperbarui');
     } catch (error) {

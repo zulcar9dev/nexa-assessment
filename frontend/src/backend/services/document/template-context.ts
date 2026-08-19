@@ -66,7 +66,7 @@ function parseManualSyaratText(
 
 function formatPhone(phone?: string): string {
   if (!phone) return "";
-  let cleaned = phone.replace(/[^0-9+]/g, "");
+  const cleaned = phone.replace(/[^0-9+]/g, "");
   if (cleaned.startsWith("0")) {
     return "+62" + cleaned.substring(1);
   } else if (cleaned.startsWith("62")) {

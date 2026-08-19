@@ -15,7 +15,7 @@ export const CreateDebiturSchema = z.object({
     ]),
     jenisPengajuan: z.enum(["baru", "top_up", "top_up_sisa_gaji", "tht", "takeover", "fleksi_type_c", "pensiunan_janda_baru", "pensiunan_janda_top_up", "pensiunan_janda_takeover", "pensiunan_duda_baru", "pensiunan_duda_top_up", "pensiunan_duda_takeover"]),
     segmentasi: z.enum(["taspen", "asabri", "bumd_bumn", "swasta", "pemerintahan"]),
-    dataLengkap: z.record(z.string(), z.any()).default({}), // Default to empty object if missing
+    dataLengkap: z.record(z.string(), z.unknown()).default({}), // Default to empty object if missing
     status: z.enum(["DRAFT", "SUBMITTED"]).default("SUBMITTED")
 }).superRefine((data, ctx) => {
     // Only perform strict validation if the status is SUBMITTED

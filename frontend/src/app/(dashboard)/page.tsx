@@ -166,7 +166,7 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex-1 border-b border-[var(--outline-variant)]/10 pb-4">
                                 <div className="flex justify-between items-start mb-1">
-                                    <p className="font-heading font-semibold text-[14px] text-[var(--on-surface)]">Menyelesaikan 'Onboarding 2024'</p>
+                                    <p className="font-heading font-semibold text-[14px] text-[var(--on-surface)]">Menyelesaikan &apos;Onboarding 2024&apos;</p>
                                     <span className="text-label-sm text-[var(--on-surface-variant)]">2 jam yang lalu</span>
                                 </div>
                                 <p className="text-body-base text-[var(--on-surface-variant)] text-[13px]">User ID #88192 berhasil memvalidasi seluruh dokumen payroll.</p>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
                                     <p className="font-heading font-semibold text-[14px] text-[var(--on-surface)]">Deadline Mendekat</p>
                                     <span className="text-label-sm text-[var(--on-surface-variant)]">8 jam yang lalu</span>
                                 </div>
-                                <p className="text-body-base text-[var(--on-surface-variant)] text-[13px]">Assessment 'Retiree' akan berakhir dalam 48 jam ke depan.</p>
+                                <p className="text-body-base text-[var(--on-surface-variant)] text-[13px]">Assessment &apos;Retiree&apos; akan berakhir dalam 48 jam ke depan.</p>
                             </div>
                         </div>
                     </div>

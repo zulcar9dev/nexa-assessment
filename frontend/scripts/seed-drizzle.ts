@@ -102,21 +102,21 @@ async function main() {
     const templates = [
         {
             id: 'template-type_c-id',
-            kategori: 'AKTIF' as 'AKTIF',
+            kategori: 'AKTIF' as const,
             name: 'Template Type B',
             filename: 'template_type_c.docx',
             path: 'templates/template_type_c.docx',
         },
         {
             id: 'template-type_a-id',
-            kategori: 'PRAPURNA' as 'PRAPURNA',
+            kategori: 'PRAPURNA' as const,
             name: 'Template Type A',
             filename: 'template_type_a.docx',
             path: 'templates/template_type_a.docx',
         },
         {
             id: 'template-type_b-id',
-            kategori: 'PURNA' as 'PURNA',
+            kategori: 'PURNA' as const,
             name: 'Template Type C',
             filename: 'template_type_b.docx',
             path: 'templates/template_type_b.docx',
