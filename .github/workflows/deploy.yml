@@ -5,7 +5,7 @@
 #
 # Required Secrets (Settings > Secrets and variables > Actions):
 #   - DATABASE_URL: PostgreSQL connection string
-#   - NEXTAUTH_SECRET: NextAuth secret key
+#   - BETTER_AUTH_SECRET: Better-Auth secret key
 #   - SERVER_HOST: Production server hostname
 #   - SERVER_USER: SSH username for deployment
 #   - SSH_PRIVATE_KEY: SSH private key for authentication
@@ -50,13 +50,13 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Generate Prisma Client
-        working-directory: frontend
-        run: npx prisma generate
-
       - name: Run ESLint
         working-directory: frontend
         run: npm run lint
+
+      - name: Run Tests
+        working-directory: frontend
+        run: npx jest
 
       - name: Build Application
         working-directory: frontend
@@ -64,8 +64,9 @@ jobs:
         env:
           # Dummy values for build time (not used at runtime)
           DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
-          NEXTAUTH_SECRET: "build-time-secret-not-used-in-production"
-          NEXTAUTH_URL: "http://localhost:3000"
+          BETTER_AUTH_SECRET: "build-time-secret-not-used-in-production"
+          BETTER_AUTH_URL: "http://localhost:3000"
+          NEXT_PUBLIC_APP_URL: "http://localhost:3000"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -106,15 +107,24 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            echo "=== Loading environment variables ==="
+            if [ -f frontend/.env ]; then
+              set -a
+              . frontend/.env
+              set +a
+            else
+              echo "Warning: frontend/.env not found, relying on environment"
+            fi
+
             echo "=== Installing dependencies ==="
             cd frontend
-            npm ci --production
+            npm ci
 
-            echo "=== Generating Prisma client ==="
-            npx prisma generate
-
-            echo "=== Running database migrations ==="
-            npx prisma migrate deploy
+            echo "=== Running database migrations (Drizzle) ==="
+            if ! npm run db:migrate; then
+              echo "drizzle-kit migrate gagal, mencoba db:push sebagai fallback..."
+              npm run db:push
+            fi
 
             echo "=== Building application ==="
             npm run build
