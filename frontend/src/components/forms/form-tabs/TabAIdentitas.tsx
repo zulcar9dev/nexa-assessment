@@ -7,22 +7,23 @@ import { useTabNavigation } from "@/hooks/useTabNavigation";
 import { User, MapPin, Calendar } from "lucide-react";
 import { MentionTextArea } from "@/components/ui/MentionTextArea";
 import { DOCUMENT_PLACEHOLDERS } from "@/lib/placeholders";
+import {
+  calculateRoundedAgeMonths,
+  formatAgeMonths,
+  formatAgeBreakdown,
+} from "@/lib/utils";
 import React from "react";
 
 export default React.memo(function TabAIdentitas() {
     const { formData, updateField } = useFormStore();
     const { handleTabToNext, handleTabToPrev } = useTabNavigation();
-    // Auto-calculate age from birth date
+    // Auto-calculate age from birth date (dibulatkan ke bulan penuh, sesuai rumus tenor)
     const usiaPemohon = useMemo(() => {
         if (!formData.tgl_lahir_pemohon) return null;
-        const birthDate = new Date(formData.tgl_lahir_pemohon);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        return age;
+        return {
+            rounded: formatAgeMonths(calculateRoundedAgeMonths(formData.tgl_lahir_pemohon)),
+            detail: formatAgeBreakdown(formData.tgl_lahir_pemohon),
+        };
     }, [formData.tgl_lahir_pemohon]);
 
     const dokumenLabel = useMemo(() => {
@@ -123,12 +124,18 @@ export default React.memo(function TabAIdentitas() {
                                     id="usia_pemohon"
                                     name="usia_pemohon"
                                     type="text"
-                                    value={usiaPemohon !== null ? `${usiaPemohon} Tahun` : ""}
+                                    value={usiaPemohon ? usiaPemohon.rounded : ""}
                                     readOnly
+                                    title={usiaPemohon ? `Detail: ${usiaPemohon.detail}` : ""}
                                     placeholder="Otomatis dari tanggal lahir"
                                     className="block w-full rounded-xl border border-outline-variant/50 shadow-sm sm:text-sm py-2.5 px-3 bg-gray-100 dark:bg-[#0f2322]/30 text-gray-600 dark:text-gray-400 cursor-not-allowed"
                                 />
                             </div>
+                            {usiaPemohon && (
+                                <p className="text-xs text-on-surface-variant mt-1">
+                                    Pembulatan dari {usiaPemohon.detail}
+                                </p>
+                            )}
                         </div>
 
                         {/* Tanggal Terbit KTP */}

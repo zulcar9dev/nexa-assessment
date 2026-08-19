@@ -1,5 +1,12 @@
 import { z } from "zod";
-import { calculateAge } from "./utils";
+import {
+  calculateAge,
+  calculateRoundedAgeMonths,
+  calculateMaxTenorByAgeMonths,
+  calculateMonthsDifference,
+  toLocalDateStr,
+} from "./utils";
+import { AGE_LIMITS, TENOR_CAPS } from "./constants";
 
 // ==========================================
 // Field Label Map — untuk pesan error yang informatif
@@ -90,6 +97,122 @@ const adminCostRefinementParams = {
     message: "Nominal biaya administrasi wajib diisi jika tidak bebas biaya",
     path: ["biaya_administrasi_nominal"],
 };
+
+/**
+ * Format total bulan menjadi teks huruf kecil, mis. 208 -> "17 tahun 4 bulan"
+ */
+function formatTenorLower(totalMonths: number): string {
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    if (years > 0 && months > 0) return `${years} tahun ${months} bulan`;
+    if (years > 0) return `${years} tahun`;
+    return `${months} bulan`;
+}
+
+/**
+ * Rule bisnis usia & tenor (berlaku untuk SEMUA kategori):
+ * - Tenor maks = min(cap kategori, batas usia lunas - usia pemohon pembulatan)
+ * - Aktif PPPK/Komisioner: tenor juga dibatasi sisa masa kontrak
+ * - Janda: min usia 50 th, cap 120 bln; Duda: min usia 40 th, cap 60 bln
+ * - Tenor minimal 12 bulan
+ */
+export function validateAgeAndTenorRules(
+    data: {
+        kategori: "type_a" | "type_b" | "type_c";
+        jenis_pengajuan?: string;
+        tgl_lahir_pemohon?: string;
+        usulan_jangka_waktu_bulan?: string;
+        segmentasi?: string;
+        status_kepegawaian_manual?: string;
+        tgl_berakhir_pengangkatan?: string;
+    },
+    ctx: z.RefinementCtx,
+): void {
+    const jp = String(data.jenis_pengajuan || "").toLowerCase();
+    const isJanda = jp.startsWith("pensiunan_janda_");
+    const isDuda = jp.startsWith("pensiunan_duda_");
+
+    const tglLahir = data.tgl_lahir_pemohon;
+    const tenorStr = data.usulan_jangka_waktu_bulan;
+    const tenorBulan = tenorStr ? parseInt(tenorStr, 10) : 0;
+
+    // Tentukan batas usia lunas & cap tenor per kategori
+    let ageLimit: { years: number; months: number } = AGE_LIMITS.purnaStandard;
+    let tenorCap: number = TENOR_CAPS.purnaStandard;
+    let usiaMin = 0;
+    let label = "Purna";
+
+    if (data.kategori === "type_a") {
+        ageLimit = AGE_LIMITS.purnaTypeA;
+        tenorCap = data.segmentasi === "asabri" ? TENOR_CAPS.typeA_asabri : TENOR_CAPS.typeA_taspen;
+        label = "Type A";
+    } else if (data.kategori === "type_c") {
+        ageLimit = AGE_LIMITS.aktif;
+        tenorCap = TENOR_CAPS.aktif;
+        label = "Aktif";
+    } else if (isJanda) {
+        ageLimit = AGE_LIMITS.janda;
+        tenorCap = TENOR_CAPS.janda;
+        usiaMin = 50;
+        label = "Pensiunan Janda";
+    } else if (isDuda) {
+        ageLimit = AGE_LIMITS.duda;
+        tenorCap = TENOR_CAPS.duda;
+        usiaMin = 40;
+        label = "Pensiunan Duda";
+    }
+
+    // 1. Usia minimal saat pengajuan (khusus Janda/Duda)
+    if (usiaMin > 0 && tglLahir && calculateAge(tglLahir) < usiaMin) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Usia pemohon saat pengajuan minimal ${usiaMin} tahun untuk ${label} (saat ini ${calculateAge(tglLahir)} tahun)`,
+            path: ["tgl_lahir_pemohon"],
+        });
+    }
+
+    // 2. Tenor minimal 12 bulan
+    if (tenorBulan > 0 && tenorBulan < 12) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Tenor assessment minimal 12 bulan",
+            path: ["usulan_jangka_waktu_bulan"],
+        });
+    }
+
+    // 3. Tenor maksimal = min(cap kategori, batas usia lunas - usia pembulatan)
+    const maxTenorByAge = tglLahir
+        ? calculateMaxTenorByAgeMonths(tglLahir, ageLimit.years, ageLimit.months)
+        : tenorCap;
+    const ageLimitLabel = formatTenorLower(ageLimit.years * 12 + ageLimit.months);
+
+    let maxTenor = Math.min(tenorCap, maxTenorByAge);
+
+    // 4. Batas sisa kontrak (Aktif PPPK/Komisioner)
+    const isContractBased =
+        data.kategori === "type_c" &&
+        /pppk|p3k|p3-k|p3\s*k|perjanjian\s*kerja|komisioner|anggota bawaslu/i.test(data.status_kepegawaian_manual || "");
+    if (isContractBased && data.tgl_berakhir_pengangkatan) {
+        const sisaKontrak = calculateMonthsDifference(toLocalDateStr(), data.tgl_berakhir_pengangkatan);
+        maxTenor = Math.min(maxTenor, sisaKontrak);
+    }
+
+    if (tenorBulan > maxTenor) {
+        if (maxTenor <= 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Usia pemohon sudah melebihi batas usia lunas ${ageLimitLabel} (usia saat ini ${formatTenorLower(calculateRoundedAgeMonths(tglLahir || ""))})`,
+                path: ["usulan_jangka_waktu_bulan"],
+            });
+        } else {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Tenor assessment maksimal ${formatTenorLower(maxTenor)} untuk ${label} (kredit lunas saat pemohon berusia ${ageLimitLabel})`,
+                path: ["usulan_jangka_waktu_bulan"],
+            });
+        }
+    }
+}
 
 // ==========================================
 // Tab B - Pekerjaan Validation (TypeA)
@@ -198,7 +321,10 @@ export const clientTypeASchema = z.object({
     ...penghasilanTypeASchema.shape,
     ...slikSchema.shape,
     ...usulanSchemaBase.shape,
-}).refine(alamatRefinement, alamatRefinementParams).refine(adminCostRefinement, adminCostRefinementParams);
+}).refine(alamatRefinement, alamatRefinementParams).refine(adminCostRefinement, adminCostRefinementParams)
+.superRefine((data, ctx) => {
+    validateAgeAndTenorRules({ ...data, kategori: "type_a" }, ctx);
+});
 
 // Complete Form Schema (Purna)
 export const clientPurnaSchema = z.object({
@@ -245,61 +371,10 @@ export const clientPurnaSchema = z.object({
                 path: ["no_telepon_kerabat"],
             });
         }
-
-        // 2. Age and Tenor business rules
-        const tglLahir = data.tgl_lahir_pemohon;
-        const tenorStr = data.usulan_jangka_waktu_bulan;
-        const tenorBulan = tenorStr ? parseInt(tenorStr, 10) : 0;
-        const tenorTahun = tenorBulan / 12;
-        const usiaPengajuan = tglLahir ? calculateAge(tglLahir) : 0;
-        const usiaLunas = usiaPengajuan + tenorTahun;
-
-        if (isJanda) {
-            if (usiaPengajuan < 50) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `Usia pemohon saat pengajuan minimal 50 tahun untuk Pensiunan Janda (saat ini ${usiaPengajuan} tahun)`,
-                    path: ["tgl_lahir_pemohon"],
-                });
-            }
-            if (tenorBulan > 120) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Tenor assessment maksimal 10 tahun (120 bulan) untuk Pensiunan Janda",
-                    path: ["usulan_jangka_waktu_bulan"],
-                });
-            }
-            if (usiaLunas > 75) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `Usia pemohon saat assessment lunas maksimal 75 tahun untuk Pensiunan Janda (lunas di usia ${usiaLunas.toFixed(1)} tahun)`,
-                    path: ["usulan_jangka_waktu_bulan"],
-                });
-            }
-        } else if (isDuda) {
-            if (usiaPengajuan < 40) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `Usia pemohon saat pengajuan minimal 40 tahun untuk Pensiunan Duda (saat ini ${usiaPengajuan} tahun)`,
-                    path: ["tgl_lahir_pemohon"],
-                });
-            }
-            if (tenorBulan > 60) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Tenor assessment maksimal 5 tahun (60 bulan) untuk Pensiunan Duda",
-                    path: ["usulan_jangka_waktu_bulan"],
-                });
-            }
-            if (usiaLunas > 75) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `Usia pemohon saat assessment lunas maksimal 75 tahun untuk Pensiunan Duda (lunas di usia ${usiaLunas.toFixed(1)} tahun)`,
-                    path: ["usulan_jangka_waktu_bulan"],
-                });
-            }
-        }
     }
+
+    // 2. Age and Tenor business rules (semua kategori, termasuk Janda/Duda)
+    validateAgeAndTenorRules({ ...data, kategori: "type_b" }, ctx);
 });
 
 // Tab B - Pekerjaan Validation (Aktif)
@@ -309,6 +384,7 @@ export const pekerjaanAktifSchema = z.object({
     instansi: z.string({ required_error: "Instansi wajib diisi" }).min(1, "Instansi wajib diisi"),
     status_kepegawaian_manual: z.string({ required_error: "Status kepegawaian wajib diisi" }).min(1, "Status kepegawaian wajib diisi"),
     tgl_mulai_kerja: z.string().optional(),
+    tgl_berakhir_pengangkatan: z.string().optional(),
     prev_instansi: z.string().optional(),
     prev_status_kepegawaian: z.string().optional(),
     prev_masa_kerja: z.string().optional(),
@@ -322,7 +398,10 @@ export const clientAktifSchema = z.object({
     ...penghasilanAktifSchema.shape,
     ...slikSchema.shape,
     ...usulanSchemaBase.shape,
-}).refine(alamatRefinement, alamatRefinementParams).refine(adminCostRefinement, adminCostRefinementParams);
+}).refine(alamatRefinement, alamatRefinementParams).refine(adminCostRefinement, adminCostRefinementParams)
+.superRefine((data, ctx) => {
+    validateAgeAndTenorRules({ ...data, kategori: "type_c" }, ctx);
+});
 
 // Type exports
 export type IdentitasFormData = z.infer<typeof identitasSchema>;

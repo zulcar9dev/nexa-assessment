@@ -8,10 +8,14 @@ import { DOCUMENT_PLACEHOLDERS } from "@/lib/placeholders";
 import {
   calculateMonthsDifference,
   terbilang,
-  calculateAge,
+  calculateRoundedAgeMonths,
+  calculateMaxTenorByAgeMonths,
+  formatAgeMonths,
+  toLocalDateStr,
   formatNumberForDisplay,
   cleanNumberInput,
 } from "@/lib/utils";
+import { AGE_LIMITS, TENOR_CAPS } from "@/lib/constants";
 import React, { useEffect, useMemo } from "react";
 
 interface TabEUsulanProps {
@@ -27,74 +31,46 @@ export default React.memo(function TabEUsulan({
   // Removed local formatCurrencyDisplay, using utils
 
   // Calculate Max Duration based on Age, Category, and Segmentation
+  // Rumus: tenor maks = batas usia - usia pemohon (dibulatkan ke bulan penuh)
   const segmentasi = formData.segmentasi;
-  const { maxDuration, currentAge, limitYears, ageLimitLabel, isContractLimit } = useMemo(() => {
+  const { maxDuration, currentAgeText, ageLimitLabel, isContractLimit } = useMemo(() => {
     const birthDateStr = formData.tgl_lahir_pemohon;
-    const age = birthDateStr ? calculateAge(birthDateStr) : 0;
 
     const jp = String(formData.jenis_pengajuan || "").toLowerCase();
     const isJanda = jp.startsWith("pensiunan_janda_");
     const isDuda = jp.startsWith("pensiunan_duda_");
 
-    // Determine limit based on category and segmentation
+    // Tentukan batas usia lunas & cap tenor per kategori
     const isTypeA = kategori === "type_a";
-    const isTypeAAsabri = isTypeA && segmentasi === "asabri";
-    
-    let limitYears = 15;
-    if (isTypeA) {
-      limitYears = isTypeAAsabri ? 15 : 20;
-    } else if (kategori === "type_b") {
-      if (isJanda) {
-        limitYears = 10;
-      } else if (isDuda) {
-        limitYears = 5;
-      } else {
-        limitYears = 15;
-      }
-    }
-    const limitMonths = limitYears * 12;
-
-    let maxMonthsByAge = 0;
-
-    // Batas usia: 75 tahun untuk Aktif / Janda / Duda Purna, 74 tahun 10 bulan untuk standard Purna/TypeA
     const isAktif = kategori === "type_c";
-    const isSpecialPurna = kategori === "type_b" && (isJanda || isDuda);
-    const ageLimitLabel = (isAktif || isSpecialPurna) ? "75 tahun" : "74 tahun 10 bulan";
 
-    if (birthDateStr) {
-      const birthDate = new Date(birthDateStr);
+    let ageLimit: { years: number; months: number } = AGE_LIMITS.purnaStandard;
+    let tenorCap: number = TENOR_CAPS.purnaStandard;
 
-      let ageLimit: Date;
-      if (isAktif || isSpecialPurna) {
-        // Aktif / Janda / Duda: batas usia 75 tahun
-        ageLimit = new Date(birthDate);
-        ageLimit.setFullYear(birthDate.getFullYear() + 75);
-      } else {
-        // Purna/TypeA standard: batas usia 74 tahun 10 bulan
-        ageLimit = new Date(birthDate);
-        ageLimit.setFullYear(birthDate.getFullYear() + 74);
-        ageLimit.setMonth(birthDate.getMonth() + 10);
-      }
-
-      const today = new Date();
-      const todayStr = today.toISOString().split("T")[0];
-      const maxAgeStatStr = ageLimit.toISOString().split("T")[0];
-
-      // Use months difference
-      maxMonthsByAge = calculateMonthsDifference(todayStr, maxAgeStatStr);
-
-      // Jika hari ini > hari batas usia, bulan terakhir belum penuh → kurangi 1
-      if (today.getDate() > ageLimit.getDate()) {
-        maxMonthsByAge--;
-      }
-    } else {
-      // Fallback if no birthdate
-      if (isAktif || isSpecialPurna) {
-        maxMonthsByAge = (75 - age) * 12;
-      } else {
-        maxMonthsByAge = (74 - age) * 12 + 10;
-      }
+    if (isTypeA) {
+      ageLimit = AGE_LIMITS.purnaTypeA;
+      tenorCap = segmentasi === "asabri" ? TENOR_CAPS.typeA_asabri : TENOR_CAPS.typeA_taspen;
+    } else if (isAktif) {
+      ageLimit = AGE_LIMITS.aktif;
+      tenorCap = TENOR_CAPS.aktif;
+    } else if (isJanda) {
+      ageLimit = AGE_LIMITS.janda;
+      tenorCap = TENOR_CAPS.janda;
+    } else if (isDuda) {
+      ageLimit = AGE_LIMITS.duda;
+      tenorCap = TENOR_CAPS.duda;
     }
+
+    const ageLimitLabel = formatAgeMonths(ageLimit.years * 12 + ageLimit.months).toLowerCase();
+
+    // Batas tenor dari usia: (batas usia total bulan) - (usia pembulatan)
+    const maxMonthsByAge = birthDateStr
+      ? calculateMaxTenorByAgeMonths(birthDateStr, ageLimit.years, ageLimit.months)
+      : tenorCap;
+
+    const currentAgeText = birthDateStr
+      ? formatAgeMonths(calculateRoundedAgeMonths(birthDateStr))
+      : "-";
 
     // --- KONTRAK / PPPK TENOR LIMITATION ---
     const isP3K = kategori === "type_c" && /pppk|p3k|p3-k|p3\s*k|perjanjian\s*kerja/i.test(formData.status_kepegawaian_manual || "");
@@ -103,23 +79,20 @@ export default React.memo(function TabEUsulan({
 
     let maxMonthsByContract = Infinity;
     if (isContractBased && formData.tgl_berakhir_pengangkatan) {
-      const today = new Date();
-      const todayStr = today.toISOString().split("T")[0];
-      maxMonthsByContract = calculateMonthsDifference(todayStr, formData.tgl_berakhir_pengangkatan);
-      if (today.getDate() > new Date(formData.tgl_berakhir_pengangkatan).getDate()) {
-        maxMonthsByContract--;
-      }
+      maxMonthsByContract = calculateMonthsDifference(
+        toLocalDateStr(),
+        formData.tgl_berakhir_pengangkatan,
+      );
     }
 
-    // Calculate max allowed
-    const maxAllowed = Math.min(limitMonths, maxMonthsByAge, maxMonthsByContract);
-    const isContractLimit = isContractBased && maxAllowed === maxMonthsByContract && maxMonthsByContract < limitMonths && maxMonthsByContract < maxMonthsByAge;
+    // Max tenor = terkecil dari cap kategori, batas usia, dan sisa kontrak
+    const maxAllowed = Math.min(tenorCap, maxMonthsByAge, maxMonthsByContract);
+    const isContractLimit = isContractBased && maxAllowed === maxMonthsByContract && maxMonthsByContract < tenorCap && maxMonthsByContract < maxMonthsByAge;
 
     return {
       maxDuration: Math.max(0, maxAllowed), // in months
-      currentAge: age,
-      limitYears: limitYears,
-      ageLimitLabel: ageLimitLabel,
+      currentAgeText,
+      ageLimitLabel,
       isContractLimit,
     };
   }, [
@@ -138,17 +111,23 @@ export default React.memo(function TabEUsulan({
     // Don't allow negative
     if (months < 0) months = 0;
 
-    // Check against max duration
-    if (months > maxDuration) {
-      // Logic for handling exceeding max duration handled in render
-    }
+    // Clamp ke batas maksimal
+    if (months > maxDuration) months = maxDuration;
 
     updateField("usulan_jangka_waktu_bulan", months.toString());
   };
 
+  // Clamp minimal 12 bulan saat input selesai (blur)
+  const handleDurationBlur = () => {
+    const current = parseInt(formData.usulan_jangka_waktu_bulan || "0", 10) || 0;
+    if (current > 0 && current < 12) {
+      updateField("usulan_jangka_waktu_bulan", "12");
+    }
+  };
+
   // Auto-calculate Blokiran Fields
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = toLocalDateStr();
     const tglPensiun = formData.tgl_pensiun_pemohon; // from Tab B
 
     // 1. Calculate Blokiran TypeA (Months to Pension) - ONLY for TypeA
@@ -258,13 +237,14 @@ export default React.memo(function TabEUsulan({
               Jangka Waktu (Bulan)
             </label>
             <span className="text-xs text-accent-600 dark:text-accent-400 font-medium">
-              Max: {maxDuration} Bulan ({maxDuration / 12} Tahun)
+              Max: {maxDuration} Bulan ({formatAgeMonths(maxDuration)})
             </span>
           </div>
           <input
             type="number"
             value={formData.usulan_jangka_waktu_bulan || ""}
             onChange={(e) => handleDurationChange(e.target.value)}
+            onBlur={handleDurationBlur}
             placeholder="120"
             min="12"
             max={maxDuration}
@@ -278,9 +258,9 @@ export default React.memo(function TabEUsulan({
             maxDuration && (
             <p className="text-xs text-red-500 mt-1">
               {isContractLimit ? (
-                `Melebihi sisa masa kontrak kerja (${maxDuration} Bulan / ${Math.floor(maxDuration / 12)} Tahun ${maxDuration % 12} Bulan)`
+                `Melebihi sisa masa kontrak kerja (${maxDuration} Bulan / ${formatAgeMonths(maxDuration)})`
               ) : (
-                `Melebihi batas maksimal ${limitYears} tahun atau usia ${ageLimitLabel} (Usia saat ini: ${currentAge} th)`
+                `Melebihi batas maksimal tenor ${formatAgeMonths(maxDuration)} (batas usia lunas ${ageLimitLabel}, usia pemohon saat ini ${currentAgeText})`
               )}
             </p>
           )}

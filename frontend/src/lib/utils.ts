@@ -413,39 +413,78 @@ function terbilangCalc(nilai: number): string {
 }
 
 /**
- * Calculate months difference between two dates
- * Returns 0 if start date > end date
+ * Parse date string (YYYY-MM-DD) into a LOCAL date (hour 00:00).
+ * Avoids timezone shifts caused by new Date("YYYY-MM-DD") parsing as UTC.
+ */
+export function parseDateLocal(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const match = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(String(dateStr).trim());
+    if (!match) return null;
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    const day = parseInt(match[3], 10);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+    const date = new Date(year, month, day);
+    if (isNaN(date.getTime())) return null;
+    return date;
+}
+
+/**
+ * Format a Date into local "YYYY-MM-DD" string.
+ */
+export function toLocalDateStr(date: Date = new Date()): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+}
+
+/**
+ * Add months to a date with end-of-month clamping.
+ * e.g. 31 Jan + 1 month = 28 Feb (not 3 Mar).
+ */
+export function addMonthsToDate(date: Date, months: number): Date {
+    const totalMonth = date.getMonth() + months;
+    const year = date.getFullYear() + Math.floor(totalMonth / 12);
+    const month = ((totalMonth % 12) + 12) % 12;
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    return new Date(year, month, Math.min(date.getDate(), lastDay));
+}
+
+/**
+ * Calculate full months between two dates (YYYY-MM-DD).
+ * Returns the number of complete months from start until end.
+ * Returns 0 if start date > end date or dates are invalid.
  */
 export function calculateMonthsDifference(startDateStr: string, endDateStr: string): number {
     if (!startDateStr || !endDateStr) return 0;
 
-    const start = new Date(startDateStr);
-    const end = new Date(endDateStr);
+    const start = parseDateLocal(startDateStr);
+    const end = parseDateLocal(endDateStr);
 
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
-
-    // Reset hours
-    start.setHours(0, 0, 0, 0);
-    end.setHours(0, 0, 0, 0);
+    if (!start || !end) return 0;
 
     if (start > end) return 0;
 
-    const years = end.getFullYear() - start.getFullYear();
-    const months = end.getMonth() - start.getMonth();
+    let totalMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
 
-    // Calculate total months
-    const totalMonths = (years * 12) + months;
+    // Kurangi 1 jika bulan terakhir belum genap (dengan penyesuaian akhir bulan)
+    while (addMonthsToDate(start, totalMonths) > end) {
+        totalMonths--;
+    }
 
-    return totalMonths > 0 ? totalMonths : 0;
+    return Math.max(0, totalMonths);
 }
 
 /**
- * Calculate age based on birth date string
+ * Calculate age based on birth date string (whole years)
  */
 export function calculateAge(birthDateStr: string): number {
     if (!birthDateStr) return 0;
 
-    const birthDate = new Date(birthDateStr);
+    const birthDate = parseDateLocal(birthDateStr);
+    if (!birthDate) return 0;
+
     const today = new Date();
 
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -456,4 +495,94 @@ export function calculateAge(birthDateStr: string): number {
     }
 
     return age;
+}
+
+/**
+ * Calculate precise age breakdown: { years, months, days }.
+ * e.g. birth 1969-03-09, today 2026-08-19 -> { years: 57, months: 5, days: 10 }
+ */
+export interface AgeBreakdown {
+    years: number;
+    months: number;
+    days: number;
+}
+
+export function calculateAgeBreakdown(birthDateStr: string, today: Date = new Date()): AgeBreakdown | null {
+    const birth = parseDateLocal(birthDateStr);
+    if (!birth) return null;
+
+    const now = new Date(today);
+    now.setHours(0, 0, 0, 0);
+
+    if (birth > now) return { years: 0, months: 0, days: 0 };
+
+    let years = now.getFullYear() - birth.getFullYear();
+    let months = now.getMonth() - birth.getMonth();
+    let days = now.getDate() - birth.getDate();
+
+    if (days < 0) {
+        months--;
+        const daysInPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+        days += daysInPrevMonth;
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return { years, months, days };
+}
+
+/**
+ * Calculate age rounded up to the nearest full month.
+ * Rule: sisa hari > 0 dibulatkan ke atas menjadi 1 bulan.
+ * e.g. 57 tahun 5 bulan 10 hari -> 57 tahun 6 bulan (690 bulan)
+ */
+export function calculateRoundedAgeMonths(birthDateStr: string, today: Date = new Date()): number {
+    const breakdown = calculateAgeBreakdown(birthDateStr, today);
+    if (!breakdown) return 0;
+    return breakdown.years * 12 + breakdown.months + (breakdown.days > 0 ? 1 : 0);
+}
+
+/**
+ * Calculate maximum loan tenor (months) based on age.
+ * Formula: (batas usia total bulan) - (usia pembulatan bulan)
+ * e.g. 74 tahun 10 bulan (898 bulan) - 57 tahun 6 bulan (690 bulan) = 208 bulan (17 tahun 4 bulan)
+ */
+export function calculateMaxTenorByAgeMonths(
+    birthDateStr: string,
+    ageLimitYears: number,
+    ageLimitMonths: number = 0,
+): number {
+    const roundedAgeMonths = calculateRoundedAgeMonths(birthDateStr);
+    const limitTotalMonths = ageLimitYears * 12 + ageLimitMonths;
+    return Math.max(0, limitTotalMonths - roundedAgeMonths);
+}
+
+/**
+ * Format total months as "17 Tahun 4 Bulan" (capitalized for UI)
+ */
+export function formatAgeMonths(totalMonths: number): string {
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    if (years > 0 && months > 0) return `${years} Tahun ${months} Bulan`;
+    if (years > 0) return `${years} Tahun`;
+    return `${months} Bulan`;
+}
+
+/**
+ * Format precise age breakdown as "57 Tahun 5 Bulan 1 Minggu 3 Hari"
+ */
+export function formatAgeBreakdown(birthDateStr: string, today: Date = new Date()): string {
+    const breakdown = calculateAgeBreakdown(birthDateStr, today);
+    if (!breakdown) return "";
+    const weeks = Math.floor(breakdown.days / 7);
+    const days = breakdown.days % 7;
+    const parts: string[] = [];
+    if (breakdown.years > 0) parts.push(`${breakdown.years} Tahun`);
+    if (breakdown.months > 0) parts.push(`${breakdown.months} Bulan`);
+    if (weeks > 0) parts.push(`${weeks} Minggu`);
+    if (days > 0) parts.push(`${days} Hari`);
+    return parts.length > 0 ? parts.join(" ") : "0 Hari";
 }

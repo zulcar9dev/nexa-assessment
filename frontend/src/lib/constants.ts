@@ -51,6 +51,25 @@ export const SEGMENTASI = {
 // DSR Limits
 export const DSR_LIMIT = 90;
 
+// Batas usia pemohon saat kredit lunas (per kategori)
+export const AGE_LIMITS = {
+    purnaTypeA: { years: 74, months: 10 }, // Type A (Pre-Period) & Purna standar
+    purnaStandard: { years: 74, months: 10 },
+    aktif: { years: 75, months: 0 }, // Type C (Active)
+    janda: { years: 75, months: 0 },
+    duda: { years: 75, months: 0 },
+} as const;
+
+// Batas tenor maksimal (bulan) per kategori
+export const TENOR_CAPS = {
+    typeA_taspen: 240, // 20 tahun
+    typeA_asabri: 180, // 15 tahun
+    purnaStandard: 180, // 15 tahun
+    janda: 120, // 10 tahun
+    duda: 60, // 5 tahun
+    aktif: 180, // 15 tahun
+} as const;
+
 // Date keys for formatting
 export const DATE_KEYS = [
     "tgl_lahir_pemohon",
