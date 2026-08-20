@@ -379,6 +379,138 @@ describe('ListGenerators', () => {
       );
     });
 
+    it('should generate for PT Puncak Emas Tani Sejahtera (PETS) - Alih Status', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'PT Puncak Emas Tani Sejahtera',
+        segmentasi: 'SWASTA',
+        status_kepegawaian_manual: 'Karyawan Tetap',
+        tgl_mulai_kerja: '1 Februari 2025',
+        masa_kerja: '1 Tahun 6 Bulan',
+        no_sk_cpns: '013/PETS-PEA/II/2025',
+        tgl_sk_cpns: '1 Februari 2025',
+        prev_instansi: 'PT Gorontalo Sejahtera Mining',
+        prev_status_kepegawaian: 'Karyawan Tetap',
+        prev_masa_kerja: '3 Tahun',
+        prev_tgl_mulai_kerja: '01 Februari 2022',
+        prev_no_sk: '008/GSM-PEA/II/2022',
+        prev_tgl_sk: '01 Februari 2022',
+        no_surat_pengalihan: '011/GSM-HR/I/2025',
+        tgl_surat_pengalihan: '01 Februari 2025',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain(
+        'Pemohon sebelumnya adalah Karyawan Tetap pada PT Gorontalo Sejahtera Mining dengan lama bekerja 3 Tahun sejak 01 Februari 2022'
+      );
+      expect(text).toContain(
+        'Cfm. Surat Perjanjian Kerja No. 008/GSM-PEA/II/2022 tanggal 01 Februari 2022'
+      );
+      expect(text).toContain(
+        'kemudian dialihkan hubungan kerja Cfm Surat Pengalihan Pekerja No. 011/GSM-HR/I/2025 tanggal 01 Februari 2025'
+      );
+      expect(text).toContain(
+        'menjadi Karyawan Tetap pada PT Puncak Emas Tani Sejahtera dengan lama bekerja ± 1 Tahun 6 Bulan sejak 1 Februari 2025 Cfm. Surat Perjanjian Kerja No 013/PETS-PEA/II/2025 tanggal 1 Februari 2025.'
+      );
+    });
+
+    it('should generate for PT Puncak Emas Tani Sejahtera (PETS) - Rekrutmen Baru', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'PT Puncak Emas Tani Sejahtera',
+        segmentasi: 'SWASTA',
+        status_kepegawaian_manual: 'Karyawan Tetap',
+        tgl_mulai_kerja: '1 Juni 2026',
+        masa_kerja: '2 Bulan',
+        no_sk_cpns: '016/PETS-PEA/VI/2026',
+        tgl_sk_cpns: '1 Juni 2026',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).not.toContain('dialihkan hubungan kerja');
+      expect(text).toContain(
+        'Pemohon adalah Karyawan Tetap pada PT Puncak Emas Tani Sejahtera dengan lama bekerja ± 2 Bulan sejak 1 Juni 2026 Cfm. Surat Perjanjian Kerja No 016/PETS-PEA/VI/2026 tanggal 1 Juni 2026.'
+      );
+    });
+
+    it('should generate for PT Gorontalo Sejahtera Mining (GSM) - Alih Status', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'PT Gorontalo Sejahtera Mining',
+        segmentasi: 'SWASTA',
+        status_kepegawaian_manual: 'Karyawan Tetap',
+        tgl_mulai_kerja: '1 Maret 2026',
+        masa_kerja: '5 Bulan',
+        no_sk_cpns: '014/GSM-PEA/III/2026',
+        tgl_sk_cpns: '1 Maret 2026',
+        prev_instansi: 'PT Pani Bersama Tambang',
+        prev_status_kepegawaian: 'Karyawan Tetap',
+        prev_masa_kerja: '2 Tahun',
+        prev_tgl_mulai_kerja: '01 Februari 2024',
+        prev_no_sk: '010/PBT-PEA/I/2024',
+        prev_tgl_sk: '01 Februari 2024',
+        no_surat_pengalihan: '012/PBT-HR/I/2026',
+        tgl_surat_pengalihan: '01 Maret 2026',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain(
+        'Pemohon sebelumnya adalah Karyawan Tetap pada PT Pani Bersama Tambang dengan lama bekerja 2 Tahun sejak 01 Februari 2024'
+      );
+      expect(text).toContain(
+        'Cfm. Surat Perjanjian Kerja No. 010/PBT-PEA/I/2024 tanggal 01 Februari 2024'
+      );
+      expect(text).toContain(
+        'kemudian dialihkan hubungan kerja Cfm Surat Pengalihan Pekerja No. 012/PBT-HR/I/2026 tanggal 01 Maret 2026'
+      );
+      expect(text).toContain(
+        'menjadi Karyawan Tetap pada PT Gorontalo Sejahtera Mining dengan lama bekerja ± 5 Bulan sejak 1 Maret 2026 Cfm. Surat Perjanjian Kerja No 014/GSM-PEA/III/2026 tanggal 1 Maret 2026.'
+      );
+    });
+
+    it('should generate for PT Gorontalo Sejahtera Mining (GSM) - Rekrutmen Baru', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'PT Gorontalo Sejahtera Mining',
+        segmentasi: 'SWASTA',
+        status_kepegawaian_manual: 'Karyawan Tetap',
+        tgl_mulai_kerja: '1 April 2026',
+        masa_kerja: '4 Bulan',
+        no_sk_cpns: '017/GSM-PEA/IV/2026',
+        tgl_sk_cpns: '1 April 2026',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).not.toContain('dialihkan hubungan kerja');
+      expect(text).toContain(
+        'Pemohon adalah Karyawan Tetap pada PT Gorontalo Sejahtera Mining dengan lama bekerja ± 4 Bulan sejak 1 April 2026 Cfm. Surat Perjanjian Kerja No 017/GSM-PEA/IV/2026 tanggal 1 April 2026.'
+      );
+    });
+
+    it('should generate business and group info for PT Gorontalo Sejahtera Mining (GSM)', () => {
+      const context = {
+        ...baseContext,
+        instansi: 'GSM',
+        segmentasi: 'SWASTA',
+      };
+
+      const result = ListGenerators.generateInvestigasiList(context);
+      const text = result.map(r => r.text).join('\n');
+
+      expect(text).toContain('PT. Gorontalo Sejahtera Mining');
+      expect(text).toContain('bergerak dibidang Pertambangan Emas');
+      expect(text).toContain('Anak Perusahan dari PT. MDKA Group');
+      expect(text).toContain('Kelolaan COB 2');
+    });
+
     it('should generate business and group info for PT Pani Bersama Tambang (PBT)', () => {
       const context = {
         ...baseContext,

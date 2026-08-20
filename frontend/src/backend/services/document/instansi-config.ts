@@ -129,6 +129,14 @@ export const INSTANSI_CONFIGS: InstansiConfig[] = [
       "PT. Pani Bersama Tambang merupakan Anak Perusahan dari PT. MDKA Group (Kelolaan COB 2)",
   },
   {
+    pattern: ["gorontalo sejahtera mining", "gsm"],
+    segmentasi: "SWASTA",
+    infoBisnis:
+      "PT. Gorontalo Sejahtera Mining merupakan Perusahaan yang bergerak dibidang Pertambangan Emas.",
+    infoKelolaan:
+      "PT. Gorontalo Sejahtera Mining merupakan Anak Perusahan dari PT. MDKA Group (Kelolaan COB 2)",
+  },
+  {
     pattern: ["bawaslu", "badan pengawas pemilihan umum"],
     segmentasi: "PEMERINTAHAN",
     infoKelolaan:

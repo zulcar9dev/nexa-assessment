@@ -1,6 +1,6 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import { SimpleCache } from '@/backend/lib/cache';
+import { db } from '@/backend/db';
+import { appSettings } from '@/backend/db/schema';
+import { eq } from 'drizzle-orm';
 
 export interface AppSettings {
     slikMitigasiRiskText: string;
@@ -8,75 +8,76 @@ export interface AppSettings {
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
-    slikMitigasiRiskText: "Mitigasi Risiko Cfm. Surat No. DNS/5.4/5645 Tanggal 09 Juli 2025 Perihal Penyampaian Program Relaksasi SLIK untuk Pemrosesan Assessment Semester II Tahun 2025.",
-    catatanProgramPricing: "Cfm Surat No DNS/5.4/8023 Perihal Program Pricing Nexa Assessment Semester II 2025 tanggal 01-09-2025."
+    slikMitigasiRiskText: "Mitigasi Risiko Cfm. Surat No. NSD/2/0216 Penyampaian Program Relaksasi Sistem Layanan Informasi Keuangan (SLIK) Nexa Fleksi Pensiun (BFP) Semester I Tahun 2026 tanggal 13 Januari 2026.",
+    catatanProgramPricing: "(Cfm Surat No NSD/2/4293 Penyampaian Program KTA Nexa Fleksi (Aktif & Pensiun) dan KPR Nexa Griya khusus HUT Nexa ke - 80)"
 };
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const CONFIG_FILE = path.join(DATA_DIR, 'app-settings.json');
+const SETTINGS_ID = 'default';
 
 export class ConfigService {
-    private static cache = new SimpleCache<AppSettings>();
-
     /**
-     * Ensure data directory exists
-     */
-    private static async ensureDataDir() {
-        try {
-            await fs.access(DATA_DIR);
-        } catch {
-            await fs.mkdir(DATA_DIR, { recursive: true });
-        }
-    }
-
-    /**
-     * Get current application settings
+     * Get current application settings from database.
+     * If the settings row does not exist yet, insert the defaults and return them.
      */
     static async getSettings(): Promise<AppSettings> {
-        // Try get from cache first
-        const cached = this.cache.get('settings');
-        if (cached) return cached;
+        const [row] = await db
+            .select({
+                slikMitigasiRiskText: appSettings.slikMitigasiRiskText,
+                catatanProgramPricing: appSettings.catatanProgramPricing,
+            })
+            .from(appSettings)
+            .where(eq(appSettings.id, SETTINGS_ID))
+            .limit(1);
+
+        if (row) {
+            return {
+                slikMitigasiRiskText: row.slikMitigasiRiskText,
+                catatanProgramPricing: row.catatanProgramPricing,
+            };
+        }
 
         try {
-            await this.ensureDataDir();
-
-            try {
-                const data = await fs.readFile(CONFIG_FILE, 'utf-8');
-                const settings = JSON.parse(data);
-                const result = { ...DEFAULT_SETTINGS, ...settings };
-                
-                // Store in cache (longer TTL for config, e.g. 1 hour)
-                this.cache.set('settings', result, 60 * 60 * 1000);
-                
-                return result;
-            } catch {
-                // Return default settings if file doesn't exist or is invalid
-                return DEFAULT_SETTINGS;
-            }
+            await this.upsertDefaults();
         } catch (error) {
-            console.error('[ConfigService] Error reading settings:', error);
-            return DEFAULT_SETTINGS;
+            console.error('[ConfigService] Error seeding default settings:', error);
         }
+
+        return { ...DEFAULT_SETTINGS };
     }
 
     /**
-     * Update application settings
+     * Update application settings in the database (upsert by fixed id).
      */
     static async updateSettings(newSettings: Partial<AppSettings>): Promise<AppSettings> {
-        try {
-            const current = await this.getSettings();
-            const updated = { ...current, ...newSettings };
+        const current = await this.getSettings();
+        const updated = { ...current, ...newSettings };
 
-            await this.ensureDataDir();
-            await fs.writeFile(CONFIG_FILE, JSON.stringify(updated, null, 2), 'utf-8');
+        await db
+            .insert(appSettings)
+            .values({
+                id: SETTINGS_ID,
+                slikMitigasiRiskText: updated.slikMitigasiRiskText,
+                catatanProgramPricing: updated.catatanProgramPricing,
+            })
+            .onConflictDoUpdate({
+                target: appSettings.id,
+                set: {
+                    slikMitigasiRiskText: updated.slikMitigasiRiskText,
+                    catatanProgramPricing: updated.catatanProgramPricing,
+                },
+            });
 
-            // Update cache
-            this.cache.set('settings', updated, 60 * 60 * 1000);
+        return updated;
+    }
 
-            return updated;
-        } catch (error) {
-            console.error('[ConfigService] Error writing settings:', error);
-            throw new Error('Failed to save settings');
-        }
+    private static async upsertDefaults(): Promise<void> {
+        await db
+            .insert(appSettings)
+            .values({
+                id: SETTINGS_ID,
+                slikMitigasiRiskText: DEFAULT_SETTINGS.slikMitigasiRiskText,
+                catatanProgramPricing: DEFAULT_SETTINGS.catatanProgramPricing,
+            })
+            .onConflictDoNothing();
     }
 }

@@ -135,6 +135,17 @@ export const template = pgTable(
   }
 );
 
+// ============ APP SETTINGS ============
+export const appSettings = pgTable("app_settings", {
+  id: text("id").primaryKey(),
+  slikMitigasiRiskText: text("slik_mitigasi_risk_text").notNull(),
+  catatanProgramPricing: text("catatan_program_pricing").notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
 // ============ KNOWLEDGE BASE DOCUMENT ============
 export const document = pgTable(
   "documents",

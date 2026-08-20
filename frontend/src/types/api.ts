@@ -22,6 +22,7 @@ export type ErrorCode =
     | 'NOT_FOUND'
     | 'DUPLICATE_ENTRY'
     | 'DSR_EXCEEDED'
+    | 'INVALID_BODY'
     | 'INTERNAL_ERROR';
 
 // Pagination

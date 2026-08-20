@@ -115,6 +115,14 @@ export default function ClientDetailPage({
     const _isPensiun = kategori === "PRAPURNA" || kategori === "PURNA";
     const isAktif = kategori === "AKTIF";
 
+    // Determine if current instansi is PBT/PETS/GSM (MDKA Group)
+    const instansiLower = String(data.instansi || "").toLowerCase();
+    const isPBT = instansiLower.includes("pani bersama") || instansiLower.includes("pbt");
+    const isPETS = instansiLower.includes("puncak emas tani sejahtera") || instansiLower.includes("pets");
+    const isGSM = instansiLower.includes("gorontalo sejahtera mining") || instansiLower.includes("gsm");
+    const isMdkaGroup = isPBT || isPETS || isGSM;
+    const showPrevEmployment = isAktif && isMdkaGroup && !!data.prev_instansi;
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -354,6 +362,75 @@ export default function ClientDetailPage({
                                         {data.penempatan_unit}
                                     </span>
                                 </div>
+                            )}
+                            {showPrevEmployment && (
+                                <>
+                                    <div className="pt-3 border-t border-gray-200 dark:border-[#444564]">
+                                        <h4 className="text-sm font-bold text-primary dark:text-[#a5b4fc]">
+                                            Data Pekerjaan Sebelumnya (Riwayat Vendor / Alih Status)
+                                        </h4>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500 dark:text-gray-400">Status Kepegawaian Sebelumnya</span>
+                                        <span className="text-gray-800 dark:text-gray-200">
+                                            {data.prev_status_kepegawaian || "-"}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500 dark:text-gray-400">Nama Perusahaan Sebelumnya</span>
+                                        <span className="text-gray-800 dark:text-gray-200">
+                                            {data.prev_instansi || "-"}
+                                        </span>
+                                    </div>
+                                    {data.prev_masa_kerja && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500 dark:text-gray-400">Lama Bekerja Sebelumnya</span>
+                                            <span className="text-gray-800 dark:text-gray-200">
+                                                {data.prev_masa_kerja}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {data.prev_tgl_mulai_kerja && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500 dark:text-gray-400">Mulai Kerja Sebelumnya (Sejak)</span>
+                                            <span className="text-gray-800 dark:text-gray-200">
+                                                {formatDate(data.prev_tgl_mulai_kerja)}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {data.prev_no_sk && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500 dark:text-gray-400">Nomor SPK Sebelumnya</span>
+                                            <span className="text-gray-800 dark:text-gray-200">
+                                                {data.prev_no_sk}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {data.prev_tgl_sk && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500 dark:text-gray-400">Tanggal SPK Sebelumnya</span>
+                                            <span className="text-gray-800 dark:text-gray-200">
+                                                {formatDate(data.prev_tgl_sk)}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {data.no_surat_pengalihan && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500 dark:text-gray-400">Nomor Surat Pengalihan Pekerja</span>
+                                            <span className="text-gray-800 dark:text-gray-200">
+                                                {data.no_surat_pengalihan}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {data.tgl_surat_pengalihan && (
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500 dark:text-gray-400">Tanggal Surat Pengalihan Pekerja</span>
+                                            <span className="text-gray-800 dark:text-gray-200">
+                                                {formatDate(data.tgl_surat_pengalihan)}
+                                            </span>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>

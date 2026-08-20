@@ -641,8 +641,16 @@ export class ListGenerators {
       instansiLower.includes("pani bersama") ||
       instansiLower.includes("pbt");
 
+    const isPETS =
+      instansiLower.includes("puncak emas tani sejahtera") ||
+      instansiLower.includes("pets");
+
+    const isGSM =
+      instansiLower.includes("gorontalo sejahtera mining") ||
+      instansiLower.includes("gsm");
+
     // *** Point 6 Implementation ***
-    if (isPBT && context.prev_instansi) {
+    if ((isPBT || isPETS || isGSM) && context.prev_instansi) {
       const noSk = context.no_sk_cpns || "-";
       const tglSk = context.tgl_sk_cpns || "-";
       const masaKerja = context.masa_kerja || "-";

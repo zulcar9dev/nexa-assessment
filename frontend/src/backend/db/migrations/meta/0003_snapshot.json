@@ -1,6 +1,6 @@
 {
-  "id": "a00bba32-b81b-41f3-adf1-792b80efc26d",
-  "prevId": "c3e8890c-ca95-4043-ae7a-3016d39d1b52",
+  "id": "1f7060e9-8724-4c82-8be7-8fba4ef51357",
+  "prevId": "a00bba32-b81b-41f3-adf1-792b80efc26d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -100,26 +100,64 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "account_user_id_user_id_fk": {
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.app_settings": {
+      "name": "app_settings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "slik_mitigasi_risk_text": {
+          "name": "slik_mitigasi_risk_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catatan_program_pricing": {
+          "name": "catatan_program_pricing",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -174,6 +212,54 @@
           "primaryKey": false,
           "notNull": true
         },
+        "recommendations": {
+          "name": "recommendations",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "retirement_plan": {
+          "name": "retirement_plan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pension_benefits": {
+          "name": "pension_benefits",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "health_conditions": {
+          "name": "health_conditions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "medications": {
+          "name": "medications",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "exercise_frequency": {
+          "name": "exercise_frequency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "social_activities": {
+          "name": "social_activities",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "community_involvement": {
+          "name": "community_involvement",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "status": {
           "name": "status",
           "type": "text",
@@ -220,9 +306,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "debitur_no_ktp_idx": {
           "name": "debitur_no_ktp_idx",
@@ -235,9 +321,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "debitur_kategori_idx": {
           "name": "debitur_kategori_idx",
@@ -250,9 +336,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "debitur_user_id_idx": {
           "name": "debitur_user_id_idx",
@@ -265,9 +351,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "debitur_ktp_jenis_submitted_unique": {
           "name": "debitur_ktp_jenis_submitted_unique",
@@ -286,25 +372,25 @@
             }
           ],
           "isUnique": true,
-          "with": {},
-          "method": "btree",
           "where": "status = 'SUBMITTED'",
-          "concurrently": false
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
         "clients_user_id_user_id_fk": {
           "name": "clients_user_id_user_id_fk",
           "tableFrom": "clients",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -436,9 +522,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "document_nomor_memo_idx": {
           "name": "document_nomor_memo_idx",
@@ -451,9 +537,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "document_kategori_idx": {
           "name": "document_kategori_idx",
@@ -466,9 +552,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "document_status_idx": {
           "name": "document_status_idx",
@@ -481,9 +567,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "document_target_market_idx": {
           "name": "document_target_market_idx",
@@ -496,9 +582,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "document_berlaku_akhir_idx": {
           "name": "document_berlaku_akhir_idx",
@@ -511,9 +597,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "document_uploaded_by_id_idx": {
           "name": "document_uploaded_by_id_idx",
@@ -526,24 +612,24 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "documents_uploaded_by_id_user_id_fk": {
           "name": "documents_uploaded_by_id_user_id_fk",
           "tableFrom": "documents",
+          "tableTo": "user",
           "columnsFrom": [
             "uploaded_by_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "restrict"
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -618,34 +704,34 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "session_token_unique": {
           "name": "session_token_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -686,6 +772,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "file_data": {
+          "name": "file_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
@@ -700,10 +792,10 @@
       "uniqueConstraints": {
         "templates_kategori_unique": {
           "name": "templates_kategori_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "kategori"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -785,17 +877,17 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ],
-          "nullsNotDistinct": false
+          ]
         },
         "user_employee_id_unique": {
           "name": "user_employee_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "employee_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -857,9 +949,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -872,10 +964,10 @@
   },
   "enums": {},
   "schemas": {},
-  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

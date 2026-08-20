@@ -21,10 +21,11 @@ export async function GET(_request: NextRequest) {
             success: true,
             data: settings
         });
-    } catch {
+    } catch (error) {
+        console.error('[Settings API] Failed to load settings:', error);
         return NextResponse.json<ApiResponse>({
             success: false,
-            error: { code: 'INTERNAL_ERROR', message: 'Internal Server Error' }
+            error: { code: 'INTERNAL_ERROR', message: 'Gagal memuat pengaturan.' }
         }, { status: 500 });
     }
 }
@@ -42,16 +43,27 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
+        if (!body || typeof body !== 'object') {
+            return NextResponse.json<ApiResponse>({
+                success: false,
+                error: { code: 'INVALID_BODY', message: 'Body request tidak valid.' }
+            }, { status: 400 });
+        }
+
         const updated = await ConfigService.updateSettings(body);
 
         return NextResponse.json({
             success: true,
             data: updated
         });
-    } catch {
+    } catch (error) {
+        console.error('[Settings API] Failed to save settings:', error);
         return NextResponse.json<ApiResponse>({
             success: false,
-            error: { code: 'INTERNAL_ERROR', message: 'Internal Server Error' }
+            error: {
+                code: 'INTERNAL_ERROR',
+                message: error instanceof Error ? error.message : 'Gagal menyimpan pengaturan.'
+            }
         }, { status: 500 });
     }
 }

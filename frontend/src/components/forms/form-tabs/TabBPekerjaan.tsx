@@ -44,6 +44,16 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
         return inst.includes("pani bersama") || inst.includes("pbt");
     }, [formData.instansi]);
 
+    const isPETS = useMemo(() => {
+        const inst = String(formData.instansi || "").toLowerCase();
+        return inst.includes("puncak emas tani sejahtera") || inst.includes("pets");
+    }, [formData.instansi]);
+
+    const isGSM = useMemo(() => {
+        const inst = String(formData.instansi || "").toLowerCase();
+        return inst.includes("gorontalo sejahtera mining") || inst.includes("gsm");
+    }, [formData.instansi]);
+
     // Pre-populate previous employment vendor details for PLN Nusa Daya
     useEffect(() => {
         if (isPaguntaka && kategori === "type_c") {
@@ -627,15 +637,15 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                             </div>
                         )}
 
-                        {/* Pekerjaan Sebelumnya (Dynamic PLN Nusa Daya/Paguntaka/PBT) */}
-                        {(isPaguntaka || isPBT) && kategori === "type_c" && (
+                        {/* Pekerjaan Sebelumnya (Dynamic PLN Nusa Daya/Paguntaka/PBT/PETS/GSM) */}
+                        {(isPaguntaka || isPBT || isPETS || isGSM) && kategori === "type_c" && (
                             <div className="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#f5f8f8] dark:bg-[#0f2322]/30 rounded-lg border border-[#cdeae7] dark:border-opacity-10">
                                 <h4 className="col-span-1 md:col-span-2 text-sm font-bold text-primary">
                                     Data Pekerjaan Sebelumnya (Riwayat Vendor / Alih Status)
                                 </h4>
-                                {isPBT && (
+                                {(isPBT || isPETS || isGSM) && (
                                     <p className="col-span-1 md:col-span-2 text-xs text-gray-500 dark:text-gray-400 -mt-2">
-                                        *Catatan: Jika pemohon adalah karyawan rekrutmen baru langsung di PBT (bukan alih status dari PT PETS), kosongkan kolom <strong>Nama Perusahaan Sebelumnya</strong>.
+                                        *Catatan: Jika pemohon adalah karyawan rekrutmen baru langsung di instansi ini (bukan alih status dari perusahaan sebelumnya), kosongkan kolom <strong>Nama Perusahaan Sebelumnya</strong>.
                                     </p>
                                 )}
                                 <div>
@@ -706,7 +716,7 @@ export default React.memo(function TabBPekerjaan({ kategori }: { kategori?: stri
                                     />
                                 </div>
 
-                                {isPBT && (
+                                {(isPBT || isPETS || isGSM) && (
                                     <>
                                         <div>
                                             <label

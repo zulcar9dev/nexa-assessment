@@ -21,6 +21,8 @@ export default function SettingsPage() {
             if (data.success) {
                 setMitigasiText(data.data.slikMitigasiRiskText);
                 setCatatanPricing(data.data.catatanProgramPricing || "");
+            } else {
+                setMessage({ type: 'error', text: data.error?.message || 'Gagal memuat pengaturan.' });
             }
         } catch (error) {
             console.error('Failed to fetch settings:', error);
@@ -51,7 +53,7 @@ export default function SettingsPage() {
                 setMitigasiText(data.data.slikMitigasiRiskText);
                 setCatatanPricing(data.data.catatanProgramPricing || "");
             } else {
-                throw new Error(data.error?.message || 'Gagal menyimpan');
+                setMessage({ type: 'error', text: data.error?.message || 'Gagal menyimpan pengaturan.' });
             }
         } catch (error) {
             console.error('Failed to save settings:', error);
