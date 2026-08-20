@@ -22,7 +22,7 @@ async function main() {
   
   try {
     await migrate(db, {
-      migrationsFolder: path.join(__dirname, 'migrations'),
+      migrationsFolder: path.join(__dirname, 'src/backend/db/migrations'),
     });
     console.log('✅ Database migrations applied successfully!');
   } catch (error) {
